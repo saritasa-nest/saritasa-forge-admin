@@ -1,0 +1,17 @@
+{
+  "Logging": {
+    "Console": {
+      "FormatterOptions": {
+        "JsonWriterOptions": {
+          "Indented": false
+        }
+      }
+    }
+  },
+  "ConnectionStrings": {
+    "AppDatabase": "Server={{$.databaseHost}};Database={{$.database}};Uid={{$.databaseUser}};Pwd={{$.databasePassword}};",
+    "IdentityDatabase": "Server={{$.databaseHost}};Database={{$.database}};Uid={{$.databaseUser}};Pwd={{$.databasePassword}};"
+  },
+  "Application": {
+  }
+}
