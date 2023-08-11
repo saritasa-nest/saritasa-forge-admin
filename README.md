@@ -4,9 +4,12 @@ The NetForge is a library that provides a user-friendly and intuitive user inter
 
 ## How to use
 
-Add NetForge to your service collection in Program.cs:
+Add NetForge to your service collection in Program.cs within the MVC and ServerSideBlazor:
 
 ```csharp
+appBuilder.Services.AddMvc();
+appBuilder.Services.AddServerSideBlazor();
+
 appBuilder.Services.AddNetForge(optionsBuilder =>
 {
     optionsBuilder.UseEntityFramework(efOptionsBuilder =>

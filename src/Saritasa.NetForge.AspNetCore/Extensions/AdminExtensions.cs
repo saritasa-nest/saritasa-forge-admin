@@ -29,8 +29,6 @@ public static class AdminExtensions
         // Inject all required services.
         services.AddSingleton(adminOptionsBuilder.Options);
         adminOptionsBuilder.OrmOptionsBuilder?.ApplyServices(services);
-        services.AddServerSideBlazor();
-        services.AddMvc();
 
         Infrastructure.DependencyInjection.AutoMapperModule.Register(services);
         Infrastructure.DependencyInjection.MediatRModule.Register(services);
@@ -46,8 +44,6 @@ public static class AdminExtensions
         {
             app.UseWebAssemblyDebugging();
         }
-
-        app.MapControllers();
 
         var url = app.Services.GetRequiredService<AdminOptions>().AdminPanelEndpoint;
         app.MapControllerRoute(name: "netforge", pattern: url,
