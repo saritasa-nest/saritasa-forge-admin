@@ -9,4 +9,9 @@ public class AdminOptions
     /// Admin panel endpoint.
     /// </summary>
     public string AdminPanelEndpoint { get; set; } = "/netforge";
+
+    /// <summary>
+    /// NetForge API endpoint.
+    /// </summary>
+    public string ApiEndpoint { get; set; } = "/netforge-api";
 }

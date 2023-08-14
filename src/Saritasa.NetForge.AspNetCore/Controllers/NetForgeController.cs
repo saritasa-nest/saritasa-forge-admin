@@ -5,7 +5,7 @@ using Saritasa.NetForge.Domain.Entities;
 namespace Saritasa.NetForge.AspNetCore.Controllers;
 
 /// <summary>
-/// Gets DB metadata.
+/// Returns the index view.
 /// </summary>
 public class NetForgeController : Controller
 {
@@ -20,7 +20,7 @@ public class NetForgeController : Controller
     }
 
     /// <summary>
-    /// Gets the list of entities.
+    /// Returns the index page.
     /// </summary>
     public IActionResult Index()
     {

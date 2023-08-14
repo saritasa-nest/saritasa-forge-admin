@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Saritasa.NetForge.AspNetCore.Controllers;
+using Saritasa.NetForge.AspNetCore.Infrastructure;
 using Saritasa.NetForge.AspNetCore.Infrastructure.Middlewares;
 using Saritasa.NetForge.Domain.Entities;
 using Saritasa.NetForge.DomainServices;
@@ -45,20 +45,24 @@ public static class AdminExtensions
             app.UseWebAssemblyDebugging();
         }
 
-        var url = app.Services.GetRequiredService<AdminOptions>().AdminPanelEndpoint;
-        app.MapControllerRoute(name: "netforge", pattern: url,
-            new { controller = "NetForge", action = nameof(NetForgeController.Index) });
+        var optionsService = app.Services.GetRequiredService<AdminOptions>();
+        var adminPanelEndpoint = optionsService.AdminPanelEndpoint;
+        var apiEndpoint = optionsService.ApiEndpoint;
 
-        // Make the application to use blazor dependencies on a specific URL.
-        app.UseWhen(context => context.Request.Path.StartsWithSegments(url), applicationBuilder =>
+        var appRoutingSetup = new NetForgeRoutingSetup(app);
+        appRoutingSetup.SetupRazorViewRoutes(adminPanelEndpoint);
+        appRoutingSetup.SetupApiRoutes(apiEndpoint);
+
+        // Make the application use blazor dependencies on a specific URL.
+        app.UseWhen(context => context.Request.Path.StartsWithSegments(adminPanelEndpoint), applicationBuilder =>
         {
-            applicationBuilder.UsePathBase(url);
+            applicationBuilder.UsePathBase(adminPanelEndpoint);
             applicationBuilder.UseStaticFiles("/static");
             applicationBuilder.UseBlazorFrameworkFiles();
             applicationBuilder.UseRouting();
         });
 
-        app.UseWhen(context => context.Request.Path.StartsWithSegments("/net-forge-api"), applicationBuilder =>
+        app.UseWhen(context => context.Request.Path.StartsWithSegments(apiEndpoint), applicationBuilder =>
         {
             applicationBuilder.UseMiddleware<ApiExceptionMiddleware>();
         });

@@ -22,4 +22,10 @@ public interface IAdminOptionsBuilder
     /// </summary>
     /// <param name="url">URL.</param>
     IAdminOptionsBuilder UseEndpoint(string url);
+
+    /// <summary>
+    /// Set the URL on which the NetForge API will be hosted.
+    /// </summary>
+    /// <param name="url">URL.</param>
+    IAdminOptionsBuilder UseApiEndpoint(string url);
 }

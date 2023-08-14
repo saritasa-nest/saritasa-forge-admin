@@ -33,10 +33,12 @@ builder.Services.AddNetForge(optionsBuilder =>
         efOptionsBuilder.UseDbContext<AppIdentityDbContext>();
     });
     optionsBuilder.UseEndpoint("/admin");
+    optionsBuilder.UseApiEndpoint("/admin-api");
 });
 
 var app = builder.Build();
 app.UseHttpsRedirection();
+app.UseRouting();
 app.MapControllers();
 
 app.UseNetForge();

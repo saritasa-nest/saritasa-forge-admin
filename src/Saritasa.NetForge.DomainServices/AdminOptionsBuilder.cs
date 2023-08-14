@@ -18,4 +18,11 @@ public class AdminOptionsBuilder : IAdminOptionsBuilder
         Options.AdminPanelEndpoint = url;
         return this;
     }
+
+    /// <inheritdoc />
+    public IAdminOptionsBuilder UseApiEndpoint(string url)
+    {
+        Options.ApiEndpoint = url;
+        return this;
+    }
 }
