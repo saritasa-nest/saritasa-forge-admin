@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Infrastructure.EfCore.Services;
 
@@ -18,8 +19,8 @@ public class EfCoreOptionsBuilder : IOrmOptionsBuilder
     /// <inheritdoc />
     public void ApplyServices(IServiceCollection services)
     {
-        services.AddSingleton(Options);
-        services.AddScoped<IMetadataService, MetadataService>();
+        services.TryAddSingleton(Options);
+        services.TryAddScoped<IMetadataService, MetadataService>();
     }
 
     /// <summary>

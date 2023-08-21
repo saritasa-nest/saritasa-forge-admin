@@ -14,11 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="Pages\Test.cshtml" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\..\src\Saritasa.NetForge.AspNetCore\Saritasa.NetForge.AspNetCore.csproj" />
+      <ProjectReference Include="..\..\src\Saritasa.NetForge.Blazor\Saritasa.NetForge.Blazor.csproj" />
       <ProjectReference Include="..\..\src\Saritasa.NetForge.Infrastructure.EfCore\Saritasa.NetForge.Infrastructure.EfCore.csproj" />
     </ItemGroup>
 

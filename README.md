@@ -4,12 +4,9 @@ The NetForge is a library that provides a user-friendly and intuitive user inter
 
 ## How to use
 
-Add NetForge to your service collection in Program.cs within the MVC and ServerSideBlazor:
+Add NetForge to your service collection in Program.cs:
 
 ```csharp
-appBuilder.Services.AddMvc();
-appBuilder.Services.AddServerSideBlazor();
-
 appBuilder.Services.AddNetForge(optionsBuilder =>
 {
     optionsBuilder.UseEntityFramework(efOptionsBuilder =>
@@ -29,6 +26,7 @@ app.UseNetForge();
 ## Running the admin panel
 
 By default, NetForge is running on /netforge but you can configure to use your custom endpoint like this:
+
 ```csharp
 appBuilder.Services.AddNetForge(optionsBuilder =>
 {

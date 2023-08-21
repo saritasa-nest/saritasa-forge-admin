@@ -1,0 +1,11 @@
+﻿@page "/entities"
+@inherits EntitiesPage
+
+<PageTitle>NetForge - Entities</PageTitle>
+
+@foreach (var entityMetadata in ViewModel.Model.EntitiesMetadata)
+{
+    <div>
+        <h1>@entityMetadata.Name</h1>
+    </div>
+}

@@ -9,8 +9,7 @@
     }
   },
   "ConnectionStrings": {
-    "AppDatabase": "Server={{$.databaseHost}};Database={{$.database}};Uid={{$.databaseUser}};Pwd={{$.databasePassword}};",
-    "IdentityDatabase": "Server={{$.databaseHost}};Database={{$.database}};Uid={{$.databaseUser}};Pwd={{$.databasePassword}};"
+    "AppDatabase": "Server={{$.databaseHost}};Database={{$.database}};Uid={{$.databaseUser}};Pwd={{$.databasePassword}};"
   },
   "Application": {
   }

@@ -1,7 +1,7 @@
 using AutoMapper;
 using MediatR;
-using Saritasa.NetForge.DomainServices.DTOs;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
+using Saritasa.NetForge.UseCases.Metadata.DTOs;
 
 namespace Saritasa.NetForge.UseCases.Metadata.SearchEntities;
 
