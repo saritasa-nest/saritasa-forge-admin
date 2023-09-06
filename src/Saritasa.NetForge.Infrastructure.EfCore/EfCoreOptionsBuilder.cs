@@ -14,7 +14,7 @@ public class EfCoreOptionsBuilder : IOrmOptionsBuilder
     /// <summary>
     /// EF Core specific options.
     /// </summary>
-    public EfCoreOptions Options { get; set; } = new();
+    private EfCoreOptions Options { get; } = new();
 
     /// <inheritdoc />
     public void ApplyServices(IServiceCollection services)

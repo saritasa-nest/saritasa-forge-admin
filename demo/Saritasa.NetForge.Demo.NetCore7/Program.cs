@@ -16,14 +16,13 @@ builder.Services.AddDbContext<ShopDbContext>(options =>
 
 // Register NetForge.
 builder.Services.AddNetForge(optionsBuilder =>
- {
+{
      optionsBuilder.UseEntityFramework(efOptionsBuilder =>
      {
          efOptionsBuilder.UseDbContext<ShopDbContext>();
      });
      optionsBuilder.UseEndpoint("/admin");
  });
-builder.Services.AddNetForge();
 
 var app = builder.Build();
 app.UseNetForge();

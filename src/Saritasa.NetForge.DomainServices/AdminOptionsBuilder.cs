@@ -6,8 +6,7 @@ namespace Saritasa.NetForge.DomainServices;
 /// <inheritdoc />
 public class AdminOptionsBuilder : IAdminOptionsBuilder
 {
-    /// <inheritdoc />
-    public AdminOptions Options { get; set; } = new();
+    private AdminOptions Options { get; set; } = new();
 
     /// <inheritdoc />
     public IOrmOptionsBuilder? OrmOptionsBuilder { get; set; }
@@ -17,5 +16,11 @@ public class AdminOptionsBuilder : IAdminOptionsBuilder
     {
         Options.AdminPanelEndpoint = url;
         return this;
+    }
+
+    /// <inheritdoc />
+    public AdminOptions Create()
+    {
+        return Options;
     }
 }

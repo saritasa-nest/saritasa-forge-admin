@@ -8,11 +8,6 @@ namespace Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 public interface IAdminOptionsBuilder
 {
     /// <summary>
-    /// Options for the admin panel.
-    /// </summary>
-    AdminOptions Options { get; set; }
-
-    /// <summary>
     /// ORM-specific options builder.
     /// </summary>
     IOrmOptionsBuilder? OrmOptionsBuilder { get; set; }
@@ -22,4 +17,9 @@ public interface IAdminOptionsBuilder
     /// </summary>
     /// <param name="url">URL.</param>
     IAdminOptionsBuilder UseEndpoint(string url);
+
+    /// <summary>
+    /// Get options for the admin panel.
+    /// </summary>
+    AdminOptions Create();
 }

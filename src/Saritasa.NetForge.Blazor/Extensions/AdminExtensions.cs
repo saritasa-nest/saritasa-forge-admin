@@ -22,7 +22,7 @@ public static class AdminExtensions
         var adminOptionsBuilder = new AdminOptionsBuilder();
         optionsBuilderAction?.Invoke(adminOptionsBuilder);
 
-        services.TryAddSingleton(adminOptionsBuilder.Options);
+        services.TryAddSingleton(adminOptionsBuilder.Create());
         adminOptionsBuilder.OrmOptionsBuilder?.ApplyServices(services);
 
         Infrastructure.DependencyInjection.AutoMapperModule.Register(services);

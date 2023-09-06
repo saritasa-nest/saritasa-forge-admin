@@ -8,7 +8,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Saritasa.NetForge.Infrastructure.Abstractions\Saritasa.NetForge.Infrastructure.Abstractions.csproj" />
-      <ProjectReference Include="..\Saritasa.NetForge.UseCases\Saritasa.NetForge.UseCases.csproj" />
     </ItemGroup>
 
 </Project>
