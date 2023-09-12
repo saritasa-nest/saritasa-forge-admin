@@ -24,17 +24,17 @@ public class EntitiesViewModel : BaseViewModel
     }
 
     /// <inheritdoc/>
-    public override async Task LoadAsync()
+    public override async Task LoadAsync(CancellationToken cancellationToken)
     {
-        await GetEntitiesAsync();
+        await GetEntitiesAsync(cancellationToken);
     }
 
     /// <summary>
     /// Get entities metadata.
     /// </summary>
-    private async Task GetEntitiesAsync()
+    private async Task GetEntitiesAsync(CancellationToken cancellationToken)
     {
-        var entitiesMetadataDto = await mediator.Send(new SearchEntitiesQuery());
+        var entitiesMetadataDto = await mediator.Send(new SearchEntitiesQuery(), cancellationToken);
         Model.EntitiesMetadata = entitiesMetadataDto;
     }
 }

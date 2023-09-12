@@ -8,6 +8,6 @@ public abstract class BaseViewModel
     /// <summary>
     /// Load view model.
     /// </summary>
-    public virtual Task LoadAsync()
+    public virtual Task LoadAsync(CancellationToken cancellationToken)
         => Task.CompletedTask;
 }

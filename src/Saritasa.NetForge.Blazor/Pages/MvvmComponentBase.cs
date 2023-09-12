@@ -7,9 +7,17 @@ namespace Saritasa.NetForge.Blazor.Pages;
 /// Component base on view model.
 /// </summary>
 /// <typeparam name="TViewModel">View model type.</typeparam>
-public class MvvmComponentBase<TViewModel> : ComponentBase
+public class MvvmComponentBase<TViewModel> : ComponentBase, IDisposable
     where TViewModel : BaseViewModel
 {
+    private bool disposedValue;
+    private CancellationTokenSource? cancellationTokenSource;
+
+    /// <summary>
+    /// Cancellation token.
+    /// </summary>
+    protected CancellationToken CancellationToken => (cancellationTokenSource ??= new CancellationTokenSource()).Token;
+
     /// <summary>
     /// View model factory.
     /// </summary>
@@ -28,23 +36,23 @@ public class MvvmComponentBase<TViewModel> : ComponentBase
 
         ViewModel = CreateViewModel();
 
-        await OnInitializedComponentAsync();
+        await OnInitializedComponentAsync(CancellationToken);
 
-        await OnViewModelPreLoadingAsync();
+        await OnViewModelPreLoadingAsync(CancellationToken);
 
-        await ViewModel.LoadAsync();
+        await ViewModel.LoadAsync(CancellationToken);
     }
 
     /// <summary>
     /// Handler for component async initialization.
     /// </summary>
-    protected virtual Task OnInitializedComponentAsync()
+    protected virtual Task OnInitializedComponentAsync(CancellationToken cancellationToken = default)
         => Task.CompletedTask;
 
     /// <summary>
     /// Handler for view model pre loading.
     /// </summary>
-    protected virtual Task OnViewModelPreLoadingAsync()
+    protected virtual Task OnViewModelPreLoadingAsync(CancellationToken cancellationToken = default)
         => Task.CompletedTask;
 
     /// <summary>
@@ -53,4 +61,31 @@ public class MvvmComponentBase<TViewModel> : ComponentBase
     /// <returns>Created view model.</returns>
     protected virtual TViewModel CreateViewModel()
         => ViewModelFactory.Create<TViewModel>();
+
+    /// Release some resources.
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                // Dispose managed objects.
+                if (cancellationTokenSource != null)
+                {
+                    cancellationTokenSource.Cancel();
+                    cancellationTokenSource.Dispose();
+                    cancellationTokenSource = null;
+                }
+            }
+
+            disposedValue = true;
+        }
+    }
+
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
 }
