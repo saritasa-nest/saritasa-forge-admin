@@ -1,11 +1,14 @@
-﻿@inherits LayoutComponentBase
+﻿@inherits MainLayoutComponent
 
-<PageTitle>NetForge Admin</PageTitle>
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-<div class="page">
-    <main>
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+<MudLayout>
+    <MudAppBar Color="Color.Primary" Fixed="false">
+        <MudLink Color="Color.Inherit" Underline="Underline.None" Href="/">NetForge</MudLink>
+    </MudAppBar>
+    <MudMainContent >
+        @Body
+    </MudMainContent>
+</MudLayout>

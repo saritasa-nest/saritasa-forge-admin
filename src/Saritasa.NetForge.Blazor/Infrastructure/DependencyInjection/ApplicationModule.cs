@@ -1,4 +1,5 @@
-﻿using Saritasa.NetForge.Mvvm.ViewModels;
+﻿using MudBlazor.Services;
+using Saritasa.NetForge.Mvvm.ViewModels;
 
 namespace Saritasa.NetForge.Blazor.Infrastructure.DependencyInjection;
 
@@ -16,5 +17,6 @@ internal static class ApplicationModule
 
         services.AddRazorPages();
         services.AddServerSideBlazor();
+        services.AddMudServices();
     }
 }

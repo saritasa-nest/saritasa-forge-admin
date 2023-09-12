@@ -3,9 +3,11 @@
 
 <PageTitle>NetForge - Entities</PageTitle>
 
+<main>
 @foreach (var entityMetadata in ViewModel.Model.EntitiesMetadata)
 {
     <div>
         <h1>@entityMetadata.Name</h1>
     </div>
 }
+</main>
