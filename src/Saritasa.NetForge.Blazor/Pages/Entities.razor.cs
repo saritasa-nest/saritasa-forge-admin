@@ -1,10 +1,12 @@
-﻿using Saritasa.NetForge.Mvvm.ViewModels.Metadata;
+﻿using Microsoft.AspNetCore.Components;
+using Saritasa.NetForge.Mvvm.ViewModels.Metadata;
 
 namespace Saritasa.NetForge.Blazor.Pages;
 
 /// <summary>
 /// List the entities.
 /// </summary>
-public class EntitiesPage : MvvmComponentBase<EntitiesViewModel>
+[Route("/entities")]
+public partial class Entities : MvvmComponentBase<EntitiesViewModel>
 {
 }
