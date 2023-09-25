@@ -1,8 +1,11 @@
-﻿namespace Saritasa.NetForge.Demo.Net7.Models;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Saritasa.NetForge.Demo.Net7.Models;
 
 /// <summary>
 /// Represents an address entity.
 /// </summary>
+[Comment("Represents the address of the Shop.")]
 public class Address
 {
     /// <summary>

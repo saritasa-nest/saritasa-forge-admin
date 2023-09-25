@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Saritasa.NetForge.Domain.Entities;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
@@ -35,16 +37,24 @@ internal class MetadataService : IMetadataService
             }
 
             var dbContext = (DbContext)dbContextService;
-            var entityTypes = dbContext.Model.GetEntityTypes();
+            var model = dbContext.GetService<IDesignTimeModel>().Model;
+            var entityTypes = model.GetEntityTypes();
             var dbContextEntitiesMetadata = entityTypes.Select(entityType => new EntityMetadata
             {
-                Name = entityType.DisplayName(),
-                PluralName = $"{entityType.DisplayName()}s",
+                Name = entityType.ShortName(),
+                PluralName = $"{entityType.ShortName()}s",
                 ClrType = entityType.ClrType,
+                Description = GetEntityDescription(entityType),
             });
             entitiesMetadata.AddRange(dbContextEntitiesMetadata);
         }
 
         return entitiesMetadata;
+    }
+
+    private string GetEntityDescription(IReadOnlyEntityType entityType)
+    {
+        var comment = entityType.GetComment();
+        return comment;
     }
 }

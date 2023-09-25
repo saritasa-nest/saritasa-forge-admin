@@ -8,14 +8,17 @@
         <MudTh>
             <MudTableSortLabel InitialDirection="SortDirection.Ascending"
                                SortBy="new Func<EntityMetadataDto, object>(x => x.PluralName)">
-                <MudText Typo="Typo.subtitle1">Name</MudText>
+                <MudText Typo="Typo.h6">Entity Name</MudText>
             </MudTableSortLabel>
         </MudTh>
+        <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Name">
-            <MudText Typo="Typo.subtitle2">@context.PluralName</MudText>
-            <MudText Typo="Typo.body2">@context.Description</MudText>
+        <MudTd DataLabel="Entity Name">
+            <MudText Typo="Typo.subtitle1">@context.PluralName</MudText>
+        </MudTd>
+        <MudTd DataLabel="Description">
+            <MudText Typo="Typo.body2" Class="text--color-hint entities-table__description-text">@context.Description</MudText>
         </MudTd>
     </RowTemplate>
 </MudTable>
