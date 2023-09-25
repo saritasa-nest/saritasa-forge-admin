@@ -8,5 +8,5 @@ public class AdminOptions
     /// <summary>
     /// Admin panel endpoint.
     /// </summary>
-    public string AdminPanelEndpoint { get; set; } = "/netforge";
+    public string AdminPanelEndpoint { get; set; } = "/admin";
 }

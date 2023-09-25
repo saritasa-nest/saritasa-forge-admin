@@ -21,7 +21,6 @@ builder.Services.AddNetForge(optionsBuilder =>
      {
          efOptionsBuilder.UseDbContext<ShopDbContext>();
      });
-     optionsBuilder.UseEndpoint("/admin");
  });
 
 var app = builder.Build();
