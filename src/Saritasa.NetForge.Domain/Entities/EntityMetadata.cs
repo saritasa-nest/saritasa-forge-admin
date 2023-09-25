@@ -8,17 +8,17 @@ public class EntityMetadata
     /// <summary>
     /// Name of the entity to display.
     /// </summary>
-    public string? Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Plural name of the entity.
     /// </summary>
-    public string? PluralName { get; set; }
+    public string PluralName { get; set; } = string.Empty;
 
     /// <summary>
     /// Entity description.
     /// </summary>
-    public string? Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     /// <summary>
     /// Entity CLR type.

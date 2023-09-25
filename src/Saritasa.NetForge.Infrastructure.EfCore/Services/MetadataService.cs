@@ -39,6 +39,7 @@ internal class MetadataService : IMetadataService
             var dbContextEntitiesMetadata = entityTypes.Select(entityType => new EntityMetadata
             {
                 Name = entityType.DisplayName(),
+                PluralName = $"{entityType.DisplayName()}s",
                 ClrType = entityType.ClrType,
             });
             entitiesMetadata.AddRange(dbContextEntitiesMetadata);
