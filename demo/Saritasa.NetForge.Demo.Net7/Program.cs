@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Saritasa.NetForge.Blazor.Extensions;
-using Saritasa.NetForge.Demo.NetCore7;
+using Saritasa.NetForge.Demo.Net7;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);

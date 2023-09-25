@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Saritasa.NetForge.Demo.NetCore7.Models;
+namespace Saritasa.NetForge.Demo.Net7.Models;
 
 /// <summary>
 /// Represents contact information of a user or entity.

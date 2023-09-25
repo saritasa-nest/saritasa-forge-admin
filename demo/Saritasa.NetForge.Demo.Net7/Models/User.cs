@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Saritasa.NetForge.Demo.NetCore7.Models;
+namespace Saritasa.NetForge.Demo.Net7.Models;
 
 /// <summary>
 /// Represents the application's user.

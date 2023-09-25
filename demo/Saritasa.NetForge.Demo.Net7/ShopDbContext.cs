@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Saritasa.NetForge.Demo.NetCore7.Models;
+using Saritasa.NetForge.Demo.Net7.Models;
 
-namespace Saritasa.NetForge.Demo.NetCore7;
+namespace Saritasa.NetForge.Demo.Net7;
 
 /// <summary>
 /// Represents the database context for the shop.

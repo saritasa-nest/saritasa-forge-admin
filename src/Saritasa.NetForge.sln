@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.Infrastructure.EfCore", "Saritasa.NetForge.Infrastructure.EfCore\Saritasa.NetForge.Infrastructure.EfCore.csproj", "{DF212AD9-94C1-48BA-9C70-4F5E08BC5EFE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.Demo.NetCore7", "..\demo\Saritasa.NetForge.Demo.NetCore7\Saritasa.NetForge.Demo.NetCore7.csproj", "{E7273DBF-A83A-4D0C-A1AF-A63D3069B685}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.Demo.Net7", "..\demo\Saritasa.NetForge.Demo.Net7\Saritasa.NetForge.Demo.Net7.csproj", "{E7273DBF-A83A-4D0C-A1AF-A63D3069B685}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.UseCases", "Saritasa.NetForge.UseCases\Saritasa.NetForge.UseCases.csproj", "{41C5E508-3FE1-4359-9A4B-AD0F6237B4E9}"
 EndProject
