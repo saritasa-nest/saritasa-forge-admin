@@ -1,4 +1,4 @@
-﻿using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
+﻿using Saritasa.NetForge.DomainServices;
 
 namespace Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
@@ -12,7 +12,7 @@ public static class AdminExtensions
     /// </summary>
     /// <param name="optionsBuilder">Admin panel options builder.</param>
     /// <param name="efCoreOptionsBuilderAction">Action to configure the EF Core options.</param>
-    public static IAdminOptionsBuilder UseEntityFramework(this IAdminOptionsBuilder optionsBuilder,
+    public static AdminOptionsBuilder UseEntityFramework(this AdminOptionsBuilder optionsBuilder,
         Action<EfCoreOptionsBuilder>? efCoreOptionsBuilderAction = null)
     {
         var efCoreOptionsBuilder = new EfCoreOptionsBuilder();

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using Saritasa.NetForge.Domain.Entities;
 using Saritasa.NetForge.DomainServices;
-using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
 namespace Saritasa.NetForge.Blazor.Extensions;
 
@@ -16,7 +15,7 @@ public static class AdminExtensions
     /// <param name="services">Collection of application services.</param>
     /// <param name="optionsBuilderAction">Action to configure the admin options using the options builder.</param>
     public static void AddNetForge(this IServiceCollection services,
-        Action<IAdminOptionsBuilder>? optionsBuilderAction = null)
+        Action<AdminOptionsBuilder>? optionsBuilderAction = null)
     {
         // Build the options.
         var adminOptionsBuilder = new AdminOptionsBuilder();

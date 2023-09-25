@@ -3,22 +3,31 @@ using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
 namespace Saritasa.NetForge.DomainServices;
 
-/// <inheritdoc />
-public class AdminOptionsBuilder : IAdminOptionsBuilder
+/// <summary>
+/// Builds the admin options.
+/// </summary>
+public class AdminOptionsBuilder
 {
     private AdminOptions Options { get; set; } = new();
 
-    /// <inheritdoc />
+    /// <summary>
+    /// ORM-specific options builder.
+    /// </summary>
     public IOrmOptionsBuilder? OrmOptionsBuilder { get; set; }
 
-    /// <inheritdoc />
-    public IAdminOptionsBuilder UseEndpoint(string url)
+    /// <summary>
+    /// Set the URL on which the admin panel will be hosted.
+    /// </summary>
+    /// <param name="url">URL.</param>
+    public AdminOptionsBuilder UseEndpoint(string url)
     {
         Options.AdminPanelEndpoint = url;
         return this;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Get options for the admin panel.
+    /// </summary>
     public AdminOptions Create()
     {
         return Options;

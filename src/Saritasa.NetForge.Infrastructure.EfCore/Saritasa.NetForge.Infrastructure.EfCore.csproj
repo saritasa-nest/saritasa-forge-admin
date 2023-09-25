@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Saritasa.NetForge.DomainServices\Saritasa.NetForge.DomainServices.csproj" />
     <ProjectReference Include="..\Saritasa.NetForge.Infrastructure.Abstractions\Saritasa.NetForge.Infrastructure.Abstractions.csproj" />
   </ItemGroup>
 
