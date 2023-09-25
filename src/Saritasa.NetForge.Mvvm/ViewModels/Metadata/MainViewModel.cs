@@ -4,21 +4,21 @@ using Saritasa.NetForge.UseCases.Metadata.SearchEntities;
 namespace Saritasa.NetForge.Mvvm.ViewModels.Metadata;
 
 /// <summary>
-/// Entities view model.
+/// Index view model.
 /// </summary>
-public class EntitiesViewModel : BaseViewModel
+public class MainViewModel : BaseViewModel
 {
     private readonly IMediator mediator;
 
     /// <summary>
-    /// Entities model instance.
+    /// Model instance.
     /// </summary>
-    public EntitiesModel Model { get; } = new();
+    public MainModel Model { get; } = new();
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public EntitiesViewModel(IMediator mediator)
+    public MainViewModel(IMediator mediator)
     {
         this.mediator = mediator;
     }

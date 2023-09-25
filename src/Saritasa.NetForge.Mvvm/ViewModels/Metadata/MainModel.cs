@@ -3,9 +3,9 @@
 namespace Saritasa.NetForge.Mvvm.ViewModels.Metadata;
 
 /// <summary>
-/// Model for the entities.
+/// Model for the index page.
 /// </summary>
-public class EntitiesModel
+public class MainModel
 {
     /// <summary>
     /// Collection of entities metadata.

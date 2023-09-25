@@ -4,9 +4,9 @@ using Saritasa.NetForge.Mvvm.ViewModels.Metadata;
 namespace Saritasa.NetForge.Blazor.Pages;
 
 /// <summary>
-/// List the entities.
+/// Index page.
 /// </summary>
-[Route("/entities")]
-public partial class Entities : MvvmComponentBase<EntitiesViewModel>
+[Route("")]
+public partial class Main : MvvmComponentBase<MainViewModel>
 {
 }
