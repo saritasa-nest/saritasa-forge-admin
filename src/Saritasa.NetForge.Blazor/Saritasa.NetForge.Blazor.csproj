@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>Library</OutputType>
+    <PackageId>NetForgeBlazor</PackageId>
+    <StaticWebAssetBasePath>_content/$(PackageId)</StaticWebAssetBasePath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="MediatR" Version="12.1.1" />
+    <PackageReference Include="MudBlazor" Version="6.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Saritasa.NetForge.DomainServices\Saritasa.NetForge.DomainServices.csproj" />
+    <ProjectReference Include="..\Saritasa.NetForge.Infrastructure.Abstractions\Saritasa.NetForge.Infrastructure.Abstractions.csproj" />
+    <ProjectReference Include="..\Saritasa.NetForge.Mvvm\Saritasa.NetForge.Mvvm.csproj" />
+    <ProjectReference Include="..\Saritasa.NetForge.UseCases\Saritasa.NetForge.UseCases.csproj" />
+  </ItemGroup>
+
+</Project>
