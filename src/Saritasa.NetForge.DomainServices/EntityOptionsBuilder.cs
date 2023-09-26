@@ -21,6 +21,26 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
+    /// Sets the name for the entity being configured.
+    /// </summary>
+    /// <param name="name">The name to set for the entity.</param>
+    public EntityOptionsBuilder<TEntity> SetName(string name)
+    {
+        options.Name = name;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the plural name for the entity being configured.
+    /// </summary>
+    /// <param name="pluralName">The plural name to set for the entity.</param>
+    public EntityOptionsBuilder<TEntity> SetPluralName(string pluralName)
+    {
+        options.PluralName = pluralName;
+        return this;
+    }
+
+    /// <summary>
     /// Creates and returns the configured entity options.
     /// </summary>
     public EntityOptions Create()

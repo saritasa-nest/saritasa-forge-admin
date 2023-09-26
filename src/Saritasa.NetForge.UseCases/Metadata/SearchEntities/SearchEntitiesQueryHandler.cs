@@ -62,5 +62,15 @@ internal class SearchEntitiesQueryHandler : IRequestHandler<SearchEntitiesQuery,
         {
             entityMetadata.Description = entityOptions.Description;
         }
+
+        if (!string.IsNullOrEmpty(entityOptions.Name))
+        {
+            entityMetadata.Name = entityOptions.Name;
+        }
+
+        if (!string.IsNullOrEmpty(entityOptions.PluralName))
+        {
+            entityMetadata.PluralName = entityOptions.PluralName;
+        }
     }
 }

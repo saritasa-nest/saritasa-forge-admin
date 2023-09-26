@@ -27,6 +27,18 @@ builder.Services.AddNetForge(optionsBuilder =>
      {
          entityOptionsBuilder.SetDescription("The base Shop entity.");
      });
+     optionsBuilder.ConfigureEntity<Address>(entityOptionsBuilder =>
+     {
+         entityOptionsBuilder.SetPluralName("Addresses");
+     });
+     optionsBuilder.ConfigureEntity<ContactInfo>(entityOptionsBuilder =>
+     {
+         entityOptionsBuilder.SetPluralName("Contact Information");
+     });
+     optionsBuilder.ConfigureEntity<ProductTag>(entityOptionsBuilder =>
+     {
+         entityOptionsBuilder.SetPluralName("Product Tags");
+     });
 });
 
 var app = builder.Build();

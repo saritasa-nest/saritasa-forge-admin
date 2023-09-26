@@ -19,6 +19,16 @@ public class EntityOptions
     public Type EntityType { get; }
 
     /// <summary>
+    /// Entity name.
+    /// </summary>
+    public string Name { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Entity plural name.
+    /// </summary>
+    public string PluralName { get; set; } = string.Empty;
+
+    /// <summary>
     /// Entity description.
     /// </summary>
     public string Description { get; set; } = string.Empty;
