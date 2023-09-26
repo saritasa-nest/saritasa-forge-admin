@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
@@ -39,7 +38,12 @@ internal class EfCoreMetadataService : IOrmMetadataService
 
             var dbContext = (DbContext)dbContextService;
             var model = dbContext.GetService<IDesignTimeModel>().Model;
-            var entityTypes = model.GetEntityTypes();
+
+            // Get entities and exclude those that are not represented as DbSet properties in the DbContext.
+            var dbContextEntityTypes = GetDbContextEntities(dbContext);
+            var entityTypes = model.GetEntityTypes()
+                .Where(entityType => dbContextEntityTypes.Contains(entityType.ClrType));
+
             var dbContextEntitiesMetadata = entityTypes.Select(entityType => new EntityMetadata
             {
                 Name = entityType.ShortName(),
@@ -60,5 +64,17 @@ internal class EfCoreMetadataService : IOrmMetadataService
     private static string GetEntityDescription(IReadOnlyEntityType entityType)
     {
         return entityType.GetComment() ?? string.Empty;
+    }
+
+    /// <summary>
+    /// Retrieves a collection of entity types associated with the provided <see cref="DbContext"/>.
+    /// </summary>
+    /// <param name="dbContext">The DbContext instance for which to retrieve entity types.</param>
+    private static IEnumerable<Type> GetDbContextEntities(DbContext dbContext)
+    {
+        var dbSets = dbContext.GetType().GetProperties()
+            .Where(property => property.PropertyType.IsGenericType &&
+                               typeof(DbSet<>).IsAssignableFrom(property.PropertyType.GetGenericTypeDefinition()));
+        return dbSets.Select(dbSet => dbSet.PropertyType.GetGenericArguments()[0]);
     }
 }
