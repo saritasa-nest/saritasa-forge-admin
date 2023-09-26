@@ -20,7 +20,7 @@ public class EfCoreOptionsBuilder : IOrmOptionsBuilder
     public void ApplyServices(IServiceCollection services)
     {
         services.TryAddSingleton(Options);
-        services.TryAddScoped<IMetadataService, MetadataService>();
+        services.TryAddScoped<IOrmMetadataService, EfCoreMetadataService>();
     }
 
     /// <summary>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using Saritasa.NetForge.Domain.Entities;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices;
 
 namespace Saritasa.NetForge.Blazor.Extensions;

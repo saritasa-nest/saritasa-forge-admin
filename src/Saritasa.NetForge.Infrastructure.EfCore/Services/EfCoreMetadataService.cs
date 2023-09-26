@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Saritasa.NetForge.Domain.Entities;
+using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
 namespace Saritasa.NetForge.Infrastructure.EfCore.Services;
 
 /// <inheritdoc/>
-internal class MetadataService : IMetadataService
+internal class EfCoreMetadataService : IOrmMetadataService
 {
     private readonly EfCoreOptions efCoreOptions;
     private readonly IServiceProvider serviceProvider;
@@ -15,7 +15,7 @@ internal class MetadataService : IMetadataService
     /// <summary>
     /// Constructor.
     /// </summary>
-    public MetadataService(EfCoreOptions efCoreOptions, IServiceProvider serviceProvider)
+    public EfCoreMetadataService(EfCoreOptions efCoreOptions, IServiceProvider serviceProvider)
     {
         this.efCoreOptions = efCoreOptions;
         this.serviceProvider = serviceProvider;
@@ -52,9 +52,12 @@ internal class MetadataService : IMetadataService
         return entitiesMetadata;
     }
 
-    private string GetEntityDescription(IReadOnlyEntityType entityType)
+    /// <summary>
+    /// Gets the entity description from the EF Core entity comment.
+    /// </summary>
+    /// <param name="entityType">Type of the entity to get the description from.</param>
+    private static string GetEntityDescription(IReadOnlyEntityType entityType)
     {
-        var comment = entityType.GetComment();
-        return comment;
+        return entityType.GetComment() ?? string.Empty;
     }
 }

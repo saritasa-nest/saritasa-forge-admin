@@ -1,4 +1,4 @@
-﻿namespace Saritasa.NetForge.Domain.Entities;
+﻿namespace Saritasa.NetForge.Domain.Entities.Metadata;
 
 /// <summary>
 /// Metadata of the Database Entity.

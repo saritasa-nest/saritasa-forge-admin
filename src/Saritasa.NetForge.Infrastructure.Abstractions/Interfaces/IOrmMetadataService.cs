@@ -1,15 +1,14 @@
-﻿using Saritasa.NetForge.Domain.Entities;
+﻿using Saritasa.NetForge.Domain.Entities.Metadata;
 
 namespace Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
 /// <summary>
-/// Provides contract for getting entities metadata.
+/// Provides contract for getting ORM-specific entities metadata.
 /// </summary>
-public interface IMetadataService
+public interface IOrmMetadataService
 {
     /// <summary>
     /// Gets metadata of all entities.
     /// </summary>
-    /// <returns></returns>
     IEnumerable<EntityMetadata> GetEntities();
 }

@@ -1,4 +1,4 @@
-﻿using Saritasa.NetForge.Domain.Entities;
+﻿using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
 namespace Saritasa.NetForge.DomainServices;
@@ -8,7 +8,7 @@ namespace Saritasa.NetForge.DomainServices;
 /// </summary>
 public class AdminOptionsBuilder
 {
-    private AdminOptions Options { get; set; } = new();
+    private readonly AdminOptions options = new();
 
     /// <summary>
     /// ORM-specific options builder.
@@ -21,7 +21,7 @@ public class AdminOptionsBuilder
     /// <param name="url">URL.</param>
     public AdminOptionsBuilder UseEndpoint(string url)
     {
-        Options.AdminPanelEndpoint = url;
+        options.AdminPanelEndpoint = url;
         return this;
     }
 
@@ -30,6 +30,20 @@ public class AdminOptionsBuilder
     /// </summary>
     public AdminOptions Create()
     {
-        return Options;
+        return options;
+    }
+
+    /// <summary>
+    /// Configures options for a specific entity type within the admin panel.
+    /// </summary>
+    /// <param name="entityOptionsBuilderAction">An action that builds entity options.</param>
+    /// <typeparam name="TEntity">The type of entity for which options are being configured.</typeparam>
+    public AdminOptionsBuilder ConfigureEntity<TEntity>(
+        Action<EntityOptionsBuilder<TEntity>> entityOptionsBuilderAction) where TEntity : class
+    {
+        var entityOptionsBuilder = new EntityOptionsBuilder<TEntity>();
+        entityOptionsBuilderAction.Invoke(entityOptionsBuilder);
+        options.EntityOptionsList.Add(entityOptionsBuilder.Create());
+        return this;
     }
 }
