@@ -22,10 +22,10 @@ internal class EfCoreMetadataService : IOrmMetadataService
     }
 
     /// <inheritdoc/>
-    public IEnumerable<EntityMetadata> GetEntities()
+    public IEnumerable<ModelMetadata> GetMetadata()
     {
         var dbContextTypes = efCoreOptions.DbContexts;
-        var entitiesMetadata = new List<EntityMetadata>();
+        var metadata = new List<ModelMetadata>();
 
         foreach (var dbContextType in dbContextTypes)
         {
@@ -36,34 +36,55 @@ internal class EfCoreMetadataService : IOrmMetadataService
                 continue;
             }
 
-            var dbContext = (DbContext)dbContextService;
-            var model = dbContext.GetService<IDesignTimeModel>().Model;
-
-            // Get entities and exclude those that are not represented as DbSet properties in the DbContext.
-            var dbContextEntityTypes = GetDbContextEntities(dbContext);
-            var entityTypes = model.GetEntityTypes()
-                .Where(entityType => dbContextEntityTypes.Contains(entityType.ClrType));
-
-            var dbContextEntitiesMetadata = entityTypes.Select(entityType => new EntityMetadata
-            {
-                Name = entityType.ShortName(),
-                PluralName = $"{entityType.ShortName()}s",
-                ClrType = entityType.ClrType,
-                Description = GetEntityDescription(entityType),
-            });
-            entitiesMetadata.AddRange(dbContextEntitiesMetadata);
+            metadata.Add(GetDbContextMetadata((DbContext)dbContextService));
         }
 
-        return entitiesMetadata;
+        return metadata;
     }
 
-    /// <summary>
-    /// Gets the entity description from the EF Core entity comment.
-    /// </summary>
-    /// <param name="entityType">Type of the entity to get the description from.</param>
-    private static string GetEntityDescription(IReadOnlyEntityType entityType)
+    private ModelMetadata GetDbContextMetadata(DbContext dbContext)
     {
-        return entityType.GetComment() ?? string.Empty;
+        var model = dbContext.GetService<IDesignTimeModel>().Model;
+        var entityTypes = model.GetEntityTypes().ToList();
+        var entitiesMetadata = entityTypes.Select(GetEntityMetadata);
+        return new ModelMetadata
+        {
+            Entities = entitiesMetadata,
+            Name = nameof(dbContext),
+            ClrType = dbContext.GetType()
+        };
+    }
+
+    private EntityMetadata GetEntityMetadata(IReadOnlyEntityType entityType)
+    {
+        var propertiesMetadata = entityType.GetProperties().Select(GetPropertyMetadata);
+        var entityMetadata = new EntityMetadata
+        {
+            Name = entityType.ShortName(),
+            PluralName = $"{entityType.ShortName()}s",
+            ClrType = entityType.ClrType,
+            Description = entityType.GetComment() ?? string.Empty,
+            Properties = propertiesMetadata
+        };
+
+        return entityMetadata;
+    }
+
+    private PropertyMetadata GetPropertyMetadata(IReadOnlyProperty property)
+    {
+        var propertyMetadata = new PropertyMetadata
+        {
+            Name = property.Name,
+            Description = property.GetComment() ?? string.Empty,
+            ClrType = property.ClrType,
+            PropertyInformation = property.PropertyInfo,
+            IsForeignKey = property.IsForeignKey(),
+            IsPrimaryKey = property.IsPrimaryKey(),
+            IsNullable = property.IsNullable,
+            Order = property.GetColumnOrder() ?? default
+        };
+
+        return propertyMetadata;
     }
 
     /// <summary>

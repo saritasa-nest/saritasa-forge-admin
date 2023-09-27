@@ -3,12 +3,12 @@
 namespace Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
 /// <summary>
-/// Provides contract for getting ORM-specific entities metadata.
+/// Provides a contract for retrieving ORM-specific metadata for models.
 /// </summary>
 public interface IOrmMetadataService
 {
     /// <summary>
-    /// Gets metadata of all entities.
+    /// Gets metadata for models.
     /// </summary>
-    IEnumerable<EntityMetadata> GetEntities();
+    IEnumerable<ModelMetadata> GetMetadata();
 }

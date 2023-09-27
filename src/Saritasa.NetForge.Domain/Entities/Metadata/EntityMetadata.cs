@@ -29,4 +29,9 @@ public class EntityMetadata
     /// Whether the entity can be edited.
     /// </summary>
     public bool IsEditable { get; set; } = true;
+
+    /// <summary>
+    /// A collection of properties metadata associated with this entity.
+    /// </summary>
+    public IEnumerable<PropertyMetadata> Properties = new List<PropertyMetadata>();
 }

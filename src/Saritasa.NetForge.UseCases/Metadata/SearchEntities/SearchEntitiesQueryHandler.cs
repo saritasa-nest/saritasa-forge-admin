@@ -1,10 +1,8 @@
 using AutoMapper;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using Saritasa.NetForge.Domain.Entities.Metadata;
-using Saritasa.NetForge.Domain.Entities.Options;
-using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.DTOs;
+using Saritasa.NetForge.UseCases.Metadata.Services;
 
 namespace Saritasa.NetForge.UseCases.Metadata.SearchEntities;
 
@@ -13,64 +11,29 @@ namespace Saritasa.NetForge.UseCases.Metadata.SearchEntities;
 /// </summary>
 internal class SearchEntitiesQueryHandler : IRequestHandler<SearchEntitiesQuery, IEnumerable<EntityMetadataDto>>
 {
-    private readonly IOrmMetadataService ormMetadataService;
     private readonly IMapper mapper;
-    private readonly IServiceProvider serviceProvider;
+    private readonly AdminService adminService;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public SearchEntitiesQueryHandler(IOrmMetadataService ormMetadataService, IMapper mapper,
-        IServiceProvider serviceProvider)
+    public SearchEntitiesQueryHandler(AdminService adminService, IMapper mapper)
     {
-        this.ormMetadataService = ormMetadataService;
         this.mapper = mapper;
-        this.serviceProvider = serviceProvider;
+        this.adminService = adminService;
     }
 
     /// <inheritdoc/>
     public Task<IEnumerable<EntityMetadataDto>> Handle(SearchEntitiesQuery request,
         CancellationToken cancellationToken)
     {
-        var entityMetadatas = ormMetadataService.GetEntities();
-        var adminOptions = (AdminOptions)serviceProvider.GetRequiredService(typeof(AdminOptions));
+        var modelsMetadata = adminService.GetMetadata();
 
-        foreach (var entityMetadata in entityMetadatas)
+        var entitiesMetadata = new List<EntityMetadata>();
+        foreach (var modelMetadata in modelsMetadata)
         {
-            ApplyEntityOptions(entityMetadata, adminOptions);
+            entitiesMetadata.AddRange(modelMetadata.Entities);
         }
-
-        return Task.FromResult(mapper.Map<IEnumerable<EntityMetadataDto>>(entityMetadatas));
-    }
-
-    /// <summary>
-    /// Applies entity-specific options to the given <see cref="EntityMetadata"/> using the provided options.>.
-    /// </summary>
-    /// <param name="entityMetadata">The metadata of the entity to which options are applied.</param>
-    /// <param name="adminOptions">The admin options containing entity-specific settings.</param>
-    private static void ApplyEntityOptions(EntityMetadata entityMetadata, AdminOptions adminOptions)
-    {
-        var entityOptions =
-            adminOptions.EntityOptionsList.FirstOrDefault(options => options.EntityType == entityMetadata.ClrType);
-
-        if (entityOptions == null)
-        {
-            return;
-        }
-
-        if (!string.IsNullOrEmpty(entityOptions.Description))
-        {
-            entityMetadata.Description = entityOptions.Description;
-        }
-
-        if (!string.IsNullOrEmpty(entityOptions.Name))
-        {
-            entityMetadata.Name = entityOptions.Name;
-        }
-
-        if (!string.IsNullOrEmpty(entityOptions.PluralName))
-        {
-            entityMetadata.PluralName = entityOptions.PluralName;
-        }
+        return Task.FromResult(mapper.Map<IEnumerable<EntityMetadataDto>>(entitiesMetadata));
     }
 }
