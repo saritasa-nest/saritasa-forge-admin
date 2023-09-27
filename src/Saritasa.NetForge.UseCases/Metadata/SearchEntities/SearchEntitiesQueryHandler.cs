@@ -28,12 +28,14 @@ internal class SearchEntitiesQueryHandler : IRequestHandler<SearchEntitiesQuery,
         CancellationToken cancellationToken)
     {
         var modelsMetadata = adminService.GetMetadata();
-
         var entitiesMetadata = new List<EntityMetadata>();
+
         foreach (var modelMetadata in modelsMetadata)
         {
-            entitiesMetadata.AddRange(modelMetadata.Entities);
+            entitiesMetadata.AddRange(modelMetadata.Entities
+                .Where(entityMetadata => !entityMetadata.IsHidden));
         }
+
         return Task.FromResult(mapper.Map<IEnumerable<EntityMetadataDto>>(entitiesMetadata));
     }
 }

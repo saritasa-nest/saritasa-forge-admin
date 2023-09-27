@@ -32,4 +32,9 @@ public class EntityOptions
     /// Entity description.
     /// </summary>
     public string Description { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Whether the entity is hidden from the view.
+    /// </summary>
+    public bool IsHidden { get; set; }
 }

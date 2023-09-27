@@ -18,5 +18,5 @@ public class ModelMetadata
     /// <summary>
     /// List of related entities metadata.
     /// </summary>
-    public IEnumerable<EntityMetadata> Entities { get; set; } = new List<EntityMetadata>();
+    public IList<EntityMetadata> Entities { get; set; } = new List<EntityMetadata>();
 }

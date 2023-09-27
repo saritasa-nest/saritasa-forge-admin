@@ -33,7 +33,7 @@ builder.Services.AddNetForge(optionsBuilder =>
      });
      optionsBuilder.ConfigureEntity<ContactInfo>(entityOptionsBuilder =>
      {
-         entityOptionsBuilder.SetPluralName("Contact Information");
+         entityOptionsBuilder.SetIsHidden(true);
      });
      optionsBuilder.ConfigureEntity<ProductTag>(entityOptionsBuilder =>
      {

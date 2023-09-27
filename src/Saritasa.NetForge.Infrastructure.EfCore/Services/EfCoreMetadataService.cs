@@ -49,7 +49,7 @@ internal class EfCoreMetadataService : IOrmMetadataService
         var entitiesMetadata = entityTypes.Select(GetEntityMetadata);
         return new ModelMetadata
         {
-            Entities = entitiesMetadata,
+            Entities = entitiesMetadata.ToList(),
             Name = nameof(dbContext),
             ClrType = dbContext.GetType()
         };
@@ -64,7 +64,8 @@ internal class EfCoreMetadataService : IOrmMetadataService
             PluralName = $"{entityType.ShortName()}s",
             ClrType = entityType.ClrType,
             Description = entityType.GetComment() ?? string.Empty,
-            Properties = propertiesMetadata
+            Properties = propertiesMetadata.ToList(),
+            IsHidden = entityType.IsPropertyBag
         };
 
         return entityMetadata;

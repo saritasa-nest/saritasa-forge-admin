@@ -41,6 +41,15 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
+    /// Sets whether the entity should be hidden from the view.
+    /// </summary>
+    public EntityOptionsBuilder<TEntity> SetIsHidden(bool isHidden)
+    {
+        options.IsHidden = isHidden;
+        return this;
+    }
+
+    /// <summary>
     /// Creates and returns the configured entity options.
     /// </summary>
     public EntityOptions Create()

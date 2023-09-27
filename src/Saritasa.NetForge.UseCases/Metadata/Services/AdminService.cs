@@ -28,9 +28,12 @@ public class AdminService
     {
         var modelsMetadata = ormMetadataService.GetMetadata().ToList();
 
-        foreach (var entityMetadata in modelsMetadata.SelectMany(metadataItem => metadataItem.Entities))
+        foreach (var modelMetadata in modelsMetadata)
         {
-            ApplyEntityOptions(entityMetadata, adminOptions);
+            foreach (var entityMetadata in modelMetadata.Entities)
+            {
+                ApplyEntityOptions(entityMetadata);
+            }
         }
 
         return modelsMetadata;
@@ -40,8 +43,7 @@ public class AdminService
     /// Applies entity-specific options to the given <see cref="EntityMetadata"/> using the provided options.>.
     /// </summary>
     /// <param name="entityMetadata">The metadata of the entity to which options are applied.</param>
-    /// <param name="adminOptions">The admin options containing entity-specific settings.</param>
-    private static void ApplyEntityOptions(EntityMetadata entityMetadata, AdminOptions adminOptions)
+    private void ApplyEntityOptions(EntityMetadata entityMetadata)
     {
         var entityOptions =
             adminOptions.EntityOptionsList.FirstOrDefault(options => options.EntityType == entityMetadata.ClrType);
@@ -64,6 +66,11 @@ public class AdminService
         if (!string.IsNullOrEmpty(entityOptions.PluralName))
         {
             entityMetadata.PluralName = entityOptions.PluralName;
+        }
+
+        if (entityOptions.IsHidden)
+        {
+            entityMetadata.IsHidden = entityOptions.IsHidden;
         }
     }
 }

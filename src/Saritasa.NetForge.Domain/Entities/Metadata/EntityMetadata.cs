@@ -31,7 +31,12 @@ public class EntityMetadata
     public bool IsEditable { get; set; } = true;
 
     /// <summary>
+    /// Whether the entity is hidden.
+    /// </summary>
+    public bool IsHidden { get; set; }
+
+    /// <summary>
     /// A collection of properties metadata associated with this entity.
     /// </summary>
-    public IEnumerable<PropertyMetadata> Properties = new List<PropertyMetadata>();
+    public IList<PropertyMetadata> Properties = new List<PropertyMetadata>();
 }
