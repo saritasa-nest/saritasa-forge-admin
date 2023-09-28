@@ -18,5 +18,6 @@ internal static class ApplicationModule
         services.AddRazorPages();
         services.AddServerSideBlazor();
         services.AddMudServices();
+        services.AddMemoryCache();
     }
 }

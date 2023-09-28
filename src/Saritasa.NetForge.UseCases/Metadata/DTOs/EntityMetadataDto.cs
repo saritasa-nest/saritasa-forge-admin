@@ -24,4 +24,9 @@ public class EntityMetadataDto
     /// Whether the entity can be edited.
     /// </summary>
     public bool IsEditable { get; set; }
+
+    /// <summary>
+    /// Id of the entity.
+    /// </summary>
+    public Guid Id { get; set; }
 }

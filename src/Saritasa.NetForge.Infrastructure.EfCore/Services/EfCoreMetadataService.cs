@@ -22,10 +22,10 @@ internal class EfCoreMetadataService : IOrmMetadataService
     }
 
     /// <inheritdoc/>
-    public IEnumerable<ModelMetadata> GetMetadata()
+    public IEnumerable<EntityMetadata> GetMetadata()
     {
         var dbContextTypes = efCoreOptions.DbContexts;
-        var metadata = new List<ModelMetadata>();
+        var metadata = new List<EntityMetadata>();
 
         foreach (var dbContextType in dbContextTypes)
         {
@@ -36,23 +36,14 @@ internal class EfCoreMetadataService : IOrmMetadataService
                 continue;
             }
 
-            metadata.Add(GetDbContextMetadata((DbContext)dbContextService));
+            var dbContext = (DbContext)dbContextService;
+            var model = dbContext.GetService<IDesignTimeModel>().Model;
+            var entityTypes = model.GetEntityTypes().ToList();
+            var entitiesMetadata = entityTypes.Select(GetEntityMetadata);
+            metadata.AddRange(entitiesMetadata);
         }
 
         return metadata;
-    }
-
-    private ModelMetadata GetDbContextMetadata(DbContext dbContext)
-    {
-        var model = dbContext.GetService<IDesignTimeModel>().Model;
-        var entityTypes = model.GetEntityTypes().ToList();
-        var entitiesMetadata = entityTypes.Select(GetEntityMetadata);
-        return new ModelMetadata
-        {
-            Entities = entitiesMetadata.ToList(),
-            Name = nameof(dbContext),
-            ClrType = dbContext.GetType()
-        };
     }
 
     private EntityMetadata GetEntityMetadata(IReadOnlyEntityType entityType)
@@ -64,8 +55,8 @@ internal class EfCoreMetadataService : IOrmMetadataService
             PluralName = $"{entityType.ShortName()}s",
             ClrType = entityType.ClrType,
             Description = entityType.GetComment() ?? string.Empty,
-            Properties = propertiesMetadata.ToList(),
-            IsHidden = entityType.IsPropertyBag
+            IsHidden = entityType.IsPropertyBag, // TODO: check whether we need to bypass this
+            Properties = propertiesMetadata.ToList()
         };
 
         return entityMetadata;
@@ -82,21 +73,10 @@ internal class EfCoreMetadataService : IOrmMetadataService
             IsForeignKey = property.IsForeignKey(),
             IsPrimaryKey = property.IsPrimaryKey(),
             IsNullable = property.IsNullable,
-            Order = property.GetColumnOrder() ?? default
+            Order = property.GetColumnOrder() ?? default,
+            PrincipalEntityType = property.FindFirstPrincipal()?.ClrType
         };
 
         return propertyMetadata;
-    }
-
-    /// <summary>
-    /// Retrieves a collection of entity types associated with the provided <see cref="DbContext"/>.
-    /// </summary>
-    /// <param name="dbContext">The DbContext instance for which to retrieve entity types.</param>
-    private static IEnumerable<Type> GetDbContextEntities(DbContext dbContext)
-    {
-        var dbSets = dbContext.GetType().GetProperties()
-            .Where(property => property.PropertyType.IsGenericType &&
-                               typeof(DbSet<>).IsAssignableFrom(property.PropertyType.GetGenericTypeDefinition()));
-        return dbSets.Select(dbSet => dbSet.PropertyType.GetGenericArguments()[0]);
     }
 }

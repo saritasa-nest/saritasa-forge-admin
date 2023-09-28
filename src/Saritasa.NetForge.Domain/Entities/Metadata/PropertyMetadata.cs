@@ -51,4 +51,14 @@ public class PropertyMetadata
     /// The type of the property.
     /// </summary>
     public Type? ClrType { get; set; }
+
+    /// <summary>
+    /// Whether the property is hidden from the view.
+    /// </summary>
+    public bool IsHidden { get; set; }
+
+    /// <summary>
+    /// The type of the principal entity in case if the property is FK.
+    /// </summary>
+    public Type? PrincipalEntityType { get; set; }
 }

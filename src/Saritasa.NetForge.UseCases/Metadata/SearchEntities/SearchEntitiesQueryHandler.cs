@@ -1,6 +1,5 @@
 using AutoMapper;
 using MediatR;
-using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.UseCases.Metadata.DTOs;
 using Saritasa.NetForge.UseCases.Metadata.Services;
 
@@ -27,15 +26,8 @@ internal class SearchEntitiesQueryHandler : IRequestHandler<SearchEntitiesQuery,
     public Task<IEnumerable<EntityMetadataDto>> Handle(SearchEntitiesQuery request,
         CancellationToken cancellationToken)
     {
-        var modelsMetadata = adminService.GetMetadata();
-        var entitiesMetadata = new List<EntityMetadata>();
-
-        foreach (var modelMetadata in modelsMetadata)
-        {
-            entitiesMetadata.AddRange(modelMetadata.Entities
-                .Where(entityMetadata => !entityMetadata.IsHidden));
-        }
-
-        return Task.FromResult(mapper.Map<IEnumerable<EntityMetadataDto>>(entitiesMetadata));
+        var metadata = adminService.GetMetadata()
+            .Where(entityMetadata => !entityMetadata.IsHidden);
+        return Task.FromResult(mapper.Map<IEnumerable<EntityMetadataDto>>(metadata));
     }
 }

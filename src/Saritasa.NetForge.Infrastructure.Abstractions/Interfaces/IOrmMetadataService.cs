@@ -10,5 +10,5 @@ public interface IOrmMetadataService
     /// <summary>
     /// Gets metadata for models.
     /// </summary>
-    IEnumerable<ModelMetadata> GetMetadata();
+    IEnumerable<EntityMetadata> GetMetadata();
 }

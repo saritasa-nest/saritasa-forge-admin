@@ -1,4 +1,5 @@
-﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
@@ -9,34 +10,45 @@ namespace Saritasa.NetForge.UseCases.Metadata.Services;
 /// </summary>
 public class AdminService
 {
+    private const string MetadataCache = "MetadataCache";
     private readonly IOrmMetadataService ormMetadataService;
     private readonly AdminOptions adminOptions;
+    private readonly IMemoryCache memoryCache;
 
     /// <summary>
     /// Constructor.
     /// </summary>>
-    public AdminService(IOrmMetadataService ormMetadataService, AdminOptions adminOptions)
+    public AdminService(IOrmMetadataService ormMetadataService, AdminOptions adminOptions, IMemoryCache memoryCache)
     {
         this.ormMetadataService = ormMetadataService;
         this.adminOptions = adminOptions;
+        this.memoryCache = memoryCache;
     }
 
     /// <summary>
-    /// Get the models metadata.
+    /// Get the metadata.
     /// </summary>
-    public IEnumerable<ModelMetadata> GetMetadata()
+    public IEnumerable<EntityMetadata> GetMetadata()
     {
-        var modelsMetadata = ormMetadataService.GetMetadata().ToList();
-
-        foreach (var modelMetadata in modelsMetadata)
+        // Try to get the models metadata from the cache.
+        if (memoryCache.TryGetValue(MetadataCache, out IList<EntityMetadata>? metadata))
         {
-            foreach (var entityMetadata in modelMetadata.Entities)
-            {
-                ApplyEntityOptions(entityMetadata);
-            }
+            return metadata;
         }
 
-        return modelsMetadata;
+        // If not found in cache, fetch from ormMetadataService.
+        metadata = ormMetadataService.GetMetadata().ToList();
+
+        foreach (var entityMetadata in metadata)
+        {
+            ApplyEntityOptions(entityMetadata);
+            entityMetadata.Id = Guid.NewGuid();
+        }
+
+        // Store in cache for subsequent requests.
+        memoryCache.Set(MetadataCache, metadata, TimeSpan.FromMinutes(30));
+
+        return metadata;
     }
 
     /// <summary>

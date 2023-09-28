@@ -6,6 +6,11 @@
 public class EntityMetadata
 {
     /// <summary>
+    /// The id of the entity.
+    /// </summary>
+    public Guid Id { get; set; }
+
+    /// <summary>
     /// Name of the entity to display.
     /// </summary>
     public string Name { get; set; } = string.Empty;
@@ -38,5 +43,5 @@ public class EntityMetadata
     /// <summary>
     /// A collection of properties metadata associated with this entity.
     /// </summary>
-    public IList<PropertyMetadata> Properties = new List<PropertyMetadata>();
+    public ICollection<PropertyMetadata> Properties = new List<PropertyMetadata>();
 }
