@@ -1,4 +1,5 @@
 ﻿using MudBlazor.Services;
+using Saritasa.NetForge.Blazor.Infrastructure.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels;
 
 namespace Saritasa.NetForge.Blazor.Infrastructure.DependencyInjection;
@@ -19,5 +20,6 @@ internal static class ApplicationModule
         services.AddServerSideBlazor();
         services.AddMudServices();
         services.AddMemoryCache();
+        services.AddScoped<INavigationService, NavigationService>();
     }
 }

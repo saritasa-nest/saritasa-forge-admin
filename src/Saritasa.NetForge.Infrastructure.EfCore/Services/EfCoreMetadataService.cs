@@ -27,6 +27,7 @@ internal class EfCoreMetadataService : IOrmMetadataService
         var dbContextTypes = efCoreOptions.DbContexts;
         var metadata = new List<EntityMetadata>();
 
+        // Iterate over all DbContexts, collect entities and their properties.
         foreach (var dbContextType in dbContextTypes)
         {
             var dbContextService = serviceProvider.GetService(dbContextType);
@@ -37,6 +38,8 @@ internal class EfCoreMetadataService : IOrmMetadataService
             }
 
             var dbContext = (DbContext)dbContextService;
+
+            // TODO: check whether we need design model or the usual one.
             var model = dbContext.GetService<IDesignTimeModel>().Model;
             var entityTypes = model.GetEntityTypes().ToList();
             var entitiesMetadata = entityTypes.Select(GetEntityMetadata);
@@ -46,7 +49,12 @@ internal class EfCoreMetadataService : IOrmMetadataService
         return metadata;
     }
 
-    private EntityMetadata GetEntityMetadata(IReadOnlyEntityType entityType)
+    /// <summary>
+    /// Retrieve metadata for certain entity type.
+    /// </summary>
+    /// <param name="entityType">The EF Core entity type to retrieve metadata for.</param>
+    /// <returns>An <see cref="EntityMetadata"/> object containing metadata information for the entity type.</returns>
+    private static EntityMetadata GetEntityMetadata(IReadOnlyEntityType entityType)
     {
         var propertiesMetadata = entityType.GetProperties().Select(GetPropertyMetadata);
         var entityMetadata = new EntityMetadata
@@ -62,7 +70,12 @@ internal class EfCoreMetadataService : IOrmMetadataService
         return entityMetadata;
     }
 
-    private PropertyMetadata GetPropertyMetadata(IReadOnlyProperty property)
+    /// <summary>
+    /// Retrieve metadata for a property of an entity type.
+    /// </summary>
+    /// <param name="property">The EF Core property to retrieve metadata for.</param>
+    /// <returns>A <see cref="PropertyMetadata"/> object containing metadata information for the property.</returns>
+    private static PropertyMetadata GetPropertyMetadata(IReadOnlyProperty property)
     {
         var propertyMetadata = new PropertyMetadata
         {
