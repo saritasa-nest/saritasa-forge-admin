@@ -31,13 +31,9 @@ builder.Services.AddNetForge(optionsBuilder =>
      {
          entityOptionsBuilder.SetPluralName("Addresses");
      });
-     optionsBuilder.ConfigureEntity<ContactInfo>(entityOptionsBuilder =>
-     {
-         entityOptionsBuilder.SetIsHidden(true);
-     });
      optionsBuilder.ConfigureEntity<ProductTag>(entityOptionsBuilder =>
      {
-         entityOptionsBuilder.SetPluralName("Product Tags");
+         entityOptionsBuilder.SetIsHidden(true);
      });
 });
 

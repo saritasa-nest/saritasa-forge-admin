@@ -1,8 +1,11 @@
-﻿namespace Saritasa.NetForge.Demo.Net7.Models;
+﻿using Saritasa.NetForge.Domain.Attributes;
+
+namespace Saritasa.NetForge.Demo.Net7.Models;
 
 /// <summary>
 /// Represents a product entity.
 /// </summary>
+[NetForgeEntity(Description = "The product in the shop.")]
 public class Product
 {
     /// <summary>

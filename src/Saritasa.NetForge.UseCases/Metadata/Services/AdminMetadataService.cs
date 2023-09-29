@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
 namespace Saritasa.NetForge.UseCases.Metadata.Services;
@@ -18,7 +19,8 @@ public class AdminMetadataService
     /// <summary>
     /// Constructor.
     /// </summary>>
-    public AdminMetadataService(IOrmMetadataService ormMetadataService, AdminOptions adminOptions, IMemoryCache memoryCache)
+    public AdminMetadataService(IOrmMetadataService ormMetadataService, AdminOptions adminOptions,
+        IMemoryCache memoryCache)
     {
         this.ormMetadataService = ormMetadataService;
         this.adminOptions = adminOptions;
@@ -43,7 +45,8 @@ public class AdminMetadataService
 
         foreach (var entityMetadata in metadata)
         {
-            ApplyEntityOptions(entityMetadata);
+            entityMetadata.ApplyOptions(adminOptions);
+            entityMetadata.ApplyEntityAttributes();
             entityMetadata.Id = Guid.NewGuid();
         }
 
@@ -62,40 +65,5 @@ public class AdminMetadataService
         var metadata = GetMetadata();
         var entityMetadata = metadata.FirstOrDefault(metadataItem => metadataItem.Id == entityId);
         return entityMetadata;
-    }
-
-    /// <summary>
-    /// Applies entity-specific options to the given <see cref="EntityMetadata"/> using the provided options.>.
-    /// </summary>
-    /// <param name="entityMetadata">The metadata of the entity to which options are applied.</param>
-    private void ApplyEntityOptions(EntityMetadata entityMetadata)
-    {
-        var entityOptions =
-            adminOptions.EntityOptionsList.FirstOrDefault(options => options.EntityType == entityMetadata.ClrType);
-
-        if (entityOptions == null)
-        {
-            return;
-        }
-
-        if (!string.IsNullOrEmpty(entityOptions.Description))
-        {
-            entityMetadata.Description = entityOptions.Description;
-        }
-
-        if (!string.IsNullOrEmpty(entityOptions.Name))
-        {
-            entityMetadata.Name = entityOptions.Name;
-        }
-
-        if (!string.IsNullOrEmpty(entityOptions.PluralName))
-        {
-            entityMetadata.PluralName = entityOptions.PluralName;
-        }
-
-        if (entityOptions.IsHidden)
-        {
-            entityMetadata.IsHidden = entityOptions.IsHidden;
-        }
     }
 }
