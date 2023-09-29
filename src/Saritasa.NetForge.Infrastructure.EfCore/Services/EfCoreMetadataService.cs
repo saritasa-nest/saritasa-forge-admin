@@ -39,7 +39,6 @@ internal class EfCoreMetadataService : IOrmMetadataService
 
             var dbContext = (DbContext)dbContextService;
 
-            // TODO: check whether we need design model or the usual one.
             var model = dbContext.GetService<IDesignTimeModel>().Model;
             var entityTypes = model.GetEntityTypes().ToList();
             var entitiesMetadata = entityTypes.Select(GetEntityMetadata);

@@ -22,8 +22,9 @@ public static class AdminExtensions
         var adminOptionsBuilder = new AdminOptionsBuilder();
         optionsBuilderAction?.Invoke(adminOptionsBuilder);
 
-        services.TryAddSingleton(adminOptionsBuilder.Create());
-        adminOptionsBuilder.OrmOptionsBuilder?.ApplyServices(services);
+        var adminOptions = adminOptionsBuilder.Create();
+        services.TryAddSingleton(adminOptions);
+        adminOptionsBuilder.OrmServicesProvider?.ApplyServices(services);
         services.TryAddScoped<AdminMetadataService>();
 
         Infrastructure.DependencyInjection.AutoMapperModule.Register(services);

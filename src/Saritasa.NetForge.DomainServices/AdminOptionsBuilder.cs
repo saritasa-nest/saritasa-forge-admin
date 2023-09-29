@@ -11,9 +11,9 @@ public class AdminOptionsBuilder
     private readonly AdminOptions options = new();
 
     /// <summary>
-    /// ORM-specific options builder.
+    /// Provider for injecting ORM-specific services.
     /// </summary>
-    public IOrmOptionsBuilder? OrmOptionsBuilder { get; set; }
+    public IOrmServiceProvider? OrmServicesProvider { get; set; }
 
     /// <summary>
     /// Set the URL on which the admin panel will be hosted.
