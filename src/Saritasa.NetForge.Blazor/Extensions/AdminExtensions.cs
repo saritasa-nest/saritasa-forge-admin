@@ -24,7 +24,7 @@ public static class AdminExtensions
 
         services.TryAddSingleton(adminOptionsBuilder.Create());
         adminOptionsBuilder.OrmOptionsBuilder?.ApplyServices(services);
-        services.TryAddScoped<AdminService>();
+        services.TryAddScoped<AdminMetadataService>();
 
         Infrastructure.DependencyInjection.AutoMapperModule.Register(services);
         Infrastructure.DependencyInjection.MediatRModule.Register(services);

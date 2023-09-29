@@ -6,9 +6,9 @@ using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 namespace Saritasa.NetForge.UseCases.Metadata.Services;
 
 /// <summary>
-/// Provides methods for managing and retrieving entities data.
+/// Provides methods for retrieving entities metadata.
 /// </summary>
-public class AdminService
+public class AdminMetadataService
 {
     private const string MetadataCache = "MetadataCache";
     private readonly IOrmMetadataService ormMetadataService;
@@ -18,7 +18,7 @@ public class AdminService
     /// <summary>
     /// Constructor.
     /// </summary>>
-    public AdminService(IOrmMetadataService ormMetadataService, AdminOptions adminOptions, IMemoryCache memoryCache)
+    public AdminMetadataService(IOrmMetadataService ormMetadataService, AdminOptions adminOptions, IMemoryCache memoryCache)
     {
         this.ormMetadataService = ormMetadataService;
         this.adminOptions = adminOptions;
@@ -26,12 +26,14 @@ public class AdminService
     }
 
     /// <summary>
-    /// Get the metadata.
+    /// Get the entities metadata.
     /// </summary>
     public IEnumerable<EntityMetadata> GetMetadata()
     {
         // Try to get the models metadata from the cache.
-        if (memoryCache.TryGetValue(MetadataCache, out IList<EntityMetadata>? metadata))
+        memoryCache.TryGetValue(MetadataCache, out ICollection<EntityMetadata>? metadata);
+
+        if (metadata != null)
         {
             return metadata;
         }
@@ -46,9 +48,20 @@ public class AdminService
         }
 
         // Store in cache for subsequent requests.
-        memoryCache.Set(MetadataCache, metadata, TimeSpan.FromMinutes(30));
-
+        memoryCache.Set(MetadataCache, metadata);
         return metadata;
+    }
+
+    /// <summary>
+    /// Find metadata for the certain entity based on its unique identifier.
+    /// </summary>
+    /// <param name="entityId">The unique identifier of the entity.</param>
+    /// <returns>An instance of <see cref="EntityMetadata"/> if the metadata is found; otherwise, null.</returns>
+    public EntityMetadata? FindEntityMetadata(Guid entityId)
+    {
+        var metadata = GetMetadata();
+        var entityMetadata = metadata.FirstOrDefault(metadataItem => metadataItem.Id == entityId);
+        return entityMetadata;
     }
 
     /// <summary>

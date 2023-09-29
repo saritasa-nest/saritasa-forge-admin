@@ -1,9 +1,10 @@
 ﻿@using Saritasa.NetForge.UseCases.Metadata.DTOs
 @inherits MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.Metadata.MainViewModel>
 
-<PageTitle>NetForge Admin - Main</PageTitle>
+<PageTitle>NetForge Admin - Entities</PageTitle>
 
-<MudTable Items="@ViewModel.Model.EntitiesMetadata" Hover="true" Color="Color.Dark">
+<MudTable Items="@ViewModel.Model.EntitiesMetadata" Hover="true" Color="Color.Dark" T="EntityMetadataDto"
+          RowClass="cursor-pointer">
     <HeaderContent>
         <MudTh>
             <MudTableSortLabel InitialDirection="SortDirection.Ascending"
@@ -13,12 +14,14 @@
         </MudTh>
         <MudTh></MudTh>
     </HeaderContent>
-    <RowTemplate>
+    <RowTemplate Context="entity">
         <MudTd DataLabel="Entity Name">
-            <MudText Typo="Typo.subtitle1">@context.PluralName</MudText>
+            <MudText Typo="Typo.subtitle1">@entity.PluralName</MudText>
         </MudTd>
         <MudTd DataLabel="Description">
-            <MudText Typo="Typo.body2" Class="text--color-hint entities-table__description-text">@context.Description</MudText>
+            <MudText Typo="Typo.body2" Class="text--color-hint entities-table__description-text">
+                @entity.Description
+            </MudText>
         </MudTd>
     </RowTemplate>
 </MudTable>

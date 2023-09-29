@@ -11,22 +11,22 @@ namespace Saritasa.NetForge.UseCases.Metadata.SearchEntities;
 internal class SearchEntitiesQueryHandler : IRequestHandler<SearchEntitiesQuery, IEnumerable<EntityMetadataDto>>
 {
     private readonly IMapper mapper;
-    private readonly AdminService adminService;
+    private readonly AdminMetadataService adminMetadataService;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public SearchEntitiesQueryHandler(AdminService adminService, IMapper mapper)
+    public SearchEntitiesQueryHandler(AdminMetadataService adminMetadataService, IMapper mapper)
     {
         this.mapper = mapper;
-        this.adminService = adminService;
+        this.adminMetadataService = adminMetadataService;
     }
 
     /// <inheritdoc/>
     public Task<IEnumerable<EntityMetadataDto>> Handle(SearchEntitiesQuery request,
         CancellationToken cancellationToken)
     {
-        var metadata = adminService.GetMetadata()
+        var metadata = adminMetadataService.GetMetadata()
             .Where(entityMetadata => !entityMetadata.IsHidden);
         return Task.FromResult(mapper.Map<IEnumerable<EntityMetadataDto>>(metadata));
     }
