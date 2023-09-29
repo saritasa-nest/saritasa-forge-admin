@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Saritasa.NetForge.Blazor.Infrastructure.Helpers;
 using Saritasa.NetForge.Blazor.Pages;
+using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels;
 
 namespace Saritasa.NetForge.Blazor.Infrastructure.Navigation;
@@ -31,6 +32,9 @@ public class NavigationService : INavigationService
         NavigateTo(viewModelType, forceLoad, replace, parameters);
     }
 
+    /// <summary>
+    /// Retrieve a dictionary mapping ViewModel types to corresponding Page types.
+    /// </summary>
     private static Dictionary<Type, Type> GetPages()
     {
         var assembly = Assembly.GetAssembly(typeof(App))!;
@@ -43,13 +47,21 @@ public class NavigationService : INavigationService
                                 && type.BaseType.IsGenericType
                                 && type.BaseType.GetGenericTypeDefinition() == openGenericType
                                 && type.BaseType.GenericTypeArguments.Length == 1
-                             let pageType = type.BaseType
-                             let viewModelType = pageType.GenericTypeArguments.Single()
+                             let pageType = type
+                             let viewModelType = type.BaseType.GenericTypeArguments.Single()
                              select KeyValuePair.Create(viewModelType, pageType);
 
         return new Dictionary<Type, Type>(viewModelPairs);
     }
 
+    /// <summary>
+    /// Navigates to a specific page associated with a ViewModel type.
+    /// </summary>
+    /// <param name="viewModelType">The type of the ViewModel associated with the target page.</param>
+    /// <param name="forceLoad">Whether to force a full page load (true) or use client-side navigation (false).</param>
+    /// <param name="replace">Whether to replace the current entry in the browser's navigation history.</param>
+    /// <param name="parameters">Optional parameters to include in the route template when navigating.</param>
+    /// <exception cref="InvalidOperationException">Thrown when there are no pages for the given ViewModel.</exception>
     private void NavigateTo(Type viewModelType, bool forceLoad = false, bool replace = false,
         params object[] parameters)
     {

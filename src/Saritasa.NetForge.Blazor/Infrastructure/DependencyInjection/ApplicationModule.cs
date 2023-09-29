@@ -1,5 +1,6 @@
 ﻿using MudBlazor.Services;
 using Saritasa.NetForge.Blazor.Infrastructure.Navigation;
+using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels;
 
 namespace Saritasa.NetForge.Blazor.Infrastructure.DependencyInjection;
