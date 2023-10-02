@@ -58,7 +58,12 @@ public class PropertyMetadata
     public bool IsHidden { get; set; }
 
     /// <summary>
-    /// The type of the principal entity in case if the property is FK.
+    /// Whether the property value is generated on entity database create.
     /// </summary>
-    public Type? PrincipalEntityType { get; set; }
+    public bool IsValueGeneratedOnAdd { get; set; }
+
+    /// <summary>
+    /// Whether the property value is generated on entity database update.
+    /// </summary>
+    public bool IsValueGeneratedOnUpdate { get; set; }
 }

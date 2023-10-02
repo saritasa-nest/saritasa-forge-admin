@@ -41,8 +41,7 @@ internal class EfCoreMetadataService : IOrmMetadataService
 
             var model = dbContext.GetService<IDesignTimeModel>().Model;
             var entityTypes = model.GetEntityTypes().ToList();
-            var entitiesMetadata = entityTypes.Select(GetEntityMetadata);
-            metadata.AddRange(entitiesMetadata);
+            metadata.AddRange(entityTypes.Select(GetEntityMetadata));
         }
 
         return metadata;
@@ -59,10 +58,9 @@ internal class EfCoreMetadataService : IOrmMetadataService
         var entityMetadata = new EntityMetadata
         {
             Name = entityType.ShortName(),
-            PluralName = $"{entityType.ShortName()}s",
             ClrType = entityType.ClrType,
             Description = entityType.GetComment() ?? string.Empty,
-            IsHidden = entityType.IsPropertyBag, // TODO: check whether we need to bypass this
+            IsHidden = entityType.IsPropertyBag,
             Properties = propertiesMetadata.ToList()
         };
 
@@ -86,9 +84,10 @@ internal class EfCoreMetadataService : IOrmMetadataService
             IsPrimaryKey = property.IsPrimaryKey(),
             IsNullable = property.IsNullable,
             Order = property.GetColumnOrder() ?? default,
-            PrincipalEntityType = property.FindFirstPrincipal()?.ClrType
+            IsHidden = property.IsShadowProperty(),
+            IsValueGeneratedOnAdd = property.ValueGenerated.HasFlag(ValueGenerated.OnAdd),
+            IsValueGeneratedOnUpdate = property.ValueGenerated.HasFlag(ValueGenerated.OnUpdate),
         };
-
         return propertyMetadata;
     }
 }
