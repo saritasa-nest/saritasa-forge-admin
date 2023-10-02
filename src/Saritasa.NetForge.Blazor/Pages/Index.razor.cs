@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Saritasa.NetForge.Mvvm.ViewModels.Metadata;
 
 namespace Saritasa.NetForge.Blazor.Pages;
 
@@ -7,6 +6,6 @@ namespace Saritasa.NetForge.Blazor.Pages;
 /// Index page.
 /// </summary>
 [Route("")]
-public partial class Main : MvvmComponentBase<MainViewModel>
+public partial class Index
 {
 }

@@ -22,7 +22,6 @@ builder.Services.AddNetForge(optionsBuilder =>
      {
          efOptionsBuilder.UseDbContext<ShopDbContext>();
      });
-     optionsBuilder.UseEndpoint("/manage");
      optionsBuilder.ConfigureEntity<Shop>(entityOptionsBuilder =>
      {
          entityOptionsBuilder.SetDescription("The base Shop entity.");

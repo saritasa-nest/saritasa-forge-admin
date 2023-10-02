@@ -1,9 +1,7 @@
 ﻿@using Saritasa.NetForge.UseCases.Metadata.DTOs
-@inherits MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.Metadata.MainViewModel>
+@inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.EntitiesViewModel>
 
-<PageTitle>NetForge Admin - Entities</PageTitle>
-
-<MudTable Items="@ViewModel.Model.EntitiesMetadata" Hover="true" Color="Color.Dark" T="EntityMetadataDto"
+<MudTable Items="@ViewModel.EntitiesMetadata" Hover="true" Color="Color.Dark" T="EntityMetadataDto"
           RowClass="cursor-pointer">
     <HeaderContent>
         <MudTh>
@@ -19,9 +17,11 @@
             <MudText Typo="Typo.subtitle1">@entity.PluralName</MudText>
         </MudTd>
         <MudTd DataLabel="Description">
-            <MudText Typo="Typo.body2" Class="text--color-hint entities-table__description-text">
-                @entity.Description
-            </MudText>
+            <div>
+                <MudText Typo="Typo.body2" Class="grey-text text-darken-1 entities-table__description-text">
+                    @entity.Description
+                </MudText>
+            </div>
         </MudTd>
     </RowTemplate>
 </MudTable>

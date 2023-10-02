@@ -1,5 +1,4 @@
 ﻿using Saritasa.NetForge.Blazor.Infrastructure.Helpers;
-using Saritasa.NetForge.Blazor.Pages;
 
 namespace Saritasa.NetForge.Blazor.Shared;
 
@@ -13,5 +12,5 @@ public class MainLayoutComponent : Microsoft.AspNetCore.Components.LayoutCompone
     /// </summary>
     /// <returns>Home page route template.</returns>
     protected static string GetHomePageRoute()
-        => RouteHelper.GetRoute<Main>();
+        => RouteHelper.GetRoute<Saritasa.NetForge.Blazor.Pages.Index>();
 }
