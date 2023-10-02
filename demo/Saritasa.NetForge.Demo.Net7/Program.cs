@@ -27,10 +27,6 @@ builder.Services.AddNetForge(optionsBuilder =>
      {
          entityOptionsBuilder.SetDescription("The base Shop entity.");
      });
-     optionsBuilder.ConfigureEntity<Address>(entityOptionsBuilder =>
-     {
-         entityOptionsBuilder.SetPluralName("Addresses");
-     });
      optionsBuilder.ConfigureEntity<ProductTag>(entityOptionsBuilder =>
      {
          entityOptionsBuilder.SetIsHidden(true);

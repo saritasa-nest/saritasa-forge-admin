@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+using PluralizeService.Core;
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices.Extensions;
@@ -45,6 +46,7 @@ public class AdminMetadataService
 
         foreach (var entityMetadata in metadata)
         {
+            entityMetadata.PluralName = PluralizationProvider.Pluralize(entityMetadata.Name);
             entityMetadata.ApplyOptions(adminOptions);
             entityMetadata.ApplyEntityAttributes();
             entityMetadata.Id = Guid.NewGuid();
