@@ -13,5 +13,5 @@ public class AdminOptions
     /// <summary>
     /// Options for configuring entities in the admin panel.
     /// </summary>
-    public readonly List<EntityOptions> EntityOptionsList = new();
+    public ICollection<EntityOptions> EntityOptionsList { get; } = new List<EntityOptions>();
 }

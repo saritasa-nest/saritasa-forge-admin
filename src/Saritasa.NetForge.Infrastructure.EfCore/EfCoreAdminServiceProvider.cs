@@ -6,14 +6,14 @@ using Saritasa.NetForge.Infrastructure.EfCore.Services;
 namespace Saritasa.NetForge.Infrastructure.EfCore;
 
 /// <inheritdoc />
-public class EfCoreServiceProvider : IOrmServiceProvider
+public class EfCoreAdminServiceProvider : IAdminOrmServiceProvider
 {
     private readonly EfCoreOptionsBuilder efCoreOptionsBuilder;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public EfCoreServiceProvider(EfCoreOptionsBuilder efCoreOptionsBuilder)
+    public EfCoreAdminServiceProvider(EfCoreOptionsBuilder efCoreOptionsBuilder)
     {
         this.efCoreOptionsBuilder = efCoreOptionsBuilder;
     }

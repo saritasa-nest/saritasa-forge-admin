@@ -33,7 +33,7 @@ public class AdminMetadataService
     /// </summary>
     public IEnumerable<EntityMetadata> GetMetadata()
     {
-        // Try to get the models metadata from the cache.
+        // Try to get the entities metadata from the cache.
         memoryCache.TryGetValue(MetadataCache, out ICollection<EntityMetadata>? metadata);
 
         if (metadata != null)
@@ -55,17 +55,5 @@ public class AdminMetadataService
         // Store in cache for subsequent requests.
         memoryCache.Set(MetadataCache, metadata);
         return metadata;
-    }
-
-    /// <summary>
-    /// Find metadata for the certain entity based on its unique identifier.
-    /// </summary>
-    /// <param name="entityId">The unique identifier of the entity.</param>
-    /// <returns>An instance of <see cref="EntityMetadata"/> if the metadata is found; otherwise, null.</returns>
-    public EntityMetadata? FindEntityMetadata(Guid entityId)
-    {
-        var metadata = GetMetadata();
-        var entityMetadata = metadata.FirstOrDefault(metadataItem => metadataItem.Id == entityId);
-        return entityMetadata;
     }
 }

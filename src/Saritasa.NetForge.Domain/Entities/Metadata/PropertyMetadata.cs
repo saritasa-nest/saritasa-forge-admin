@@ -58,6 +58,12 @@ public class PropertyMetadata
     public bool IsHidden { get; set; }
 
     /// <summary>
+    /// Gets a value indicating whether this is a shadow property (does not have a
+    /// corresponding property in the entity class).
+    /// </summary>
+    public bool IsShadow { get; set; }
+
+    /// <summary>
     /// Whether the property value is generated on entity database create.
     /// </summary>
     public bool IsValueGeneratedOnAdd { get; set; }

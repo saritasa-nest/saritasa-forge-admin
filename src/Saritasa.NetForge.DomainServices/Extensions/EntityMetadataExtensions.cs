@@ -12,7 +12,7 @@ namespace Saritasa.NetForge.DomainServices.Extensions;
 public static class EntityMetadataExtensions
 {
     /// <summary>
-    /// Applies entity-specific options to the given <see cref="EntityMetadata"/> using the provided options.>.
+    /// Applies entity-specific options to the given <see cref="EntityMetadata"/> using the provided options.
     /// </summary>
     /// <param name="entityMetadata">The metadata of the entity to which options are applied.</param>
     /// <param name="adminOptions">Options to apply for the entity metadata.</param>
@@ -60,7 +60,7 @@ public static class EntityMetadataExtensions
             return;
         }
 
-        // Get the description from both DescriptionAttribute and NetForgeEntityAttribute.
+        // Try to get the description from the System.ComponentModel.DescriptionAttribute.
         var descriptionAttribute = entityMetadata.ClrType.GetCustomAttribute<DescriptionAttribute>();
 
         if (!string.IsNullOrEmpty(descriptionAttribute?.Description))
@@ -73,7 +73,7 @@ public static class EntityMetadataExtensions
             entityMetadata.Description = netForgeEntityAttribute.Description;
         }
 
-        // Get the display name both from the DisplayNameAttribute and NetForgeEntityAttribute.
+        // Try to get the description from the System.ComponentModel.DisplayNameAttribute.
         var displayNameAttribute = entityMetadata.ClrType.GetCustomAttribute<DisplayNameAttribute>();
 
         if (!string.IsNullOrEmpty(displayNameAttribute?.DisplayName))

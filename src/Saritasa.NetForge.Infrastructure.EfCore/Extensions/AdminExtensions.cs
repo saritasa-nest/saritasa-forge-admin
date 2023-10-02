@@ -17,8 +17,8 @@ public static class AdminExtensions
     {
         var efCoreOptionsBuilder = new EfCoreOptionsBuilder();
         efCoreOptionsBuilderAction?.Invoke(efCoreOptionsBuilder);
-        var provider = new EfCoreServiceProvider(efCoreOptionsBuilder);
-        optionsBuilder.OrmServicesProvider = provider;
+        var provider = new EfCoreAdminServiceProvider(efCoreOptionsBuilder);
+        optionsBuilder.AdminOrmServiceProvider = provider;
         return optionsBuilder;
     }
 }

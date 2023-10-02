@@ -13,7 +13,7 @@ public class AdminOptionsBuilder
     /// <summary>
     /// Provider for injecting ORM-specific services.
     /// </summary>
-    public IOrmServiceProvider? OrmServicesProvider { get; set; }
+    public IAdminOrmServiceProvider? AdminOrmServiceProvider { get; set; }
 
     /// <summary>
     /// Set the URL on which the admin panel will be hosted.

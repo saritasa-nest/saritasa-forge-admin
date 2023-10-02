@@ -5,7 +5,7 @@ namespace Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 /// <summary>
 /// Represents a contract for injecting ORM-specific services into the admin panel.
 /// </summary>
-public interface IOrmServiceProvider
+public interface IAdminOrmServiceProvider
 {
     /// <summary>
     /// Injects ORM-specific services into the admin panel.
