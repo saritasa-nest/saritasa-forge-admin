@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Saritasa.NetForge.Blazor.Extensions;
 using Saritasa.NetForge.Demo.Net7;
 using Saritasa.NetForge.Demo.Net7.Infrastructure;
+using Saritasa.NetForge.Demo.Net7.Infrastructure.Startup.HealthCheck;
 using Saritasa.NetForge.Demo.Net7.Models;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
@@ -16,6 +17,7 @@ builder.Services.AddDbContext<ShopDbContext>(options =>
     options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
 });
 builder.Services.AddAsyncInitializer<DatabaseInitializer>();
+builder.Services.AddHealthChecks().AddNpgSql(connectionString);
 
 // Register NetForge.
 builder.Services.AddNetForge(optionsBuilder =>
@@ -36,4 +38,5 @@ builder.Services.AddNetForge(optionsBuilder =>
 
 var app = builder.Build();
 app.UseNetForge();
+HealthCheckModule.Register(app);
 app.Run();
