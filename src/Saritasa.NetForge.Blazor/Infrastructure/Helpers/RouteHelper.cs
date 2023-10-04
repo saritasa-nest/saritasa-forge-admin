@@ -44,7 +44,7 @@ public static class RouteHelper
     /// <typeparam name="TComponent">Component.</typeparam>
     /// <param name="parameters">Parameters for route.</param>
     /// <returns>Route path.</returns>
-    public static string GetRoute<TComponent>(Dictionary<string, string> parameters)
+    public static string GetRoute<TComponent>(IReadOnlyDictionary<string, string> parameters)
         where TComponent : ComponentBase
     {
         var routeTemplate = RouteTemplateHelper.GetRouteTemplate<TComponent>();
@@ -70,7 +70,7 @@ public static class RouteHelper
     /// <param name="componentType">Component type.</param>
     /// <param name="parameters">Parameters for route.</param>
     /// <returns>Route path.</returns>
-    public static string GetRoute(Type componentType, Dictionary<string, string> parameters)
+    public static string GetRoute(Type componentType, IReadOnlyDictionary<string, string> parameters)
     {
         var routeTemplate = RouteTemplateHelper.GetRouteTemplate(componentType);
         return GetRoute(routeTemplate, parameters);
@@ -139,7 +139,7 @@ public static class RouteHelper
     /// <returns>A dictionary mapping parameter names to their corresponding values.</returns>
     /// <exception cref="ArgumentException">Thrown when the count of passed parameters does not match the count
     /// of parameters in the template.</exception>
-    private static Dictionary<string, string> GetParametersDictionary(RouteTemplate routeTemplate,
+    private static IReadOnlyDictionary<string, string> GetParametersDictionary(RouteTemplate routeTemplate,
         params object[] parameters)
     {
         if (routeTemplate.Parameters.Count != parameters.Length)

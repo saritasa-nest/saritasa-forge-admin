@@ -53,7 +53,7 @@ public static class EntityMetadataExtensions
     /// <param name="entityMetadata">The metadata of the entity to which attributes are applied.</param>
     public static void ApplyEntityAttributes(this EntityMetadata entityMetadata)
     {
-        var netForgeEntityAttribute = entityMetadata.ClrType.GetCustomAttribute<NetForgeEntityAttribute>();
+        var netForgeEntityAttribute = entityMetadata.ClrType?.GetCustomAttribute<NetForgeEntityAttribute>();
 
         if (netForgeEntityAttribute == null)
         {
@@ -61,7 +61,7 @@ public static class EntityMetadataExtensions
         }
 
         // Try to get the description from the System.ComponentModel.DescriptionAttribute.
-        var descriptionAttribute = entityMetadata.ClrType.GetCustomAttribute<DescriptionAttribute>();
+        var descriptionAttribute = entityMetadata.ClrType?.GetCustomAttribute<DescriptionAttribute>();
 
         if (!string.IsNullOrEmpty(descriptionAttribute?.Description))
         {
@@ -74,7 +74,7 @@ public static class EntityMetadataExtensions
         }
 
         // Try to get the description from the System.ComponentModel.DisplayNameAttribute.
-        var displayNameAttribute = entityMetadata.ClrType.GetCustomAttribute<DisplayNameAttribute>();
+        var displayNameAttribute = entityMetadata.ClrType?.GetCustomAttribute<DisplayNameAttribute>();
 
         if (!string.IsNullOrEmpty(displayNameAttribute?.DisplayName))
         {

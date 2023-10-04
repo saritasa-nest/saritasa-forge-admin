@@ -33,8 +33,7 @@ public class AdminMetadataService
     /// </summary>
     public IEnumerable<EntityMetadata> GetMetadata()
     {
-        // Try to get the entities metadata from the cache.
-        memoryCache.TryGetValue(MetadataCache, out ICollection<EntityMetadata>? metadata);
+        var metadata = GetEntitiesMetadataFromCache();
 
         if (metadata != null)
         {
@@ -52,8 +51,26 @@ public class AdminMetadataService
             entityMetadata.Id = Guid.NewGuid();
         }
 
-        // Store in cache for subsequent requests.
-        memoryCache.Set(MetadataCache, metadata);
+        CacheMetadata(metadata);
         return metadata;
+    }
+
+    /// <summary>
+    /// Try to get the entities metadata from the cache.
+    /// </summary>
+    /// <returns>Collection of entity metadata.</returns>
+    private ICollection<EntityMetadata>? GetEntitiesMetadataFromCache()
+    {
+        memoryCache.TryGetValue(MetadataCache, out ICollection<EntityMetadata>? metadata);
+        return metadata;
+    }
+
+    /// <summary>
+    /// Cache metadata for subsequent requests.
+    /// </summary>
+    /// <param name="metadata">Collection of entity metadata.</param>
+    private void CacheMetadata(ICollection<EntityMetadata> metadata)
+    {
+        memoryCache.Set(MetadataCache, metadata);
     }
 }

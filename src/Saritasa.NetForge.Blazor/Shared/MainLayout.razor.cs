@@ -12,5 +12,5 @@ public class MainLayoutComponent : Microsoft.AspNetCore.Components.LayoutCompone
     /// </summary>
     /// <returns>Home page route template.</returns>
     protected static string GetHomePageRoute()
-        => RouteHelper.GetRoute<Saritasa.NetForge.Blazor.Pages.Index>();
+        => RouteHelper.GetRoute<Pages.Index>();
 }

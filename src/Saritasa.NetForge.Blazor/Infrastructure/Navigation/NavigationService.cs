@@ -33,6 +33,26 @@ public class NavigationService : INavigationService
     }
 
     /// <summary>
+    /// Navigates to a specific page associated with a ViewModel type.
+    /// </summary>
+    /// <param name="viewModelType">The type of the ViewModel associated with the target page.</param>
+    /// <param name="forceLoad">Whether to force a full page load (true) or use client-side navigation (false).</param>
+    /// <param name="replace">Whether to replace the current entry in the browser's navigation history.</param>
+    /// <param name="parameters">Optional parameters to include in the route template when navigating.</param>
+    /// <exception cref="InvalidOperationException">Thrown when there are no pages for the given ViewModel.</exception>
+    private void NavigateTo(Type viewModelType, bool forceLoad = false, bool replace = false,
+        params object[] parameters)
+    {
+        if (!viewModelsPages.TryGetValue(viewModelType, out var pageType))
+        {
+            throw new InvalidOperationException("There are no registered pages for view model.");
+        }
+
+        var routePath = RouteHelper.GetRoute(pageType, parameters);
+        navigationManager.NavigateTo(routePath, forceLoad, replace);
+    }
+
+    /// <summary>
     /// Retrieve a dictionary mapping ViewModel types to corresponding Page types.
     /// </summary>
     private static Dictionary<Type, Type> GetPages()
@@ -52,25 +72,5 @@ public class NavigationService : INavigationService
                              select KeyValuePair.Create(viewModelType, pageType);
 
         return new Dictionary<Type, Type>(viewModelPairs);
-    }
-
-    /// <summary>
-    /// Navigates to a specific page associated with a ViewModel type.
-    /// </summary>
-    /// <param name="viewModelType">The type of the ViewModel associated with the target page.</param>
-    /// <param name="forceLoad">Whether to force a full page load (true) or use client-side navigation (false).</param>
-    /// <param name="replace">Whether to replace the current entry in the browser's navigation history.</param>
-    /// <param name="parameters">Optional parameters to include in the route template when navigating.</param>
-    /// <exception cref="InvalidOperationException">Thrown when there are no pages for the given ViewModel.</exception>
-    private void NavigateTo(Type viewModelType, bool forceLoad = false, bool replace = false,
-        params object[] parameters)
-    {
-        if (!viewModelsPages.TryGetValue(viewModelType, out var pageType))
-        {
-            throw new InvalidOperationException("There are no registered pages for view model.");
-        }
-
-        var routePath = RouteHelper.GetRoute(pageType, parameters);
-        navigationManager.NavigateTo(routePath, forceLoad, replace);
     }
 }
