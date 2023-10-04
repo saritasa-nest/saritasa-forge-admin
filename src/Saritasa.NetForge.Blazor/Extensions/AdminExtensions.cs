@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
-using Saritasa.NetForge.Domain.Entities;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices;
+using Saritasa.NetForge.UseCases.Metadata.Services;
 
 namespace Saritasa.NetForge.Blazor.Extensions;
 
@@ -21,8 +22,10 @@ public static class AdminExtensions
         var adminOptionsBuilder = new AdminOptionsBuilder();
         optionsBuilderAction?.Invoke(adminOptionsBuilder);
 
-        services.TryAddSingleton(adminOptionsBuilder.Create());
-        adminOptionsBuilder.OrmOptionsBuilder?.ApplyServices(services);
+        var adminOptions = adminOptionsBuilder.Create();
+        services.TryAddSingleton(adminOptions);
+        adminOptionsBuilder.AdminOrmServiceProvider?.ApplyServices(services);
+        services.TryAddScoped<AdminMetadataService>();
 
         Infrastructure.DependencyInjection.AutoMapperModule.Register(services);
         Infrastructure.DependencyInjection.MediatRModule.Register(services);

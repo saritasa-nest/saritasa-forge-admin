@@ -8,9 +8,13 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="MediatR" Version="12.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="7.0.0" />
+    <PackageReference Include="PluralizeService.Core" Version="1.2.21147.2" />
+    <PackageReference Include="Saritasa.Tools.Domain" Version="0.8.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Saritasa.NetForge.DomainServices\Saritasa.NetForge.DomainServices.csproj" />
     <ProjectReference Include="..\Saritasa.NetForge.Domain\Saritasa.NetForge.Domain.csproj" />
     <ProjectReference Include="..\Saritasa.NetForge.Infrastructure.Abstractions\Saritasa.NetForge.Infrastructure.Abstractions.csproj" />
   </ItemGroup>

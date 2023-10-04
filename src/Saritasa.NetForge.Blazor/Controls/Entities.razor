@@ -1,0 +1,27 @@
+﻿@using Saritasa.NetForge.UseCases.Metadata.DTOs
+@inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.EntitiesViewModel>
+
+<MudTable Items="@ViewModel.EntitiesMetadata" Hover="true" Color="Color.Dark" T="EntityMetadataDto"
+          RowClass="cursor-pointer">
+    <HeaderContent>
+        <MudTh>
+            <MudTableSortLabel InitialDirection="SortDirection.Ascending"
+                               SortBy="new Func<EntityMetadataDto, object>(x => x.PluralName)">
+                <MudText Typo="Typo.h6">Entity Name</MudText>
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>Description</MudTh>
+    </HeaderContent>
+    <RowTemplate Context="entity">
+        <MudTd DataLabel="Entity Name">
+            <MudText Typo="Typo.subtitle1">@entity.PluralName</MudText>
+        </MudTd>
+        <MudTd DataLabel="Description">
+            <div>
+                <MudText Typo="Typo.body2" Class="grey-text text-darken-1 entities-table__description-text">
+                    @entity.Description
+                </MudText>
+            </div>
+        </MudTd>
+    </RowTemplate>
+</MudTable>

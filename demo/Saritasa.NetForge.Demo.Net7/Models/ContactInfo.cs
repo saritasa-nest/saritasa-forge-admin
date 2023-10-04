@@ -1,11 +1,11 @@
-﻿using System.ComponentModel;
+﻿using Saritasa.NetForge.Domain.Attributes;
 
 namespace Saritasa.NetForge.Demo.Net7.Models;
 
 /// <summary>
 /// Represents contact information of a user or entity.
 /// </summary>
-[DisplayName("Contact Information")]
+[NetForgeEntity(PluralName = "Contact Information")]
 public class ContactInfo
 {
     /// <summary>

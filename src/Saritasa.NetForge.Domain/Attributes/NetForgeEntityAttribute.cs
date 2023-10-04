@@ -1,9 +1,10 @@
-﻿namespace Saritasa.NetForge.Domain.Entities;
+﻿namespace Saritasa.NetForge.Domain.Attributes;
 
 /// <summary>
-/// Metadata of the Database Entity.
+/// Represents an attribute used to provide metadata for the entity.
 /// </summary>
-public class EntityMetadata
+[AttributeUsage(AttributeTargets.Class, Inherited = false)]
+public class NetForgeEntityAttribute : Attribute
 {
     /// <summary>
     /// Name of the entity to display.
@@ -21,12 +22,7 @@ public class EntityMetadata
     public string Description { get; set; } = string.Empty;
 
     /// <summary>
-    /// Entity CLR type.
+    /// Whether the entity is hidden from the view.
     /// </summary>
-    public Type? ClrType { get; set; }
-
-    /// <summary>
-    /// Whether the entity can be edited.
-    /// </summary>
-    public bool IsEditable { get; set; } = true;
+    public bool IsHidden { get; set; }
 }

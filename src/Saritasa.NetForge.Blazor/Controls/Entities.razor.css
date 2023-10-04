@@ -1,0 +1,6 @@
+﻿::deep .entities-table__description-text {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 100ch;
+}

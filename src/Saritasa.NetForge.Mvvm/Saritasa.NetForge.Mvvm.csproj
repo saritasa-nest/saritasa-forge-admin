@@ -8,10 +8,18 @@
 
     <ItemGroup>
       <PackageReference Include="MediatR" Version="12.1.1" />
+      <PackageReference Include="MudBlazor" Version="6.9.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Saritasa.NetForge.UseCases\Saritasa.NetForge.UseCases.csproj" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+      <PackageReference Include="Microsoft.AspNetCore.Components" Version="7.0.11" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+      <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.22" />
     </ItemGroup>
 
 </Project>

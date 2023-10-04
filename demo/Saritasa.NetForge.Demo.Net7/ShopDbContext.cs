@@ -40,5 +40,12 @@ public class ShopDbContext : DbContext
     /// Gets or sets the database set for the contact information.
     /// </summary>
     public DbSet<ContactInfo> ContactInfos { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Product>()
+            .ToTable(options => options.HasComment("Represents single product in the Shop."));
+    }
 }
 

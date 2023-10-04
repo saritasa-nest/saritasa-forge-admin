@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Saritasa.NetForge.Domain.Entities;
+using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.UseCases.Metadata.DTOs;
 
 namespace Saritasa.NetForge.UseCases.Metadata;

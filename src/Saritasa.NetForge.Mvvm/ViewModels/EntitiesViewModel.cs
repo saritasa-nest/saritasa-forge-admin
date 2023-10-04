@@ -1,19 +1,20 @@
 ﻿using MediatR;
+using Saritasa.NetForge.UseCases.Metadata.DTOs;
 using Saritasa.NetForge.UseCases.Metadata.SearchEntities;
 
-namespace Saritasa.NetForge.Mvvm.ViewModels.Metadata;
+namespace Saritasa.NetForge.Mvvm.ViewModels;
 
 /// <summary>
-/// Entities view model.
+/// ViewModel representing entities metadata in the admin panel.
 /// </summary>
 public class EntitiesViewModel : BaseViewModel
 {
     private readonly IMediator mediator;
 
     /// <summary>
-    /// Entities model instance.
+    /// Collection of entities metadata.
     /// </summary>
-    public EntitiesModel Model { get; } = new();
+    public IEnumerable<EntityMetadataDto> EntitiesMetadata { get; set; } = new List<EntityMetadataDto>();
 
     /// <summary>
     /// Constructor.
@@ -23,18 +24,21 @@ public class EntitiesViewModel : BaseViewModel
         this.mediator = mediator;
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Load entities metadata.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token to cancel the operation if needed.</param>
     public override async Task LoadAsync(CancellationToken cancellationToken)
     {
         await GetEntitiesAsync(cancellationToken);
     }
 
     /// <summary>
-    /// Get entities metadata.
+    /// Retrieve entities metadata from the backend.
     /// </summary>
     private async Task GetEntitiesAsync(CancellationToken cancellationToken)
     {
         var entitiesMetadataDto = await mediator.Send(new SearchEntitiesQuery(), cancellationToken);
-        Model.EntitiesMetadata = entitiesMetadataDto;
+        EntitiesMetadata = entitiesMetadataDto;
     }
 }

@@ -3,9 +3,9 @@
 namespace Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
 /// <summary>
-/// Provides a contract for ORM-specific option builders.
+/// Represents a contract for injecting ORM-specific services into the admin panel.
 /// </summary>
-public interface IOrmOptionsBuilder
+public interface IAdminOrmServiceProvider
 {
     /// <summary>
     /// Injects ORM-specific services into the admin panel.

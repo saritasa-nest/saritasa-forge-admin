@@ -1,27 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
-using Saritasa.NetForge.Infrastructure.EfCore.Services;
 
 namespace Saritasa.NetForge.Infrastructure.EfCore;
 
 /// <summary>
 /// Builds EF Core specific options for the admin panel.
 /// </summary>
-public class EfCoreOptionsBuilder : IOrmOptionsBuilder
+public class EfCoreOptionsBuilder
 {
     /// <summary>
     /// EF Core specific options.
     /// </summary>
-    private EfCoreOptions Options { get; } = new();
-
-    /// <inheritdoc />
-    public void ApplyServices(IServiceCollection services)
-    {
-        services.TryAddSingleton(Options);
-        services.TryAddScoped<IMetadataService, MetadataService>();
-    }
+    private readonly EfCoreOptions options = new();
 
     /// <summary>
     /// Adds DB context to use in the panel.
@@ -30,7 +19,15 @@ public class EfCoreOptionsBuilder : IOrmOptionsBuilder
     /// <returns>The instance of the options builder.</returns>
     public EfCoreOptionsBuilder UseDbContext<TDbContext>() where TDbContext : DbContext
     {
-        Options.DbContexts.Add(typeof(TDbContext));
+        options.DbContexts.Add(typeof(TDbContext));
         return this;
+    }
+
+    /// <summary>
+    /// Get EF Core specific options for the admin panel.
+    /// </summary>
+    public EfCoreOptions Create()
+    {
+        return options;
     }
 }

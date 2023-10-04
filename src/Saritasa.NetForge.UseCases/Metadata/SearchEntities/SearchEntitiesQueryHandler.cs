@@ -1,7 +1,7 @@
 using AutoMapper;
 using MediatR;
-using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.DTOs;
+using Saritasa.NetForge.UseCases.Metadata.Services;
 
 namespace Saritasa.NetForge.UseCases.Metadata.SearchEntities;
 
@@ -10,23 +10,24 @@ namespace Saritasa.NetForge.UseCases.Metadata.SearchEntities;
 /// </summary>
 internal class SearchEntitiesQueryHandler : IRequestHandler<SearchEntitiesQuery, IEnumerable<EntityMetadataDto>>
 {
-    private readonly IMetadataService metadataService;
     private readonly IMapper mapper;
+    private readonly AdminMetadataService adminMetadataService;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public SearchEntitiesQueryHandler(IMetadataService metadataService, IMapper mapper)
+    public SearchEntitiesQueryHandler(AdminMetadataService adminMetadataService, IMapper mapper)
     {
-        this.metadataService = metadataService;
         this.mapper = mapper;
+        this.adminMetadataService = adminMetadataService;
     }
 
     /// <inheritdoc/>
     public Task<IEnumerable<EntityMetadataDto>> Handle(SearchEntitiesQuery request,
         CancellationToken cancellationToken)
     {
-        var entities = metadataService.GetEntities();
-        return Task.FromResult(mapper.Map<IEnumerable<EntityMetadataDto>>(entities));
+        var metadata = adminMetadataService.GetMetadata()
+            .Where(entityMetadata => !entityMetadata.IsHidden);
+        return Task.FromResult(mapper.Map<IEnumerable<EntityMetadataDto>>(metadata));
     }
 }
