@@ -1,19 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using Saritasa.NetForge.Blazor.Extensions;
 using Saritasa.NetForge.Demo.Net7;
+using Saritasa.NetForge.Demo.Net7.Infrastructure;
 using Saritasa.NetForge.Demo.Net7.Models;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var appDatabaseConnectionString = builder.Configuration.GetConnectionString("AppDatabase")
+var connectionString = builder.Configuration.GetConnectionString("AppDatabase")
                                ?? throw new ArgumentNullException("ConnectionStrings:AppDatabase",
                                    "Database connection string is not initialized");
 
 builder.Services.AddDbContext<ShopDbContext>(options =>
 {
-    options.UseSqlServer(appDatabaseConnectionString);
+    options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
 });
+builder.Services.AddAsyncInitializer<DatabaseInitializer>();
 
 // Register NetForge.
 builder.Services.AddNetForge(optionsBuilder =>

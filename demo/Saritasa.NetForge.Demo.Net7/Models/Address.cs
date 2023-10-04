@@ -16,22 +16,22 @@ public class Address
     /// <summary>
     /// The street name and number.
     /// </summary>
-    public string Street { get; set; }
+    public string Street { get; set; } = string.Empty;
 
     /// <summary>
     /// The city where the address is located.
     /// </summary>
-    public string City { get; set; }
+    public string City { get; set; } = string.Empty;
 
     /// <summary>
     /// The postal code of the address.
     /// </summary>
-    public string PostalCode { get; set; }
+    public string PostalCode { get; set; } = string.Empty;
 
     /// <summary>
     /// The name of the country.
     /// </summary>
-    public string Country { get; set; }
+    public string Country { get; set; } = string.Empty;
 
     /// <summary>
     /// The latitude coordinate of the address location.
@@ -46,6 +46,6 @@ public class Address
     /// <summary>
     /// The contact phone number associated with the address.
     /// </summary>
-    public string ContactPhone { get; set; }
+    public string ContactPhone { get; set; } = string.Empty;
 }
 

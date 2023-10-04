@@ -16,16 +16,16 @@ public class ContactInfo
     /// <summary>
     /// The full name of the contact person.
     /// </summary>
-    public string FullName { get; set; }
+    public string FullName { get; set; } = string.Empty;
 
     /// <summary>
     /// The email address of the contact person.
     /// </summary>
-    public string Email { get; set; }
+    public string Email { get; set; } = string.Empty;
 
     /// <summary>
     /// The phone number of the contact person.
     /// </summary>
-    public string PhoneNumber { get; set; }
+    public string PhoneNumber { get; set; } = string.Empty;
 }
 
