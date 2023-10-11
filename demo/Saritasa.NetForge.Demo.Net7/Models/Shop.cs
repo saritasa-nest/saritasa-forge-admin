@@ -1,10 +1,13 @@
-﻿namespace Saritasa.NetForge.Demo.Net7.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Saritasa.NetForge.Demo.Net7.Models;
 
 /// <summary>
 /// Represents a shop entity.
 /// </summary>
 public class Shop
 {
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     /// <summary>
     /// Unique identifier for the shop.
     /// </summary>

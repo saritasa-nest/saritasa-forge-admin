@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Saritasa.NetForge.Demo.Net7.Models;
 
@@ -8,6 +9,7 @@ namespace Saritasa.NetForge.Demo.Net7.Models;
 [Comment("Represents the address of the shop.")]
 public class Address
 {
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     /// <summary>
     /// The unique identifier for the address.
     /// </summary>

@@ -1,10 +1,13 @@
-﻿namespace Saritasa.NetForge.Demo.Net7.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Saritasa.NetForge.Demo.Net7.Models;
 
 /// <summary>
 /// Represents a tag associated with a product in the shop.
 /// </summary>
 public class ProductTag
 {
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     /// <summary>
     /// The unique identifier for the tag.
     /// </summary>
