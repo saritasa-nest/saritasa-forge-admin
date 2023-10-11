@@ -1,8 +1,11 @@
 ﻿@using Saritasa.NetForge.UseCases.Metadata.DTOs
+@using Saritasa.NetForge.Mvvm.ViewModels
+@using Saritasa.NetForge.Mvvm.Navigation
 @inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.EntitiesViewModel>
+@inject INavigationService NavigationService;
 
 <MudTable Items="@ViewModel.EntitiesMetadata" Hover="true" Color="Color.Dark" T="EntityMetadataDto"
-          RowClass="cursor-pointer">
+          RowClass="cursor-pointer" OnRowClick="NavigateToDetails">
     <HeaderContent>
         <MudTh>
             <MudTableSortLabel InitialDirection="SortDirection.Ascending"
