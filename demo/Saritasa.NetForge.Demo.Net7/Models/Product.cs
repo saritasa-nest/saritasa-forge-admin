@@ -36,22 +36,22 @@ public class Product
     /// <summary>
     /// The weight of the product in grams.
     /// </summary>
-    public double WeightInGrams { get; set; }
+    public float WeightInGrams { get; set; }
 
     /// <summary>
     /// The length of the product in centimeters.
     /// </summary>
-    public double LengthInCentimeters { get; set; }
+    public float LengthInCentimeters { get; set; }
 
     /// <summary>
     /// The width of the product in centimeters.
     /// </summary>
-    public double WidthInCentimeters { get; set; }
+    public float WidthInCentimeters { get; set; }
 
     /// <summary>
     /// The height of the product in centimeters.
     /// </summary>
-    public double HeightInCentimeters { get; set; }
+    public float HeightInCentimeters { get; set; }
 
     /// <summary>
     /// The date and time when the product was created.
