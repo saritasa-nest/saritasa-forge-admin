@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Saritasa.NetForge.Demo.Net7.Models;
 
@@ -9,7 +8,6 @@ namespace Saritasa.NetForge.Demo.Net7.Models;
 [Comment("Represents the address of the shop.")]
 public class Address
 {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     /// <summary>
     /// The unique identifier for the address.
     /// </summary>
@@ -18,22 +16,22 @@ public class Address
     /// <summary>
     /// The street name and number.
     /// </summary>
-    public string Street { get; set; } = string.Empty;
+    public required string Street { get; set; }
 
     /// <summary>
     /// The city where the address is located.
     /// </summary>
-    public string City { get; set; } = string.Empty;
+    public required string City { get; set; }
 
     /// <summary>
     /// The postal code of the address.
     /// </summary>
-    public string PostalCode { get; set; } = string.Empty;
+    public required string PostalCode { get; set; }
 
     /// <summary>
     /// The name of the country.
     /// </summary>
-    public string Country { get; set; } = string.Empty;
+    public required string Country { get; set; }
 
     /// <summary>
     /// The latitude coordinate of the address location.
@@ -48,6 +46,5 @@ public class Address
     /// <summary>
     /// The contact phone number associated with the address.
     /// </summary>
-    public string ContactPhone { get; set; } = string.Empty;
+    public required string ContactPhone { get; set; }
 }
-

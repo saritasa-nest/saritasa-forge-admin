@@ -22,11 +22,11 @@ internal class HealthCheckOptionsSetup
     /// </summary>
     public HealthCheckOptions Setup(HealthCheckOptions options)
     {
-        options.ResponseWriter = WriteResponse;
+        options.ResponseWriter = WriteResponseAsync;
         return options;
     }
 
-    private static async Task WriteResponse(HttpContext context, HealthReport report)
+    private static async Task WriteResponseAsync(HttpContext context, HealthReport report)
     {
         await context.Response.WriteAsJsonAsync(new
             {

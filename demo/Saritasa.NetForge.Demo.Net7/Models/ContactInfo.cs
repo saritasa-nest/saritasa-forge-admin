@@ -1,5 +1,4 @@
 ﻿using Saritasa.NetForge.Domain.Attributes;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Saritasa.NetForge.Demo.Net7.Models;
 
@@ -9,7 +8,6 @@ namespace Saritasa.NetForge.Demo.Net7.Models;
 [NetForgeEntity(PluralName = "Contact Information")]
 public class ContactInfo
 {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     /// <summary>
     /// The unique identifier for the contact information.
     /// </summary>
@@ -18,16 +16,16 @@ public class ContactInfo
     /// <summary>
     /// The full name of the contact person.
     /// </summary>
-    public string FullName { get; set; } = string.Empty;
+    public required string FullName { get; set; }
 
     /// <summary>
     /// The email address of the contact person.
     /// </summary>
-    public string Email { get; set; } = string.Empty;
+    public required string Email { get; set; }
 
     /// <summary>
     /// The phone number of the contact person.
     /// </summary>
-    public string PhoneNumber { get; set; } = string.Empty;
+    public required string PhoneNumber { get; set; }
 }
 

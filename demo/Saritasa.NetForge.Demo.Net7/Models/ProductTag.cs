@@ -1,13 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Saritasa.NetForge.Demo.Net7.Models;
+﻿namespace Saritasa.NetForge.Demo.Net7.Models;
 
 /// <summary>
 /// Represents a tag associated with a product in the shop.
 /// </summary>
 public class ProductTag
 {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     /// <summary>
     /// The unique identifier for the tag.
     /// </summary>
@@ -16,12 +13,12 @@ public class ProductTag
     /// <summary>
     /// The name of the tag.
     /// </summary>
-    public string Name { get; set; } = string.Empty;
+    public required string Name { get; set; }
 
     /// <summary>
     /// The description of the tag.
     /// </summary>
-    public string Description { get; set; } = string.Empty;
+    public required string Description { get; set; }
 
     /// <summary>
     /// List of products associated with this tag.

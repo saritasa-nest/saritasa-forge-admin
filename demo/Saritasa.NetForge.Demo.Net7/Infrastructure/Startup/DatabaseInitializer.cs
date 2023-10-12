@@ -1,7 +1,7 @@
 ﻿using Extensions.Hosting.AsyncInitialization;
 using Microsoft.EntityFrameworkCore;
 
-namespace Saritasa.NetForge.Demo.Net7.Infrastructure;
+namespace Saritasa.NetForge.Demo.Net7.Infrastructure.Startup;
 
 /// <summary>
 /// Contains database migration helper methods.

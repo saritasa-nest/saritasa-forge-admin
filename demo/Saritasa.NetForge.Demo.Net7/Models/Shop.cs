@@ -1,13 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Saritasa.NetForge.Demo.Net7.Models;
+﻿namespace Saritasa.NetForge.Demo.Net7.Models;
 
 /// <summary>
 /// Represents a shop entity.
 /// </summary>
 public class Shop
 {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     /// <summary>
     /// Unique identifier for the shop.
     /// </summary>
@@ -16,7 +13,7 @@ public class Shop
     /// <summary>
     /// The name of the shop.
     /// </summary>
-    public string Name { get; set; } = string.Empty;
+    public required string Name { get; set; }
 
     /// <summary>
     /// The address of the shop.

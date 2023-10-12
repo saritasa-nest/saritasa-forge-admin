@@ -1,5 +1,4 @@
 ﻿using Saritasa.NetForge.Domain.Attributes;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Saritasa.NetForge.Demo.Net7.Models;
 
@@ -9,7 +8,6 @@ namespace Saritasa.NetForge.Demo.Net7.Models;
 [NetForgeEntity(Description = "The product in the shop.")]
 public class Product
 {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     /// <summary>
     /// The unique identifier for the product.
     /// </summary>
@@ -18,12 +16,12 @@ public class Product
     /// <summary>
     /// The name of the product.
     /// </summary>
-    public string Name { get; set; } = string.Empty;
+    public required string Name { get; set; }
 
     /// <summary>
     /// The description of the product.
     /// </summary>
-    public string Description { get; set; } = string.Empty;
+    public required string Description { get; set; }
 
     /// <summary>
     /// The price of the product.
