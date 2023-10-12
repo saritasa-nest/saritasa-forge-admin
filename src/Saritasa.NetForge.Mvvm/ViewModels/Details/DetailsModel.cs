@@ -15,4 +15,7 @@ public class DetailsModel
 
     /// <inheritdoc cref="EntityMetadata.PluralName"/>
     public string PluralName { get; set; } = string.Empty;
+
+    /// <inheritdoc cref="EntityMetadata.Description"/>
+    public string Description { get; set; } = string.Empty;
 }

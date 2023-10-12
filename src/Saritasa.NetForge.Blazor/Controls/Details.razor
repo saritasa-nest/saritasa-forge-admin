@@ -1,7 +1,5 @@
 ﻿@inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.Details.DetailsViewModel>
 
-<h3>Details of @Id</h3>
+<MudText Typo="Typo.h4">@ViewModel.Model.PluralName</MudText>
 
-<h2>Entity: @ViewModel.Model.Name</h2>
-
-<h2>Plural: @ViewModel.Model.PluralName</h2>
+<MudText>@ViewModel.Model.Description</MudText>
