@@ -1,6 +1,7 @@
 ﻿using MudBlazor;
 using Saritasa.NetForge.Blazor.Pages;
 using Saritasa.NetForge.Mvvm.ViewModels;
+using Saritasa.NetForge.Mvvm.ViewModels.Details;
 using Saritasa.NetForge.UseCases.Metadata.DTOs;
 
 namespace Saritasa.NetForge.Blazor.Controls;

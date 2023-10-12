@@ -1,4 +1,5 @@
-﻿using Saritasa.NetForge.UseCases.Metadata.SearchEntities;
+﻿using Saritasa.NetForge.Mvvm.ViewModels;
+using Saritasa.NetForge.UseCases.Metadata.SearchEntities;
 
 namespace Saritasa.NetForge.Blazor.Infrastructure.DependencyInjection;
 
@@ -13,6 +14,8 @@ public class AutoMapperModule
     /// <param name="services">Services.</param>
     public static void Register(IServiceCollection services)
     {
-        services.AddAutoMapper(typeof(SearchEntitiesQuery).Assembly);
+        services.AddAutoMapper(
+            typeof(SearchEntitiesQuery).Assembly,
+            typeof(BaseViewModel).Assembly);
     }
 }

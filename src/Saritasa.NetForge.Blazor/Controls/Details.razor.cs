@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Saritasa.NetForge.Blazor.Pages;
-using Saritasa.NetForge.Mvvm.ViewModels;
+using Saritasa.NetForge.Mvvm.ViewModels.Details;
 
 namespace Saritasa.NetForge.Blazor.Controls;
 
@@ -15,4 +15,10 @@ public partial class Details : MvvmComponentBase<DetailsViewModel>
     /// </summary>
     [Parameter]
     public Guid Id { get; set; }
+
+    /// <inheritdoc/>
+    protected override DetailsViewModel CreateViewModel()
+    {
+        return ViewModelFactory.Create<DetailsViewModel>(Id);
+    }
 }
