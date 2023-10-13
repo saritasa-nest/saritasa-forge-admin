@@ -8,9 +8,12 @@
     <Columns>
         @foreach (var property in ViewModel.Model.Properties)
         {
-            <PropertyColumn
-                Property="p => p.GetType().GetProperty(property.Name)!.GetValue(p)"
-                Title="@property.Name" />
+            if (!property.IsForeignKey)
+            {
+                <PropertyColumn
+                    Property="p => p.GetType().GetProperty(property.Name)!.GetValue(p)"
+                    Title="@property.Name" />
+            }
         }
     </Columns>
 </MudDataGrid>
