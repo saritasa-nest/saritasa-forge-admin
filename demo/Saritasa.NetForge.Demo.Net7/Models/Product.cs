@@ -16,12 +16,12 @@ public class Product
     /// <summary>
     /// The name of the product.
     /// </summary>
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
     /// <summary>
     /// The description of the product.
     /// </summary>
-    public string Description { get; set; }
+    public required string Description { get; set; }
 
     /// <summary>
     /// The price of the product.
@@ -66,6 +66,6 @@ public class Product
     /// <summary>
     /// The list of tags associated with the product.
     /// </summary>
-    public List<ProductTag> Tags { get; set; }
+    public List<ProductTag> Tags { get; set; } = new();
 }
 

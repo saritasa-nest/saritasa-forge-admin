@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  ###
+  # Postgres demo database
+  postgres:
+    hostname: netforge-db
+    container_name: netforge-db
+    image: postgres:13
+    ports:
+      - "5432:5432" # database
+    environment:
+      - POSTGRES_DB=netforge
+      - POSTGRES_USER=netforge
+      - POSTGRES_PASSWORD=1
+    volumes:
+      - .data/pgdata:/var/lib/postgresql/data

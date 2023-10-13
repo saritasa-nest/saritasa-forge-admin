@@ -13,12 +13,12 @@ public class Shop
     /// <summary>
     /// The name of the shop.
     /// </summary>
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
     /// <summary>
     /// The address of the shop.
     /// </summary>
-    public Address Address { get; set; }
+    public Address? Address { get; set; }
 
     /// <summary>
     /// The date when the shop was opened.
@@ -38,11 +38,11 @@ public class Shop
     /// <summary>
     /// The list of products available in the shop.
     /// </summary>
-    public List<Product> Products { get; set; }
+    public List<Product> Products { get; set; } = new();
 
     /// <summary>
     /// The shop owner's contact information.
     /// </summary>
-    public ContactInfo OwnerContact { get; set; }
+    public ContactInfo? OwnerContact { get; set; }
 }
 

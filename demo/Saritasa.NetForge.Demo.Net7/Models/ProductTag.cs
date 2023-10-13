@@ -13,16 +13,16 @@ public class ProductTag
     /// <summary>
     /// The name of the tag.
     /// </summary>
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
     /// <summary>
     /// The description of the tag.
     /// </summary>
-    public string Description { get; set; }
+    public required string Description { get; set; }
 
     /// <summary>
     /// List of products associated with this tag.
     /// </summary>
-    public List<Product> Products { get; set; }
+    public List<Product> Products { get; set; } = new();
 }
 
