@@ -1,5 +1,8 @@
+using System.Reflection;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
+using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.Services;
 
 namespace Saritasa.NetForge.UseCases.Metadata.GetEntityById;
@@ -11,22 +14,30 @@ internal class GetEntityByIdQueryHandler : IRequestHandler<GetEntityByIdQuery, G
 {
     private readonly IMapper mapper;
     private readonly AdminMetadataService adminMetadataService;
+    private readonly IOrmDataService dataService;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public GetEntityByIdQueryHandler(AdminMetadataService adminMetadataService, IMapper mapper)
+    public GetEntityByIdQueryHandler(AdminMetadataService adminMetadataService, IMapper mapper, IOrmDataService dataService)
     {
         this.mapper = mapper;
+        this.dataService = dataService;
         this.adminMetadataService = adminMetadataService;
     }
 
     /// <inheritdoc/>
-    public async Task<GetEntityByIdDto> Handle(GetEntityByIdQuery request, CancellationToken cancellationToken)
+    public Task<GetEntityByIdDto> Handle(GetEntityByIdQuery request, CancellationToken cancellationToken)
     {
-        var metadata = adminMetadataService.GetMetadata()
-            .FirstOrDefault(entityMetadata => entityMetadata.Id == request.Id);
+        var metadata = adminMetadataService
+            .GetMetadata()
+            .First(entityMetadata => entityMetadata.Id == request.Id);
 
-        return mapper.Map<GetEntityByIdDto>(metadata);
+        var data = dataService.GetData(metadata.ClrType).OfType<object>().ToList();
+
+        var metadataDto = mapper.Map<GetEntityByIdDto>(metadata);
+
+        metadataDto = metadataDto with { Data = data };
+        return Task.FromResult(metadataDto);
     }
 }

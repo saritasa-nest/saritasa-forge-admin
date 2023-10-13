@@ -21,4 +21,9 @@ public class DetailsModel
 
     /// <inheritdoc cref="EntityMetadata.Properties"/>
     public ICollection<PropertyMetadata> Properties { get; set; } = new List<PropertyMetadata>();
+
+    /// <summary>
+    /// Entity data.
+    /// </summary>
+    public ICollection<object> Data { get; set; } = new List<object>();
 }
