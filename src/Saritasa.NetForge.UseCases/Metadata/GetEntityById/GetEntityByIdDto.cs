@@ -18,4 +18,7 @@ public class GetEntityByIdDto
 
     /// <inheritdoc cref="EntityMetadata.Description"/>
     public string Description { get; set; } = string.Empty;
+
+    /// <inheritdoc cref="EntityMetadata.Properties"/>
+    public ICollection<PropertyMetadata> Properties { get; set; } = new List<PropertyMetadata>();
 }

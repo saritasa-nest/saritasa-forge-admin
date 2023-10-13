@@ -1,5 +1,15 @@
-﻿@inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.Details.DetailsViewModel>
+﻿@using Saritasa.NetForge.Domain.Entities.Metadata
+@inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.Details.DetailsViewModel>
 
 <MudText Typo="Typo.h4">@ViewModel.Model.PluralName</MudText>
 
 <MudText>@ViewModel.Model.Description</MudText>
+
+<MudDataGrid T="PropertyMetadata" Items="@ViewModel.Model.Properties">
+    <Columns>
+        @foreach (var property in ViewModel.Model.Properties)
+        {
+            <PropertyColumn Property="p => p.PropertyInformation" Title="@property.Name"></PropertyColumn>
+        }
+    </Columns>
+</MudDataGrid>
