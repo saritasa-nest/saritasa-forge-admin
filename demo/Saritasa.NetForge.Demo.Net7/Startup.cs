@@ -48,22 +48,8 @@ public class Startup
             .AddDefaultTokenProviders();
         services.Configure<IdentityOptions>(new IdentityOptionsSetup().Setup);
         
-        // Register NetForge.
-        services.AddNetForge(optionsBuilder =>
-        {
-            optionsBuilder.UseEntityFramework(efOptionsBuilder =>
-            {
-                efOptionsBuilder.UseDbContext<ShopDbContext>();
-            });
-            optionsBuilder.ConfigureEntity<Shop>(entityOptionsBuilder =>
-            {
-                entityOptionsBuilder.SetDescription("The base Shop entity.");
-            });
-            optionsBuilder.ConfigureEntity<ProductTag>(entityOptionsBuilder =>
-            {
-                entityOptionsBuilder.SetIsHidden(true);
-            });
-        });
+        // Add NetForge admin panel.
+        Infrastructure.DependencyInjection.NetForgeModule.Register(services);
     }
 
     /// <summary>
