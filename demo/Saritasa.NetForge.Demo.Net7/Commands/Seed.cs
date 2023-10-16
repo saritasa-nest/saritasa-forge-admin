@@ -63,9 +63,9 @@ public class Seed
         }
 
         // Run default seeder if no specific.
-        var classType = !string.IsNullOrEmpty(Name) ?
-            Type.GetType($"{SeederNamespace}.{Name}Seeder", false, true) :
-            typeof(AddressesSeeder);
+        var classType = !string.IsNullOrEmpty(Name) 
+            ? Type.GetType($"{SeederNamespace}.{Name}Seeder", false, true) 
+            : typeof(AddressesSeeder);
 
         if (classType == null)
         {
@@ -120,7 +120,11 @@ public class Seed
     private IDictionary<string, string> ParseRemainingArguments()
     {
         var dict = new Dictionary<string, string>();
-        if (RemainingArguments == null) return dict;
+        
+        if (RemainingArguments == null)
+        {
+            return dict;
+        }
         
         foreach (var remainingArgument in RemainingArguments)
         {
@@ -132,7 +136,9 @@ public class Seed
                 continue;
             }
             
-            dict[args[0].ToLower()] = args[1];
+            var argumentName = args[0].ToLower();
+            var argumentValue = args[1];
+            dict[argumentName] = argumentValue;
         }
         
         return dict;
@@ -173,9 +179,9 @@ public class Seed
         }
 
         // Calling.
-        var retObject = seedMethod.Invoke(obj, inputParams.ToArray());
+        var result = seedMethod.Invoke(obj, inputParams.ToArray());
         
-        if (retObject is Task taskResult)
+        if (result is Task taskResult)
         {
             await taskResult;
         }
