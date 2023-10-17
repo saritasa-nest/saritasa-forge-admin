@@ -1,5 +1,8 @@
 ﻿namespace Saritasa.NetForge.Domain.Attributes;
 
+/// <summary>
+/// Represents an attribute used to provide metadata for the entity's property.
+/// </summary>
 [AttributeUsage(AttributeTargets.Property)]
 public class NetForgeEntityPropertyAttribute : Attribute
 {
