@@ -69,7 +69,71 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     /// <param name="propertyExpression">
     /// Expression that represents property to hide. For example: <c>entity => entity.Name</c>.
     /// </param>
-    public void HasHidden(Expression<Func<TEntity, object>> propertyExpression)
+    public EntityOptionsBuilder<TEntity> HasHidden(Expression<Func<TEntity, object>> propertyExpression)
+    {
+        var propertyOptions = GetPropertyOptions(propertyExpression);
+
+        propertyOptions.IsHidden = true;
+
+        return this;
+    }
+
+    private static string GetPropertyName(Expression expression)
+    {
+        if (expression is UnaryExpression unaryExpression)
+        {
+            return GetMemberName(unaryExpression);
+        }
+
+        var memberExpression = (MemberExpression)expression;
+        return memberExpression.Member.Name;
+    }
+
+    private static string GetMemberName(UnaryExpression unaryExpression)
+    {
+        if (unaryExpression.Operand is MethodCallExpression methodExpression)
+        {
+            return methodExpression.Method.Name;
+        }
+
+        return ((MemberExpression)unaryExpression.Operand).Member.Name;
+    }
+
+    /// <summary>
+    /// Sets new display name to property.
+    /// </summary>
+    /// <param name="propertyExpression">
+    /// Expression that represents property to change display name. For example: <c>entity => entity.Name</c>.
+    /// </param>
+    /// <param name="displayName">Name to display.</param>
+    public EntityOptionsBuilder<TEntity> HasDisplayName(
+        Expression<Func<TEntity, object>> propertyExpression, string displayName)
+    {
+        var propertyOptions = GetPropertyOptions(propertyExpression);
+
+        propertyOptions.DisplayName = displayName;
+
+        return this;
+    }
+
+    /// <summary>
+    /// Sets description to property. Displayed as tooltip when user hovering corresponding property.
+    /// </summary>
+    /// <param name="propertyExpression">
+    /// Expression that represents property to set description. For example: <c>entity => entity.Name</c>.
+    /// </param>
+    /// <param name="description">Description.</param>
+    public EntityOptionsBuilder<TEntity> HasDescription(
+        Expression<Func<TEntity, object>> propertyExpression, string description)
+    {
+        var propertyOptions = GetPropertyOptions(propertyExpression);
+
+        propertyOptions.Description = description;
+
+        return this;
+    }
+
+    private EntityPropertyOptions GetPropertyOptions(Expression<Func<TEntity, object>> propertyExpression)
     {
         var propertyName = GetPropertyName(propertyExpression.Body);
 
@@ -78,21 +142,11 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
 
         if (propertyOptions is null)
         {
-            propertyOptions = new EntityPropertyOptions
-            {
-                PropertyName = propertyName,
-                IsHidden = true
-            };
+            propertyOptions = new EntityPropertyOptions { PropertyName = propertyName };
 
             options.PropertyOptions.Add(propertyOptions);
         }
 
-        propertyOptions.IsHidden = true;
-    }
-
-    private static string GetPropertyName(Expression expression)
-    {
-        var memberExpression = (MemberExpression)expression;
-        return memberExpression.Member.Name;
+        return propertyOptions;
     }
 }

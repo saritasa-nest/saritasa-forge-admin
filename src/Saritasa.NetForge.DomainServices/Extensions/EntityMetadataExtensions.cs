@@ -59,6 +59,16 @@ public static class EntityMetadataExtensions
             if (property is not null)
             {
                 property.IsHidden = option.IsHidden;
+
+                if (!string.IsNullOrEmpty(option.DisplayName))
+                {
+                    property.DisplayName = option.DisplayName;
+                }
+
+                if (!string.IsNullOrEmpty(option.Description))
+                {
+                    property.Description = option.Description;
+                }
             }
         }
     }

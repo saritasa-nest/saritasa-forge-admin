@@ -10,9 +10,17 @@
         {
             if (property is { IsForeignKey: false, IsHidden: false })
             {
-                <PropertyColumn
-                    Property="p => p.GetType().GetProperty(property.Name)!.GetValue(p)"
-                    Title="@property.Name" />
+                <TemplateColumn>
+                    <HeaderTemplate>
+                        <MudTooltip Text="@property.Description" Arrow="true" Placement="Placement.Top">
+                            @(!string.IsNullOrEmpty(property.DisplayName) ? property.DisplayName : property.Name)
+                        </MudTooltip>
+                    </HeaderTemplate>
+
+                    <CellTemplate>
+                        @GetPropertyValue(context.Item, property.Name)
+                    </CellTemplate>
+                </TemplateColumn>
             }
         }
     </Columns>
