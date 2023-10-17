@@ -13,6 +13,11 @@ public class PropertyMetadata
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
+    /// The display name of the property. If not empty this name will be displayed instead of <see cref="Name"/>.
+    /// </summary>
+    public string DisplayName { get; set; } = string.Empty;
+
+    /// <summary>
     /// The description of the property.
     /// </summary>
     public string Description { get; set; } = string.Empty;
