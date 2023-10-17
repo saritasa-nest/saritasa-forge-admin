@@ -1,4 +1,5 @@
-﻿using Saritasa.NetForge.Domain.Entities.Options;
+﻿using System.Linq.Expressions;
+using Saritasa.NetForge.Domain.Entities.Options;
 
 namespace Saritasa.NetForge.DomainServices;
 
@@ -63,16 +64,35 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
-    /// Sets whether the property should be hidden from the view.
+    /// Sets property as hidden. Given property will not be displayed in admin panel.
     /// </summary>
-    public void SetPropertyIsHidden(string propertyName, bool isHidden)
+    /// <param name="propertyExpression">
+    /// Expression that represents property to hide. For example: <c>entity => entity.Name</c>.
+    /// </param>
+    public void HasHidden(Expression<Func<TEntity, object>> propertyExpression)
     {
-        var propertyOptions = new EntityPropertyOptions
-        {
-            PropertyName = propertyName,
-            IsHidden = isHidden
-        };
+        var propertyName = GetPropertyName(propertyExpression.Body);
 
-        options.PropertyOptions.Add(propertyOptions);
+        var propertyOptions = options.PropertyOptions
+            .FirstOrDefault(propertyOptions => propertyOptions.PropertyName == propertyName);
+
+        if (propertyOptions is null)
+        {
+            propertyOptions = new EntityPropertyOptions
+            {
+                PropertyName = propertyName,
+                IsHidden = true
+            };
+
+            options.PropertyOptions.Add(propertyOptions);
+        }
+
+        propertyOptions.IsHidden = true;
+    }
+
+    private static string GetPropertyName(Expression expression)
+    {
+        var memberExpression = (MemberExpression)expression;
+        return memberExpression.Member.Name;
     }
 }

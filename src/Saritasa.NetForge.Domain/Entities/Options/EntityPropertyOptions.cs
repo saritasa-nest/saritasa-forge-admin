@@ -18,10 +18,10 @@ public class EntityPropertyOptions
     /// <summary>
     /// Name that will be displayed instead of default property name.
     /// </summary>
-    public string DisplayName { get; set; } = string.Empty;
+    public string? DisplayName { get; set; }
 
     /// <summary>
     /// Description.
     /// </summary>
-    public string Description { get; set; } = string.Empty;
+    public string? Description { get; set; }
 }
