@@ -1,42 +1,60 @@
-using Microsoft.EntityFrameworkCore;
-using Saritasa.NetForge.Blazor.Extensions;
-using Saritasa.NetForge.Demo.Net7;
-using Saritasa.NetForge.Demo.Net7.Infrastructure.Startup;
-using Saritasa.NetForge.Demo.Net7.Infrastructure.Startup.HealthCheck;
-using Saritasa.NetForge.Demo.Net7.Models;
-using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
+using McMaster.Extensions.CommandLineUtils;
+using Saritasa.NetForge.Demo.Net7.Commands;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace Saritasa.NetForge.Demo.Net7;
 
-var connectionString = builder.Configuration.GetConnectionString("AppDatabase")
-                               ?? throw new ArgumentNullException("ConnectionStrings:AppDatabase",
-                                   "Database connection string is not initialized");
-
-builder.Services.AddDbContext<ShopDbContext>(options =>
+/// <summary>
+/// Entry point class.
+/// </summary>
+[Command(Name = "netforge")]
+[Subcommand(typeof(Seed))]
+[Subcommand(typeof(CreateUser))]
+internal sealed class Program
 {
-    options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
-});
-builder.Services.AddAsyncInitializer<DatabaseInitializer>();
-builder.Services.AddHealthChecks().AddNpgSql(connectionString);
+    private static WebApplication? app;
 
-// Register NetForge.
-builder.Services.AddNetForge(optionsBuilder =>
-{
-     optionsBuilder.UseEntityFramework(efOptionsBuilder =>
-     {
-         efOptionsBuilder.UseDbContext<ShopDbContext>();
-     });
-     optionsBuilder.ConfigureEntity<Shop>(entityOptionsBuilder =>
-     {
-         entityOptionsBuilder.SetDescription("The base Shop entity.");
-     });
-     optionsBuilder.ConfigureEntity<ProductTag>(entityOptionsBuilder =>
-     {
-         entityOptionsBuilder.SetIsHidden(true);
-     });
-});
+    /// <summary>
+    /// Entry point method.
+    /// </summary>
+    /// <param name="args">Program arguments.</param>
+    public static async Task<int> Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+        var startup = new Startup(builder.Configuration);
+        startup.ConfigureServices(builder.Services, builder.Environment);
+        app = builder.Build();
+        startup.Configure(app);
 
-var app = builder.Build();
-app.UseNetForge();
-HealthCheckModule.Register(app);
-app.Run();
+        // Command line processing.
+        var commandLineApplication = new CommandLineApplication<Program>();
+        using var scope = app.Services.CreateScope();
+        commandLineApplication
+            .Conventions
+            .UseConstructorInjection(scope.ServiceProvider)
+            .UseDefaultConventions();
+        return await commandLineApplication.ExecuteAsync(args);
+    }
+
+    /// <summary>
+    /// This options is there to allow running the application with `--urls` parameter.
+    /// https://paketo.io/docs/reference/dotnet-core-reference/#self-contained-deployment-and-framework-dependent-executables.
+    /// </summary>
+    [Option]
+    public string? Urls { get; }
+
+    /// <summary>
+    /// Command line application execution callback.
+    /// </summary>
+    /// <returns>Exit code.</returns>
+    public async Task<int> OnExecuteAsync()
+    {
+        if (app == null)
+        {
+            throw new InvalidOperationException("app is not initialized");
+        }
+
+        await app.InitAsync();
+        await app.RunAsync();
+        return 0;
+    }
+}
