@@ -45,6 +45,22 @@ public static class EntityMetadataExtensions
         {
             entityMetadata.IsHidden = entityOptions.IsHidden;
         }
+
+        entityMetadata.ApplyPropertyOptions(entityOptions.PropertyOptions);
+    }
+
+    private static void ApplyPropertyOptions(
+        this EntityMetadata entityMetadata, IEnumerable<EntityPropertyOptions> propertyOptions)
+    {
+        foreach (var option in propertyOptions)
+        {
+            var property = entityMetadata.Properties.FirstOrDefault(property => property.Name == option.PropertyName);
+
+            if (property is not null)
+            {
+                property.IsHidden = option.IsHidden;
+            }
+        }
     }
 
     /// <summary>

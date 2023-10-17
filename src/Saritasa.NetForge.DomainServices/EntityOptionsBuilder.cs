@@ -11,6 +11,11 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     private readonly EntityOptions options = new(typeof(TEntity));
 
     /// <summary>
+    /// Instance of <typeparamref name="TEntity"/>. Used to configure properties of an <typeparamref name="TEntity"/>.
+    /// </summary>
+    public TEntity? Entity { get; set; }
+
+    /// <summary>
     /// Sets the description for the entity being configured.
     /// </summary>
     /// <param name="description">The description to set for the entity.</param>
@@ -55,5 +60,19 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     public EntityOptions Create()
     {
         return options;
+    }
+
+    /// <summary>
+    /// Sets whether the property should be hidden from the view.
+    /// </summary>
+    public void SetPropertyIsHidden(string propertyName, bool isHidden)
+    {
+        var propertyOptions = new EntityPropertyOptions
+        {
+            PropertyName = propertyName,
+            IsHidden = isHidden
+        };
+
+        options.PropertyOptions.Add(propertyOptions);
     }
 }

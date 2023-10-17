@@ -28,6 +28,11 @@ internal class NetForgeModule
             {
                 entityOptionsBuilder.SetIsHidden(true);
             });
+            optionsBuilder.ConfigureEntity<Address>(entityOptionsBuilder =>
+            {
+                entityOptionsBuilder.SetPropertyIsHidden(nameof(entityOptionsBuilder.Entity.ContactPhone), true);
+                entityOptionsBuilder.SetPropertyIsHidden(nameof(entityOptionsBuilder.Entity.PostalCode), true);
+            });
         });
     }
 }
