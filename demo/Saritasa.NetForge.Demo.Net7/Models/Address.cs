@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Saritasa.NetForge.Domain.Attributes;
 
 namespace Saritasa.NetForge.Demo.Net7.Models;
 
@@ -36,11 +37,13 @@ public class Address
     /// <summary>
     /// The latitude coordinate of the address location.
     /// </summary>
+    [NetForgeEntityProperty(IsHidden = true)]
     public double Latitude { get; set; }
 
     /// <summary>
     /// The longitude coordinate of the address location.
     /// </summary>
+    [NetForgeEntityProperty(IsHidden = true)]
     public double Longitude { get; set; }
 
     /// <summary>

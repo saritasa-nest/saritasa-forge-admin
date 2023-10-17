@@ -8,7 +8,7 @@
     <Columns>
         @foreach (var property in ViewModel.Model.Properties)
         {
-            if (!property.IsForeignKey)
+            if (property is { IsForeignKey: false, IsHidden: false })
             {
                 <PropertyColumn
                     Property="p => p.GetType().GetProperty(property.Name)!.GetValue(p)"

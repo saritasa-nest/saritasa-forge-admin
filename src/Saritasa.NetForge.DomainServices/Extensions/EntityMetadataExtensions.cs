@@ -53,6 +53,8 @@ public static class EntityMetadataExtensions
     /// <param name="entityMetadata">The metadata of the entity to which attributes are applied.</param>
     public static void ApplyEntityAttributes(this EntityMetadata entityMetadata)
     {
+        entityMetadata.Properties.ApplyPropertyAttributes();
+
         var netForgeEntityAttribute = entityMetadata.ClrType?.GetCustomAttribute<NetForgeEntityAttribute>();
 
         if (netForgeEntityAttribute == null)
@@ -94,6 +96,19 @@ public static class EntityMetadataExtensions
         if (netForgeEntityAttribute.IsHidden)
         {
             entityMetadata.IsHidden = netForgeEntityAttribute.IsHidden;
+        }
+    }
+
+    private static void ApplyPropertyAttributes(this IEnumerable<PropertyMetadata> properties)
+    {
+        foreach (var property in properties)
+        {
+            var propertyAttribute = property.PropertyInformation?.GetCustomAttribute<NetForgeEntityPropertyAttribute>();
+
+            if (propertyAttribute is not null)
+            {
+                property.IsHidden = propertyAttribute.IsHidden;
+            }
         }
     }
 }
