@@ -31,7 +31,9 @@ public class DetailsViewModel : BaseViewModel
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
     {
-        var entity = await mediator.Send(new GetEntityByIdQuery { Id = Model.Id }, cancellationToken);
+        // TODO
+        var pageQueryFilter = new PageQueryFilter { Page = 1, PageSize = 15 };
+        var entity = await mediator.Send(new GetEntityByIdQuery(Model.Id, pageQueryFilter), cancellationToken);
 
         Model = mapper.Map<DetailsModel>(entity);
     }
