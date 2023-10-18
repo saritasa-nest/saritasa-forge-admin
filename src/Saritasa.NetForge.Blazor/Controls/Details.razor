@@ -12,9 +12,21 @@
             {
                 <TemplateColumn>
                     <HeaderTemplate>
-                        <MudTooltip Text="@property.Description" Arrow="true" Placement="Placement.Top">
-                            @(!string.IsNullOrEmpty(property.DisplayName) ? property.DisplayName : property.Name)
+                    @if (property.Description != string.Empty)
+                    {
+                        <MudTooltip Arrow="true" Placement="Placement.Top">
+                            <ChildContent>
+                                @(!string.IsNullOrEmpty(property.DisplayName) ? property.DisplayName : property.Name)
+                            </ChildContent>
+                            <TooltipContent>
+                                    <MudText Typo="Typo.body2">@property.Description</MudText>
+                            </TooltipContent>
                         </MudTooltip>
+                    }
+                    else
+                    {
+                        @(!string.IsNullOrEmpty(property.DisplayName) ? property.DisplayName : property.Name)
+                    }
                     </HeaderTemplate>
 
                     <CellTemplate>
