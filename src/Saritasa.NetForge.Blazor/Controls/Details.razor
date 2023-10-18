@@ -12,21 +12,21 @@
             {
                 <TemplateColumn>
                     <HeaderTemplate>
-                    @if (property.Description != string.Empty)
-                    {
-                        <MudTooltip Arrow="true" Placement="Placement.Top">
-                            <ChildContent>
-                                @(!string.IsNullOrEmpty(property.DisplayName) ? property.DisplayName : property.Name)
-                            </ChildContent>
-                            <TooltipContent>
+                        @if (property.Description != string.Empty)
+                        {
+                            <MudTooltip Arrow="true" Placement="Placement.Top">
+                                <ChildContent>
+                                    @(!string.IsNullOrEmpty(property.DisplayName) ? property.DisplayName : property.Name)
+                                </ChildContent>
+                                <TooltipContent>
                                     <MudText Typo="Typo.body2">@property.Description</MudText>
-                            </TooltipContent>
-                        </MudTooltip>
-                    }
-                    else
-                    {
-                        @(!string.IsNullOrEmpty(property.DisplayName) ? property.DisplayName : property.Name)
-                    }
+                                </TooltipContent>
+                            </MudTooltip>
+                        }
+                        else
+                        {
+                            @(!string.IsNullOrEmpty(property.DisplayName) ? property.DisplayName : property.Name)
+                        }
                     </HeaderTemplate>
 
                     <CellTemplate>
@@ -36,4 +36,8 @@
             }
         }
     </Columns>
+
+    <PagerContent>
+        <MudDataGridPager T="object" />
+    </PagerContent>
 </MudDataGrid>
