@@ -10,4 +10,14 @@ public class NetForgeEntityPropertyAttribute : Attribute
     /// Whether the entity is hidden from the view.
     /// </summary>
     public bool IsHidden { get; set; }
+
+    /// <summary>
+    /// Name that will be displayed instead of default property name.
+    /// </summary>
+    public string? DisplayName { get; set; }
+
+    /// <summary>
+    /// Description.
+    /// </summary>
+    public string? Description { get; set; }
 }
