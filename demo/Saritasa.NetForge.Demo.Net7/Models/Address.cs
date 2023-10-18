@@ -17,7 +17,7 @@ public class Address
     /// <summary>
     /// The street name and number.
     /// </summary>
-    [NetForgeEntityProperty(DisplayName = "Street name", Description = "Street name without street number")]
+    [NetForgeEntityProperty(DisplayName = "Street name", Description = "Street name without street number.")]
     public required string Street { get; set; }
 
     /// <summary>
@@ -33,7 +33,7 @@ public class Address
     /// <summary>
     /// The name of the country.
     /// </summary>
-    [NetForgeEntityProperty(Description = "Country name")]
+    [NetForgeEntityProperty(Description = "Country name.")]
     public required string Country { get; set; }
 
     /// <summary>

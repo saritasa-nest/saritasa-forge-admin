@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.DomainServices.Extensions;
 
 namespace Saritasa.NetForge.DomainServices;
 
@@ -64,89 +65,22 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
-    /// Sets property as hidden. Given property will not be displayed in admin panel.
+    /// Configures options for specific entity's property.
     /// </summary>
     /// <param name="propertyExpression">
-    /// Expression that represents property to hide. For example: <c>entity => entity.Name</c>.
+    /// Expression that represents property. For example: <c>entity => entity.Name</c>.
     /// </param>
-    public EntityOptionsBuilder<TEntity> HasHidden(Expression<Func<TEntity, object>> propertyExpression)
+    /// <param name="entityPropertyOptionsBuilderAction">An action that builds property options.</param>
+    public void ConfigureProperty(
+        Expression<Func<TEntity, object>> propertyExpression,
+        Action<EntityPropertyOptionsBuilder> entityPropertyOptionsBuilderAction)
     {
-        var propertyOptions = GetPropertyOptions(propertyExpression);
+        var entityPropertyOptionsBuilder = new EntityPropertyOptionsBuilder();
+        entityPropertyOptionsBuilderAction.Invoke(entityPropertyOptionsBuilder);
 
-        propertyOptions.IsHidden = true;
+        var propertyName = propertyExpression.GetMemberName();
+        var propertyOptions = entityPropertyOptionsBuilder.Create(propertyName);
 
-        return this;
-    }
-
-    private static string GetPropertyName(Expression expression)
-    {
-        if (expression is UnaryExpression unaryExpression)
-        {
-            return GetMemberName(unaryExpression);
-        }
-
-        var memberExpression = (MemberExpression)expression;
-        return memberExpression.Member.Name;
-    }
-
-    private static string GetMemberName(UnaryExpression unaryExpression)
-    {
-        if (unaryExpression.Operand is MethodCallExpression methodExpression)
-        {
-            return methodExpression.Method.Name;
-        }
-
-        return ((MemberExpression)unaryExpression.Operand).Member.Name;
-    }
-
-    /// <summary>
-    /// Sets new display name to property.
-    /// </summary>
-    /// <param name="propertyExpression">
-    /// Expression that represents property to change display name. For example: <c>entity => entity.Name</c>.
-    /// </param>
-    /// <param name="displayName">Name to display.</param>
-    public EntityOptionsBuilder<TEntity> HasDisplayName(
-        Expression<Func<TEntity, object>> propertyExpression, string displayName)
-    {
-        var propertyOptions = GetPropertyOptions(propertyExpression);
-
-        propertyOptions.DisplayName = displayName;
-
-        return this;
-    }
-
-    /// <summary>
-    /// Sets description to property. Displayed as tooltip when user hovering corresponding property.
-    /// </summary>
-    /// <param name="propertyExpression">
-    /// Expression that represents property to set description. For example: <c>entity => entity.Name</c>.
-    /// </param>
-    /// <param name="description">Description.</param>
-    public EntityOptionsBuilder<TEntity> HasDescription(
-        Expression<Func<TEntity, object>> propertyExpression, string description)
-    {
-        var propertyOptions = GetPropertyOptions(propertyExpression);
-
-        propertyOptions.Description = description;
-
-        return this;
-    }
-
-    private EntityPropertyOptions GetPropertyOptions(Expression<Func<TEntity, object>> propertyExpression)
-    {
-        var propertyName = GetPropertyName(propertyExpression.Body);
-
-        var propertyOptions = options.PropertyOptions
-            .FirstOrDefault(propertyOptions => propertyOptions.PropertyName == propertyName);
-
-        if (propertyOptions is null)
-        {
-            propertyOptions = new EntityPropertyOptions { PropertyName = propertyName };
-
-            options.PropertyOptions.Add(propertyOptions);
-        }
-
-        return propertyOptions;
+        options.PropertyOptions.Add(propertyOptions);
     }
 }
