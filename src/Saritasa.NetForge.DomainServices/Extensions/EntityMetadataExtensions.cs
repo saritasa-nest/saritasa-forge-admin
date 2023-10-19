@@ -50,7 +50,7 @@ public static class EntityMetadataExtensions
     }
 
     private static void ApplyPropertyOptions(
-        this EntityMetadata entityMetadata, IEnumerable<EntityPropertyOptions> propertyOptions)
+        this EntityMetadata entityMetadata, IEnumerable<PropertyOptions> propertyOptions)
     {
         foreach (var option in propertyOptions)
         {
@@ -143,7 +143,7 @@ public static class EntityMetadataExtensions
                 property.DisplayName = displayNameAttribute.DisplayName;
             }
 
-            var netForgePropertyAttribute = property.PropertyInformation?.GetCustomAttribute<NetForgeEntityPropertyAttribute>();
+            var netForgePropertyAttribute = property.PropertyInformation?.GetCustomAttribute<NetForgePropertyAttribute>();
 
             if (netForgePropertyAttribute is not null)
             {

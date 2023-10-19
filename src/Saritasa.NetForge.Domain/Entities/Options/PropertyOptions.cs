@@ -3,7 +3,7 @@
 /// <summary>
 /// Options for entity property.
 /// </summary>
-public class EntityPropertyOptions
+public class PropertyOptions
 {
     /// <summary>
     /// Property name.

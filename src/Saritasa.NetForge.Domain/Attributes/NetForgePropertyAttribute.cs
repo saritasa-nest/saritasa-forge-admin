@@ -4,7 +4,7 @@
 /// Represents an attribute used to provide metadata for the entity's property.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public class NetForgeEntityPropertyAttribute : Attribute
+public class NetForgePropertyAttribute : Attribute
 {
     /// <summary>
     /// Whether the entity is hidden from the view.

@@ -5,16 +5,16 @@ namespace Saritasa.NetForge.DomainServices;
 /// <summary>
 /// Builder class for configuring entity's property options.
 /// </summary>
-public class EntityPropertyOptionsBuilder
+public class PropertyOptionsBuilder
 {
-    private readonly EntityPropertyOptions options = new();
+    private readonly PropertyOptions options = new();
 
     /// <summary>
     /// Creates property options.
     /// </summary>
     /// <param name="propertyName">Property name to create options for.</param>
     /// <returns>Property options.</returns>
-    public EntityPropertyOptions Create(string propertyName)
+    public PropertyOptions Create(string propertyName)
     {
         options.PropertyName = propertyName;
 
@@ -24,7 +24,7 @@ public class EntityPropertyOptionsBuilder
     /// <summary>
     /// Sets whether the property should be hidden from the view.
     /// </summary>
-    public EntityPropertyOptionsBuilder SetIsHidden(bool isHidden)
+    public PropertyOptionsBuilder SetIsHidden(bool isHidden)
     {
         options.IsHidden = isHidden;
         return this;
@@ -34,7 +34,7 @@ public class EntityPropertyOptionsBuilder
     /// Sets new display name to property.
     /// </summary>
     /// <param name="displayName">Name to display.</param>
-    public EntityPropertyOptionsBuilder SetDisplayName(string displayName)
+    public PropertyOptionsBuilder SetDisplayName(string displayName)
     {
         options.DisplayName = displayName;
         return this;
@@ -44,7 +44,7 @@ public class EntityPropertyOptionsBuilder
     /// Sets description to property. Displayed as tooltip when user hovering corresponding property.
     /// </summary>
     /// <param name="description">Description.</param>
-    public EntityPropertyOptionsBuilder SetDescription(string description)
+    public PropertyOptionsBuilder SetDescription(string description)
     {
         options.Description = description;
         return this;

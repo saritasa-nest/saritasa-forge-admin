@@ -41,5 +41,5 @@ public class EntityOptions
     /// <summary>
     /// Options for properties of entity.
     /// </summary>
-    public ICollection<EntityPropertyOptions> PropertyOptions { get; set; } = new List<EntityPropertyOptions>();
+    public ICollection<PropertyOptions> PropertyOptions { get; set; } = new List<PropertyOptions>();
 }

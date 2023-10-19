@@ -70,16 +70,16 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     /// <param name="propertyExpression">
     /// Expression that represents property. For example: <c>entity => entity.Name</c>.
     /// </param>
-    /// <param name="entityPropertyOptionsBuilderAction">An action that builds property options.</param>
+    /// <param name="propertyOptionsBuilderAction">An action that builds property options.</param>
     public void ConfigureProperty(
         Expression<Func<TEntity, object>> propertyExpression,
-        Action<EntityPropertyOptionsBuilder> entityPropertyOptionsBuilderAction)
+        Action<PropertyOptionsBuilder> propertyOptionsBuilderAction)
     {
-        var entityPropertyOptionsBuilder = new EntityPropertyOptionsBuilder();
-        entityPropertyOptionsBuilderAction.Invoke(entityPropertyOptionsBuilder);
+        var propertyOptionsBuilder = new PropertyOptionsBuilder();
+        propertyOptionsBuilderAction.Invoke(propertyOptionsBuilder);
 
         var propertyName = propertyExpression.GetMemberName();
-        var propertyOptions = entityPropertyOptionsBuilder.Create(propertyName);
+        var propertyOptions = propertyOptionsBuilder.Create(propertyName);
 
         options.PropertyOptions.Add(propertyOptions);
     }
