@@ -17,7 +17,7 @@ public class Address
     /// <summary>
     /// The street name and number.
     /// </summary>
-    [NetForgeEntityProperty(DisplayName = "Street name", Description = "Street name without street number.")]
+    [NetForgeProperty(DisplayName = "Street name", Description = "Street name without street number.")]
     public required string Street { get; set; }
 
     /// <summary>
@@ -33,19 +33,19 @@ public class Address
     /// <summary>
     /// The name of the country.
     /// </summary>
-    [NetForgeEntityProperty(Description = "Country name.")]
+    [NetForgeProperty(Description = "Country name.")]
     public required string Country { get; set; }
 
     /// <summary>
     /// The latitude coordinate of the address location.
     /// </summary>
-    [NetForgeEntityProperty(IsHidden = true)]
+    [NetForgeProperty(IsHidden = true)]
     public double Latitude { get; set; }
 
     /// <summary>
     /// The longitude coordinate of the address location.
     /// </summary>
-    [NetForgeEntityProperty(IsHidden = true)]
+    [NetForgeProperty(IsHidden = true)]
     public double Longitude { get; set; }
 
     /// <summary>
