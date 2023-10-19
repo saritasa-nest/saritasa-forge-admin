@@ -49,4 +49,14 @@ public class PropertyOptionsBuilder
         options.Description = description;
         return this;
     }
+
+    /// <summary>
+    /// Sets position to property.
+    /// </summary>
+    /// <param name="position">Position number.</param>
+    public PropertyOptionsBuilder SetPosition(short position)
+    {
+        options.Position = position;
+        return this;
+    }
 }

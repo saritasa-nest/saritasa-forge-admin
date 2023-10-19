@@ -32,7 +32,10 @@ internal class NetForgeModule
             {
                 entityOptionsBuilder.ConfigureProperty(address => address.Id, propertyBuilder =>
                 {
-                    propertyBuilder.SetDescription("Item identifier.");
+                    propertyBuilder
+                        .SetDescription("Item identifier.")
+                        .SetPosition(6);
+
                 });
 
                 entityOptionsBuilder.ConfigureProperty(address => address.ContactPhone, propertyBuilder =>
@@ -50,6 +53,11 @@ internal class NetForgeModule
                 entityOptionsBuilder.ConfigureProperty(address => address.City, propertyBuilder =>
                 {
                     propertyBuilder.SetDisplayName("Town");
+                });
+
+                entityOptionsBuilder.ConfigureProperty(address => address.Longitude, propertyBuilder =>
+                {
+                    propertyBuilder.SetPosition(5);
                 });
             });
         });

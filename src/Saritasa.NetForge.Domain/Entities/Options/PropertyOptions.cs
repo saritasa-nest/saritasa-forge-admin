@@ -1,27 +1,24 @@
-﻿namespace Saritasa.NetForge.Domain.Entities.Options;
+﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+
+namespace Saritasa.NetForge.Domain.Entities.Options;
 
 /// <summary>
 /// Options for entity property.
 /// </summary>
 public class PropertyOptions
 {
-    /// <summary>
-    /// Property name.
-    /// </summary>
+    /// <inheritdoc cref="PropertyMetadata.Name"/>
     public string PropertyName { get; set; } = string.Empty;
 
-    /// <summary>
-    /// Is property must be hidden.
-    /// </summary>
+    /// <inheritdoc cref="PropertyMetadata.IsHidden"/>
     public bool IsHidden { get; set; }
 
-    /// <summary>
-    /// Name that will be displayed instead of default property name.
-    /// </summary>
+    /// <inheritdoc cref="PropertyMetadata.DisplayName"/>
     public string? DisplayName { get; set; }
 
-    /// <summary>
-    /// Description.
-    /// </summary>
+    /// <inheritdoc cref="PropertyMetadata.Description"/>
     public string? Description { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.Position"/>
+    public short? Position { get; set; }
 }

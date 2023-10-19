@@ -17,35 +17,35 @@ public class Address
     /// <summary>
     /// The street name and number.
     /// </summary>
-    [NetForgeProperty(DisplayName = "Street name", Description = "Street name without street number.")]
+    [NetForgeProperty(DisplayName = "Street name", Description = "Street name without street number.", Position = 1)]
     public required string Street { get; set; }
 
     /// <summary>
     /// The city where the address is located.
     /// </summary>
+    [NetForgeProperty(Position = 2)]
     public required string City { get; set; }
 
     /// <summary>
     /// The postal code of the address.
     /// </summary>
+    [NetForgeProperty(Position = 4)]
     public required string PostalCode { get; set; }
 
     /// <summary>
     /// The name of the country.
     /// </summary>
-    [NetForgeProperty(Description = "Country name.")]
+    [NetForgeProperty(Description = "Country name.", Position = 3)]
     public required string Country { get; set; }
 
     /// <summary>
     /// The latitude coordinate of the address location.
     /// </summary>
-    [NetForgeProperty(IsHidden = true)]
     public double Latitude { get; set; }
 
     /// <summary>
     /// The longitude coordinate of the address location.
     /// </summary>
-    [NetForgeProperty(IsHidden = true)]
     public double Longitude { get; set; }
 
     /// <summary>

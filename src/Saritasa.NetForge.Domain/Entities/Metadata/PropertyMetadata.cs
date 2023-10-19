@@ -77,4 +77,9 @@ public class PropertyMetadata
     /// Whether the property value is generated on entity database update.
     /// </summary>
     public bool IsValueGeneratedOnUpdate { get; set; }
+
+    /// <summary>
+    /// Define position in column order.
+    /// </summary>
+    public short? Position { get; set; }
 }

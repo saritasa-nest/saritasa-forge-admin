@@ -6,26 +6,35 @@
 
 <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true">
     <Columns>
-        @foreach (var property in ViewModel.Model.Properties)
-        {
-            if (property is { IsForeignKey: false, IsHidden: false })
+        @{
+            var orderedProperties = ViewModel.Model.Properties
+                .OrderByDescending(property => property is { Name: "Id", Position: null })
+                .ThenByDescending(property => property.Position.HasValue)
+                .ThenBy(property => property.Position);
+
+            foreach (var property in orderedProperties)
             {
+                if (property is not { IsForeignKey: false, IsHidden: false })
+                {
+                    continue;
+                }
+
                 <TemplateColumn>
                     <HeaderTemplate>
-                        @if (property.Description != string.Empty)
+                        @if (property.Description == string.Empty)
                         {
-                            <MudTooltip Arrow="true" Placement="Placement.Top">
+                            @(!string.IsNullOrEmpty(property.DisplayName) ? property.DisplayName : property.Name)
+                        }
+                        else
+                        {
+                            <MudTooltip Arrow="true" Placement="@Placement.Top">
                                 <ChildContent>
                                     @(!string.IsNullOrEmpty(property.DisplayName) ? property.DisplayName : property.Name)
                                 </ChildContent>
                                 <TooltipContent>
-                                    <MudText Typo="Typo.body2">@property.Description</MudText>
+                                    <MudText Typo="@Typo.body2">@property.Description</MudText>
                                 </TooltipContent>
                             </MudTooltip>
-                        }
-                        else
-                        {
-                            @(!string.IsNullOrEmpty(property.DisplayName) ? property.DisplayName : property.Name)
                         }
                     </HeaderTemplate>
 

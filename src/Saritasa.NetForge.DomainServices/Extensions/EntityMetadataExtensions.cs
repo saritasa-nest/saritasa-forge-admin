@@ -69,6 +69,11 @@ public static class EntityMetadataExtensions
                 {
                     property.Description = option.Description;
                 }
+
+                if (option.Position.HasValue)
+                {
+                    property.Position = option.Position.Value;
+                }
             }
         }
     }
@@ -160,6 +165,11 @@ public static class EntityMetadataExtensions
                 if (netForgePropertyAttribute.IsHidden)
                 {
                     property.IsHidden = netForgePropertyAttribute.IsHidden;
+                }
+
+                if (netForgePropertyAttribute.Position != default)
+                {
+                    property.Position = netForgePropertyAttribute.Position;
                 }
             }
         }
