@@ -89,3 +89,54 @@ public class AnotherEntity
     // Entity properties...
 }
 ```
+
+## Customizing entity properties
+
+You can customize entity properties as well. For example, you can change display name, add description or hide it.
+
+### Fluent API
+
+```csharp
+optionsBuilder.ConfigureEntity<Address>(entityOptionsBuilder =>
+{
+    entityOptionsBuilder.ConfigureProperty(address => address.Id, propertyBuilder =>
+    {
+        propertyBuilder.SetDescription("Item identifier.");
+    });
+
+    entityOptionsBuilder.ConfigureProperty(address => address.ContactPhone, propertyBuilder =>
+    {
+        propertyBuilder
+            .SetDisplayName("Phone")
+            .SetDescription("Address contact phone.");
+    });
+
+    entityOptionsBuilder.ConfigureProperty(address => address.PostalCode, propertyBuilder =>
+    {
+        propertyBuilder.SetIsHidden(true);
+    });
+
+    entityOptionsBuilder.ConfigureProperty(address => address.City, propertyBuilder =>
+    {
+        propertyBuilder.SetDisplayName("Town");
+    });
+});
+```
+
+### Attributes
+
+Properties also customizable via attributes.
+
+#### NetForgeEntityAttribute
+
+```csharp
+[NetForgeProperty(DisplayName = "Custom property display name", Description = "Custom property description.")]
+public string Property { get; set; }
+```
+#### Built in `Description` and `DisplayName` attributes
+
+```csharp
+[Description("Custom property description.")]
+[DisplayName("Custom property display name")]
+public string Property { get; set; }
+```
