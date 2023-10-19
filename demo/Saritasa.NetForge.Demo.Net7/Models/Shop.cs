@@ -1,4 +1,6 @@
-﻿namespace Saritasa.NetForge.Demo.Net7.Models;
+﻿using System.ComponentModel;
+
+namespace Saritasa.NetForge.Demo.Net7.Models;
 
 /// <summary>
 /// Represents a shop entity.
@@ -8,11 +10,13 @@ public class Shop
     /// <summary>
     /// Unique identifier for the shop.
     /// </summary>
+    [DisplayName("Identifier")]
     public int Id { get; set; }
 
     /// <summary>
     /// The name of the shop.
     /// </summary>
+    [Description("Shop name.")]
     public required string Name { get; set; }
 
     /// <summary>

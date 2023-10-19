@@ -129,20 +129,37 @@ public static class EntityMetadataExtensions
     {
         foreach (var property in properties)
         {
-            var propertyAttribute = property.PropertyInformation?.GetCustomAttribute<NetForgeEntityPropertyAttribute>();
+            var descriptionAttribute = property.PropertyInformation?.GetCustomAttribute<DescriptionAttribute>();
 
-            if (propertyAttribute is not null)
+            if (!string.IsNullOrEmpty(descriptionAttribute?.Description))
             {
-                property.IsHidden = propertyAttribute.IsHidden;
+                property.Description = descriptionAttribute.Description;
+            }
 
-                if (!string.IsNullOrEmpty(propertyAttribute.DisplayName))
+            var displayNameAttribute = property.PropertyInformation?.GetCustomAttribute<DisplayNameAttribute>();
+
+            if (!string.IsNullOrEmpty(displayNameAttribute?.DisplayName))
+            {
+                property.DisplayName = displayNameAttribute.DisplayName;
+            }
+
+            var netForgePropertyAttribute = property.PropertyInformation?.GetCustomAttribute<NetForgeEntityPropertyAttribute>();
+
+            if (netForgePropertyAttribute is not null)
+            {
+                if (!string.IsNullOrEmpty(netForgePropertyAttribute.Description))
                 {
-                    property.DisplayName = propertyAttribute.DisplayName;
+                    property.Description = netForgePropertyAttribute.Description;
                 }
 
-                if (!string.IsNullOrEmpty(propertyAttribute.Description))
+                if (!string.IsNullOrEmpty(netForgePropertyAttribute.DisplayName))
                 {
-                    property.Description = propertyAttribute.Description;
+                    property.DisplayName = netForgePropertyAttribute.DisplayName;
+                }
+
+                if (netForgePropertyAttribute.IsHidden)
+                {
+                    property.IsHidden = netForgePropertyAttribute.IsHidden;
                 }
             }
         }
