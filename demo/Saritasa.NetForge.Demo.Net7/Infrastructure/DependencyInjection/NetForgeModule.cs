@@ -47,11 +47,6 @@ internal class NetForgeModule
                     propertyBuilder.SetIsHidden(true);
                 });
 
-                entityOptionsBuilder.ConfigureProperty(address => address.Country, propertyBuilder =>
-                {
-                    propertyBuilder.SetDescription("Fluent description.");
-                });
-
                 entityOptionsBuilder.ConfigureProperty(address => address.City, propertyBuilder =>
                 {
                     propertyBuilder.SetDisplayName("Town");
