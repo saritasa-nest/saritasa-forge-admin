@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using MudBlazor;
 using Saritasa.NetForge.Blazor.Pages;
 using Saritasa.NetForge.Mvvm.ViewModels.Details;
 
@@ -27,19 +26,4 @@ public partial class Details : MvvmComponentBase<DetailsViewModel>
     {
         return source.GetType().GetProperty(propertyName)!.GetValue(source);
     }
-
-    //private async Task<GridData<object>> LoadGridData(GridState<object> state)
-    //{
-    //    _requestDto.Page = state.Page;
-    //    _requestDto.PageSize = state.PageSize;
-
-    //    var apiResponse = await GetAnimalList(_requestDto);
-    //    var data = new GridState<object>
-    //    {
-    //        Items = apiResponse.Items,
-    //        TotalItems = apiResponse.ItemTotalCount
-    //    };
-
-    //    return data;
-    //}
 }

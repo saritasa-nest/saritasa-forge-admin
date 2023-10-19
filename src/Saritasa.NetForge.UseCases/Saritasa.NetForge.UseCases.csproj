@@ -20,10 +20,4 @@
     <ProjectReference Include="..\Saritasa.NetForge.Infrastructure.Abstractions\Saritasa.NetForge.Infrastructure.Abstractions.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
-    <PackageReference Include="Saritasa.Tools.EntityFrameworkCore">
-      <Version>7.0.1</Version>
-    </PackageReference>
-  </ItemGroup>
-
 </Project>

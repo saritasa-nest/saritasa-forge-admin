@@ -1,8 +1,6 @@
 using AutoMapper;
 using MediatR;
-using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.Services;
-using Saritasa.Tools.Common.Pagination;
 
 namespace Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
@@ -13,15 +11,13 @@ internal class GetEntityByIdQueryHandler : IRequestHandler<GetEntityByIdQuery, G
 {
     private readonly IMapper mapper;
     private readonly AdminMetadataService adminMetadataService;
-    private readonly IOrmDataService dataService;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public GetEntityByIdQueryHandler(AdminMetadataService adminMetadataService, IMapper mapper, IOrmDataService dataService)
+    public GetEntityByIdQueryHandler(IMapper mapper, AdminMetadataService adminMetadataService)
     {
         this.mapper = mapper;
-        this.dataService = dataService;
         this.adminMetadataService = adminMetadataService;
     }
 
@@ -32,16 +28,8 @@ internal class GetEntityByIdQueryHandler : IRequestHandler<GetEntityByIdQuery, G
             .GetMetadata()
             .First(entityMetadata => entityMetadata.Id == request.Id);
 
-        var data = dataService.GetData(metadata.ClrType).OfType<object>().ToList();
-
-        var searchOptions = request.PageQueryFilter;
-
-        var pagedList = PagedListFactory.FromSource(data, searchOptions.Page, searchOptions.PageSize);
-        var pagedListMetadata = pagedList.ToMetadataObject();
-
         var metadataDto = mapper.Map<GetEntityByIdDto>(metadata);
 
-        metadataDto = metadataDto with { Data = data };
         return Task.FromResult(metadataDto);
     }
 }

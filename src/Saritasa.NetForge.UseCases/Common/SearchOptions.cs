@@ -4,9 +4,9 @@ using Saritasa.Tools.Common.Pagination;
 namespace Saritasa.NetForge.UseCases.Common;
 
 /// <summary>
-/// Class for pagination that contains page and page size.
+/// Search options that contains page and page size.
 /// </summary>
-public record PageQueryFilter
+public record SearchOptions
 {
     /// <summary>
     /// Page number to return. Starts with 1.
