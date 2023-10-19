@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Saritasa.NetForge.Domain.Attributes;
 
 namespace Saritasa.NetForge.Demo.Net7.Models;
 
@@ -11,6 +12,7 @@ public class Shop
     /// Unique identifier for the shop.
     /// </summary>
     [DisplayName("Identifier")]
+    [Description("Shop identifier.")]
     public int Id { get; set; }
 
     /// <summary>
@@ -32,6 +34,7 @@ public class Shop
     /// <summary>
     /// The total sales amount for the shop.
     /// </summary>
+    [NetForgeProperty(DisplayName = "Sales", Description = "Total sales.")]
     public decimal TotalSales { get; set; }
 
     /// <summary>
