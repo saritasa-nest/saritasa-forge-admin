@@ -11,8 +11,8 @@ public class Shop
     /// <summary>
     /// Unique identifier for the shop.
     /// </summary>
-    [DisplayName("Identifier")]
     [Description("Shop identifier.")]
+    [DisplayName("Identifier")]
     public int Id { get; set; }
 
     /// <summary>
