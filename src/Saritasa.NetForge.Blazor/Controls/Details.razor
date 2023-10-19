@@ -4,7 +4,7 @@
 
 <MudText Typo="Typo.body1" Class="pb-5">@ViewModel.Model.Description</MudText>
 
-<MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync">
+<MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true">
     <Columns>
         @foreach (var property in ViewModel.Model.Properties)
         {
