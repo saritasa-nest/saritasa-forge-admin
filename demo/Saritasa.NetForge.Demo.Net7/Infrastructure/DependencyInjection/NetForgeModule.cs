@@ -58,7 +58,7 @@ internal class NetForgeModule
 
                 entityOptionsBuilder.ConfigureProperty(address => address.Longitude, propertyBuilder =>
                 {
-                    propertyBuilder.SetPosition(5);
+                    propertyBuilder.SetPosition(6);
                 });
             });
         });
