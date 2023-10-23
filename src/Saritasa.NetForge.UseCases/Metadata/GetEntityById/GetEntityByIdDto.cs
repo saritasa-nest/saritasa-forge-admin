@@ -3,7 +3,7 @@
 namespace Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
 /// <summary>
-/// DTO for <see cref="EntityMetadata"/>
+/// DTO for <see cref="EntityMetadata"/>.
 /// </summary>
 public record GetEntityByIdDto
 {
