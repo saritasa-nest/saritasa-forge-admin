@@ -14,8 +14,9 @@ public class AutoMapperModule
     /// <param name="services">Services.</param>
     public static void Register(IServiceCollection services)
     {
-        services.AddAutoMapper(
-            typeof(SearchEntitiesQuery).Assembly,
-            typeof(BaseViewModel).Assembly);
+        var useCasesAssembly = typeof(SearchEntitiesQuery).Assembly;
+        var viewModelsAssembly = typeof(BaseViewModel).Assembly;
+
+        services.AddAutoMapper(useCasesAssembly, viewModelsAssembly);
     }
 }
