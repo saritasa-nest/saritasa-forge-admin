@@ -86,14 +86,14 @@ public static class EntityMetadataExtensions
     {
         entityMetadata.Properties.ApplyPropertyAttributes();
 
-        var netForgeEntityAttribute = entityMetadata.ClrType?.GetCustomAttribute<NetForgeEntityAttribute>();
+        // Try to get the description from the System.ComponentModel.DisplayNameAttribute.
+        var displayNameAttribute = entityMetadata.ClrType?.GetCustomAttribute<DisplayNameAttribute>();
 
-        if (netForgeEntityAttribute == null)
+        if (!string.IsNullOrEmpty(displayNameAttribute?.DisplayName))
         {
-            return;
+            entityMetadata.Name = displayNameAttribute.DisplayName;
         }
 
-        // Try to get the description from the System.ComponentModel.DescriptionAttribute.
         var descriptionAttribute = entityMetadata.ClrType?.GetCustomAttribute<DescriptionAttribute>();
 
         if (!string.IsNullOrEmpty(descriptionAttribute?.Description))
@@ -101,17 +101,16 @@ public static class EntityMetadataExtensions
             entityMetadata.Description = descriptionAttribute.Description;
         }
 
+        var netForgeEntityAttribute = entityMetadata.ClrType?.GetCustomAttribute<NetForgeEntityAttribute>();
+
+        if (netForgeEntityAttribute == null)
+        {
+            return;
+        }
+
         if (!string.IsNullOrEmpty(netForgeEntityAttribute.Description))
         {
             entityMetadata.Description = netForgeEntityAttribute.Description;
-        }
-
-        // Try to get the description from the System.ComponentModel.DisplayNameAttribute.
-        var displayNameAttribute = entityMetadata.ClrType?.GetCustomAttribute<DisplayNameAttribute>();
-
-        if (!string.IsNullOrEmpty(displayNameAttribute?.DisplayName))
-        {
-            entityMetadata.Name = displayNameAttribute.DisplayName;
         }
 
         if (!string.IsNullOrEmpty(netForgeEntityAttribute.Name))
@@ -150,27 +149,29 @@ public static class EntityMetadataExtensions
 
             var netForgePropertyAttribute = property.PropertyInformation?.GetCustomAttribute<NetForgePropertyAttribute>();
 
-            if (netForgePropertyAttribute is not null)
+            if (netForgePropertyAttribute is null)
             {
-                if (!string.IsNullOrEmpty(netForgePropertyAttribute.Description))
-                {
-                    property.Description = netForgePropertyAttribute.Description;
-                }
+                continue;
+            }
 
-                if (!string.IsNullOrEmpty(netForgePropertyAttribute.DisplayName))
-                {
-                    property.DisplayName = netForgePropertyAttribute.DisplayName;
-                }
+            if (!string.IsNullOrEmpty(netForgePropertyAttribute.Description))
+            {
+                property.Description = netForgePropertyAttribute.Description;
+            }
 
-                if (netForgePropertyAttribute.IsHidden)
-                {
-                    property.IsHidden = netForgePropertyAttribute.IsHidden;
-                }
+            if (!string.IsNullOrEmpty(netForgePropertyAttribute.DisplayName))
+            {
+                property.DisplayName = netForgePropertyAttribute.DisplayName;
+            }
 
-                if (netForgePropertyAttribute.Position != default)
-                {
-                    property.Position = netForgePropertyAttribute.Position;
-                }
+            if (netForgePropertyAttribute.IsHidden)
+            {
+                property.IsHidden = netForgePropertyAttribute.IsHidden;
+            }
+
+            if (netForgePropertyAttribute.Position != default)
+            {
+                property.Position = netForgePropertyAttribute.Position;
             }
         }
     }
