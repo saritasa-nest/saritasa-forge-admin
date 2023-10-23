@@ -35,7 +35,6 @@ internal class NetForgeModule
                     propertyBuilder
                         .SetDescription("Item identifier.")
                         .SetPosition(2);
-
                 });
 
                 entityOptionsBuilder.ConfigureProperty(address => address.ContactPhone, propertyBuilder =>
