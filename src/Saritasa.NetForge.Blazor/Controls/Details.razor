@@ -6,43 +6,42 @@
 
 <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true">
     <Columns>
-        @{
-            var orderedProperties = ViewModel.Model.Properties
-                .OrderByDescending(property => property is { Name: "Id", Position: null })
-                .ThenByDescending(property => property.Position.HasValue)
-                .ThenBy(property => property.Position);
-
-            foreach (var property in orderedProperties)
+        @foreach (var property in ViewModel.Model.Properties)
+        {
+            if (property is not { IsForeignKey: false, IsHidden: false })
             {
-                if (property is not { IsForeignKey: false, IsHidden: false })
-                {
-                    continue;
-                }
+                continue;
+            }
 
-                <TemplateColumn>
-                    <HeaderTemplate>
-                        @if (property.Description == string.Empty)
+            <TemplateColumn>
+                <HeaderTemplate>
+                    @{
+                        var displayName = !string.IsNullOrEmpty(property.DisplayName)
+                            ? property.DisplayName
+                            : property.Name;
+
+                        if (property.Description == string.Empty)
                         {
-                            @(!string.IsNullOrEmpty(property.DisplayName) ? property.DisplayName : property.Name)
+                            @displayName
                         }
                         else
                         {
                             <MudTooltip Arrow="true" Placement="@Placement.Top">
                                 <ChildContent>
-                                    @(!string.IsNullOrEmpty(property.DisplayName) ? property.DisplayName : property.Name)
+                                    @displayName
                                 </ChildContent>
                                 <TooltipContent>
                                     <MudText Typo="@Typo.body2">@property.Description</MudText>
                                 </TooltipContent>
                             </MudTooltip>
                         }
-                    </HeaderTemplate>
+                    }
+                </HeaderTemplate>
 
-                    <CellTemplate>
-                        @GetPropertyValue(context.Item, property.Name)
-                    </CellTemplate>
-                </TemplateColumn>
-            }
+                <CellTemplate>
+                    @GetPropertyValue(context.Item, property.Name)
+                </CellTemplate>
+            </TemplateColumn>
         }
     </Columns>
 

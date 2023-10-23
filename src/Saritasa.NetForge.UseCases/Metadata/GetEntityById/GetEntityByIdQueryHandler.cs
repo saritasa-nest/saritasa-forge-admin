@@ -30,6 +30,14 @@ internal class GetEntityByIdQueryHandler : IRequestHandler<GetEntityByIdQuery, G
 
         var metadataDto = mapper.Map<GetEntityByIdDto>(metadata);
 
+        var orderedProperties = metadataDto.Properties
+            .OrderByDescending(property => property is { Name: "Id", Position: null })
+            .ThenByDescending(property => property.Position.HasValue)
+            .ThenBy(property => property.Position)
+            .ToList();
+
+        metadataDto = metadataDto with { Properties = orderedProperties };
+
         return Task.FromResult(metadataDto);
     }
 }
