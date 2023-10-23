@@ -7,7 +7,7 @@ namespace Saritasa.NetForge.Demo.Net7.Infrastructure.DependencyInjection;
 /// <summary>
 /// Register NetForge admin panel as dependency.
 /// </summary>
-internal class NetForgeModule
+internal static class NetForgeModule
 {
     /// <summary>
     /// Register dependencies.
