@@ -18,5 +18,5 @@ public class NetForgePropertyAttribute : Attribute
     public string? Description { get; set; }
 
     /// <inheritdoc cref="PropertyMetadata.Position"/>
-    public short Position { get; set; }
+    public short Position { get; set; } = -1;
 }

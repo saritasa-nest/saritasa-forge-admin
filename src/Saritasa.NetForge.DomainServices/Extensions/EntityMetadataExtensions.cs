@@ -169,7 +169,7 @@ public static class EntityMetadataExtensions
                 property.IsHidden = netForgePropertyAttribute.IsHidden;
             }
 
-            if (netForgePropertyAttribute.Position != default)
+            if (netForgePropertyAttribute.Position >= 0)
             {
                 property.Position = netForgePropertyAttribute.Position;
             }
