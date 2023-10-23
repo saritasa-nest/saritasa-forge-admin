@@ -6,9 +6,9 @@
 public interface IOrmDataService
 {
     /// <summary>
-    /// Get all data of specified type.
+    /// Get all data of entity with specified type.
     /// </summary>
     /// <param name="clrType">CLR type.</param>
-    /// <returns>Data.</returns>
+    /// <returns>Entity data.</returns>
     IQueryable GetData(Type clrType);
 }
