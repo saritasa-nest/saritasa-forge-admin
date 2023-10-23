@@ -1,6 +1,8 @@
+using System.Reflection;
 using MediatR;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.Tools.Common.Pagination;
+using Saritasa.Tools.Domain.Exceptions;
 
 namespace Saritasa.NetForge.UseCases.Metadata.SearchDataForEntity;
 
@@ -23,6 +25,11 @@ internal class SearchDataForEntityQueryHandler : IRequestHandler<SearchDataForEn
     public Task<PagedListMetadataDto<object>> Handle(
         SearchDataForEntityQuery request, CancellationToken cancellationToken)
     {
+        if (request.EntityType is null)
+        {
+            throw new NotFoundException("Entity with given type was not found.");
+        }
+
         var data = dataService.GetData(request.EntityType).OfType<object>().ToList();
 
         var searchOptions = request.SearchOptions;

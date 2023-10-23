@@ -11,5 +11,5 @@ namespace Saritasa.NetForge.UseCases.Metadata.SearchDataForEntity;
 /// Entity type to search data. For example, search all data for entity with type <c>Address</c>.
 /// </param>
 /// <param name="SearchOptions">Search options.</param>
-public record SearchDataForEntityQuery(Type EntityType, SearchOptions SearchOptions)
+public record SearchDataForEntityQuery(Type? EntityType, SearchOptions SearchOptions)
     : IRequest<PagedListMetadataDto<object>>;
