@@ -1,51 +1,58 @@
 ﻿@inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.Details.DetailsViewModel>
 
-<MudText Typo="Typo.h4">@ViewModel.Model.PluralName</MudText>
+<MudGrid>
+    <MudItem xs="6">
+        <MudText Typo="Typo.h4">@ViewModel.Model.PluralName</MudText>
+        <MudText Typo="Typo.body1">@ViewModel.Model.Description</MudText>
+        <MudTextField T="string" Placeholder="Search" Immediate="true"
+                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"/>
+    </MudItem>
 
-<MudText Typo="Typo.body1" Class="pb-5">@ViewModel.Model.Description</MudText>
-
-<MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true">
-    <Columns>
-        @foreach (var property in ViewModel.Model.Properties)
-        {
-            if (property is not { IsForeignKey: false, IsHidden: false })
-            {
-                continue;
-            }
-
-            <TemplateColumn>
-                <HeaderTemplate>
-                    @{
-                        var displayName = !string.IsNullOrEmpty(property.DisplayName)
-                            ? property.DisplayName
-                            : property.Name;
-
-                        if (property.Description == string.Empty)
-                        {
-                            @displayName
-                        }
-                        else
-                        {
-                            <MudTooltip Arrow="true" Placement="@Placement.Top">
-                                <ChildContent>
-                                    @displayName
-                                </ChildContent>
-                                <TooltipContent>
-                                    <MudText Typo="@Typo.body2">@property.Description</MudText>
-                                </TooltipContent>
-                            </MudTooltip>
-                        }
+    <MudItem xs="12">
+        <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true">
+            <Columns>
+                @foreach (var property in ViewModel.Model.Properties)
+                {
+                    if (property is not { IsForeignKey: false, IsHidden: false })
+                    {
+                        continue;
                     }
-                </HeaderTemplate>
 
-                <CellTemplate>
-                    @GetPropertyValue(context.Item, property.Name)
-                </CellTemplate>
-            </TemplateColumn>
-        }
-    </Columns>
+                    <TemplateColumn>
+                        <HeaderTemplate>
+                            @{
+                                var displayName = !string.IsNullOrEmpty(property.DisplayName)
+                                    ? property.DisplayName
+                                    : property.Name;
 
-    <PagerContent>
-        <MudDataGridPager T="object" />
-    </PagerContent>
-</MudDataGrid>
+                                if (property.Description == string.Empty)
+                                {
+                                    @displayName
+                                }
+                                else
+                                {
+                                    <MudTooltip Arrow="true" Placement="@Placement.Top">
+                                        <ChildContent>
+                                            @displayName
+                                        </ChildContent>
+                                        <TooltipContent>
+                                            <MudText Typo="@Typo.body2">@property.Description</MudText>
+                                        </TooltipContent>
+                                    </MudTooltip>
+                                }
+                            }
+                        </HeaderTemplate>
+
+                        <CellTemplate>
+                            @GetPropertyValue(context.Item, property.Name)
+                        </CellTemplate>
+                    </TemplateColumn>
+                }
+            </Columns>
+
+            <PagerContent>
+                <MudDataGridPager T="object"/>
+            </PagerContent>
+        </MudDataGrid>
+    </MudItem>
+</MudGrid>
