@@ -173,6 +173,11 @@ public static class EntityMetadataExtensions
             {
                 property.Position = netForgePropertyAttribute.Position;
             }
+
+            if (netForgePropertyAttribute.IsSearchable)
+            {
+                property.IsSearchable = netForgePropertyAttribute.IsSearchable;
+            }
         }
     }
 }

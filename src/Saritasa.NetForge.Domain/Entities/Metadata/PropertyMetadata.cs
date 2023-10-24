@@ -48,6 +48,11 @@ public class PropertyMetadata
     public bool IsEditable { get; set; } = true;
 
     /// <summary>
+    /// Whether the property is searchable.
+    /// </summary>
+    public bool IsSearchable { get; set; } = true;
+
+    /// <summary>
     /// The order of the property.
     /// </summary>
     public int Order { get; set; }

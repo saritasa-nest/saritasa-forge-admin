@@ -19,4 +19,7 @@ public class NetForgePropertyAttribute : Attribute
 
     /// <inheritdoc cref="PropertyMetadata.Position"/>
     public short Position { get; set; } = -1;
+
+    /// <inheritdoc cref="PropertyMetadata.IsSearchable"/>
+    public bool IsSearchable { get; set; }
 }
