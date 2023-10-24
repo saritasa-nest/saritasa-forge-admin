@@ -7,7 +7,7 @@ namespace Saritasa.NetForge.Demo.Net7.Infrastructure.DependencyInjection;
 /// <summary>
 /// Register NetForge admin panel as dependency.
 /// </summary>
-internal static class NetForgeModule
+internal class NetForgeModule
 {
     /// <summary>
     /// Register dependencies.
@@ -35,6 +35,7 @@ internal static class NetForgeModule
                     propertyBuilder
                         .SetDescription("Item identifier.")
                         .SetPosition(2);
+
                 });
 
                 entityOptionsBuilder.ConfigureProperty(address => address.ContactPhone, propertyBuilder =>
@@ -58,6 +59,11 @@ internal static class NetForgeModule
                 entityOptionsBuilder.ConfigureProperty(address => address.Longitude, propertyBuilder =>
                 {
                     propertyBuilder.SetPosition(6);
+                });
+
+                entityOptionsBuilder.ConfigureProperty(address => address.Country, propertyBuilder =>
+                {
+                    propertyBuilder.SetIsSearchable(true);
                 });
             });
         });

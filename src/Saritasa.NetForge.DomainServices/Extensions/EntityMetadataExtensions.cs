@@ -74,6 +74,8 @@ public static class EntityMetadataExtensions
                 {
                     property.Position = option.Position.Value;
                 }
+
+                property.IsSearchable = option.IsSearchable;
             }
         }
     }

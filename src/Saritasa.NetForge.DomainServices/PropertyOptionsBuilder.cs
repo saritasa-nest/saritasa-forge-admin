@@ -59,4 +59,13 @@ public class PropertyOptionsBuilder
         options.Position = position;
         return this;
     }
+
+    /// <summary>
+    /// Sets whether the property should be searchable.
+    /// </summary>
+    public PropertyOptionsBuilder SetIsSearchable(bool isSearchable)
+    {
+        options.IsSearchable = isSearchable;
+        return this;
+    }
 }

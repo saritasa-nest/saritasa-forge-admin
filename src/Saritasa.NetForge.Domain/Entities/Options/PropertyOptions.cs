@@ -21,4 +21,7 @@ public class PropertyOptions
 
     /// <inheritdoc cref="PropertyMetadata.Position"/>
     public short? Position { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.IsSearchable"/>
+    public bool IsSearchable { get; set; }
 }
