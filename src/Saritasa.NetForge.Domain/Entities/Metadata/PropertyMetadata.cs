@@ -50,7 +50,7 @@ public class PropertyMetadata
     /// <summary>
     /// Whether the property is searchable.
     /// </summary>
-    public bool IsSearchable { get; set; } = true;
+    public bool IsSearchable { get; set; }
 
     /// <summary>
     /// The order of the property.

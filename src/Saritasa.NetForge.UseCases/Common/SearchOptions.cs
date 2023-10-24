@@ -19,4 +19,9 @@ public record SearchOptions
     /// </summary>
     [Range(1, int.MaxValue)]
     public int PageSize { get; init; } = int.MaxValue;
+
+    /// <summary>
+    /// Search string.
+    /// </summary>
+    public string? SearchString { get; init; }
 }

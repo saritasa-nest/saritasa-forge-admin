@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
@@ -26,6 +27,8 @@ public class DetailsViewModel : BaseViewModel
         this.mapper = mapper;
     }
 
+    public string? SearchString { get; set; }
+
     /// <summary>
     /// Details model.
     /// </summary>
@@ -49,10 +52,11 @@ public class DetailsViewModel : BaseViewModel
         var searchOptions = new SearchOptions
         {
             Page = gridState.Page + 1,
-            PageSize = gridState.PageSize
+            PageSize = gridState.PageSize,
+            SearchString = SearchString
         };
 
-        var entityData = await mediator.Send(new SearchDataForEntityQuery(Model.ClrType, searchOptions));
+        var entityData = await mediator.Send(new SearchDataForEntityQuery(Model.ClrType, searchOptions, Model.Properties));
 
         var data = new GridData<object>
         {
@@ -61,5 +65,12 @@ public class DetailsViewModel : BaseViewModel
         };
 
         return data;
+    }
+
+    public MudDataGrid<object>? DataGrid { get; set; }
+
+    public void Search()
+    {
+        DataGrid?.ReloadServerData();
     }
 }
