@@ -53,7 +53,7 @@ public class EntityDetailsViewModel : BaseViewModel
             PageSize = gridState.PageSize
         };
 
-        var entityData = await mediator.Send(new SearchDataForEntityQuery(Model.ClrType, searchOptions));
+        var entityData = await mediator.Send(new SearchDataForEntityQuery(Model.ClrType, Model.Properties, searchOptions));
 
         var data = new GridData<object>
         {

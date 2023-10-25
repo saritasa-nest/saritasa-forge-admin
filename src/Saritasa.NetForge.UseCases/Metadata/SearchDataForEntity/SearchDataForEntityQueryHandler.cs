@@ -1,4 +1,5 @@
 using MediatR;
+using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.Tools.Common.Pagination;
 using Saritasa.Tools.Domain.Exceptions;
@@ -29,7 +30,9 @@ internal class SearchDataForEntityQueryHandler : IRequestHandler<SearchDataForEn
             throw new NotFoundException("Entity with given type was not found.");
         }
 
-        var data = dataService.GetData(request.EntityType).OfType<object>().ToList();
+        var data = dataService.GetData(request.EntityType).OfType<object>();
+
+        data = data.SelectProperties(request.EntityType, request.Properties);
 
         var searchOptions = request.SearchOptions;
         var pagedList = PagedListFactory.FromSource(data, searchOptions.Page, searchOptions.PageSize);

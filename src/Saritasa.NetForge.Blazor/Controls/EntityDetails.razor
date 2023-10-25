@@ -8,11 +8,6 @@
     <Columns>
         @foreach (var property in ViewModel.Model.Properties)
         {
-            if (property is not { IsForeignKey: false, IsHidden: false })
-            {
-                continue;
-            }
-
             <TemplateColumn>
                 <HeaderTemplate>
                     @{
