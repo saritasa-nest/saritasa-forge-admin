@@ -22,7 +22,7 @@ public class EfCoreDataService : IOrmDataService
     }
 
     /// <inheritdoc/>
-    public IQueryable GetData(Type clrType)
+    public IQueryable GetQuery(Type clrType)
     {
         foreach (var dbContextType in efCoreOptions.DbContexts)
         {

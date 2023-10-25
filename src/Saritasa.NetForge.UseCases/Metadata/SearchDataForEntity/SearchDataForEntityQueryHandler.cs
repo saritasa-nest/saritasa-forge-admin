@@ -30,12 +30,12 @@ internal class SearchDataForEntityQueryHandler : IRequestHandler<SearchDataForEn
             throw new NotFoundException("Entity with given type was not found.");
         }
 
-        var data = dataService.GetData(request.EntityType).OfType<object>();
+        var query = dataService.GetQuery(request.EntityType).OfType<object>();
 
-        data = data.SelectProperties(request.EntityType, request.Properties);
+        query = query.SelectProperties(request.EntityType, request.Properties);
 
         var searchOptions = request.SearchOptions;
-        var pagedList = PagedListFactory.FromSource(data, searchOptions.Page, searchOptions.PageSize);
+        var pagedList = PagedListFactory.FromSource(query, searchOptions.Page, searchOptions.PageSize);
 
         return Task.FromResult(pagedList.ToMetadataObject());
     }
