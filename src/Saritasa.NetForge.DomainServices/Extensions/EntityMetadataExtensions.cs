@@ -70,9 +70,9 @@ public static class EntityMetadataExtensions
                     property.Description = option.Description;
                 }
 
-                if (option.Position.HasValue)
+                if (option.Order.HasValue)
                 {
-                    property.Position = option.Position.Value;
+                    property.Order = option.Order.Value;
                 }
             }
         }
@@ -169,9 +169,9 @@ public static class EntityMetadataExtensions
                 property.IsHidden = netForgePropertyAttribute.IsHidden;
             }
 
-            if (netForgePropertyAttribute.Position >= 0)
+            if (netForgePropertyAttribute.Order >= 0)
             {
-                property.Position = netForgePropertyAttribute.Position;
+                property.Order = netForgePropertyAttribute.Order;
             }
         }
     }

@@ -17,10 +17,10 @@ public class NetForgePropertyAttribute : Attribute
     /// <inheritdoc cref="PropertyMetadata.Description"/>
     public string? Description { get; set; }
 
-    /// <inheritdoc cref="PropertyMetadata.Position"/>
+    /// <inheritdoc cref="PropertyMetadata.Order"/>
     /// <remarks>
     /// We override default value with <c>-1</c>,
-    /// because we need to handle situation when user chose property position is <c>0</c>.
+    /// because we need to handle situation when user chose property order is <c>0</c>.
     /// </remarks>
-    public short Position { get; set; } = -1;
+    public int Order { get; set; } = -1;
 }

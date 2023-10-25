@@ -19,6 +19,6 @@ public class PropertyOptions
     /// <inheritdoc cref="PropertyMetadata.Description"/>
     public string? Description { get; set; }
 
-    /// <inheritdoc cref="PropertyMetadata.Position"/>
-    public short? Position { get; set; }
+    /// <inheritdoc cref="PropertyMetadata.Order"/>
+    public int? Order { get; set; }
 }
