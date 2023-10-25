@@ -30,7 +30,7 @@ internal class SearchDataForEntityQueryHandler : IRequestHandler<SearchDataForEn
             throw new NotFoundException("Entity with given type was not found.");
         }
 
-        var query = dataService.GetQuery(request.EntityType).OfType<object>();
+        var query = dataService.GetQuery(request.EntityType);
 
         query = query.SelectProperties(request.EntityType, request.Properties);
 

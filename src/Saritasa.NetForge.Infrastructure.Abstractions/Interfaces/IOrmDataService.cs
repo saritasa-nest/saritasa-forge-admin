@@ -10,5 +10,5 @@ public interface IOrmDataService
     /// </summary>
     /// <param name="clrType">CLR type.</param>
     /// <returns>Entity data.</returns>
-    IQueryable GetQuery(Type clrType);
+    IQueryable<object> GetQuery(Type clrType);
 }
