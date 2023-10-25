@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Saritasa.NetForge.Domain.Attributes;
 
 namespace Saritasa.NetForge.Demo.Net7.Models;
 
@@ -16,11 +17,13 @@ public class Address
     /// <summary>
     /// The street name and number.
     /// </summary>
+    [NetForgeProperty(DisplayName = "Street name", Description = "Street name without street number.", Order = 3)]
     public required string Street { get; set; }
 
     /// <summary>
     /// The city where the address is located.
     /// </summary>
+    [NetForgeProperty(Order = 4)]
     public required string City { get; set; }
 
     /// <summary>
@@ -31,11 +34,13 @@ public class Address
     /// <summary>
     /// The name of the country.
     /// </summary>
+    [NetForgeProperty(Description = "Country name.", Order = 5)]
     public required string Country { get; set; }
 
     /// <summary>
     /// The latitude coordinate of the address location.
     /// </summary>
+    [NetForgeProperty(Order = 0)]
     public double Latitude { get; set; }
 
     /// <summary>

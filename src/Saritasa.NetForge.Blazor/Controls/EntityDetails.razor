@@ -1,0 +1,44 @@
+﻿@inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.EntityDetails.EntityDetailsViewModel>
+
+<MudText Typo="Typo.h4">@ViewModel.Model.PluralName</MudText>
+
+<MudText Typo="Typo.body1" Class="pb-5">@ViewModel.Model.Description</MudText>
+
+<MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true">
+    <Columns>
+        @foreach (var property in ViewModel.Model.Properties)
+        {
+            <TemplateColumn>
+                <HeaderTemplate>
+                    @{
+                        var displayName = ViewModel.GetPropertyDisplayName(property);
+
+                        if (property.Description == string.Empty)
+                        {
+                            @displayName
+                        }
+                        else
+                        {
+                            <MudTooltip Arrow="true" Placement="@Placement.Top">
+                                <ChildContent>
+                                    @displayName
+                                </ChildContent>
+                                <TooltipContent>
+                                    <MudText Typo="@Typo.body2">@property.Description</MudText>
+                                </TooltipContent>
+                            </MudTooltip>
+                        }
+                    }
+                </HeaderTemplate>
+
+                <CellTemplate Context="cell">
+                    @ViewModel.GetPropertyValue(cell.Item, property.Name)
+                </CellTemplate>
+            </TemplateColumn>
+        }
+    </Columns>
+
+    <PagerContent>
+        <MudDataGridPager T="object" />
+    </PagerContent>
+</MudDataGrid>

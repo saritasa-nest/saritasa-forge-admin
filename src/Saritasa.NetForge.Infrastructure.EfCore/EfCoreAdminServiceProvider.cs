@@ -24,5 +24,6 @@ public class EfCoreAdminServiceProvider : IAdminOrmServiceProvider
         var efCoreOptions = efCoreOptionsBuilder.Create();
         services.TryAddSingleton(efCoreOptions);
         services.TryAddScoped<IOrmMetadataService, EfCoreMetadataService>();
+        services.TryAddScoped<IOrmDataService, EfCoreDataService>();
     }
 }

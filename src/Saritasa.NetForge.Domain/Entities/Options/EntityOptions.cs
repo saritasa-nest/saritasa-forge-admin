@@ -37,4 +37,9 @@ public class EntityOptions
     /// Whether the entity is hidden from the view.
     /// </summary>
     public bool IsHidden { get; set; }
+
+    /// <summary>
+    /// Options for properties of entity.
+    /// </summary>
+    public ICollection<PropertyOptions> PropertyOptions { get; set; } = new List<PropertyOptions>();
 }

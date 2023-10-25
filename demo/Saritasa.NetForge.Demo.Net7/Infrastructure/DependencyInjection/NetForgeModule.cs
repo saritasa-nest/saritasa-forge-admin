@@ -7,7 +7,7 @@ namespace Saritasa.NetForge.Demo.Net7.Infrastructure.DependencyInjection;
 /// <summary>
 /// Register NetForge admin panel as dependency.
 /// </summary>
-internal class NetForgeModule
+internal static class NetForgeModule
 {
     /// <summary>
     /// Register dependencies.
@@ -27,6 +27,38 @@ internal class NetForgeModule
             optionsBuilder.ConfigureEntity<ProductTag>(entityOptionsBuilder =>
             {
                 entityOptionsBuilder.SetIsHidden(true);
+            });
+            optionsBuilder.ConfigureEntity<Address>(entityOptionsBuilder =>
+            {
+                entityOptionsBuilder.ConfigureProperty(address => address.Id, propertyBuilder =>
+                {
+                    propertyBuilder
+                        .SetDescription("Item identifier.")
+                        .SetOrder(2);
+                });
+
+                entityOptionsBuilder.ConfigureProperty(address => address.ContactPhone, propertyBuilder =>
+                {
+                    propertyBuilder
+                        .SetDisplayName("Phone")
+                        .SetDescription("Address contact phone.")
+                        .SetOrder(1);
+                });
+
+                entityOptionsBuilder.ConfigureProperty(address => address.PostalCode, propertyBuilder =>
+                {
+                    propertyBuilder.SetIsHidden(true);
+                });
+
+                entityOptionsBuilder.ConfigureProperty(address => address.City, propertyBuilder =>
+                {
+                    propertyBuilder.SetDisplayName("Town");
+                });
+
+                entityOptionsBuilder.ConfigureProperty(address => address.Longitude, propertyBuilder =>
+                {
+                    propertyBuilder.SetOrder(6);
+                });
             });
         });
     }

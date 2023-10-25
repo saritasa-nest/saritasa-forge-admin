@@ -1,0 +1,22 @@
+﻿using System.ComponentModel.DataAnnotations;
+using Saritasa.Tools.Common.Pagination;
+
+namespace Saritasa.NetForge.UseCases.Common;
+
+/// <summary>
+/// Search options that contains page and page size.
+/// </summary>
+public record SearchOptions
+{
+    /// <summary>
+    /// Page number to return. Starts with 1.
+    /// </summary>
+    [Range(1, int.MaxValue)]
+    public int Page { get; init; } = PagedList<object>.FirstPage;
+
+    /// <summary>
+    /// Required page size (amount of items returned at a time).
+    /// </summary>
+    [Range(1, int.MaxValue)]
+    public int PageSize { get; init; } = int.MaxValue;
+}

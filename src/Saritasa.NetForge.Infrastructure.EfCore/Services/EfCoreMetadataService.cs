@@ -83,7 +83,7 @@ internal class EfCoreMetadataService : IOrmMetadataService
             IsForeignKey = property.IsForeignKey(),
             IsPrimaryKey = property.IsPrimaryKey(),
             IsNullable = property.IsNullable,
-            Order = property.GetColumnOrder() ?? default,
+            Order = property.GetColumnOrder(),
             IsShadow = property.IsShadowProperty(),
             IsValueGeneratedOnAdd = property.ValueGenerated.HasFlag(ValueGenerated.OnAdd),
             IsValueGeneratedOnUpdate = property.ValueGenerated.HasFlag(ValueGenerated.OnUpdate),

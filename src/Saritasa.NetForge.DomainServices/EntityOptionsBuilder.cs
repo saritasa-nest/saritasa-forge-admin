@@ -1,4 +1,6 @@
-﻿using Saritasa.NetForge.Domain.Entities.Options;
+﻿using System.Linq.Expressions;
+using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.DomainServices.Extensions;
 
 namespace Saritasa.NetForge.DomainServices;
 
@@ -55,5 +57,25 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     public EntityOptions Create()
     {
         return options;
+    }
+
+    /// <summary>
+    /// Configures options for specific entity's property.
+    /// </summary>
+    /// <param name="propertyExpression">
+    /// Expression that represents property. For example: <c>entity => entity.Name</c>.
+    /// </param>
+    /// <param name="propertyOptionsBuilderAction">An action that builds property options.</param>
+    public void ConfigureProperty(
+        Expression<Func<TEntity, object>> propertyExpression,
+        Action<PropertyOptionsBuilder> propertyOptionsBuilderAction)
+    {
+        var propertyOptionsBuilder = new PropertyOptionsBuilder();
+        propertyOptionsBuilderAction.Invoke(propertyOptionsBuilder);
+
+        var propertyName = propertyExpression.GetMemberName();
+        var propertyOptions = propertyOptionsBuilder.Create(propertyName);
+
+        options.PropertyOptions.Add(propertyOptions);
     }
 }

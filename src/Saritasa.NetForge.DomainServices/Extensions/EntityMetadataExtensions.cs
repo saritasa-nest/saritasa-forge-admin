@@ -45,6 +45,34 @@ public static class EntityMetadataExtensions
         {
             entityMetadata.IsHidden = entityOptions.IsHidden;
         }
+
+        foreach (var option in entityOptions.PropertyOptions)
+        {
+            var property = entityMetadata.Properties.FirstOrDefault(property => property.Name == option.PropertyName);
+
+            property?.ApplyPropertyOptions(option);
+        }
+    }
+
+    private static void ApplyPropertyOptions(
+        this PropertyMetadata property, PropertyOptions propertyOptions)
+    {
+        property.IsHidden = propertyOptions.IsHidden;
+
+        if (!string.IsNullOrEmpty(propertyOptions.DisplayName))
+        {
+            property.DisplayName = propertyOptions.DisplayName;
+        }
+
+        if (!string.IsNullOrEmpty(propertyOptions.Description))
+        {
+            property.Description = propertyOptions.Description;
+        }
+
+        if (propertyOptions.Order.HasValue)
+        {
+            property.Order = propertyOptions.Order.Value;
+        }
     }
 
     /// <summary>
@@ -53,24 +81,9 @@ public static class EntityMetadataExtensions
     /// <param name="entityMetadata">The metadata of the entity to which attributes are applied.</param>
     public static void ApplyEntityAttributes(this EntityMetadata entityMetadata)
     {
-        var netForgeEntityAttribute = entityMetadata.ClrType?.GetCustomAttribute<NetForgeEntityAttribute>();
-
-        if (netForgeEntityAttribute == null)
+        foreach (var property in entityMetadata.Properties)
         {
-            return;
-        }
-
-        // Try to get the description from the System.ComponentModel.DescriptionAttribute.
-        var descriptionAttribute = entityMetadata.ClrType?.GetCustomAttribute<DescriptionAttribute>();
-
-        if (!string.IsNullOrEmpty(descriptionAttribute?.Description))
-        {
-            entityMetadata.Description = descriptionAttribute.Description;
-        }
-
-        if (!string.IsNullOrEmpty(netForgeEntityAttribute.Description))
-        {
-            entityMetadata.Description = netForgeEntityAttribute.Description;
+            property.ApplyPropertyAttributes();
         }
 
         // Try to get the description from the System.ComponentModel.DisplayNameAttribute.
@@ -79,6 +92,25 @@ public static class EntityMetadataExtensions
         if (!string.IsNullOrEmpty(displayNameAttribute?.DisplayName))
         {
             entityMetadata.Name = displayNameAttribute.DisplayName;
+        }
+
+        var descriptionAttribute = entityMetadata.ClrType?.GetCustomAttribute<DescriptionAttribute>();
+
+        if (!string.IsNullOrEmpty(descriptionAttribute?.Description))
+        {
+            entityMetadata.Description = descriptionAttribute.Description;
+        }
+
+        var netForgeEntityAttribute = entityMetadata.ClrType?.GetCustomAttribute<NetForgeEntityAttribute>();
+
+        if (netForgeEntityAttribute == null)
+        {
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(netForgeEntityAttribute.Description))
+        {
+            entityMetadata.Description = netForgeEntityAttribute.Description;
         }
 
         if (!string.IsNullOrEmpty(netForgeEntityAttribute.Name))
@@ -94,6 +126,50 @@ public static class EntityMetadataExtensions
         if (netForgeEntityAttribute.IsHidden)
         {
             entityMetadata.IsHidden = netForgeEntityAttribute.IsHidden;
+        }
+    }
+
+    private static void ApplyPropertyAttributes(this PropertyMetadata property)
+    {
+        var descriptionAttribute = property.PropertyInformation?.GetCustomAttribute<DescriptionAttribute>();
+
+        if (!string.IsNullOrEmpty(descriptionAttribute?.Description))
+        {
+            property.Description = descriptionAttribute.Description;
+        }
+
+        var displayNameAttribute = property.PropertyInformation?.GetCustomAttribute<DisplayNameAttribute>();
+
+        if (!string.IsNullOrEmpty(displayNameAttribute?.DisplayName))
+        {
+            property.DisplayName = displayNameAttribute.DisplayName;
+        }
+
+        var netForgePropertyAttribute = property.PropertyInformation?.GetCustomAttribute<NetForgePropertyAttribute>();
+
+        if (netForgePropertyAttribute is null)
+        {
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(netForgePropertyAttribute.Description))
+        {
+            property.Description = netForgePropertyAttribute.Description;
+        }
+
+        if (!string.IsNullOrEmpty(netForgePropertyAttribute.DisplayName))
+        {
+            property.DisplayName = netForgePropertyAttribute.DisplayName;
+        }
+
+        if (netForgePropertyAttribute.IsHidden)
+        {
+            property.IsHidden = netForgePropertyAttribute.IsHidden;
+        }
+
+        if (netForgePropertyAttribute.Order >= 0)
+        {
+            property.Order = netForgePropertyAttribute.Order;
         }
     }
 }
