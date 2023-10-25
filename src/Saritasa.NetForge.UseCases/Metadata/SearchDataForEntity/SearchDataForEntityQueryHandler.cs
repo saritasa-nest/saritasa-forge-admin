@@ -36,36 +36,21 @@ internal class SearchDataForEntityQueryHandler : IRequestHandler<SearchDataForEn
 
         var searchOptions = request.SearchOptions;
 
-        if (searchOptions.SearchString is not null)
+        if (!string.IsNullOrEmpty(searchOptions.SearchString))
         {
             foreach (var property in request.Properties)
             {
                 if (property.IsSearchable)
                 {
-                    data = data
-                        .Where(d =>
-                                 d
-                                .GetType()
-                                .GetProperty(property.Name)
-                                .GetValue(d)
-                                .ToString()
-                                .Equals(searchOptions.SearchString));
+                    var searchConstant = Expression.Constant(searchOptions.SearchString);
+                    var entityParam = Expression.Parameter(typeof(object), "entity");
+                    var converted = Expression.Convert(entityParam, request.EntityType);
+                    var propertyExpression = Expression.Property(converted, property.Name);
+                    var body = Expression.Equal(propertyExpression, searchConstant);
 
-                    try
-                    {
-                        var searchConstant = Expression.Constant(searchOptions.SearchString);
-                        var entityParam = Expression.Parameter(request.EntityType);
-                        var propertyExpression = Expression.Property(entityParam, property.Name);
-                        var body = Expression.Equal(propertyExpression, searchConstant);
-                        var predicate = Expression.Lambda<Func<object, bool>>(body, entityParam);
+                    var predicate = Expression.Lambda<Func<object, bool>>(body, entityParam);
 
-                        data = data.Where(predicate);
-                    }
-                    catch (Exception ex)
-                    {
-
-                    }
-
+                    data = data.Where(predicate);
                 }
             }
         }
