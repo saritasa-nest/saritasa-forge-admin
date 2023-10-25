@@ -22,7 +22,7 @@ public class EfCoreDataService : IOrmDataService
     }
 
     /// <inheritdoc/>
-    public IQueryable GetData(Type clrType)
+    public IQueryable<object> GetQuery(Type clrType)
     {
         foreach (var dbContextType in efCoreOptions.DbContexts)
         {
@@ -34,7 +34,7 @@ public class EfCoreDataService : IOrmDataService
             }
 
             var dbContext = (DbContext)dbContextService;
-            return dbContext.Set(clrType);
+            return dbContext.Set(clrType).OfType<object>();
         }
 
         throw new ArgumentException("Database entity with given type was not found", nameof(clrType));

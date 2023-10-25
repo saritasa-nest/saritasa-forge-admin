@@ -41,7 +41,7 @@ public class PropertyOptionsBuilder
     }
 
     /// <summary>
-    /// Sets description to property. Displayed as tooltip when user hovering corresponding property.
+    /// Sets description to property.
     /// </summary>
     /// <param name="description">Description.</param>
     public PropertyOptionsBuilder SetDescription(string description)
@@ -51,12 +51,12 @@ public class PropertyOptionsBuilder
     }
 
     /// <summary>
-    /// Sets position to property.
+    /// Sets order to property.
     /// </summary>
-    /// <param name="position">Position number.</param>
-    public PropertyOptionsBuilder SetPosition(short position)
+    /// <param name="order">Order number.</param>
+    public PropertyOptionsBuilder SetOrder(int order)
     {
-        options.Position = position;
+        options.Order = order;
         return this;
     }
 

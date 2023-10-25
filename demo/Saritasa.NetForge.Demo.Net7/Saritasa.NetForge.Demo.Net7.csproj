@@ -25,7 +25,13 @@
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
         <PackageReference Include="Saritasa.Tools.Common" Version="5.0.0" />
     </ItemGroup>
-
+    
+    <ItemGroup>
+        <None Update="appsettings.json.template">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+    
     <ItemGroup>
       <ProjectReference Include="..\..\src\Saritasa.NetForge.Blazor\Saritasa.NetForge.Blazor.csproj" />
       <ProjectReference Include="..\..\src\Saritasa.NetForge.Infrastructure.EfCore\Saritasa.NetForge.Infrastructure.EfCore.csproj" />

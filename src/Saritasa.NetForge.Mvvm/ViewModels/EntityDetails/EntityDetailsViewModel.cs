@@ -2,16 +2,17 @@
 using MediatR;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.UseCases.Metadata.SearchDataForEntity;
 
-namespace Saritasa.NetForge.Mvvm.ViewModels.Details;
+namespace Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 
 /// <summary>
 /// ViewModel representing details of an entity.
 /// </summary>
-public class DetailsViewModel : BaseViewModel
+public class EntityDetailsViewModel : BaseViewModel
 {
     private readonly IMediator mediator;
     private readonly IMapper mapper;
@@ -19,9 +20,9 @@ public class DetailsViewModel : BaseViewModel
     /// <summary>
     /// Constructor.
     /// </summary>
-    public DetailsViewModel(Guid id, IMediator mediator, IMapper mapper)
+    public EntityDetailsViewModel(Guid id, IMediator mediator, IMapper mapper)
     {
-        Model = new DetailsModel { Id = id };
+        Model = new EntityDetailsModel { Id = id };
 
         this.mediator = mediator;
         this.mapper = mapper;
@@ -30,16 +31,16 @@ public class DetailsViewModel : BaseViewModel
     public string? SearchString { get; set; }
 
     /// <summary>
-    /// Details model.
+    /// Entity details model.
     /// </summary>
-    public DetailsModel Model { get; private set; }
+    public EntityDetailsModel Model { get; private set; }
 
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
     {
         var entity = await mediator.Send(new GetEntityByIdQuery(Model.Id), cancellationToken);
 
-        Model = mapper.Map<DetailsModel>(entity);
+        Model = mapper.Map<EntityDetailsModel>(entity);
     }
 
     /// <summary>
@@ -56,7 +57,7 @@ public class DetailsViewModel : BaseViewModel
             SearchString = SearchString
         };
 
-        var entityData = await mediator.Send(new SearchDataForEntityQuery(Model.ClrType, searchOptions, Model.Properties));
+        var entityData = await mediator.Send(new SearchDataForEntityQuery(Model.ClrType, Model.Properties, searchOptions));
 
         var data = new GridData<object>
         {
@@ -65,6 +66,29 @@ public class DetailsViewModel : BaseViewModel
         };
 
         return data;
+    }
+
+    /// <summary>
+    /// Gets property's display name.
+    /// </summary>
+    /// <param name="property">Property.</param>
+    /// <returns>Display name.</returns>
+    public string GetPropertyDisplayName(PropertyMetadata property)
+    {
+        return !string.IsNullOrEmpty(property.DisplayName)
+            ? property.DisplayName
+            : property.Name;
+    }
+
+    /// <summary>
+    /// Gets property value via <c>Reflection</c>.
+    /// </summary>
+    /// <param name="source">Source object.</param>
+    /// <param name="propertyName">Property name.</param>
+    /// <returns>Property value.</returns>
+    public object? GetPropertyValue(object source, string propertyName)
+    {
+        return source.GetType().GetProperty(propertyName)?.GetValue(source);
     }
 
     public MudDataGrid<object>? DataGrid { get; set; }

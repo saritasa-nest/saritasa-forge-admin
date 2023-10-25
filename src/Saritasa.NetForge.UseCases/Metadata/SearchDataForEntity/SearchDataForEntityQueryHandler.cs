@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 using MediatR;
+using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.Tools.Common.Extensions;
 using Saritasa.Tools.Common.Pagination;
@@ -32,7 +33,9 @@ internal class SearchDataForEntityQueryHandler : IRequestHandler<SearchDataForEn
             throw new NotFoundException("Entity with given type was not found.");
         }
 
-        var data = dataService.GetData(request.EntityType).OfType<object>();
+        var query = dataService.GetQuery(request.EntityType);
+
+        query = query.SelectProperties(request.EntityType, request.Properties);
 
         var searchOptions = request.SearchOptions;
 
@@ -50,12 +53,12 @@ internal class SearchDataForEntityQueryHandler : IRequestHandler<SearchDataForEn
 
                     var predicate = Expression.Lambda<Func<object, bool>>(body, entityParam);
 
-                    data = data.Where(predicate);
+                    query = query.Where(predicate);
                 }
             }
         }
 
-        var pagedList = PagedListFactory.FromSource(data, searchOptions.Page, searchOptions.PageSize);
+        var pagedList = PagedListFactory.FromSource(query, searchOptions.Page, searchOptions.PageSize);
 
         return Task.FromResult(pagedList.ToMetadataObject());
     }

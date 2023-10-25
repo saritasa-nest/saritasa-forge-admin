@@ -20,7 +20,8 @@ public static class DbContextExtensions
     {
         var setMethod = typeof(DbContext)
             .GetMethods()
-            .Single(p => p.Name == nameof(DbContext.Set) && p.ContainsGenericParameters && !p.GetParameters().Any());
+            .Single(p => p is { Name: nameof(DbContext.Set), ContainsGenericParameters: true } &&
+                         !p.GetParameters().Any());
 
         setMethod = setMethod.MakeGenericMethod(entityType);
 

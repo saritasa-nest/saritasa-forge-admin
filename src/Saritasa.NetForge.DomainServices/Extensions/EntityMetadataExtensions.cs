@@ -46,38 +46,35 @@ public static class EntityMetadataExtensions
             entityMetadata.IsHidden = entityOptions.IsHidden;
         }
 
-        entityMetadata.ApplyPropertyOptions(entityOptions.PropertyOptions);
-    }
-
-    private static void ApplyPropertyOptions(
-        this EntityMetadata entityMetadata, IEnumerable<PropertyOptions> propertyOptions)
-    {
-        foreach (var option in propertyOptions)
+        foreach (var option in entityOptions.PropertyOptions)
         {
             var property = entityMetadata.Properties.FirstOrDefault(property => property.Name == option.PropertyName);
 
-            if (property is not null)
-            {
-                property.IsHidden = option.IsHidden;
-
-                if (!string.IsNullOrEmpty(option.DisplayName))
-                {
-                    property.DisplayName = option.DisplayName;
-                }
-
-                if (!string.IsNullOrEmpty(option.Description))
-                {
-                    property.Description = option.Description;
-                }
-
-                if (option.Position.HasValue)
-                {
-                    property.Position = option.Position.Value;
-                }
-
-                property.IsSearchable = option.IsSearchable;
-            }
+            property?.ApplyPropertyOptions(option);
         }
+    }
+
+    private static void ApplyPropertyOptions(
+        this PropertyMetadata property, PropertyOptions propertyOptions)
+    {
+        property.IsHidden = propertyOptions.IsHidden;
+
+        if (!string.IsNullOrEmpty(propertyOptions.DisplayName))
+        {
+            property.DisplayName = propertyOptions.DisplayName;
+        }
+
+        if (!string.IsNullOrEmpty(propertyOptions.Description))
+        {
+            property.Description = propertyOptions.Description;
+        }
+
+        if (propertyOptions.Order.HasValue)
+        {
+            property.Order = propertyOptions.Order.Value;
+        }
+
+        property.IsSearchable = option.IsSearchable;
     }
 
     /// <summary>
@@ -86,7 +83,10 @@ public static class EntityMetadataExtensions
     /// <param name="entityMetadata">The metadata of the entity to which attributes are applied.</param>
     public static void ApplyEntityAttributes(this EntityMetadata entityMetadata)
     {
-        entityMetadata.Properties.ApplyPropertyAttributes();
+        foreach (var property in entityMetadata.Properties)
+        {
+            property.ApplyPropertyAttributes();
+        }
 
         // Try to get the description from the System.ComponentModel.DisplayNameAttribute.
         var displayNameAttribute = entityMetadata.ClrType?.GetCustomAttribute<DisplayNameAttribute>();
@@ -131,55 +131,52 @@ public static class EntityMetadataExtensions
         }
     }
 
-    private static void ApplyPropertyAttributes(this IEnumerable<PropertyMetadata> properties)
+    private static void ApplyPropertyAttributes(this PropertyMetadata property)
     {
-        foreach (var property in properties)
+        var descriptionAttribute = property.PropertyInformation?.GetCustomAttribute<DescriptionAttribute>();
+
+        if (!string.IsNullOrEmpty(descriptionAttribute?.Description))
         {
-            var descriptionAttribute = property.PropertyInformation?.GetCustomAttribute<DescriptionAttribute>();
+            property.Description = descriptionAttribute.Description;
+        }
 
-            if (!string.IsNullOrEmpty(descriptionAttribute?.Description))
-            {
-                property.Description = descriptionAttribute.Description;
-            }
+        var displayNameAttribute = property.PropertyInformation?.GetCustomAttribute<DisplayNameAttribute>();
 
-            var displayNameAttribute = property.PropertyInformation?.GetCustomAttribute<DisplayNameAttribute>();
+        if (!string.IsNullOrEmpty(displayNameAttribute?.DisplayName))
+        {
+            property.DisplayName = displayNameAttribute.DisplayName;
+        }
 
-            if (!string.IsNullOrEmpty(displayNameAttribute?.DisplayName))
-            {
-                property.DisplayName = displayNameAttribute.DisplayName;
-            }
+        var netForgePropertyAttribute = property.PropertyInformation?.GetCustomAttribute<NetForgePropertyAttribute>();
 
-            var netForgePropertyAttribute = property.PropertyInformation?.GetCustomAttribute<NetForgePropertyAttribute>();
+        if (netForgePropertyAttribute is null)
+        {
+            return;
+        }
 
-            if (netForgePropertyAttribute is null)
-            {
-                continue;
-            }
+        if (!string.IsNullOrEmpty(netForgePropertyAttribute.Description))
+        {
+            property.Description = netForgePropertyAttribute.Description;
+        }
 
-            if (!string.IsNullOrEmpty(netForgePropertyAttribute.Description))
-            {
-                property.Description = netForgePropertyAttribute.Description;
-            }
+        if (!string.IsNullOrEmpty(netForgePropertyAttribute.DisplayName))
+        {
+            property.DisplayName = netForgePropertyAttribute.DisplayName;
+        }
 
-            if (!string.IsNullOrEmpty(netForgePropertyAttribute.DisplayName))
-            {
-                property.DisplayName = netForgePropertyAttribute.DisplayName;
-            }
+        if (netForgePropertyAttribute.IsHidden)
+        {
+            property.IsHidden = netForgePropertyAttribute.IsHidden;
+        }
 
-            if (netForgePropertyAttribute.IsHidden)
-            {
-                property.IsHidden = netForgePropertyAttribute.IsHidden;
-            }
+        if (netForgePropertyAttribute.Order >= 0)
+        {
+            property.Order = netForgePropertyAttribute.Order;
+        }
 
-            if (netForgePropertyAttribute.Position >= 0)
-            {
-                property.Position = netForgePropertyAttribute.Position;
-            }
-
-            if (netForgePropertyAttribute.IsSearchable)
-            {
-                property.IsSearchable = netForgePropertyAttribute.IsSearchable;
-            }
+        if (netForgePropertyAttribute.IsSearchable)
+        {
+            property.IsSearchable = netForgePropertyAttribute.IsSearchable;
         }
     }
 }

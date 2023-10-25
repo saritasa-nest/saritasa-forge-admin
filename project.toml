@@ -1,0 +1,11 @@
+[[ build.env ]]
+    name = 'BP_DOTNET_PROJECT_PATH'
+    value = 'demo/Saritasa.NetForge.Demo.Net7'
+
+[[ build.env ]]
+    name = 'BP_DOTNET_PUBLISH_FLAGS'
+    value = '--self-contained=true'
+
+[[ build.buildpacks ]]
+    id = "paketo-buildpacks/dotnet-core"
+    version = "0.40.1"

@@ -34,8 +34,7 @@ internal class NetForgeModule
                 {
                     propertyBuilder
                         .SetDescription("Item identifier.")
-                        .SetPosition(2);
-
+                        .SetOrder(2);
                 });
 
                 entityOptionsBuilder.ConfigureProperty(address => address.ContactPhone, propertyBuilder =>
@@ -43,7 +42,7 @@ internal class NetForgeModule
                     propertyBuilder
                         .SetDisplayName("Phone")
                         .SetDescription("Address contact phone.")
-                        .SetPosition(1);
+                        .SetOrder(1);
                 });
 
                 entityOptionsBuilder.ConfigureProperty(address => address.PostalCode, propertyBuilder =>
@@ -58,7 +57,7 @@ internal class NetForgeModule
 
                 entityOptionsBuilder.ConfigureProperty(address => address.Longitude, propertyBuilder =>
                 {
-                    propertyBuilder.SetPosition(6);
+                    propertyBuilder.SetOrder(6);
                 });
 
                 entityOptionsBuilder.ConfigureProperty(address => address.Country, propertyBuilder =>

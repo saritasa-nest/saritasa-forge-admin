@@ -55,7 +55,7 @@ public class PropertyMetadata
     /// <summary>
     /// The order of the property.
     /// </summary>
-    public int Order { get; set; }
+    public int? Order { get; set; }
 
     /// <summary>
     /// The type of the property.
@@ -82,9 +82,4 @@ public class PropertyMetadata
     /// Whether the property value is generated on entity database update.
     /// </summary>
     public bool IsValueGeneratedOnUpdate { get; set; }
-
-    /// <summary>
-    /// Define position in column order.
-    /// </summary>
-    public short? Position { get; set; }
 }

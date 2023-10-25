@@ -17,8 +17,12 @@ public class NetForgePropertyAttribute : Attribute
     /// <inheritdoc cref="PropertyMetadata.Description"/>
     public string? Description { get; set; }
 
-    /// <inheritdoc cref="PropertyMetadata.Position"/>
-    public short Position { get; set; } = -1;
+    /// <inheritdoc cref="PropertyMetadata.Order"/>
+    /// <remarks>
+    /// We override default value with <c>-1</c>,
+    /// because we need to handle situation when user chose property order is <c>0</c>.
+    /// </remarks>
+    public int Order { get; set; } = -1;
 
     /// <inheritdoc cref="PropertyMetadata.IsSearchable"/>
     public bool IsSearchable { get; set; }
