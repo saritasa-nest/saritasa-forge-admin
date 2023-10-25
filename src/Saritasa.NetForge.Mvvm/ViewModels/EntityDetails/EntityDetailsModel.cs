@@ -1,11 +1,11 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Metadata;
 
-namespace Saritasa.NetForge.Mvvm.ViewModels.Details;
+namespace Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 
 /// <summary>
-/// Details model.
+/// Entity details model.
 /// </summary>
-public class DetailsModel
+public class EntityDetailsModel
 {
     /// <inheritdoc cref="EntityMetadata.Id"/>
     public Guid Id { get; set; }

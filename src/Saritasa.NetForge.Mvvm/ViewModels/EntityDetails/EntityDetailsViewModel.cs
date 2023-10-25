@@ -5,12 +5,12 @@ using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.UseCases.Metadata.SearchDataForEntity;
 
-namespace Saritasa.NetForge.Mvvm.ViewModels.Details;
+namespace Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 
 /// <summary>
 /// ViewModel representing details of an entity.
 /// </summary>
-public class DetailsViewModel : BaseViewModel
+public class EntityDetailsViewModel : BaseViewModel
 {
     private readonly IMediator mediator;
     private readonly IMapper mapper;
@@ -18,25 +18,25 @@ public class DetailsViewModel : BaseViewModel
     /// <summary>
     /// Constructor.
     /// </summary>
-    public DetailsViewModel(Guid id, IMediator mediator, IMapper mapper)
+    public EntityDetailsViewModel(Guid id, IMediator mediator, IMapper mapper)
     {
-        Model = new DetailsModel { Id = id };
+        Model = new EntityDetailsModel { Id = id };
 
         this.mediator = mediator;
         this.mapper = mapper;
     }
 
     /// <summary>
-    /// Details model.
+    /// Entity details model.
     /// </summary>
-    public DetailsModel Model { get; private set; }
+    public EntityDetailsModel Model { get; private set; }
 
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
     {
         var entity = await mediator.Send(new GetEntityByIdQuery(Model.Id), cancellationToken);
 
-        Model = mapper.Map<DetailsModel>(entity);
+        Model = mapper.Map<EntityDetailsModel>(entity);
     }
 
     /// <summary>

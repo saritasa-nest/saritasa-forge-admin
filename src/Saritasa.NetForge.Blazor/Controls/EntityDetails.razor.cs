@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Saritasa.NetForge.Blazor.Pages;
-using Saritasa.NetForge.Mvvm.ViewModels.Details;
+using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 
 namespace Saritasa.NetForge.Blazor.Controls;
 
@@ -8,7 +8,7 @@ namespace Saritasa.NetForge.Blazor.Controls;
 /// Entity details.
 /// </summary>
 [Route("/details/{id:guid}")]
-public partial class Details : MvvmComponentBase<DetailsViewModel>
+public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
 {
     /// <summary>
     /// Entity id.
@@ -17,9 +17,9 @@ public partial class Details : MvvmComponentBase<DetailsViewModel>
     public Guid Id { get; set; }
 
     /// <inheritdoc/>
-    protected override DetailsViewModel CreateViewModel()
+    protected override EntityDetailsViewModel CreateViewModel()
     {
-        return ViewModelFactory.Create<DetailsViewModel>(Id);
+        return ViewModelFactory.Create<EntityDetailsViewModel>(Id);
     }
 
     private static object? GetPropertyValue(object source, string propertyName)
