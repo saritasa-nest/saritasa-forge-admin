@@ -36,8 +36,8 @@
                     }
                 </HeaderTemplate>
 
-                <CellTemplate>
-                    @GetPropertyValue(context.Item, property.Name)
+                <CellTemplate Context="cell">
+                    @GetPropertyValue(cell.Item, property.Name)
                 </CellTemplate>
             </TemplateColumn>
         }
