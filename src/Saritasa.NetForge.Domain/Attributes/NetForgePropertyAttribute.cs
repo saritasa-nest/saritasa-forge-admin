@@ -18,5 +18,9 @@ public class NetForgePropertyAttribute : Attribute
     public string? Description { get; set; }
 
     /// <inheritdoc cref="PropertyMetadata.Position"/>
+    /// <remarks>
+    /// We override default value with <c>-1</c>,
+    /// because we need to handle situation when user chose property position is <c>0</c>.
+    /// </remarks>
     public short Position { get; set; } = -1;
 }
