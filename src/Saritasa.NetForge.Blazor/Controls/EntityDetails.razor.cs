@@ -21,9 +21,4 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     {
         return ViewModelFactory.Create<EntityDetailsViewModel>(Id);
     }
-
-    private static object? GetPropertyValue(object source, string propertyName)
-    {
-        return source.GetType().GetProperty(propertyName)!.GetValue(source);
-    }
 }

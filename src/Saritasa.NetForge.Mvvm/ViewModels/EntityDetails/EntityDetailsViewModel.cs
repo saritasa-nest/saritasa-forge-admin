@@ -75,4 +75,15 @@ public class EntityDetailsViewModel : BaseViewModel
             ? property.DisplayName
             : property.Name;
     }
+
+    /// <summary>
+    /// Gets property value via <c>Reflection</c>.
+    /// </summary>
+    /// <param name="source">Source object.</param>
+    /// <param name="propertyName">Property name.</param>
+    /// <returns>Property value.</returns>
+    public object? GetPropertyValue(object source, string propertyName)
+    {
+        return source.GetType().GetProperty(propertyName)?.GetValue(source);
+    }
 }

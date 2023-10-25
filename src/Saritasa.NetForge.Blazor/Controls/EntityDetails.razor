@@ -32,7 +32,7 @@
                 </HeaderTemplate>
 
                 <CellTemplate Context="cell">
-                    @GetPropertyValue(cell.Item, property.Name)
+                    @ViewModel.GetPropertyValue(cell.Item, property.Name)
                 </CellTemplate>
             </TemplateColumn>
         }
