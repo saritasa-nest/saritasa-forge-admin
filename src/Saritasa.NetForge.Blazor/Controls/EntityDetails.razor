@@ -10,7 +10,8 @@
     </MudItem>
 
     <MudItem xs="12">
-        <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true">
+        <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true"
+                     @ref="ViewModel.DataGrid">
             <Columns>
                 @foreach (var property in ViewModel.Model.Properties)
                 {

@@ -74,7 +74,7 @@ public static class EntityMetadataExtensions
             property.Order = propertyOptions.Order.Value;
         }
 
-        property.IsSearchable = option.IsSearchable;
+        property.IsSearchable = propertyOptions.IsSearchable;
     }
 
     /// <summary>
