@@ -41,7 +41,7 @@ public class PropertyOptionsBuilder
     }
 
     /// <summary>
-    /// Sets description to property. Displayed as tooltip when user hovering corresponding property.
+    /// Sets description to property.
     /// </summary>
     /// <param name="description">Description.</param>
     public PropertyOptionsBuilder SetDescription(string description)
