@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using MudBlazor;
+using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.UseCases.Metadata.SearchDataForEntity;
@@ -61,5 +62,17 @@ public class EntityDetailsViewModel : BaseViewModel
         };
 
         return data;
+    }
+
+    /// <summary>
+    /// Gets property's display name.
+    /// </summary>
+    /// <param name="property">Property.</param>
+    /// <returns>Display name.</returns>
+    public string GetPropertyDisplayName(PropertyMetadata property)
+    {
+        return !string.IsNullOrEmpty(property.DisplayName)
+            ? property.DisplayName
+            : property.Name;
     }
 }

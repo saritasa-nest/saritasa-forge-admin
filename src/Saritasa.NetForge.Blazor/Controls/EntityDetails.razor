@@ -16,9 +16,7 @@
             <TemplateColumn>
                 <HeaderTemplate>
                     @{
-                        var displayName = !string.IsNullOrEmpty(property.DisplayName)
-                            ? property.DisplayName
-                            : property.Name;
+                        var displayName = ViewModel.GetPropertyDisplayName(property);
 
                         if (property.Description == string.Empty)
                         {
