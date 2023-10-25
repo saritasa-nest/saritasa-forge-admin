@@ -7,7 +7,7 @@ namespace Saritasa.NetForge.Blazor.Controls;
 /// <summary>
 /// Entity details.
 /// </summary>
-[Route("/details/{id:guid}")]
+[Route("/entities/{id:guid}")]
 public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
 {
     /// <summary>
