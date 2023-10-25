@@ -92,7 +92,7 @@ public class AnotherEntity
 
 ## Customizing entity properties
 
-You can customize entity properties as well. For example, you can change display name, add description, hide it or change property position in column order.
+You can customize entity properties as well. For example, you can change display name, add description, hide it or change property column order.
 
 ### Fluent API
 
@@ -103,7 +103,7 @@ optionsBuilder.ConfigureEntity<Address>(entityOptionsBuilder =>
     {
         propertyBuilder
             .SetDescription("Item identifier.")
-            .SetPosition(2);
+            .SetOrder(2);
 
     });
 
@@ -112,7 +112,7 @@ optionsBuilder.ConfigureEntity<Address>(entityOptionsBuilder =>
         propertyBuilder
             .SetDisplayName("Phone")
             .SetDescription("Address contact phone.")
-            .SetPosition(1);
+            .SetOrder(1);
     });
 
     entityOptionsBuilder.ConfigureProperty(address => address.PostalCode, propertyBuilder =>
@@ -134,7 +134,7 @@ Properties also customizable via attributes.
 #### NetForgeEntityAttribute
 
 ```csharp
-[NetForgeProperty(DisplayName = "Custom property display name", Description = "Custom property description.", Position = 5)]
+[NetForgeProperty(DisplayName = "Custom property display name", Description = "Custom property description.", Order = 5)]
 public string Property { get; set; }
 ```
 #### Built in `Description` and `DisplayName` attributes
