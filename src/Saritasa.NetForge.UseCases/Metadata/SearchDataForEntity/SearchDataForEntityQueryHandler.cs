@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -41,60 +42,10 @@ internal class SearchDataForEntityQueryHandler : IRequestHandler<SearchDataForEn
 
         var searchOptions = request.SearchOptions;
 
-        if (!string.IsNullOrEmpty(searchOptions.SearchString))
+        if (!string.IsNullOrEmpty(searchOptions.SearchString) && request.Properties.Any(property => property.IsSearchable))
         {
-            foreach (var property in request.Properties)
-            {
-                if (property.IsSearchable)
-                {
-                    //query = query.Where(entity => EF.Functions.ILike(entity.Name, searchOptions.SearchString));
-
-                    // ---
-
-                    //var searchConstant = Expression.Constant(searchOptions.SearchString);
-                    //var entityParam = Expression.Parameter(typeof(object), "entity");
-                    //var converted = Expression.Convert(entityParam, request.EntityType);
-                    //var propertyExpression = Expression.Property(converted, property.Name);
-
-                    //var isMatchMethod = typeof(System.Text.RegularExpressions.Regex).GetMethod("IsMatch",
-                    //    BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
-                    //    null,
-                    //    new[]
-                    //    {
-                    //        typeof(string),
-                    //        typeof(string),
-                    //        typeof(System.Text.RegularExpressions.RegexOptions)
-                    //    },
-                    //    null
-                    //);
-
-                    //var isMatchCall = Expression.Call(isMatchMethod, propertyExpression, searchConstant,
-                    //    Expression.Constant(System.Text.RegularExpressions.RegexOptions.IgnoreCase));
-
-                    //var predicate = Expression.Lambda<Func<object, bool>>(isMatchCall, entityParam);
-
-                    // ---
-
-                    //var iLike = typeof(NpgsqlDbFunctionsExtensions).GetMethod("ILike",
-                    //    BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
-                    //    null,
-                    //    new[] {
-                    //        typeof(Microsoft.EntityFrameworkCore.DbFunctions),
-                    //        typeof(string),
-                    //        typeof(string)
-                    //    },
-                    //    null
-                    //);
-
-                    //var iLikeCall = Expression.Call(
-                    //    iLike,
-                    //    Expression.Constant(null, typeof(DbFunctions)),
-                    //    property,
-                    //    Expression.Constant(search, typeof(string)));
-
-                    query = query.Where(predicate);
-                }
-            }
+            query = dataService
+                .CaseInsensitiveSearch(query, searchOptions.SearchString, request.EntityType, request.Properties);
         }
 
         var pagedList = PagedListFactory.FromSource(query, searchOptions.Page, searchOptions.PageSize);

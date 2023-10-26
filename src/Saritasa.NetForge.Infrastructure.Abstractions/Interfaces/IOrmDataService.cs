@@ -1,4 +1,6 @@
-﻿namespace Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
+﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+
+namespace Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
 /// <summary>
 /// Service for retrieving data from ORM.
@@ -11,4 +13,7 @@ public interface IOrmDataService
     /// <param name="clrType">CLR type.</param>
     /// <returns>Entity data.</returns>
     IQueryable<object> GetQuery(Type clrType);
+
+    IQueryable<object> CaseInsensitiveSearch(
+        IQueryable<object> query, string searchString, Type? entityType, ICollection<PropertyMetadata> properties);
 }

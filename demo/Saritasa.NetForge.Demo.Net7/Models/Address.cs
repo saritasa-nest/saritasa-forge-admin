@@ -17,18 +17,20 @@ public class Address
     /// <summary>
     /// The street name and number.
     /// </summary>
-    [NetForgeProperty(DisplayName = "Street name", Description = "Street name without street number.", Order = 3)]
+    [NetForgeProperty(DisplayName = "Street name", Description = "Street name without street number.", 
+        Order = 3, IsSearchable = true)]
     public required string Street { get; set; }
 
     /// <summary>
     /// The city where the address is located.
     /// </summary>
-    [NetForgeProperty(Order = 4)]
+    [NetForgeProperty(Order = 4, IsSearchable = true)]
     public required string City { get; set; }
 
     /// <summary>
     /// The postal code of the address.
     /// </summary>
+    [NetForgeProperty(Order = 6, IsSearchable = true)]
     public required string PostalCode { get; set; }
 
     /// <summary>
