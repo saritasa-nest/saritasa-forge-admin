@@ -68,7 +68,7 @@ public class NavigationService : INavigationService
                                 && type.BaseType.GetGenericTypeDefinition() == openGenericType
                                 && type.BaseType.GenericTypeArguments.Length == 1
                              let pageType = type
-                             let viewModelType = type.BaseType.GenericTypeArguments.Single()
+                             let viewModelType = type.BaseType?.GenericTypeArguments.Single()
                              select KeyValuePair.Create(viewModelType, pageType);
 
         return new Dictionary<Type, Type>(viewModelPairs);

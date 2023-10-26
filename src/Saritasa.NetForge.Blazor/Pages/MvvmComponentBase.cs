@@ -22,12 +22,12 @@ public class MvvmComponentBase<TViewModel> : ComponentBase, IDisposable
     /// View model factory.
     /// </summary>
     [Inject]
-    protected ViewModelFactory ViewModelFactory { get; private set; }
+    protected ViewModelFactory ViewModelFactory { get; private set; } = null!;
 
     /// <summary>
     /// View model.
     /// </summary>
-    public TViewModel ViewModel { get; private set; }
+    public TViewModel ViewModel { get; private set; } = null!;
 
     /// <inheritdoc />
     protected sealed override async Task OnInitializedAsync()

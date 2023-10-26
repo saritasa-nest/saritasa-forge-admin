@@ -13,7 +13,7 @@ public class EntityMetadataDto
     /// <summary>
     /// Plural name of the entity.
     /// </summary>
-    public string? PluralName { get; set; }
+    public string PluralName { get; set; } = string.Empty;
 
     /// <summary>
     /// Entity description.
