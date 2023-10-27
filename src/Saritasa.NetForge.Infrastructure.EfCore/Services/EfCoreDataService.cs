@@ -1,7 +1,5 @@
 ﻿using System.Linq.Expressions;
-using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
@@ -46,153 +44,95 @@ public class EfCoreDataService : IOrmDataService
 
     /// <inheritdoc />
     public IQueryable<object> CaseInsensitiveSearch(
-        IQueryable<object> query, string searchString, Type? entityType, ICollection<PropertyMetadata> properties)
+        IQueryable<object> query, string? searchString, Type entityType, ICollection<PropertyMetadata> properties)
     {
-        var searchStrings = searchString.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-
-        Expression? finalExpression = null;
-        var entityParam = Expression.Parameter(typeof(object), "entity");
-        var searchConstant = Expression.Constant($"%{searchString}%");
-        var converted = Expression.Convert(entityParam, entityType);
-
-        foreach (var property in properties)
+        if (string.IsNullOrEmpty(searchString) || !properties.Any(property => property.IsSearchable))
         {
-            if (property.IsSearchable)
-            {
-                //query = query.Where(entity => EF.Functions.ILike(entity.Name, searchOptions.SearchString));
-
-                // ---
-
-                var propertyExpression = Expression.Property(converted, property.Name);
-
-                //var isMatchMethod = typeof(System.Text.RegularExpressions.Regex).GetMethod("IsMatch",
-                //    BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
-                //    null,
-                //    new[]
-                //    {
-                //            typeof(string),
-                //            typeof(string),
-                //            typeof(System.Text.RegularExpressions.RegexOptions)
-                //    },
-                //    null
-                //);
-
-                //var isMatchCall = Expression.Call(isMatchMethod, propertyExpression, searchConstant,
-                //    Expression.Constant(System.Text.RegularExpressions.RegexOptions.IgnoreCase));
-
-                // ---
-
-                var iLike = typeof(NpgsqlDbFunctionsExtensions).GetMethod("ILike",
-                    BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
-                    null,
-                    new[] {
-                        typeof(DbFunctions),
-                        typeof(string),
-                        typeof(string)
-                    },
-                    null
-                );
-
-                var iLikeCall = Expression.Call(
-                    iLike,
-                    Expression.Constant(null, typeof(DbFunctions)),
-                    propertyExpression,
-                    searchConstant);
-
-                if (finalExpression is null)
-                {
-                    finalExpression = iLikeCall;
-                }
-                else
-                {
-                    finalExpression = Expression.OrElse(finalExpression, iLikeCall);
-                }
-            }
+            return query;
         }
 
+        Expression? combinedILikeExpressions = null;
 
-        Expression? finalExpression123 = null;
+        // entity => entity
+        var entityParam = Expression.Parameter(typeof(object), "entity");
 
-        foreach (var searchString123 in searchStrings)
+        // entity => (entityType)entity
+        var converted = Expression.Convert(entityParam, entityType);
+
+        var searchWords = searchString.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+        foreach (var searchWord in searchWords)
         {
-            var expression123 = TestCaseInsensitive(searchString123, entityType, properties);
-
-            if (finalExpression123 is null)
+            Expression? iLikeExpressions = null;
+            var searchPattern = Expression.Constant($"%{searchWord}%");
+            foreach (var property in properties)
             {
-                finalExpression123 = expression123;
+                if (property.IsSearchable)
+                {
+                    //query = query.Where(entity => EF.Functions.ILike(entity.Name, searchOptions.SearchString));
+
+                    // --
+
+                    //var isMatchMethod = typeof(System.Text.RegularExpressions.Regex).GetMethod("IsMatch",
+                    //    BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
+                    //    null,
+                    //    new[]
+                    //    {
+                    //            typeof(string),
+                    //            typeof(string),
+                    //            typeof(System.Text.RegularExpressions.RegexOptions)
+                    //    },
+                    //    null
+                    //);
+
+                    //var isMatchCall = Expression.Call(isMatchMethod, propertyExpression, searchConstant,
+                    //    Expression.Constant(System.Text.RegularExpressions.RegexOptions.IgnoreCase));
+
+                    // entity => ((entityType)entity).propertyName
+                    var propertyExpression = Expression.Property(converted, property.Name);
+
+                    var iLike = typeof(NpgsqlDbFunctionsExtensions).GetMethod(
+                        nameof(NpgsqlDbFunctionsExtensions.ILike),
+                        new[]
+                        {
+                        typeof(DbFunctions), typeof(string), typeof(string)
+                        });
+
+                    // entity => EF.Functions.ILike(((entityType)entity).propertyName, searchWord)
+                    var iLikeCall = Expression.Call(
+                        iLike!,
+                        Expression.Constant(null, typeof(DbFunctions)),
+                        propertyExpression,
+                        searchPattern);
+
+                    if (iLikeExpressions is null)
+                    {
+                        iLikeExpressions = iLikeCall;
+                    }
+                    else
+                    {
+                        // entity => EF.Functions.ILike(((entityType)entity).propertyName, searchWord) ||
+                        //           EF.Functions.ILike(((entityType)entity).propertyName2, searchWord)
+                        // Produces SQL:
+                        // WHERE entity.propertyName ILIKE '%searchWord%' OR entity.propertyName2 ILIKE '%searchWord%'
+                        iLikeExpressions = Expression.OrElse(iLikeExpressions, iLikeCall);
+                    }
+                }
+            }
+
+            if (combinedILikeExpressions is null)
+            {
+                combinedILikeExpressions = iLikeExpressions;
             }
             else
             {
-                finalExpression123 = Expression.And(finalExpression123, expression123);
+                // Produces SQL:
+                // WHERE (entity.propertyName ILIKE '%searchWord%' OR entity.propertyName2 ILIKE '%searchWord%')
+                // AND   (entity.propertyName ILIKE '%searchWord2%' OR entity.propertyName2 ILIKE '%searchWord2%')
+                combinedILikeExpressions = Expression.And(combinedILikeExpressions, iLikeExpressions!);
             }
         }
 
-        var finalPredicate = Expression.Lambda<Func<object, bool>>(finalExpression123!, entityParam);
-        return query.Where(finalPredicate);
-    }
-
-    private Expression TestCaseInsensitive(string searchString, Type? entityType, ICollection<PropertyMetadata> properties)
-    {
-        Expression? finalExpression = null;
-        var entityParam = Expression.Parameter(typeof(object), "entity");
-        var searchConstant = Expression.Constant($"%{searchString}%");
-        var converted = Expression.Convert(entityParam, entityType);
-
-        foreach (var property in properties)
-        {
-            if (property.IsSearchable)
-            {
-                //query = query.Where(entity => EF.Functions.ILike(entity.Name, searchOptions.SearchString));
-
-                // ---
-
-                var propertyExpression = Expression.Property(converted, property.Name);
-
-                //var isMatchMethod = typeof(System.Text.RegularExpressions.Regex).GetMethod("IsMatch",
-                //    BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
-                //    null,
-                //    new[]
-                //    {
-                //            typeof(string),
-                //            typeof(string),
-                //            typeof(System.Text.RegularExpressions.RegexOptions)
-                //    },
-                //    null
-                //);
-
-                //var isMatchCall = Expression.Call(isMatchMethod, propertyExpression, searchConstant,
-                //    Expression.Constant(System.Text.RegularExpressions.RegexOptions.IgnoreCase));
-
-                // ---
-
-                var iLike = typeof(NpgsqlDbFunctionsExtensions).GetMethod("ILike",
-                    BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
-                    null,
-                    new[] {
-                        typeof(DbFunctions),
-                        typeof(string),
-                        typeof(string)
-                    },
-                    null
-                );
-
-                var iLikeCall = Expression.Call(
-                    iLike,
-                    Expression.Constant(null, typeof(DbFunctions)),
-                    propertyExpression,
-                    searchConstant);
-
-                if (finalExpression is null)
-                {
-                    finalExpression = iLikeCall;
-                }
-                else
-                {
-                    finalExpression = Expression.OrElse(finalExpression, iLikeCall);
-                }
-            }
-        }
-
-        return finalExpression;
+        var predicate = Expression.Lambda<Func<object, bool>>(combinedILikeExpressions!, entityParam);
+        return query.Where(predicate);
     }
 }

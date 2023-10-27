@@ -42,11 +42,8 @@ internal class SearchDataForEntityQueryHandler : IRequestHandler<SearchDataForEn
 
         var searchOptions = request.SearchOptions;
 
-        if (!string.IsNullOrEmpty(searchOptions.SearchString) && request.Properties.Any(property => property.IsSearchable))
-        {
-            query = dataService
-                .CaseInsensitiveSearch(query, searchOptions.SearchString, request.EntityType, request.Properties);
-        }
+        query = dataService
+            .CaseInsensitiveSearch(query, searchOptions.SearchString, request.EntityType, request.Properties);
 
         var pagedList = PagedListFactory.FromSource(query, searchOptions.Page, searchOptions.PageSize);
 
