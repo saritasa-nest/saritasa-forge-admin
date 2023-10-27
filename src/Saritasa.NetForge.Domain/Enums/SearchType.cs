@@ -16,6 +16,11 @@ public enum SearchType
     CaseSensitiveStartsWith,
 
     /// <summary>
+    /// Exact match search.
+    /// </summary>
+    ExactMatch,
+
+    /// <summary>
     /// Search type not specified.
     /// </summary>
     None
