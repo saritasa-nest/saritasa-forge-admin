@@ -63,6 +63,30 @@ appBuilder.Services.AddNetForge(optionsBuilder =>
 });
 ```
 
+### Creating an Entity Configuration Class
+
+To reduce the amount of the code all configuration for an entity type can also be extracted to a separate class.
+
+To create an entity configuration for a specific entity type, create a new class that implements the `IEntityAdminConfiguration<TEntity>` interface, where `TEntity` is the type of the entity you want to configure. For example, if you want to configure the `Product` entity, your class might look like this:
+
+```csharp
+public class ProductAdminConfiguration : IEntityAdminConfiguration<Product>
+{
+    public void Configure(EntityOptionsBuilder<Product> builder)
+    {
+        // Define entity-specific settings here.
+    }
+}
+
+// Add this to your Program.cs.
+appBuilder.Services.AddNetForge(optionsBuilder =>
+{
+     optionsBuilder.ConfigureEntity(new ProductAdminConfiguration());
+
+     // Other settings...
+});
+```
+
 ### Attributes
 
 You can also customize your entities by applying special attributes directly to your entity classes.

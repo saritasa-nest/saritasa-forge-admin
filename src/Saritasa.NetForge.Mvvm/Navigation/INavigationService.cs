@@ -19,4 +19,3 @@ public interface INavigationService
     void NavigateTo<TViewModel>(bool forceLoad = false, bool replace = false, params object[] parameters)
         where TViewModel : BaseViewModel;
 }
-
