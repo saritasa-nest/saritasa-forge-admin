@@ -4,9 +4,13 @@
     <MudItem xs="6">
         <MudText Typo="Typo.h4">@ViewModel.Model.PluralName</MudText>
         <MudText Typo="Typo.body1">@ViewModel.Model.Description</MudText>
-        <MudTextField T="string" @bind-Value="ViewModel.SearchString" Placeholder="Search" Immediate="true"
-                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                      OnBlur="ViewModel.Search" />
+
+        @if (ViewModel.Model.Properties.Any(property => property.SearchType.HasValue))
+        {
+            <MudTextField T="string" @bind-Value="ViewModel.SearchString" Placeholder="Search" Immediate="true"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                          OnBlur="ViewModel.Search"/>
+        }
     </MudItem>
 
     <MudItem xs="12">
