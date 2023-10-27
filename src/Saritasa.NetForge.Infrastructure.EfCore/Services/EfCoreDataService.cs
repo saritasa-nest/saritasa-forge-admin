@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Saritasa.NetForge.Domain.Entities.Metadata;
@@ -140,7 +141,30 @@ public class EfCoreDataService : IOrmDataService
                 typeof(string)
             });
 
+        Expression property = propertyExpression;
+
+        var propertyType = ((PropertyInfo)propertyExpression.Member).PropertyType;
+
+        if (propertyType != typeof(string))
+        {
+            // When passed property expression does not represent string we call ToString()
+            property = Expression.Call(propertyExpression, typeof(object).GetMethod(nameof(ToString))!);
+        }
+
         // entity => ((entityType)entity).propertyName.StartsWith(searchConstant)
-        return Expression.Call(propertyExpression, startsWith!, searchConstant);
+        return Expression.Call(property, startsWith!, searchConstant);
+    }
+        Expression testExpression = propertyExpression;
+
+        var propertyType = ((PropertyInfo)propertyExpression.Member).PropertyType;
+
+        if (propertyType != typeof(string))
+        {
+            // When passed property expression does not represent string we call ToString()
+            testExpression = Expression.Call(propertyExpression, typeof(object).GetMethod(nameof(ToString))!);
+        }
+
+        // entity => ((entityType)entity).propertyName.StartsWith(searchConstant)
+        return Expression.Call(testExpression, startsWith!, searchConstant);
     }
 }

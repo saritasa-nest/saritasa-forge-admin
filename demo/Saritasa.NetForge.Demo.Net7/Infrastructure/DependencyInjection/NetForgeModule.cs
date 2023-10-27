@@ -43,7 +43,8 @@ internal class NetForgeModule
                     propertyBuilder
                         .SetDisplayName("Phone")
                         .SetDescription("Address contact phone.")
-                        .SetOrder(1);
+                        .SetOrder(1)
+                        .SetSearchType(SearchType.CaseInsensitiveContains);
                 });
 
                 entityOptionsBuilder.ConfigureProperty(address => address.PostalCode, propertyBuilder =>
@@ -58,7 +59,9 @@ internal class NetForgeModule
 
                 entityOptionsBuilder.ConfigureProperty(address => address.Longitude, propertyBuilder =>
                 {
-                    propertyBuilder.SetOrder(6);
+                    propertyBuilder
+                        .SetOrder(6)
+                        .SetSearchType(SearchType.CaseSensitiveStartsWith);
                 });
 
                 entityOptionsBuilder.ConfigureProperty(address => address.Country, propertyBuilder =>
