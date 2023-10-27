@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.DomainServices;
 
@@ -61,11 +62,11 @@ public class PropertyOptionsBuilder
     }
 
     /// <summary>
-    /// Sets whether the property should be searchable.
+    /// Sets search type to property.
     /// </summary>
-    public PropertyOptionsBuilder SetIsSearchable(bool isSearchable)
+    public PropertyOptionsBuilder SetSearchType(SearchType searchType)
     {
-        options.IsSearchable = isSearchable;
+        options.SearchType = searchType;
         return this;
     }
 }

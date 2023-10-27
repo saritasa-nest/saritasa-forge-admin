@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Saritasa.NetForge.Domain.Attributes;
+using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.Demo.Net7.Models;
 
@@ -18,19 +19,19 @@ public class Address
     /// The street name and number.
     /// </summary>
     [NetForgeProperty(DisplayName = "Street name", Description = "Street name without street number.", 
-        Order = 3, IsSearchable = true)]
+        Order = 3, SearchType = SearchType.CaseSensitiveStartsWith)]
     public required string Street { get; set; }
 
     /// <summary>
     /// The city where the address is located.
     /// </summary>
-    [NetForgeProperty(Order = 4, IsSearchable = true)]
+    [NetForgeProperty(Order = 4, SearchType = SearchType.CaseSensitiveStartsWith)]
     public required string City { get; set; }
 
     /// <summary>
     /// The postal code of the address.
     /// </summary>
-    [NetForgeProperty(Order = 6, IsSearchable = true)]
+    [NetForgeProperty(Order = 6)]
     public required string PostalCode { get; set; }
 
     /// <summary>

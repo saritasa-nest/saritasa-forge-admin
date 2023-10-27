@@ -1,5 +1,6 @@
 ﻿using Saritasa.NetForge.Blazor.Extensions;
 using Saritasa.NetForge.Demo.Net7.Models;
+using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
 namespace Saritasa.NetForge.Demo.Net7.Infrastructure.DependencyInjection;
@@ -62,7 +63,7 @@ internal class NetForgeModule
 
                 entityOptionsBuilder.ConfigureProperty(address => address.Country, propertyBuilder =>
                 {
-                    propertyBuilder.SetIsSearchable(true);
+                    propertyBuilder.SetSearchType(SearchType.CaseInsensitiveContains);
                 });
             });
         });

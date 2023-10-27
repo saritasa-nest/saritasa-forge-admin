@@ -15,13 +15,13 @@ public interface IOrmDataService
     IQueryable<object> GetQuery(Type clrType);
 
     /// <summary>
-    /// Performs case insensitive search.
+    /// Performs search.
     /// </summary>
     /// <param name="query">Query to search.</param>
     /// <param name="searchString">Search string.</param>
     /// <param name="entityType">Entity type.</param>
     /// <param name="properties">Properties.</param>
     /// <returns>Query with searched data.</returns>
-    IQueryable<object> CaseInsensitiveSearch(
+    IQueryable<object> Search(
         IQueryable<object> query, string? searchString, Type entityType, ICollection<PropertyMetadata> properties);
 }

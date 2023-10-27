@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Saritasa.NetForge.Domain.Entities.Metadata;
+using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
@@ -12,6 +13,8 @@ namespace Saritasa.NetForge.Infrastructure.EfCore.Services;
 /// </summary>
 public class EfCoreDataService : IOrmDataService
 {
+    private const string Entity = "entity";
+
     private readonly EfCoreOptions efCoreOptions;
     private readonly IServiceProvider serviceProvider;
 
@@ -44,10 +47,10 @@ public class EfCoreDataService : IOrmDataService
     }
 
     /// <inheritdoc />
-    public IQueryable<object> CaseInsensitiveSearch(
+    public IQueryable<object> Search(
         IQueryable<object> query, string? searchString, Type entityType, ICollection<PropertyMetadata> properties)
     {
-        if (string.IsNullOrEmpty(searchString) || !properties.Any(property => property.IsSearchable))
+        if (string.IsNullOrEmpty(searchString) || !properties.Any(property => property.SearchType.HasValue))
         {
             return query;
         }
@@ -55,7 +58,7 @@ public class EfCoreDataService : IOrmDataService
         Expression? combinedIsMatchExpressions = null;
 
         // entity => entity
-        var entity = Expression.Parameter(typeof(object), "entity");
+        var entity = Expression.Parameter(typeof(object), Entity);
 
         // entity => (entityType)entity
         var converted = Expression.Convert(entity, entityType);
@@ -64,36 +67,36 @@ public class EfCoreDataService : IOrmDataService
         foreach (var searchWord in searchWords)
         {
             Expression? isMatchExpressions = null;
-            var searchPattern = Expression.Constant(searchWord);
+            var searchConstant = Expression.Constant(searchWord);
             foreach (var property in properties)
             {
-                if (property.IsSearchable)
+                var searchType = property.SearchType;
+
+                if (searchType.HasValue)
                 {
                     // entity => ((entityType)entity).propertyName
                     var propertyExpression = Expression.Property(converted, property.Name);
 
-                    var isMatch = typeof(Regex).GetMethod(
-                        nameof(Regex.IsMatch),
-                        new[]
-                        {
-                            typeof(string), typeof(string), typeof(RegexOptions)
-                        });
+                    var methodCall = searchType switch
+                    {
+                        SearchType.CaseInsensitiveContains
+                            => GetCaseInsensitiveContainsMethodCall(propertyExpression, searchConstant),
 
-                    // entity => Regex.IsMatch(((entityType)entity).propertyName, searchWord, RegexOptions.IgnoreCase)
-                    var isMatchCall = Expression.Call(
-                        isMatch!, propertyExpression, searchPattern, Expression.Constant(RegexOptions.IgnoreCase));
+                        SearchType.CaseSensitiveStartsWith
+                            => GetCaseSensitiveStartsWithCall(propertyExpression, searchConstant),
+
+                        _ => throw new NotImplementedException("Unsupported search type was used.")
+                    };
 
                     if (isMatchExpressions is null)
                     {
-                        isMatchExpressions = isMatchCall;
+                        isMatchExpressions = methodCall;
                     }
                     else
                     {
                         // entity => Regex.IsMatch(((entityType)entity).propertyName, searchWord, RegexOptions.IgnoreCase) ||
                         //           Regex.IsMatch(((entityType)entity).propertyName2, searchWord, RegexOptions.IgnoreCase)
-                        // Produces SQL:
-                        // WHERE entity.propertyName ~ ('(?ip)' || searchWord) OR entity.propertyName2 ~ ('(?ip)' || searchWord)
-                        isMatchExpressions = Expression.OrElse(isMatchExpressions, isMatchCall);
+                        isMatchExpressions = Expression.OrElse(isMatchExpressions, methodCall!);
                     }
                 }
             }
@@ -104,14 +107,40 @@ public class EfCoreDataService : IOrmDataService
             }
             else
             {
-                // Produces SQL:
-                // WHERE (entity.propertyName ~ ('(?ip)' || searchWord) OR entity.propertyName2 ~ ('(?ip)' || searchWord))
-                // AND   (entity.propertyName ~ ('(?ip)' || searchWord2) OR entity.propertyName2 ~ ('(?ip)' || searchWord2))
                 combinedIsMatchExpressions = Expression.And(combinedIsMatchExpressions, isMatchExpressions!);
             }
         }
 
         var predicate = Expression.Lambda<Func<object, bool>>(combinedIsMatchExpressions!, entity);
         return query.Where(predicate);
+    }
+
+    private MethodCallExpression GetCaseInsensitiveContainsMethodCall(
+        MemberExpression propertyExpression, ConstantExpression searchConstant)
+    {
+        var isMatch = typeof(Regex).GetMethod(
+            nameof(Regex.IsMatch),
+            new[]
+            {
+                typeof(string), typeof(string), typeof(RegexOptions)
+            });
+
+        // entity => Regex.IsMatch(((entityType)entity).propertyName, searchWord, RegexOptions.IgnoreCase)
+        return Expression.Call(
+            isMatch!, propertyExpression, searchConstant, Expression.Constant(RegexOptions.IgnoreCase));
+    }
+
+    private MethodCallExpression GetCaseSensitiveStartsWithCall(
+        MemberExpression propertyExpression, ConstantExpression searchConstant)
+    {
+        var startsWith = typeof(string).GetMethod(
+            nameof(string.StartsWith),
+            new[]
+            {
+                typeof(string)
+            });
+
+        // entity => ((entityType)entity).propertyName.StartsWith(searchConstant)
+        return Expression.Call(propertyExpression, startsWith!, searchConstant);
     }
 }

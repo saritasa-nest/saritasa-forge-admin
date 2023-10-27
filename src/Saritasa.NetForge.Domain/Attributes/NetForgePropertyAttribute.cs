@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.Domain.Attributes;
 
@@ -24,6 +25,6 @@ public class NetForgePropertyAttribute : Attribute
     /// </remarks>
     public int Order { get; set; } = -1;
 
-    /// <inheritdoc cref="PropertyMetadata.IsSearchable"/>
-    public bool IsSearchable { get; set; }
+    /// <inheritdoc cref="PropertyMetadata.SearchType"/>
+    public SearchType SearchType { get; set; } = SearchType.None;
 }
