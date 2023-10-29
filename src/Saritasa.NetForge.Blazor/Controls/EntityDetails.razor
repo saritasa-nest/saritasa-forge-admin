@@ -7,9 +7,11 @@
 
         @if (ViewModel.Model.Properties.Any(property => property.SearchType.HasValue))
         {
+            const int DebounceInterval = 250;
+
             <MudTextField T="string" @bind-Value="ViewModel.SearchString" Placeholder="Search" Immediate="true"
                           Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                          OnBlur="ViewModel.Search"/>
+                          DebounceInterval="DebounceInterval" OnDebounceIntervalElapsed="ViewModel.Search" />
         }
     </MudItem>
 
