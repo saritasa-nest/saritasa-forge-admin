@@ -14,6 +14,11 @@ namespace Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 /// </summary>
 public class EntityDetailsViewModel : BaseViewModel
 {
+    /// <summary>
+    /// Entity details model.
+    /// </summary>
+    public EntityDetailsModel Model { get; private set; }
+
     private readonly IMediator mediator;
     private readonly IMapper mapper;
 
@@ -28,12 +33,15 @@ public class EntityDetailsViewModel : BaseViewModel
         this.mapper = mapper;
     }
 
+    /// <summary>
+    /// Search string.
+    /// </summary>
     public string? SearchString { get; set; }
 
     /// <summary>
-    /// Entity details model.
+    /// Data grid reference.
     /// </summary>
-    public EntityDetailsModel Model { get; private set; }
+    public MudDataGrid<object>? DataGrid { get; set; }
 
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
@@ -91,8 +99,9 @@ public class EntityDetailsViewModel : BaseViewModel
         return source.GetType().GetProperty(propertyName)?.GetValue(source);
     }
 
-    public MudDataGrid<object>? DataGrid { get; set; }
-
+    /// <summary>
+    /// Searches data by search string.
+    /// </summary>
     public void Search()
     {
         DataGrid?.ReloadServerData();
