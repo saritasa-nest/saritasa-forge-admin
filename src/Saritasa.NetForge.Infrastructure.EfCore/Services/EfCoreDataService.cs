@@ -51,7 +51,7 @@ public class EfCoreDataService : IOrmDataService
     public IQueryable<object> Search(
         IQueryable<object> query, string? searchString, Type entityType, ICollection<PropertyMetadata> properties)
     {
-        if (string.IsNullOrEmpty(searchString) || !properties.Any(property => property.SearchType.HasValue))
+        if (string.IsNullOrEmpty(searchString))
         {
             return query;
         }
