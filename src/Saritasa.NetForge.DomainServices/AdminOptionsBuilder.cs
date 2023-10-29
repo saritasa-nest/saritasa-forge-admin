@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.DomainServices.Interfaces;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
 namespace Saritasa.NetForge.DomainServices;
@@ -43,6 +44,20 @@ public class AdminOptionsBuilder
     {
         var entityOptionsBuilder = new EntityOptionsBuilder<TEntity>();
         entityOptionsBuilderAction.Invoke(entityOptionsBuilder);
+        options.EntityOptionsList.Add(entityOptionsBuilder.Create());
+        return this;
+    }
+
+    /// <summary>
+    /// Configures options for a specific entity type within the admin panel using the configuration.
+    /// </summary>
+    /// <param name="entityConfiguration">The instance of the entity configuration class.</param>
+    /// <typeparam name="TEntity">The type of entity for which options are being configured.</typeparam>
+    public AdminOptionsBuilder ConfigureEntity<TEntity>(IEntityAdminConfiguration<TEntity> entityConfiguration)
+        where TEntity : class
+    {
+        var entityOptionsBuilder = new EntityOptionsBuilder<TEntity>();
+        entityConfiguration.Configure(entityOptionsBuilder);
         options.EntityOptionsList.Add(entityOptionsBuilder.Create());
         return this;
     }

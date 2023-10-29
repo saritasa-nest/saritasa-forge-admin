@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Blazor.Extensions;
+using Saritasa.NetForge.Demo.Net7.Infrastructure.Admin;
 using Saritasa.NetForge.Demo.Net7.Models;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
@@ -20,55 +21,13 @@ internal static class NetForgeModule
             optionsBuilder.UseEntityFramework(efOptionsBuilder =>
             {
                 efOptionsBuilder.UseDbContext<ShopDbContext>();
-            });
-            optionsBuilder.ConfigureEntity<Shop>(entityOptionsBuilder =>
+            }).ConfigureEntity<Shop>(entityOptionsBuilder =>
             {
                 entityOptionsBuilder.SetDescription("The base Shop entity.");
-            });
-            optionsBuilder.ConfigureEntity<ProductTag>(entityOptionsBuilder =>
+            }).ConfigureEntity<ProductTag>(entityOptionsBuilder =>
             {
                 entityOptionsBuilder.SetIsHidden(true);
-            });
-            optionsBuilder.ConfigureEntity<Address>(entityOptionsBuilder =>
-            {
-                entityOptionsBuilder.ConfigureProperty(address => address.Id, propertyBuilder =>
-                {
-                    propertyBuilder
-                        .SetDescription("Item identifier.")
-                        .SetOrder(2);
-                });
-
-                entityOptionsBuilder.ConfigureProperty(address => address.ContactPhone, propertyBuilder =>
-                {
-                    propertyBuilder
-                        .SetDisplayName("Phone")
-                        .SetDescription("Address contact phone.")
-                        .SetOrder(1)
-                        .SetSearchType(SearchType.CaseInsensitiveContains);
-                });
-
-                entityOptionsBuilder.ConfigureProperty(address => address.PostalCode, propertyBuilder =>
-                {
-                    propertyBuilder.SetIsHidden(true);
-                });
-
-                entityOptionsBuilder.ConfigureProperty(address => address.City, propertyBuilder =>
-                {
-                    propertyBuilder.SetDisplayName("Town");
-                });
-
-                entityOptionsBuilder.ConfigureProperty(address => address.Longitude, propertyBuilder =>
-                {
-                    propertyBuilder
-                        .SetOrder(6)
-                        .SetSearchType(SearchType.CaseSensitiveStartsWith);
-                });
-
-                entityOptionsBuilder.ConfigureProperty(address => address.Country, propertyBuilder =>
-                {
-                    propertyBuilder.SetSearchType(SearchType.CaseInsensitiveContains);
-                });
-            });
+            }).ConfigureEntity(new AddressAdminConfiguration());
         });
     }
 }
