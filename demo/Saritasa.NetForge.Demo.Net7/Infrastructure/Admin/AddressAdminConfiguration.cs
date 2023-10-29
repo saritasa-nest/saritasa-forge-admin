@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using Saritasa.NetForge.Demo.Net7.Models;
+﻿using Saritasa.NetForge.Demo.Net7.Models;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.DomainServices;
 using Saritasa.NetForge.DomainServices.Interfaces;
