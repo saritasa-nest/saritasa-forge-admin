@@ -21,7 +21,7 @@ public enum SearchType
     ExactMatch,
 
     /// <summary>
-    /// Search type not specified.
+    /// Search type is not specified.
     /// </summary>
     None
 }
