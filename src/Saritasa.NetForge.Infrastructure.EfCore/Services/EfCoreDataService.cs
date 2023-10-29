@@ -56,7 +56,7 @@ public class EfCoreDataService : IOrmDataService
             return query;
         }
 
-        Expression? combinedIsMatchExpressions = null;
+        Expression? combinedSearchExpressions = null;
 
         // entity => entity
         var entity = Expression.Parameter(typeof(object), Entity);
@@ -83,7 +83,7 @@ public class EfCoreDataService : IOrmDataService
 
             var searchConstant = Expression.Constant(searchFor);
 
-            Expression? isMatchExpressions = null;
+            Expression? searchExpressions = null;
             foreach (var property in properties)
             {
                 var searchType = property.SearchType;
@@ -100,7 +100,7 @@ public class EfCoreDataService : IOrmDataService
                     searchType = SearchType.ExactMatch;
                 }
 
-                var methodCall = searchType switch
+                var searchMethodCall = searchType switch
                 {
                     SearchType.CaseInsensitiveContains
                         => GetCaseInsensitiveContainsMethodCall(propertyExpression, searchConstant),
@@ -114,29 +114,30 @@ public class EfCoreDataService : IOrmDataService
                     _ => throw new NotImplementedException("Unsupported search type was used.")
                 };
 
-                if (isMatchExpressions is null)
+                if (searchExpressions is null)
                 {
-                    isMatchExpressions = methodCall;
+                    searchExpressions = searchMethodCall;
                 }
                 else
                 {
+                    // Example:
                     // entity => Regex.IsMatch(((entityType)entity).propertyName, searchWord, RegexOptions.IgnoreCase) ||
-                    //           Regex.IsMatch(((entityType)entity).propertyName2, searchWord, RegexOptions.IgnoreCase)
-                    isMatchExpressions = Expression.OrElse(isMatchExpressions, methodCall!);
+                    //           ((entityType)entity).propertyName2.StartsWith(searchConstant)
+                    searchExpressions = Expression.OrElse(searchExpressions, searchMethodCall);
                 }
             }
 
-            if (combinedIsMatchExpressions is null)
+            if (combinedSearchExpressions is null)
             {
-                combinedIsMatchExpressions = isMatchExpressions;
+                combinedSearchExpressions = searchExpressions;
             }
             else
             {
-                combinedIsMatchExpressions = Expression.And(combinedIsMatchExpressions, isMatchExpressions!);
+                combinedSearchExpressions = Expression.And(combinedSearchExpressions, searchExpressions!);
             }
         }
 
-        var predicate = Expression.Lambda<Func<object, bool>>(combinedIsMatchExpressions!, entity);
+        var predicate = Expression.Lambda<Func<object, bool>>(combinedSearchExpressions!, entity);
         return query.Where(predicate);
     }
 
@@ -165,7 +166,7 @@ public class EfCoreDataService : IOrmDataService
                 typeof(string)
             });
 
-        var property = GetConvertedExpressionIfNumber(propertyExpression);
+        var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
 
         // entity => ((entityType)entity).propertyName.StartsWith(searchConstant)
         return Expression.Call(property, startsWith!, searchConstant);
@@ -181,13 +182,13 @@ public class EfCoreDataService : IOrmDataService
                 typeof(string)
             });
 
-        var property = GetConvertedExpressionIfNumber(propertyExpression);
+        var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
 
-        // entity => ((entityType)entity).propertyName.StartsWith(searchConstant)
+        // entity => ((entityType)entity).propertyName.Equal(searchConstant)
         return Expression.Call(property, equal!, searchConstant);
     }
 
-    private Expression GetConvertedExpressionIfNumber(MemberExpression propertyExpression)
+    private static Expression GetConvertedExpressionWhenPropertyIsNotString(MemberExpression propertyExpression)
     {
         var propertyType = ((PropertyInfo)propertyExpression.Member).PropertyType;
 
