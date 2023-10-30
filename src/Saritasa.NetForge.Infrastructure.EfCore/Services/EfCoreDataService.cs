@@ -62,7 +62,7 @@ public class EfCoreDataService : IOrmDataService
         var entity = Expression.Parameter(typeof(object), Entity);
 
         // entity => (entityType)entity
-        var converted = Expression.Convert(entity, entityType);
+        var convertedEntity = Expression.Convert(entity, entityType);
 
         var searchWords = searchString.Split(" ", StringSplitOptions.RemoveEmptyEntries);
         foreach (var searchWord in searchWords)
@@ -93,7 +93,7 @@ public class EfCoreDataService : IOrmDataService
                 }
 
                 // entity => ((entityType)entity).propertyName
-                var propertyExpression = Expression.Property(converted, property.Name);
+                var propertyExpression = Expression.Property(convertedEntity, property.Name);
 
                 if (isExactMatch)
                 {
