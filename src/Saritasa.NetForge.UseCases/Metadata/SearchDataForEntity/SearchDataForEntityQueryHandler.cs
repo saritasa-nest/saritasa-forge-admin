@@ -37,7 +37,7 @@ internal class SearchDataForEntityQueryHandler : IRequestHandler<SearchDataForEn
         var searchOptions = request.SearchOptions;
 
         query = dataService
-            .Search(query, searchOptions.SearchString, request.EntityType, request.Properties);
+            .Search(query, searchOptions.SearchString, request.EntityType, request.Properties, request.CustomSearch);
 
         var pagedList = PagedListFactory.FromSource(query, searchOptions.Page, searchOptions.PageSize);
 

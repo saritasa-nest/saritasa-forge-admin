@@ -42,4 +42,6 @@ public class EntityOptions
     /// Options for properties of entity.
     /// </summary>
     public ICollection<PropertyOptions> PropertyOptions { get; set; } = new List<PropertyOptions>();
+
+    public Func<object?, IQueryable<object>, string, IQueryable<object>>? CustomSearch { get; set; }
 }

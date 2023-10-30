@@ -51,6 +51,13 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         return this;
     }
 
+    public EntityOptionsBuilder<TEntity> ConfigureSearch(
+        Func<object?, IQueryable<object>, string, IQueryable<object>> customSearch)
+    {
+        options.CustomSearch = customSearch;
+        return this;
+    }
+
     /// <summary>
     /// Creates and returns the configured entity options.
     /// </summary>

@@ -44,4 +44,6 @@ public class EntityMetadata
     /// A collection of properties metadata associated with this entity.
     /// </summary>
     public ICollection<PropertyMetadata> Properties { get; set; } = new List<PropertyMetadata>();
+
+    public Func<object?, IQueryable<object>, string, IQueryable<object>> CustomSearch { get; set; }
 }
