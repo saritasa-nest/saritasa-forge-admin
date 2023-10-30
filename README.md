@@ -94,7 +94,7 @@ You can also customize your entities by applying special attributes directly to 
 #### NetForgeEntityAttribute
 
 ```csharp
-[NetForgeEntity(Name = "Entity", PluralName = "Entities", Description = "This is an entity description.")]
+[NetForgeEntity(DisplayName = "Entity", PluralName = "Entities", Description = "This is an entity description.")]
 public class Entity
 {
     // Entity properties...

@@ -21,7 +21,7 @@ public class EntityOptions
     /// <summary>
     /// Entity name.
     /// </summary>
-    public string Name { get; set; } = string.Empty;
+    public string DisplayName { get; set; } = string.Empty;
 
     /// <summary>
     /// Entity plural name.

@@ -31,9 +31,9 @@ public static class EntityMetadataExtensions
             entityMetadata.Description = entityOptions.Description;
         }
 
-        if (!string.IsNullOrEmpty(entityOptions.Name))
+        if (!string.IsNullOrEmpty(entityOptions.DisplayName))
         {
-            entityMetadata.DisplayName = entityOptions.Name;
+            entityMetadata.DisplayName = entityOptions.DisplayName;
         }
 
         if (!string.IsNullOrEmpty(entityOptions.PluralName))
@@ -116,9 +116,9 @@ public static class EntityMetadataExtensions
             entityMetadata.Description = netForgeEntityAttribute.Description;
         }
 
-        if (!string.IsNullOrEmpty(netForgeEntityAttribute.Name))
+        if (!string.IsNullOrEmpty(netForgeEntityAttribute.DisplayName))
         {
-            entityMetadata.DisplayName = netForgeEntityAttribute.Name;
+            entityMetadata.DisplayName = netForgeEntityAttribute.DisplayName;
         }
 
         if (!string.IsNullOrEmpty(netForgeEntityAttribute.PluralName))
