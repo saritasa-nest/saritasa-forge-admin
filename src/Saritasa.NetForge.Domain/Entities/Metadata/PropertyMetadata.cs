@@ -77,4 +77,14 @@ public class PropertyMetadata
     /// Whether the property value is generated on entity database update.
     /// </summary>
     public bool IsValueGeneratedOnUpdate { get; set; }
+
+    /// <summary>
+    /// Display format of the property value.
+    /// </summary>
+    public string? DisplayFormat { get; set; }
+
+    /// <summary>
+    /// Format provider for the property value.
+    /// </summary>
+    public IFormatProvider? FormatProvider { get; set; }
 }

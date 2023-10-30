@@ -23,4 +23,7 @@ public class NetForgePropertyAttribute : Attribute
     /// because we need to handle situation when user chose property order is <c>0</c>.
     /// </remarks>
     public int Order { get; set; } = -1;
+
+    /// <inheritdoc cref="PropertyMetadata.DisplayFormat"/>
+    public string? DisplayFormat { get; set; }
 }
