@@ -168,3 +168,40 @@ public string Property { get; set; }
 [DisplayName("Custom property display name")]
 public string Property { get; set; }
 ```
+
+## Display formatting
+
+You can configure the display format for the properties values. See [string.Format](https://learn.microsoft.com/en-us/dotnet/standard/base-types/composite-formatting#format-string-component).
+
+### Using Data Attributes
+
+You can apply the `[NetForgeProperty]` attribute to an entity property and specify the display format:
+
+```csharp
+[NetForgeProperty(DisplayFormat = "{0:C}")]
+public decimal Price { get; set; }
+```
+
+In this example, the Price property will be displayed using the currency format.
+
+### Using Fluent API
+
+Alternatively, you can use the Fluent API to configure the display format and format provider for an entity property:
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.ConfigureEntity<Product>(entityOptionsBuilder =>
+    {
+        entityOptionsBuilder.ConfigureProperty(product => product.Price, propertyBuilder =>
+        {
+            propertyBuilder.SetDisplayFormat("{0:C}");
+
+            // Use Euro as a currency.
+            propertyBuilder.SetFormatProvider(CultureInfo.GetCultureInfo("fr-FR"));
+        });
+    });
+
+    // Other settings...
+});
+```
