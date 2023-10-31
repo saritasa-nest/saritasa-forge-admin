@@ -111,7 +111,7 @@ public class EfCoreDataService : IOrmDataService
                     SearchType.ExactMatch
                         => GetExactMatchCall(propertyExpression, searchConstant),
 
-                    _ => throw new NotImplementedException("Unsupported search type was used.")
+                    _ => throw new InvalidOperationException("Incorrect search type was used.")
                 };
 
                 if (searchExpressions is null)
