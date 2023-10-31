@@ -49,7 +49,7 @@ public class EfCoreDataService : IOrmDataService
 
     /// <inheritdoc />
     public IQueryable<object> Search(
-        IQueryable<object> query, string? searchString, Type entityType, ICollection<PropertyMetadata> properties)
+        IQueryable<object> query, string? searchString, Type entityType, IEnumerable<PropertyMetadata> properties)
     {
         if (string.IsNullOrEmpty(searchString))
         {

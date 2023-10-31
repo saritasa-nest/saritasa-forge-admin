@@ -15,6 +15,6 @@ namespace Saritasa.NetForge.UseCases.Metadata.SearchDataForEntity;
 /// <param name="SearchOptions">Search options.</param>
 public record SearchDataForEntityQuery(
         Type? EntityType,
-        ICollection<PropertyMetadata> Properties,
+        IEnumerable<PropertyMetadata> Properties,
         SearchOptions SearchOptions)
     : IRequest<PagedListMetadataDto<object>>;

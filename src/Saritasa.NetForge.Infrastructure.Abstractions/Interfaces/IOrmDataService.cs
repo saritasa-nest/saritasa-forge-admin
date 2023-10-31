@@ -23,5 +23,5 @@ public interface IOrmDataService
     /// <param name="properties">Properties.</param>
     /// <returns>Query with searched data.</returns>
     IQueryable<object> Search(
-        IQueryable<object> query, string? searchString, Type entityType, ICollection<PropertyMetadata> properties);
+        IQueryable<object> query, string? searchString, Type entityType, IEnumerable<PropertyMetadata> properties);
 }
