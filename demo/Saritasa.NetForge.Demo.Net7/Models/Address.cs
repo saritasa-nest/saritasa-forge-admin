@@ -19,13 +19,13 @@ public class Address
     /// The street name and number.
     /// </summary>
     [NetForgeProperty(DisplayName = "Street name", Description = "Street name without street number.", 
-        Order = 3, SearchType = SearchType.CaseSensitiveStartsWith)]
+        Order = 3, SearchType = SearchType.StartsWithCaseSensitive)]
     public required string Street { get; set; }
 
     /// <summary>
     /// The city where the address is located.
     /// </summary>
-    [NetForgeProperty(Order = 4, SearchType = SearchType.CaseSensitiveStartsWith)]
+    [NetForgeProperty(Order = 4, SearchType = SearchType.StartsWithCaseSensitive)]
     public required string City { get; set; }
 
     /// <summary>

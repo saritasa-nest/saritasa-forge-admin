@@ -8,17 +8,17 @@ public enum SearchType
     /// <summary>
     /// Case insensitive partial search.
     /// </summary>
-    CaseInsensitiveContains,
+    ContainsCaseInsensitive,
 
     /// <summary>
     /// Case sensitive starts with search.
     /// </summary>
-    CaseSensitiveStartsWith,
+    StartsWithCaseSensitive,
 
     /// <summary>
-    /// Exact match search.
+    /// Case insensitive exact match search.
     /// </summary>
-    ExactMatch,
+    ExactMatchCaseInsensitive,
 
     /// <summary>
     /// Search type is not specified.

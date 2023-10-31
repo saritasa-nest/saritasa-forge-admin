@@ -64,24 +64,13 @@ public class EfCoreDataService : IOrmDataService
         // entity => (entityType)entity
         var convertedEntity = Expression.Convert(entity, entityType);
 
-        var searchWords = searchString.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-        foreach (var searchWord in searchWords)
+        const string splitSearchStringRegex = """(?<=["])[^"]*(?="\s|"$)|(?<=['])[^']*(?='\s|'$)|[^\s"']+""";
+        var matches = Regex.Matches(searchString, splitSearchStringRegex);
+
+        var searchEntries = matches.Select(match => match.Value);
+        foreach (var searchEntry in searchEntries)
         {
-            var searchFor = searchWord;
-
-            var isExactMatch = false;
-            const char quote = '"';
-            if (searchWord.StartsWith(quote) && searchWord.EndsWith(quote))
-            {
-                const int startIndex = 1;
-                var endIndex = searchFor.LastIndexOf(quote);
-
-                searchFor = searchFor[startIndex..endIndex];
-
-                isExactMatch = true;
-            }
-
-            var searchConstant = Expression.Constant(searchFor);
+            var searchConstant = Expression.Constant(searchEntry);
 
             Expression? searchExpressions = null;
             foreach (var property in properties)
@@ -95,21 +84,16 @@ public class EfCoreDataService : IOrmDataService
                 // entity => ((entityType)entity).propertyName
                 var propertyExpression = Expression.Property(convertedEntity, property.Name);
 
-                if (isExactMatch)
-                {
-                    searchType = SearchType.ExactMatch;
-                }
-
                 var searchMethodCall = searchType switch
                 {
-                    SearchType.CaseInsensitiveContains
-                        => GetCaseInsensitiveContainsMethodCall(propertyExpression, searchConstant),
+                    SearchType.ContainsCaseInsensitive
+                        => GetContainsCaseInsensitiveMethodCall(propertyExpression, searchConstant),
 
-                    SearchType.CaseSensitiveStartsWith
-                        => GetCaseSensitiveStartsWithCall(propertyExpression, searchConstant),
+                    SearchType.StartsWithCaseSensitive
+                        => GetStartsWithCaseSensitiveMethodCall(propertyExpression, searchConstant),
 
-                    SearchType.ExactMatch
-                        => GetExactMatchCall(propertyExpression, searchConstant),
+                    SearchType.ExactMatchCaseInsensitive
+                        => GetExactMatchCaseInsensitiveMethodCall(propertyExpression, searchConstant),
 
                     _ => throw new InvalidOperationException("Incorrect search type was used.")
                 };
@@ -141,7 +125,7 @@ public class EfCoreDataService : IOrmDataService
         return query.Where(predicate);
     }
 
-    private MethodCallExpression GetCaseInsensitiveContainsMethodCall(
+    private MethodCallExpression GetContainsCaseInsensitiveMethodCall(
         MemberExpression propertyExpression, ConstantExpression searchConstant)
     {
         var isMatch = typeof(Regex).GetMethod(
@@ -156,7 +140,7 @@ public class EfCoreDataService : IOrmDataService
             isMatch!, propertyExpression, searchConstant, Expression.Constant(RegexOptions.IgnoreCase));
     }
 
-    private MethodCallExpression GetCaseSensitiveStartsWithCall(
+    private MethodCallExpression GetStartsWithCaseSensitiveMethodCall(
         MemberExpression propertyExpression, ConstantExpression searchConstant)
     {
         var startsWith = typeof(string).GetMethod(
@@ -172,7 +156,7 @@ public class EfCoreDataService : IOrmDataService
         return Expression.Call(property, startsWith!, searchConstant);
     }
 
-    private MethodCallExpression GetExactMatchCall(
+    private MethodCallExpression GetExactMatchCaseInsensitiveMethodCall(
         MemberExpression propertyExpression, ConstantExpression searchConstant)
     {
         var equal = typeof(string).GetMethod(

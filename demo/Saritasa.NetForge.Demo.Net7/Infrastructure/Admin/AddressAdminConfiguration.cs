@@ -24,7 +24,7 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
                 .SetDisplayName("Phone")
                 .SetDescription("Address contact phone.")
                 .SetOrder(1)
-                .SetSearchType(SearchType.CaseInsensitiveContains);
+                .SetSearchType(SearchType.ContainsCaseInsensitive);
         }).ConfigureProperty(address => address.PostalCode, propertyBuilder =>
         {
             propertyBuilder.SetIsHidden(true);
@@ -35,10 +35,10 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
         {
             propertyBuilder
                 .SetOrder(6)
-                .SetSearchType(SearchType.CaseSensitiveStartsWith);
+                .SetSearchType(SearchType.StartsWithCaseSensitive);
         }).ConfigureProperty(address => address.Country, propertyBuilder =>
         {
-            propertyBuilder.SetSearchType(SearchType.CaseInsensitiveContains);
+            propertyBuilder.SetSearchType(SearchType.ContainsCaseInsensitive);
         });
     }
 }
