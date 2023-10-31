@@ -2,6 +2,8 @@
 using Saritasa.NetForge.Blazor.Infrastructure.Navigation;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels;
+using Saritasa.NetForge.UseCases.Interfaces;
+using Saritasa.NetForge.UseCases.Metadata.Services;
 
 namespace Saritasa.NetForge.Blazor.Infrastructure.DependencyInjection;
 
@@ -22,5 +24,6 @@ internal static class ApplicationModule
         services.AddMudServices();
         services.AddMemoryCache();
         services.AddScoped<INavigationService, NavigationService>();
+        services.AddScoped<IEntityService, EntityService>();
     }
 }
