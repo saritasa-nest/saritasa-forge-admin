@@ -11,7 +11,7 @@ public class EntityDetailsModel
     public Guid Id { get; set; }
 
     /// <inheritdoc cref="EntityMetadata.DisplayName"/>
-    public string Name { get; set; } = string.Empty;
+    public string DisplayName { get; set; } = string.Empty;
 
     /// <inheritdoc cref="EntityMetadata.PluralName"/>
     public string PluralName { get; set; } = string.Empty;
