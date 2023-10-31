@@ -26,6 +26,7 @@ public class Product
     /// <summary>
     /// The price of the product.
     /// </summary>
+    [NetForgeProperty(DisplayFormat = "{0:C}")]
     public decimal Price { get; set; }
 
     /// <summary>

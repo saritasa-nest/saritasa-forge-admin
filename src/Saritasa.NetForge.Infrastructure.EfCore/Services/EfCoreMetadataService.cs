@@ -57,7 +57,7 @@ internal class EfCoreMetadataService : IOrmMetadataService
         var propertiesMetadata = entityType.GetProperties().Select(GetPropertyMetadata);
         var entityMetadata = new EntityMetadata
         {
-            Name = entityType.ShortName(),
+            DisplayName = entityType.ShortName(),
             ClrType = entityType.ClrType,
             Description = entityType.GetComment() ?? string.Empty,
             IsHidden = entityType.IsPropertyBag,

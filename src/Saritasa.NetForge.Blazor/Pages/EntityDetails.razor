@@ -13,7 +13,7 @@
                     @{
                         var displayName = ViewModel.GetPropertyDisplayName(property);
 
-                        if (property.Description == string.Empty)
+                        if (string.IsNullOrEmpty(property.Description))
                         {
                             @displayName
                         }

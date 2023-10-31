@@ -31,9 +31,9 @@ public static class EntityMetadataExtensions
             entityMetadata.Description = entityOptions.Description;
         }
 
-        if (!string.IsNullOrEmpty(entityOptions.Name))
+        if (!string.IsNullOrEmpty(entityOptions.DisplayName))
         {
-            entityMetadata.Name = entityOptions.Name;
+            entityMetadata.DisplayName = entityOptions.DisplayName;
         }
 
         if (!string.IsNullOrEmpty(entityOptions.PluralName))
@@ -73,6 +73,9 @@ public static class EntityMetadataExtensions
         {
             property.Order = propertyOptions.Order.Value;
         }
+
+        property.DisplayFormat = propertyOptions.DisplayFormat ?? property.DisplayFormat;
+        property.FormatProvider = propertyOptions.FormatProvider ?? property.FormatProvider;
     }
 
     /// <summary>
@@ -91,7 +94,7 @@ public static class EntityMetadataExtensions
 
         if (!string.IsNullOrEmpty(displayNameAttribute?.DisplayName))
         {
-            entityMetadata.Name = displayNameAttribute.DisplayName;
+            entityMetadata.DisplayName = displayNameAttribute.DisplayName;
         }
 
         var descriptionAttribute = entityMetadata.ClrType?.GetCustomAttribute<DescriptionAttribute>();
@@ -113,9 +116,9 @@ public static class EntityMetadataExtensions
             entityMetadata.Description = netForgeEntityAttribute.Description;
         }
 
-        if (!string.IsNullOrEmpty(netForgeEntityAttribute.Name))
+        if (!string.IsNullOrEmpty(netForgeEntityAttribute.DisplayName))
         {
-            entityMetadata.Name = netForgeEntityAttribute.Name;
+            entityMetadata.DisplayName = netForgeEntityAttribute.DisplayName;
         }
 
         if (!string.IsNullOrEmpty(netForgeEntityAttribute.PluralName))
@@ -171,5 +174,7 @@ public static class EntityMetadataExtensions
         {
             property.Order = netForgePropertyAttribute.Order;
         }
+
+        property.DisplayFormat = netForgePropertyAttribute.DisplayFormat ?? property.DisplayFormat;
     }
 }
