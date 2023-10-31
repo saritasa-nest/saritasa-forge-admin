@@ -51,7 +51,7 @@ public class PropertyMetadata
     /// <summary>
     /// Search type.
     /// </summary>
-    public SearchType? SearchType { get; set; }
+    public SearchType SearchType { get; set; } = SearchType.None;
 
     /// <summary>
     /// The order of the property.

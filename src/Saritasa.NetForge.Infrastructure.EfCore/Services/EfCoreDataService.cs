@@ -73,7 +73,7 @@ public class EfCoreDataService : IOrmDataService
             foreach (var property in properties)
             {
                 var searchType = property.SearchType;
-                if (!searchType.HasValue)
+                if (searchType == SearchType.None)
                 {
                     continue;
                 }

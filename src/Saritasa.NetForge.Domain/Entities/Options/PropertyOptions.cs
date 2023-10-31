@@ -24,5 +24,5 @@ public class PropertyOptions
     public int? Order { get; set; }
 
     /// <inheritdoc cref="PropertyMetadata.SearchType"/>
-    public SearchType? SearchType { get; set; }
+    public SearchType SearchType { get; set; } = SearchType.None;
 }

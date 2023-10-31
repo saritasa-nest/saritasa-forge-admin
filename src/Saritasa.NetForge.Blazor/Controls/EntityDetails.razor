@@ -1,11 +1,12 @@
-﻿@inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.EntityDetails.EntityDetailsViewModel>
+﻿@using Saritasa.NetForge.Domain.Enums
+@inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.EntityDetails.EntityDetailsViewModel>
 
 <MudGrid>
     <MudItem xs="6">
         <MudText Typo="Typo.h4">@ViewModel.Model.PluralName</MudText>
         <MudText Typo="Typo.body1">@ViewModel.Model.Description</MudText>
 
-        @if (ViewModel.Model.Properties.Any(property => property.SearchType.HasValue))
+        @if (ViewModel.Model.Properties.Any(property => property.SearchType != SearchType.None))
         {
             const int debounceInterval = 250;
 
