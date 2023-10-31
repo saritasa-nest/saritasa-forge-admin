@@ -125,52 +125,40 @@ public class EfCoreDataService : IOrmDataService
         return query.Where(predicate);
     }
 
-    private MethodCallExpression GetContainsCaseInsensitiveMethodCall(
+    private static MethodCallExpression GetContainsCaseInsensitiveMethodCall(
         MemberExpression propertyExpression, ConstantExpression searchConstant)
     {
-        var isMatch = typeof(Regex).GetMethod(
-            nameof(Regex.IsMatch),
-            new[]
-            {
-                typeof(string), typeof(string), typeof(RegexOptions)
-            });
-
         // entity => Regex.IsMatch(((entityType)entity).propertyName, searchWord, RegexOptions.IgnoreCase)
         return Expression.Call(
-            isMatch!, propertyExpression, searchConstant, Expression.Constant(RegexOptions.IgnoreCase));
+            isMatch, propertyExpression, searchConstant, Expression.Constant(RegexOptions.IgnoreCase));
     }
 
-    private MethodCallExpression GetStartsWithCaseSensitiveMethodCall(
+    private static readonly MethodInfo isMatch =
+        typeof(Regex).GetMethod(nameof(Regex.IsMatch), new[] { typeof(string), typeof(string), typeof(RegexOptions) })!;
+
+    private static MethodCallExpression GetStartsWithCaseSensitiveMethodCall(
         MemberExpression propertyExpression, ConstantExpression searchConstant)
     {
-        var startsWith = typeof(string).GetMethod(
-            nameof(string.StartsWith),
-            new[]
-            {
-                typeof(string)
-            });
-
         var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
 
         // entity => ((entityType)entity).propertyName.StartsWith(searchConstant)
-        return Expression.Call(property, startsWith!, searchConstant);
+        return Expression.Call(property, startsWith, searchConstant);
     }
 
-    private MethodCallExpression GetExactMatchCaseInsensitiveMethodCall(
+    private static readonly MethodInfo startsWith =
+        typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string) })!;
+
+    private static MethodCallExpression GetExactMatchCaseInsensitiveMethodCall(
         MemberExpression propertyExpression, ConstantExpression searchConstant)
     {
-        var equal = typeof(string).GetMethod(
-            nameof(string.Equals),
-            new[]
-            {
-                typeof(string)
-            });
-
         var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
 
         // entity => ((entityType)entity).propertyName.Equal(searchConstant)
-        return Expression.Call(property, equal!, searchConstant);
+        return Expression.Call(property, equal, searchConstant);
     }
+
+    private static readonly MethodInfo equal =
+        typeof(string).GetMethod(nameof(string.Equals), new[] { typeof(string) })!;
 
     private static Expression GetConvertedExpressionWhenPropertyIsNotString(MemberExpression propertyExpression)
     {
