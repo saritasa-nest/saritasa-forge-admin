@@ -64,10 +64,7 @@ public class EfCoreDataService : IOrmDataService
 
         Expression? combinedSearchExpressions = null;
 
-        const string splitSearchStringRegex = """(?<=["])[^"]*(?="\s|"$)|(?<=['])[^']*(?='\s|'$)|[^\s"']+""";
-        var matches = Regex.Matches(searchString, splitSearchStringRegex);
-
-        var searchEntries = matches.Select(match => match.Value);
+        var searchEntries = GetSearchEntries(searchString);
         foreach (var searchEntry in searchEntries)
         {
             var searchConstant = Expression.Constant(searchEntry);
@@ -125,12 +122,43 @@ public class EfCoreDataService : IOrmDataService
         return query.Where(predicate);
     }
 
+    /// <summary>
+    /// Retrieves search entries from <paramref name="searchString"/> using regular expression. Handles single and double quotes.
+    /// </summary>
+    /// <param name="searchString">Search string.</param>
+    /// <returns>Collection of search entries.</returns>
+    /// <remarks>
+    /// For example if search string is: <c>"William William" 'Test Test' "Single" 'double' also empty</c>,
+    /// then result will have 6 entries:
+    /// <list type="bullet">
+    ///     <item>William William</item>
+    ///     <item>Test Test</item>
+    ///     <item>Single</item>
+    ///     <item>double</item>
+    ///     <item>also</item>
+    ///     <item>empty</item>
+    /// </list>
+    /// </remarks>
+    private static IEnumerable<string> GetSearchEntries(string searchString)
+    {
+        const string splitSearchStringRegex = """(?<=["])[^"]*(?="\s|"$)|(?<=['])[^']*(?='\s|'$)|[^\s"']+""";
+        var matches = Regex.Matches(searchString, splitSearchStringRegex);
+
+        return matches.Select(match => match.Value);
+    }
+
     private static readonly MethodInfo isMatch =
         typeof(Regex).GetMethod(nameof(Regex.IsMatch), new[] { typeof(string), typeof(string), typeof(RegexOptions) })!;
 
     private static readonly MethodInfo startsWith =
         typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string) })!;
 
+    /// <summary>
+    /// Gets call of method similar to <see cref="string.Contains(string)"/> but case insensitive.
+    /// </summary>
+    /// <remarks>
+    /// Uses <see cref="Regex.IsMatch(string, string, RegexOptions)"/> with <see cref="RegexOptions.IgnoreCase"/>.
+    /// </remarks>
     private static MethodCallExpression GetContainsCaseInsensitiveMethodCall(
         MemberExpression propertyExpression, ConstantExpression searchConstant)
     {
@@ -139,6 +167,12 @@ public class EfCoreDataService : IOrmDataService
             isMatch, propertyExpression, searchConstant, Expression.Constant(RegexOptions.IgnoreCase));
     }
 
+    /// <summary>
+    /// Gets call of <see cref="string.StartsWith(string)"/>.
+    /// </summary>
+    /// <remarks>
+    /// If given search entry is not string, <c>ToString</c> will be called.
+    /// </remarks>
     private static MethodCallExpression GetStartsWithCaseSensitiveMethodCall(
         MemberExpression propertyExpression, ConstantExpression searchConstant)
     {
@@ -148,6 +182,13 @@ public class EfCoreDataService : IOrmDataService
         return Expression.Call(property, startsWith, searchConstant);
     }
 
+    /// <summary>
+    /// Gets call of method similar to <see cref="string.Equals(string)"/> but case insensitive.
+    /// </summary>
+    /// <remarks>
+    /// Adds <c>^</c> at the start and <c>$</c> at the end of search entry to make exact match.
+    /// Uses <see cref="Regex.IsMatch(string, string, RegexOptions)"/> with <see cref="RegexOptions.IgnoreCase"/>.
+    /// </remarks>
     private static MethodCallExpression GetExactMatchCaseInsensitiveMethodCall(
         MemberExpression propertyExpression, ConstantExpression searchConstant)
     {
@@ -155,18 +196,21 @@ public class EfCoreDataService : IOrmDataService
 
         var exactMatchSearchConstant = Expression.Constant($"^{searchConstant.Value}$");
 
-        // entity => ((entityType)entity).propertyName.Equal(searchConstant)
+        // entity => Regex.IsMatch(((entityType)entity).propertyName, ^searchWord$, RegexOptions.IgnoreCase)
         return Expression.Call(
             isMatch, property, exactMatchSearchConstant, Expression.Constant(RegexOptions.IgnoreCase));
     }
 
+    /// <summary>
+    /// When <paramref name="propertyExpression"/> does not represent <see langword="string"/>
+    /// then <c>ToString</c> will be called to underlying property.
+    /// </summary>
     private static Expression GetConvertedExpressionWhenPropertyIsNotString(MemberExpression propertyExpression)
     {
         var propertyType = ((PropertyInfo)propertyExpression.Member).PropertyType;
 
         if (propertyType != typeof(string))
         {
-            // When passed property expression does not represent string we call ToString()
             return Expression.Call(propertyExpression, typeof(object).GetMethod(nameof(ToString))!);
         }
 
