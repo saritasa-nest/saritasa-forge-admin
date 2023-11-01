@@ -208,4 +208,4 @@ services.AddNetForge(optionsBuilder =>
 
 ## Search
 
-You can read about search [here](./README.md)
+You can read about search [here](docs/SEARCH.md)
