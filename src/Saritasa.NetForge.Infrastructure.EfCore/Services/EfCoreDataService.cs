@@ -67,59 +67,94 @@ public class EfCoreDataService : IOrmDataService
         var searchEntries = GetSearchEntries(searchString);
         foreach (var searchEntry in searchEntries)
         {
-            var searchConstant = Expression.Constant(searchEntry);
+            var entryConstant = Expression.Constant(searchEntry);
 
-            Expression? searchExpressions = null;
-            foreach (var property in properties)
-            {
-                var searchType = property.SearchType;
-                if (searchType == SearchType.None)
-                {
-                    continue;
-                }
+            var singleEntrySearchExpression = GetEntrySearchExpression(properties, convertedEntity, entryConstant);
 
-                // entity => ((entityType)entity).propertyName
-                var propertyExpression = Expression.Property(convertedEntity, property.Name);
-
-                var searchMethodCall = searchType switch
-                {
-                    SearchType.ContainsCaseInsensitive
-                        => GetContainsCaseInsensitiveMethodCall(propertyExpression, searchConstant),
-
-                    SearchType.StartsWithCaseSensitive
-                        => GetStartsWithCaseSensitiveMethodCall(propertyExpression, searchConstant),
-
-                    SearchType.ExactMatchCaseInsensitive
-                        => GetExactMatchCaseInsensitiveMethodCall(propertyExpression, searchConstant),
-
-                    _ => throw new InvalidOperationException("Incorrect search type was used.")
-                };
-
-                if (searchExpressions is null)
-                {
-                    searchExpressions = searchMethodCall;
-                }
-                else
-                {
-                    // Example:
-                    // entity => Regex.IsMatch(((entityType)entity).propertyName, searchWord, RegexOptions.IgnoreCase) ||
-                    //           ((entityType)entity).propertyName2.StartsWith(searchConstant)
-                    searchExpressions = Expression.OrElse(searchExpressions, searchMethodCall);
-                }
-            }
-
-            if (combinedSearchExpressions is null)
-            {
-                combinedSearchExpressions = searchExpressions;
-            }
-            else
-            {
-                combinedSearchExpressions = Expression.And(combinedSearchExpressions, searchExpressions!);
-            }
+            combinedSearchExpressions =
+                AddAndBetweenSearchExpressions(combinedSearchExpressions, singleEntrySearchExpression);
         }
 
         var predicate = Expression.Lambda<Func<object, bool>>(combinedSearchExpressions!, entity);
         return query.Where(predicate);
+    }
+
+    /// <summary>
+    /// Applies search using search entry to every searchable property, every property can have their own search type.
+    /// </summary>
+    private static Expression GetEntrySearchExpression(
+        IEnumerable<PropertyMetadata> properties, Expression entity, ConstantExpression entryConstant)
+    {
+        Expression? singleEntrySearchExpression = null;
+        foreach (var property in properties)
+        {
+            var searchType = property.SearchType;
+            if (searchType == SearchType.None)
+            {
+                continue;
+            }
+
+            // entity => ((entityType)entity).propertyName
+            var propertyExpression = Expression.Property(entity, property.Name);
+
+            var searchMethodCallExpression = searchType switch
+            {
+                SearchType.ContainsCaseInsensitive
+                    => GetContainsCaseInsensitiveMethodCall(propertyExpression, entryConstant),
+
+                SearchType.StartsWithCaseSensitive
+                    => GetStartsWithCaseSensitiveMethodCall(propertyExpression, entryConstant),
+
+                SearchType.ExactMatchCaseInsensitive
+                    => GetExactMatchCaseInsensitiveMethodCall(propertyExpression, entryConstant),
+
+                _ => throw new InvalidOperationException("Incorrect search type was used.")
+            };
+
+            singleEntrySearchExpression = AddOrBetweenSearchExpressions(singleEntrySearchExpression, searchMethodCallExpression);
+        }
+
+        return singleEntrySearchExpression!;
+    }
+
+    /// <summary>
+    /// Combines all search method call expressions to one expression with <see langword="OR"/> operator between.
+    /// </summary>
+    private static Expression AddOrBetweenSearchExpressions(
+        Expression? singleEntrySearchExpression, MethodCallExpression searchMethodCallExpression)
+    {
+        if (singleEntrySearchExpression is not null)
+        {
+            // Add OR operator between every searchable property using search entry
+            // Example:
+            // entity => Regex.IsMatch(((entityType)entity).propertyName, searchEntry, RegexOptions.IgnoreCase) ||
+            //           ((entityType)entity).propertyName2.StartsWith(searchEntry) ||
+            //           ...
+            return Expression.OrElse(singleEntrySearchExpression, searchMethodCallExpression);
+        }
+
+        return searchMethodCallExpression;
+    }
+
+    /// <summary>
+    /// Combines all search entry expressions to one expression with <see langword="AND"/> operator between.
+    /// </summary>
+    private static Expression AddAndBetweenSearchExpressions(
+        Expression? combinedSearchExpressions, Expression singleEntrySearchExpression)
+    {
+        if (combinedSearchExpressions is not null)
+        {
+            // Example:
+            // entity => (Regex.IsMatch(((entityType)entity).propertyName, searchEntry, RegexOptions.IgnoreCase) ||
+            //           ((entityType)entity).propertyName2.StartsWith(searchEntry) ||
+            //           ...) &&
+            //           (Regex.IsMatch(((entityType)entity).propertyName, searchEntry2, RegexOptions.IgnoreCase) ||
+            //           ((entityType)entity).propertyName2.StartsWith(searchEntry2) ||
+            //           ...) && ...
+            return Expression.And(combinedSearchExpressions, singleEntrySearchExpression);
+        }
+
+        return singleEntrySearchExpression;
     }
 
     /// <summary>
@@ -128,15 +163,13 @@ public class EfCoreDataService : IOrmDataService
     /// <param name="searchString">Search string.</param>
     /// <returns>Collection of search entries.</returns>
     /// <remarks>
-    /// For example if search string is: <c>"William William" 'Test Test' "Single" 'double' also empty</c>,
-    /// then result will have 6 entries:
+    /// For example if search string is: <c>"Double quotes" 'Single quotes' Without quotes</c>,
+    /// then result will have these entries:
     /// <list type="bullet">
-    ///     <item>William William</item>
-    ///     <item>Test Test</item>
-    ///     <item>Single</item>
-    ///     <item>double</item>
-    ///     <item>also</item>
-    ///     <item>empty</item>
+    ///     <item>Double quotes</item>
+    ///     <item>Single quotes</item>
+    ///     <item>Without</item>
+    ///     <item>quotes</item>
     /// </list>
     /// </remarks>
     private static IEnumerable<string> GetSearchEntries(string searchString)
