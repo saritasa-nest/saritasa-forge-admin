@@ -21,4 +21,10 @@ public class PropertyOptions
 
     /// <inheritdoc cref="PropertyMetadata.Order"/>
     public int? Order { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.Order"/>
+    public string? DisplayFormat { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.FormatProvider"/>
+    public IFormatProvider? FormatProvider { get; set; }
 }
