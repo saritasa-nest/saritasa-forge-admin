@@ -2,7 +2,7 @@
 
 ## Search input on entity details page
 
-Every word in the input will become separate search entry. Phrases between quoutes: " or ' will also become separate entries.
+Every word in the input will become separate search entry. Phrases between quoutes: `"` or `'` will also become separate entries.
 For example take a look at this search string: `"Double quotes" 'Single quotes' Without quotes`.
 There are these search entries:
 
@@ -21,14 +21,15 @@ Now project have these search types:
     * Exact Match Case Insensitive;
     * Contains Case Insensitive.
 
-To every property that have search type will be applied search using every search entry.
+Every searchable property will be searched by every search entry.
 
 For example:
 
 ```SQL
 SELECT ... FROM ...
 WHERE (Name = searchEntry1 OR Description LIKE searchEntry1 OR ...)
-AND (Name = searchEntry2 OR Description LIKE searchEntry2)
+AND (Name = searchEntry2 OR Description LIKE searchEntry2 OR ...)
+AND (Name = searchEntry3 OR Description LIKE searchEntry3 OR ...)
 AND (...)
 ```
 
