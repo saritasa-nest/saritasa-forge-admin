@@ -5,6 +5,7 @@
 Every word in the input will become separate search entry. Phrases between quoutes: " or ' will also become separate entries.
 For example take a look at this search string: `"Double quotes" 'Single quotes' Without quotes`.
 There are these search entries:
+
     1. Double quotes
     2. Single quotes
     3. Without
