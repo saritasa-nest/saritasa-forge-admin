@@ -15,7 +15,7 @@ There are these search entries:
 
 Every property can have their own search type.
 
-Now project have these search types:
+Now the project have these search types:
 
     * Starts With Case Sensitive;
     * Exact Match Case Insensitive;
@@ -33,7 +33,7 @@ AND (Name = searchEntry3 OR Description LIKE searchEntry3 OR ...)
 AND (...)
 ```
 
-By default property does not have search type.
+By default properties do not have search types.
 Search type can be customized via Fluent API or attribute.
 
 ### Fluent API
