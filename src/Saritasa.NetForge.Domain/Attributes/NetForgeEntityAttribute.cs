@@ -9,7 +9,7 @@ public class NetForgeEntityAttribute : Attribute
     /// <summary>
     /// Name of the entity to display.
     /// </summary>
-    public string Name { get; set; } = string.Empty;
+    public string DisplayName { get; set; } = string.Empty;
 
     /// <summary>
     /// Plural name of the entity.

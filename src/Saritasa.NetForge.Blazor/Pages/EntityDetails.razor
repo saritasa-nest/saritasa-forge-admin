@@ -18,7 +18,7 @@
 
     <MudItem xs="12">
         <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true"
-                     @ref="ViewModel.DataGrid">
+        @ref="ViewModel.DataGrid">
             <Columns>
                 @foreach (var property in ViewModel.Model.Properties)
                 {
@@ -27,7 +27,7 @@
                             @{
                                 var displayName = ViewModel.GetPropertyDisplayName(property);
 
-                                if (property.Description == string.Empty)
+                                if (string.IsNullOrEmpty(property.Description))
                                 {
                                     @displayName
                                 }

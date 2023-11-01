@@ -25,6 +25,9 @@ public class NetForgePropertyAttribute : Attribute
     /// </remarks>
     public int Order { get; set; } = -1;
 
+    /// <inheritdoc cref="PropertyMetadata.DisplayFormat"/>
+    public string? DisplayFormat { get; set; }
+
     /// <inheritdoc cref="PropertyMetadata.SearchType"/>
     public SearchType SearchType { get; set; } = SearchType.None;
 }

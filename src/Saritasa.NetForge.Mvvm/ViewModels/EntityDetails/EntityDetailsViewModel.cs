@@ -2,6 +2,7 @@
 using MediatR;
 using MudBlazor;
 using Saritasa.NetForge.Domain.Entities.Metadata;
+using Saritasa.NetForge.Mvvm.Utils;
 using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.UseCases.Metadata.SearchDataForEntity;
@@ -64,7 +65,8 @@ public class EntityDetailsViewModel : BaseViewModel
             SearchString = SearchString
         };
 
-        var entityData = await mediator.Send(new SearchDataForEntityQuery(Model.ClrType, Model.Properties, searchOptions));
+        var entityData = await mediator.Send(new SearchDataForEntityQuery(Model.ClrType,
+            Model.Properties, searchOptions));
 
         var data = new GridData<object>
         {
@@ -95,7 +97,22 @@ public class EntityDetailsViewModel : BaseViewModel
     /// <returns>Property value.</returns>
     public object? GetPropertyValue(object source, string propertyName)
     {
-        return source.GetType().GetProperty(propertyName)?.GetValue(source);
+        var propertyInfo = source.GetType().GetProperty(propertyName);
+        var value = propertyInfo?.GetValue(source);
+
+        if (value != null)
+        {
+            value = FormatValue(value, propertyName);
+        }
+
+        return value;
+    }
+
+    private string FormatValue(object value, string propertyName)
+    {
+        var propertyMetadata = Model.Properties.FirstOrDefault(property => property.Name == propertyName);
+        return DataFormatUtils.GetFormattedValue(value, propertyMetadata?.DisplayFormat,
+            propertyMetadata?.FormatProvider);
     }
 
     /// <summary>
