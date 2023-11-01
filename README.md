@@ -128,7 +128,6 @@ optionsBuilder.ConfigureEntity<Address>(entityOptionsBuilder =>
         propertyBuilder
             .SetDescription("Item identifier.")
             .SetOrder(2);
-
     });
 
     entityOptionsBuilder.ConfigureProperty(address => address.ContactPhone, propertyBuilder =>
