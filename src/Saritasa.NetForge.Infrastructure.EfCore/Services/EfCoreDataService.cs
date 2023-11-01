@@ -75,7 +75,12 @@ public class EfCoreDataService : IOrmDataService
                 AddAndBetweenSearchExpressions(combinedSearchExpressions, singleEntrySearchExpression);
         }
 
-        var predicate = Expression.Lambda<Func<object, bool>>(combinedSearchExpressions!, entity);
+        if (combinedSearchExpressions is null)
+        {
+            return query;
+        }
+
+        var predicate = Expression.Lambda<Func<object, bool>>(combinedSearchExpressions, entity);
         return query.Where(predicate);
     }
 
