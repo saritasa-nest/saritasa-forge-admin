@@ -5,10 +5,10 @@
 Every word in the input will become separate search entry. Phrases between quoutes: " or ' will also become separate entries.
 For example take a look at this search string: `"Double quotes" 'Single quotes' Without quotes`.
 There are these search entries:
-    Double quotes
-    Single quotes
-    Without
-    quotes
+    1. Double quotes
+    2. Single quotes
+    3. Without
+    4. quotes
 
 ## Search types
 
@@ -16,9 +16,9 @@ Every property can have their own search type.
 
 Now project have these search types:
 
-    1. Starts With Case Sensitive;
-    2. Exact Match Case Insensitive;
-    3. Contains Case Insensitive.
+    * Starts With Case Sensitive;
+    * Exact Match Case Insensitive;
+    * Contains Case Insensitive.
 
 To every property that have search type will be applied search using every search entry.
 
