@@ -28,7 +28,7 @@ internal static class NetForgeModule
                     {
                         // Implement custom search logic here and return the modified query.
                         // Example: 
-                        return query.Where(e => ((Shop)e).Name.Contains(searchTerm));
+                        return query.Where(e => e.Name.Contains(searchTerm));
                     });
             }).ConfigureEntity<ProductTag>(entityOptionsBuilder =>
             {
