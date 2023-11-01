@@ -1,5 +1,5 @@
 ﻿using Saritasa.NetForge.Mvvm.ViewModels;
-using Saritasa.NetForge.UseCases.Metadata.Services;
+using Saritasa.NetForge.UseCases.Services;
 
 namespace Saritasa.NetForge.Blazor.Infrastructure.DependencyInjection;
 

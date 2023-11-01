@@ -25,12 +25,11 @@ public interface IEntityService
     Task<GetEntityByIdDto> GetEntityByIdAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Search data related to some entity.
+    /// Get the data for the specific entity type.
     /// </summary>
     /// <param name="entityType">Entity type to search data. For example, search all data for entity with type <c>Address</c>.</param>
-    /// <param name="properties">Entity properties metadata.</param>
+    /// <param name="properties">Entity properties metadata to be included in returned data.</param>
     /// <param name="searchOptions">Search options.</param>
-    /// <returns></returns>
     Task<PagedListMetadataDto<object>> SearchDataForEntityAsync(Type? entityType,
         ICollection<PropertyMetadata> properties, SearchOptions searchOptions);
 }

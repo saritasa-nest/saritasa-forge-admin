@@ -6,10 +6,11 @@ using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.DTOs;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
+using Saritasa.NetForge.UseCases.Metadata.Services;
 using Saritasa.Tools.Common.Pagination;
 using Saritasa.Tools.Domain.Exceptions;
 
-namespace Saritasa.NetForge.UseCases.Metadata.Services;
+namespace Saritasa.NetForge.UseCases.Services;
 
 /// <inheritdoc />
 public class EntityService : IEntityService

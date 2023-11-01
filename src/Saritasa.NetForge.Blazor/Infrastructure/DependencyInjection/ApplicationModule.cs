@@ -3,7 +3,7 @@ using Saritasa.NetForge.Blazor.Infrastructure.Navigation;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels;
 using Saritasa.NetForge.UseCases.Interfaces;
-using Saritasa.NetForge.UseCases.Metadata.Services;
+using Saritasa.NetForge.UseCases.Services;
 
 namespace Saritasa.NetForge.Blazor.Infrastructure.DependencyInjection;
 
