@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="MediatR" Version="12.1.1" />
       <PackageReference Include="MudBlazor" Version="6.9.0" />
     </ItemGroup>
 

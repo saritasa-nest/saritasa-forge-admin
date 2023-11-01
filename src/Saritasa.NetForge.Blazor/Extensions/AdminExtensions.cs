@@ -28,7 +28,6 @@ public static class AdminExtensions
         services.TryAddScoped<AdminMetadataService>();
 
         Infrastructure.DependencyInjection.AutoMapperModule.Register(services);
-        Infrastructure.DependencyInjection.MediatRModule.Register(services);
         Infrastructure.DependencyInjection.ApplicationModule.Register(services);
     }
 

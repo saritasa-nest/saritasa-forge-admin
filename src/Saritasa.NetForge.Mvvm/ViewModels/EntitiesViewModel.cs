@@ -1,6 +1,5 @@
-﻿using MediatR;
+﻿using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.DTOs;
-using Saritasa.NetForge.UseCases.Metadata.SearchEntities;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels;
 
@@ -9,7 +8,7 @@ namespace Saritasa.NetForge.Mvvm.ViewModels;
 /// </summary>
 public class EntitiesViewModel : BaseViewModel
 {
-    private readonly IMediator mediator;
+    private readonly IEntityService entityService;
 
     /// <summary>
     /// Collection of entities metadata.
@@ -19,9 +18,9 @@ public class EntitiesViewModel : BaseViewModel
     /// <summary>
     /// Constructor.
     /// </summary>
-    public EntitiesViewModel(IMediator mediator)
+    public EntitiesViewModel(IEntityService entityService)
     {
-        this.mediator = mediator;
+        this.entityService = entityService;
     }
 
     /// <summary>
@@ -38,7 +37,7 @@ public class EntitiesViewModel : BaseViewModel
     /// </summary>
     private async Task GetEntitiesAsync(CancellationToken cancellationToken)
     {
-        var entitiesMetadataDto = await mediator.Send(new SearchEntitiesQuery(), cancellationToken);
+        var entitiesMetadataDto = await entityService.SearchEntitiesAsync(cancellationToken);
         EntitiesMetadata = entitiesMetadataDto;
     }
 }
