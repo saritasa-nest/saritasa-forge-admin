@@ -3,6 +3,7 @@ using System.Reflection;
 using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.DomainServices.Extensions;
 
@@ -179,6 +180,9 @@ public static class EntityMetadataExtensions
 
         property.DisplayFormat = netForgePropertyAttribute.DisplayFormat ?? property.DisplayFormat;
 
-        property.SearchType = netForgePropertyAttribute.SearchType;
+        if (netForgePropertyAttribute.SearchType != SearchType.None)
+        {
+            property.SearchType = netForgePropertyAttribute.SearchType;
+        }
     }
 }
