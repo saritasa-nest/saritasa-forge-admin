@@ -205,3 +205,7 @@ services.AddNetForge(optionsBuilder =>
     // Other settings...
 });
 ```
+
+### Search
+
+You can read about search [here](../README.md)
