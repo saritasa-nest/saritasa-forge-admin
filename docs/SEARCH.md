@@ -21,6 +21,33 @@ Now the project have these search types:
     * Exact Match Case Insensitive;
     * Contains Case Insensitive.
 
+These earch types will generate SQL similar to:
+
+### Starts With Case Sensitive
+
+```SQL
+SELECT ... WHERE name LIKE 'Lennon%';
+```
+
+### Exact Match Case Insensitive
+
+
+```SQL
+SELECT ... WHERE name ILIKE 'beatles blog';
+```
+
+If the value provided for comparison is `None`, it will be interpreted as a SQL `NULL`.
+
+```SQL
+SELECT ... WHERE name IS NULL;
+```
+
+### Contains Case Insensitive
+
+```SQL
+SELECT ... WHERE name ILIKE '%Lennon%';
+```
+
 Every searchable property will be searched by every search entry.
 
 For example:
