@@ -15,13 +15,7 @@ There are these search entries:
 
 Every property can have their own search type.
 
-Now the project have these search types:
-
-    * Starts With Case Sensitive;
-    * Exact Match Case Insensitive;
-    * Contains Case Insensitive.
-
-These earch types will generate SQL similar to:
+Search types will generate SQL similar to:
 
 ### Starts With Case Sensitive
 
