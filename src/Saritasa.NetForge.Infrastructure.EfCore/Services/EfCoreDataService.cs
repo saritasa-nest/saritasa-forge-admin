@@ -49,23 +49,11 @@ public class EfCoreDataService : IOrmDataService
 
     /// <inheritdoc />
     public IQueryable<object> Search(IQueryable<object> query,
-        string? searchString,
+        string searchString,
         Type entityType,
         ICollection<PropertyMetadata> properties,
         Func<object?, IQueryable<object>, string, IQueryable<object>>? customSearch)
     {
-        if (string.IsNullOrEmpty(searchString))
-        {
-            return query;
-        }
-
-        if (customSearch is not null)
-        {
-            query = CustomSearch(query, searchString, customSearch);
-
-            return query;
-        }
-
         Expression? combinedSearchExpressions = null;
 
         // entity => entity
@@ -149,8 +137,6 @@ public class EfCoreDataService : IOrmDataService
 
         var predicate = Expression.Lambda<Func<object, bool>>(combinedSearchExpressions!, entity);
 
-
-
         return query.Where(predicate);
     }
 
@@ -212,13 +198,5 @@ public class EfCoreDataService : IOrmDataService
         }
 
         return propertyExpression;
-    }
-
-    private static IQueryable<object> CustomSearch(
-        IQueryable<object> query,
-        string? searchString,
-        Func<object?, IQueryable<object>, string, IQueryable<object>> customSearch)
-    {
-        return customSearch.Invoke(null, query, searchString!);
     }
 }

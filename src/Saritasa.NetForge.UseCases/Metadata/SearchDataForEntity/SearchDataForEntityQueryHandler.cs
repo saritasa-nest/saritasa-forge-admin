@@ -36,8 +36,16 @@ internal class SearchDataForEntityQueryHandler : IRequestHandler<SearchDataForEn
 
         var searchOptions = request.SearchOptions;
 
-        query = dataService
-            .Search(query, searchOptions.SearchString, request.EntityType, request.Properties, request.CustomSearch);
+        if (!string.IsNullOrEmpty(searchOptions.SearchString))
+        {
+            if (request.Properties.Any(property => property.SearchType is not null))
+            {
+                query = dataService
+                    .Search(query, searchOptions.SearchString, request.EntityType, request.Properties, request.CustomSearch);
+            }
+
+            query = request.CustomSearch(null, query, searchOptions.SearchString);
+        }
 
         var pagedList = PagedListFactory.FromSource(query, searchOptions.Page, searchOptions.PageSize);
 
