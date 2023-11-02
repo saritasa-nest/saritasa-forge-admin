@@ -200,9 +200,11 @@ public class EfCoreDataService : IOrmDataService
     private static MethodCallExpression GetContainsCaseInsensitiveMethodCall(
         MemberExpression propertyExpression, ConstantExpression searchConstant)
     {
+        var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
+
         // entity => Regex.IsMatch(((entityType)entity).propertyName, searchWord, RegexOptions.IgnoreCase)
         return Expression.Call(
-            isMatch, propertyExpression, searchConstant, Expression.Constant(RegexOptions.IgnoreCase));
+            isMatch, property, searchConstant, Expression.Constant(RegexOptions.IgnoreCase));
     }
 
     /// <summary>
