@@ -128,7 +128,6 @@ optionsBuilder.ConfigureEntity<Address>(entityOptionsBuilder =>
         propertyBuilder
             .SetDescription("Item identifier.")
             .SetOrder(2);
-
     });
 
     entityOptionsBuilder.ConfigureProperty(address => address.ContactPhone, propertyBuilder =>
@@ -205,3 +204,7 @@ services.AddNetForge(optionsBuilder =>
     // Other settings...
 });
 ```
+
+## Search
+
+You can read about search [here](docs/SEARCH.md)

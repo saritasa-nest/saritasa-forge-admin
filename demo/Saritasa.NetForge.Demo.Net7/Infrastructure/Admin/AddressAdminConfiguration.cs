@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Demo.Net7.Models;
+using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.DomainServices;
 using Saritasa.NetForge.DomainServices.Interfaces;
 
@@ -22,7 +23,8 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
             propertyBuilder
                 .SetDisplayName("Phone")
                 .SetDescription("Address contact phone.")
-                .SetOrder(1);
+                .SetOrder(1)
+                .SetSearchType(SearchType.ContainsCaseInsensitive);
         }).ConfigureProperty(address => address.PostalCode, propertyBuilder =>
         {
             propertyBuilder.SetIsHidden(true);
@@ -31,7 +33,12 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
             propertyBuilder.SetDisplayName("Town");
         }).ConfigureProperty(address => address.Longitude, propertyBuilder =>
         {
-            propertyBuilder.SetOrder(6);
+            propertyBuilder
+                .SetOrder(6)
+                .SetSearchType(SearchType.StartsWithCaseSensitive);
+        }).ConfigureProperty(address => address.Country, propertyBuilder =>
+        {
+            propertyBuilder.SetSearchType(SearchType.ContainsCaseInsensitive);
         });
     }
 }

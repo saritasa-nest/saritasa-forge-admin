@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.Domain.Entities.Options;
 
@@ -27,4 +28,7 @@ public class PropertyOptions
 
     /// <inheritdoc cref="PropertyMetadata.FormatProvider"/>
     public IFormatProvider? FormatProvider { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.SearchType"/>
+    public SearchType SearchType { get; set; } = SearchType.None;
 }

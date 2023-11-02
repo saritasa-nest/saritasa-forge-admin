@@ -73,6 +73,8 @@ public class EntityService : IEntityService
 
         query = query.SelectProperties(entityType, properties);
 
+        query = dataService.Search(query, searchOptions.SearchString, entityType, properties);
+
         var pagedList = PagedListFactory.FromSource(query, searchOptions.Page, searchOptions.PageSize);
 
         return Task.FromResult(pagedList.ToMetadataObject());

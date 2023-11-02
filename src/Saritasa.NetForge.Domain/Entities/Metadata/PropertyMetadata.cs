@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.Domain.Entities.Metadata;
 
@@ -46,6 +47,11 @@ public class PropertyMetadata
     /// Whether the property is editable.
     /// </summary>
     public bool IsEditable { get; set; } = true;
+
+    /// <summary>
+    /// Search type.
+    /// </summary>
+    public SearchType SearchType { get; set; } = SearchType.None;
 
     /// <summary>
     /// The order of the property.
