@@ -2,7 +2,7 @@
 
 ## Search input on entity details page
 
-Every word in the input will become separate search entry. Phrases between quoutes: `"` or `'` will also become separate entries.
+Every word in the input will become separate search entry. Phrases between quotes: `"` or `'` will also become separate entries.
 For example take a look at this search string: `"Double quotes" 'Single quotes' Without quotes`.
 There are these search entries:
 
