@@ -67,7 +67,7 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     /// </param>
     /// <param name="propertyOptionsBuilderAction">An action that builds property options.</param>
     public EntityOptionsBuilder<TEntity> ConfigureProperty(
-        Expression<Func<TEntity, object>> propertyExpression,
+        Expression<Func<TEntity, object?>> propertyExpression,
         Action<PropertyOptionsBuilder> propertyOptionsBuilderAction)
     {
         var propertyOptionsBuilder = new PropertyOptionsBuilder();
@@ -77,6 +77,18 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         var propertyOptions = propertyOptionsBuilder.Create(propertyName);
 
         options.PropertyOptions.Add(propertyOptions);
+        return this;
+    }
+
+    /// <summary>
+    /// Adds calculated properties for the specified entity type.
+    /// </summary>
+    /// <param name="propertyExpressions">An array of lambda expressions representing calculated properties.</param>
+    public EntityOptionsBuilder<TEntity> AddCalculatedProperties(
+        params Expression<Func<TEntity, object?>>[] propertyExpressions)
+    {
+        var propertyNames = propertyExpressions.Select(expression => expression.GetMemberName());
+        options.CalculatedPropertiesNames.AddRange(propertyNames);
         return this;
     }
 }

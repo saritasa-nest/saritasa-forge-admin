@@ -42,4 +42,9 @@ public class EntityOptions
     /// Options for properties of entity.
     /// </summary>
     public ICollection<PropertyOptions> PropertyOptions { get; set; } = new List<PropertyOptions>();
+
+    /// <summary>
+    /// Collection of the calculated property names.
+    /// </summary>
+    public List<string> CalculatedPropertiesNames { get; } = new();
 }

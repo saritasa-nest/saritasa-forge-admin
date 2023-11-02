@@ -93,4 +93,9 @@ public class PropertyMetadata
     /// Format provider for the property value.
     /// </summary>
     public IFormatProvider? FormatProvider { get; set; }
+
+    /// <summary>
+    /// Whether this property is calculated.
+    /// </summary>
+    public bool IsCalculatedProperty { get; set; }
 }

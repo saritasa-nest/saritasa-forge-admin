@@ -15,7 +15,7 @@ public static class ExpressionExtensions
     /// When passed <paramref name="expression"/> like <c>entity => entity.Name</c>, then this method will return "Name".
     /// </remarks>
     /// <returns>Member name.</returns>
-    public static string GetMemberName<T>(this Expression<Func<T, object>> expression)
+    public static string GetMemberName<T>(this Expression<Func<T, object?>> expression)
     {
         return GetMemberName(expression.Body);
     }
