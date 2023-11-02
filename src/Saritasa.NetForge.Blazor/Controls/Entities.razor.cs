@@ -15,4 +15,12 @@ public partial class Entities : MvvmComponentBase<EntitiesViewModel>
     {
         NavigationService.NavigateTo<EntityDetailsViewModel>(parameters: rowEventArgs.Item.Id);
     }
+
+    private readonly TableGroupDefinition<EntityMetadataDto> groupDefinition = new()
+    {
+        Indentation = false,
+        Expandable = true,
+        IsInitiallyExpanded = false,
+        Selector = (e) => e.Group
+    };
 }
