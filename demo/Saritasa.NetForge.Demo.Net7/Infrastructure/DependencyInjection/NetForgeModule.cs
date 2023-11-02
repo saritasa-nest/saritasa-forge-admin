@@ -24,10 +24,8 @@ internal static class NetForgeModule
             {
                 entityOptionsBuilder
                     .SetDescription("The base Shop entity.")
-                    .ConfigureSearch((httpContext, query, searchTerm) =>
+                    .ConfigureSearch((serviceProvider, query, searchTerm) =>
                     {
-                        // Implement custom search logic here and return the modified query.
-                        // Example: 
                         return query.Where(e => e.Name.Contains(searchTerm));
                     });
             }).ConfigureEntity<ProductTag>(entityOptionsBuilder =>

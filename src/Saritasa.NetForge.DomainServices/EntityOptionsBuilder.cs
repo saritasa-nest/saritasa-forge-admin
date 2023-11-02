@@ -51,10 +51,15 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         return this;
     }
 
+    /// <summary>
+    /// Configure custom search.
+    /// </summary>
+    /// <param name="searchFunction">Custom search function.</param>
     public EntityOptionsBuilder<TEntity> ConfigureSearch(
-        Func<object?, IQueryable<TEntity>, string, IQueryable<TEntity>> customSearch)
+        Func<IServiceProvider?, IQueryable<TEntity>, string, IQueryable<TEntity>> searchFunction)
     {
-        options.SearchFunction = (obj, query, searchTerm) => customSearch(obj, query.Cast<TEntity>(), searchTerm);
+        options.SearchFunction =
+            (serviceProvider, query, searchTerm) => searchFunction(serviceProvider, query.Cast<TEntity>(), searchTerm);
         return this;
     }
 
