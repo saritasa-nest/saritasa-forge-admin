@@ -54,7 +54,7 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     public EntityOptionsBuilder<TEntity> ConfigureSearch(
         Func<object?, IQueryable<TEntity>, string, IQueryable<TEntity>> customSearch)
     {
-        options.CustomSearch = (obj, query, searchTerm) => customSearch(obj, query.Cast<TEntity>(), searchTerm);
+        options.SearchFunction = (obj, query, searchTerm) => customSearch(obj, query.Cast<TEntity>(), searchTerm);
         return this;
     }
 

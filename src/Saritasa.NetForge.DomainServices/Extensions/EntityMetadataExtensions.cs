@@ -47,9 +47,9 @@ public static class EntityMetadataExtensions
             entityMetadata.IsHidden = entityOptions.IsHidden;
         }
 
-        if (entityOptions.CustomSearch is not null)
+        if (entityOptions.SearchFunction is not null)
         {
-            entityMetadata.CustomSearch = entityOptions.CustomSearch;
+            entityMetadata.SearchFunction = entityOptions.SearchFunction;
         }
 
         foreach (var option in entityOptions.PropertyOptions)

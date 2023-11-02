@@ -65,7 +65,7 @@ public class EntityDetailsViewModel : BaseViewModel
         };
 
         var entityData = await mediator
-            .Send(new SearchDataForEntityQuery(Model.ClrType, Model.Properties, searchOptions, Model.CustomSearch));
+            .Send(new SearchDataForEntityQuery(Model.ClrType, Model.Properties, searchOptions, Model.SearchFunction));
 
         var data = new GridData<object>
         {

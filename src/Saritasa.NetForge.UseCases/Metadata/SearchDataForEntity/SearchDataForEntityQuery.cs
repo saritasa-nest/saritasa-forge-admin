@@ -17,5 +17,5 @@ public record SearchDataForEntityQuery(
         Type? EntityType,
         ICollection<PropertyMetadata> Properties,
         SearchOptions SearchOptions,
-        Func<object?, IQueryable<object>, string, IQueryable<object>> CustomSearch)
+        Func<object?, IQueryable<object>, string, IQueryable<object>> SearchFunction)
     : IRequest<PagedListMetadataDto<object>>;
