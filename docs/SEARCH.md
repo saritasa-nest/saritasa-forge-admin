@@ -54,6 +54,8 @@ AND (Name = searchEntry3 OR Description LIKE searchEntry3 OR ...)
 AND (...)
 ```
 
+## Configuration
+
 By default properties do not have search types.
 Search type can be customized via Fluent API or attribute.
 
