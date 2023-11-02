@@ -45,5 +45,8 @@ public class EntityMetadata
     /// </summary>
     public ICollection<PropertyMetadata> Properties { get; set; } = new List<PropertyMetadata>();
 
-    public Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>> SearchFunction { get; set; }
+    /// <summary>
+    /// Represents custom search function.
+    /// </summary>
+    public Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? SearchFunction { get; set; }
 }

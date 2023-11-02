@@ -51,8 +51,7 @@ public class EfCoreDataService : IOrmDataService
     public IQueryable<object> Search(IQueryable<object> query,
         string searchString,
         Type entityType,
-        ICollection<PropertyMetadata> properties,
-        Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? customSearch)
+        ICollection<PropertyMetadata> properties)
     {
         Expression? combinedSearchExpressions = null;
 

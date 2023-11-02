@@ -1,6 +1,7 @@
 using MediatR;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
+using Saritasa.NetForge.UseCases.Common;
 using Saritasa.Tools.Common.Pagination;
 using Saritasa.Tools.Domain.Exceptions;
 
@@ -36,19 +37,30 @@ internal class SearchDataForEntityQueryHandler : IRequestHandler<SearchDataForEn
 
         var searchOptions = request.SearchOptions;
 
+        query = Search(query, searchOptions, request);
+
+        var pagedList = PagedListFactory.FromSource(query, searchOptions.Page, searchOptions.PageSize);
+
+        return Task.FromResult(pagedList.ToMetadataObject());
+    }
+
+    private IQueryable<object> Search(
+        IQueryable<object> query, SearchOptions searchOptions, SearchDataForEntityQuery request)
+    {
         if (!string.IsNullOrEmpty(searchOptions.SearchString))
         {
             if (request.Properties.Any(property => property.SearchType is not null))
             {
                 query = dataService
-                    .Search(query, searchOptions.SearchString, request.EntityType, request.Properties, request.SearchFunction);
+                    .Search(query, searchOptions.SearchString, request.EntityType!, request.Properties);
             }
 
-            query = request.SearchFunction(null, query, searchOptions.SearchString);
+            if (request.SearchFunction is not null)
+            {
+                query = request.SearchFunction(null, query, searchOptions.SearchString);
+            }
         }
 
-        var pagedList = PagedListFactory.FromSource(query, searchOptions.Page, searchOptions.PageSize);
-
-        return Task.FromResult(pagedList.ToMetadataObject());
+        return query;
     }
 }

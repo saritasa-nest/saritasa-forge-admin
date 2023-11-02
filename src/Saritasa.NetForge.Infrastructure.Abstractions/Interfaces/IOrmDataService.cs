@@ -21,11 +21,9 @@ public interface IOrmDataService
     /// <param name="searchString">Search string.</param>
     /// <param name="entityType">Entity type.</param>
     /// <param name="properties">Properties.</param>
-    /// <param name="customSearch"></param>
     /// <returns>Query with searched data.</returns>
     IQueryable<object> Search(IQueryable<object> query,
-        string? searchString,
+        string searchString,
         Type entityType,
-        ICollection<PropertyMetadata> properties,
-        Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>> customSearch);
+        ICollection<PropertyMetadata> properties);
 }

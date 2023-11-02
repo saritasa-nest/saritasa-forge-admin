@@ -13,9 +13,10 @@ namespace Saritasa.NetForge.UseCases.Metadata.SearchDataForEntity;
 /// </param>
 /// <param name="Properties">Entity properties metadata .</param>
 /// <param name="SearchOptions">Search options.</param>
+/// <param name="SearchFunction">Custom search function.</param>
 public record SearchDataForEntityQuery(
         Type? EntityType,
         ICollection<PropertyMetadata> Properties,
         SearchOptions SearchOptions,
-        Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>> SearchFunction)
+        Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? SearchFunction)
     : IRequest<PagedListMetadataDto<object>>;

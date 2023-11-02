@@ -1,4 +1,6 @@
-﻿namespace Saritasa.NetForge.Domain.Entities.Options;
+﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+
+namespace Saritasa.NetForge.Domain.Entities.Options;
 
 /// <summary>
 /// Configure entity in the admin panel.
@@ -43,8 +45,6 @@ public class EntityOptions
     /// </summary>
     public ICollection<PropertyOptions> PropertyOptions { get; set; } = new List<PropertyOptions>();
 
-    /// <summary>
-    /// Represents custom search function.
-    /// </summary>
+    /// <inheritdoc cref="EntityMetadata.SearchFunction"/>
     public Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? SearchFunction { get; set; }
 }

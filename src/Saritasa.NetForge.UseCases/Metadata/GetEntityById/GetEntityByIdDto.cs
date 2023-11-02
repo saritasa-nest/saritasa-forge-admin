@@ -25,5 +25,6 @@ public record GetEntityByIdDto
     /// <inheritdoc cref="EntityMetadata.Properties"/>
     public ICollection<PropertyMetadata> Properties { get; set; } = new List<PropertyMetadata>();
 
-    public Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>> SearchFunction { get; set; }
+    /// <inheritdoc cref="EntityMetadata.SearchFunction"/>
+    public Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? SearchFunction { get; set; }
 }
