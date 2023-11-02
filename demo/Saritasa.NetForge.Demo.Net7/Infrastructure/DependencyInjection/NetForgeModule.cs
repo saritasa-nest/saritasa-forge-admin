@@ -27,14 +27,9 @@ internal static class NetForgeModule
             }).ConfigureEntity<ProductTag>(entityOptionsBuilder =>
             {
                 entityOptionsBuilder.SetIsHidden(true);
-            }).ConfigureEntity(new AddressAdminConfiguration())
-            .ConfigureEntity<Product>(entityOptionsBuilder =>
-            {
-                entityOptionsBuilder.ConfigureProperty(product => product.Name, builder =>
-                {
-                    builder.SetSearchType(SearchType.ExactMatchCaseInsensitive);
-                });
-            });
+            }).ConfigureEntity(new UserAdminConfiguration())
+            .ConfigureEntity(new AddressAdminConfiguration())
+            .ConfigureEntity(new ProductAdminConfiguration());
         });
     }
 }

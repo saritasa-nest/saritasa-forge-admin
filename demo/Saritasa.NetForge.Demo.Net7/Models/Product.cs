@@ -68,5 +68,10 @@ public class Product
     /// The list of tags associated with the product.
     /// </summary>
     public List<ProductTag> Tags { get; set; } = new();
+
+    /// <summary>
+    /// Gets the volume of the project calculated by multiplying its length, width, and height in centimeters.
+    /// </summary>
+    public float VolumeInCentimeters => HeightInCentimeters * WidthInCentimeters * LengthInCentimeters;
 }
 
