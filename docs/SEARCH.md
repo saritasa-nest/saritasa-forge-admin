@@ -48,9 +48,9 @@ For example:
 
 ```SQL
 SELECT ... FROM ...
-WHERE (Name = searchEntry1 OR Description LIKE searchEntry1 OR ...)
-AND (Name = searchEntry2 OR Description LIKE searchEntry2 OR ...)
-AND (Name = searchEntry3 OR Description LIKE searchEntry3 OR ...)
+WHERE (Name LIKE searchEntry1 OR Description ILIKE searchEntry1 OR ...)
+AND (Name LIKE searchEntry2 OR Description ILIKE searchEntry2 OR ...)
+AND (Name LIKE searchEntry3 OR Description ILIKE searchEntry3 OR ...)
 AND (...)
 ```
 
