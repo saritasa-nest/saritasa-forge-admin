@@ -46,6 +46,11 @@ public static class EntityMetadataExtensions
             entityMetadata.IsHidden = entityOptions.IsHidden;
         }
 
+        if (!string.IsNullOrEmpty(entityOptions.Group))
+        {
+            entityMetadata.Group = entityOptions.Group;
+        }
+
         foreach (var option in entityOptions.PropertyOptions)
         {
             var property = entityMetadata.Properties.FirstOrDefault(property => property.Name == option.PropertyName);
@@ -129,6 +134,11 @@ public static class EntityMetadataExtensions
         if (netForgeEntityAttribute.IsHidden)
         {
             entityMetadata.IsHidden = netForgeEntityAttribute.IsHidden;
+        }
+
+        if (!string.IsNullOrEmpty(netForgeEntityAttribute.Group))
+        {
+            entityMetadata.Group = netForgeEntityAttribute.Group;
         }
     }
 

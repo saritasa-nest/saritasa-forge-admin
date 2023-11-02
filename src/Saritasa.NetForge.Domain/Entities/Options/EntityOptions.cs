@@ -39,6 +39,11 @@ public class EntityOptions
     public bool IsHidden { get; set; }
 
     /// <summary>
+    /// Group which entity belongs to.
+    /// </summary>
+    public string Group { get; set; } = string.Empty;
+
+    /// <summary>
     /// Options for properties of entity.
     /// </summary>
     public ICollection<PropertyOptions> PropertyOptions { get; set; } = new List<PropertyOptions>();

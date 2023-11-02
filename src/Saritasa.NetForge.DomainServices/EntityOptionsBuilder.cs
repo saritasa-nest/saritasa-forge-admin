@@ -52,6 +52,15 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
+    /// Sets the group for the entity being configured.
+    /// </summary>
+    public EntityOptionsBuilder<TEntity> SetGroup(string group)
+    {
+        options.Group = group;
+        return this;
+    }
+
+    /// <summary>
     /// Creates and returns the configured entity options.
     /// </summary>
     public EntityOptions Create()

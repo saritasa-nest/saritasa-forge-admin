@@ -29,4 +29,9 @@ public class EntityMetadataDto
     /// Id of the entity.
     /// </summary>
     public Guid Id { get; set; }
+
+    /// <summary>
+    /// Group which entity belongs to.
+    /// </summary>
+    public string? Group { get; set; }
 }
