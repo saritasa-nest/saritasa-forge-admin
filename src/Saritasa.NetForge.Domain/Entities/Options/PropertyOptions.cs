@@ -23,6 +23,12 @@ public class PropertyOptions
     /// <inheritdoc cref="PropertyMetadata.Order"/>
     public int? Order { get; set; }
 
+    /// <inheritdoc cref="PropertyMetadata.Order"/>
+    public string? DisplayFormat { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.FormatProvider"/>
+    public IFormatProvider? FormatProvider { get; set; }
+
     /// <inheritdoc cref="PropertyMetadata.SearchType"/>
-    public SearchType? SearchType { get; set; }
+    public SearchType SearchType { get; set; } = SearchType.None;
 }

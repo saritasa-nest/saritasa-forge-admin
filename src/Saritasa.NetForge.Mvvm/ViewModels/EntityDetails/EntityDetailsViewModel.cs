@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using MediatR;
 using MudBlazor;
 using Saritasa.NetForge.Domain.Entities.Metadata;
+using Saritasa.NetForge.Mvvm.Utils;
 using Saritasa.NetForge.UseCases.Common;
-using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
-using Saritasa.NetForge.UseCases.Metadata.SearchDataForEntity;
+using Saritasa.NetForge.UseCases.Interfaces;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 
@@ -18,18 +17,18 @@ public class EntityDetailsViewModel : BaseViewModel
     /// </summary>
     public EntityDetailsModel Model { get; private set; }
 
-    private readonly IMediator mediator;
+    private readonly IEntityService entityService;
     private readonly IMapper mapper;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public EntityDetailsViewModel(Guid id, IMediator mediator, IMapper mapper)
+    public EntityDetailsViewModel(Guid id, IMapper mapper, IEntityService entityService)
     {
         Model = new EntityDetailsModel { Id = id };
 
-        this.mediator = mediator;
         this.mapper = mapper;
+        this.entityService = entityService;
     }
 
     /// <summary>
@@ -45,7 +44,7 @@ public class EntityDetailsViewModel : BaseViewModel
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
     {
-        var entity = await mediator.Send(new GetEntityByIdQuery(Model.Id), cancellationToken);
+        var entity = await entityService.GetEntityByIdAsync(Model.Id, cancellationToken);
 
         Model = mapper.Map<EntityDetailsModel>(entity);
     }
@@ -64,8 +63,8 @@ public class EntityDetailsViewModel : BaseViewModel
             SearchString = SearchString
         };
 
-        var entityData = await mediator
-            .Send(new SearchDataForEntityQuery(Model.ClrType, Model.Properties, searchOptions, Model.SearchFunction));
+        var entityData = await entityService
+            .SearchDataForEntityAsync(Model.ClrType, Model.Properties, searchOptions, Model.SearchFunction);
 
         var data = new GridData<object>
         {
@@ -96,7 +95,22 @@ public class EntityDetailsViewModel : BaseViewModel
     /// <returns>Property value.</returns>
     public object? GetPropertyValue(object source, string propertyName)
     {
-        return source.GetType().GetProperty(propertyName)?.GetValue(source);
+        var propertyInfo = source.GetType().GetProperty(propertyName);
+        var value = propertyInfo?.GetValue(source);
+
+        if (value != null)
+        {
+            value = FormatValue(value, propertyName);
+        }
+
+        return value;
+    }
+
+    private string FormatValue(object value, string propertyName)
+    {
+        var propertyMetadata = Model.Properties.FirstOrDefault(property => property.Name == propertyName);
+        return DataFormatUtils.GetFormattedValue(value, propertyMetadata?.DisplayFormat,
+            propertyMetadata?.FormatProvider);
     }
 
     /// <summary>

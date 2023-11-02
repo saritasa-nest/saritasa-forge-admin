@@ -62,6 +62,26 @@ public class PropertyOptionsBuilder
     }
 
     /// <summary>
+    /// Set display format to property value.
+    /// </summary>
+    /// <param name="displayFormat">Display format.</param>
+    public PropertyOptionsBuilder SetDisplayFormat(string displayFormat)
+    {
+        options.DisplayFormat = displayFormat;
+        return this;
+    }
+
+    /// <summary>
+    /// Set format provider to property value.
+    /// </summary>
+    /// <param name="formatProvider">Format provider instance.</param>
+    public PropertyOptionsBuilder SetFormatProvider(IFormatProvider formatProvider)
+    {
+        options.FormatProvider = formatProvider;
+        return this;
+    }
+
+    /// <summary>
     /// Sets search type to property.
     /// </summary>
     public PropertyOptionsBuilder SetSearchType(SearchType searchType)

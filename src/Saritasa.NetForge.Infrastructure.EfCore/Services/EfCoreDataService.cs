@@ -48,151 +48,221 @@ public class EfCoreDataService : IOrmDataService
     }
 
     /// <inheritdoc />
-    public IQueryable<object> Search(IQueryable<object> query,
-        string searchString,
-        Type entityType,
-        ICollection<PropertyMetadata> properties)
+    public IQueryable<object> Search(
+        IQueryable<object> query, string searchString, Type entityType, IEnumerable<PropertyMetadata> properties)
     {
-        Expression? combinedSearchExpressions = null;
-
         // entity => entity
         var entity = Expression.Parameter(typeof(object), Entity);
 
         // entity => (entityType)entity
         var convertedEntity = Expression.Convert(entity, entityType);
 
-        var searchWords = searchString.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-        foreach (var searchWord in searchWords)
+        Expression? combinedSearchExpressions = null;
+
+        var searchEntries = GetSearchEntries(searchString);
+        foreach (var searchEntry in searchEntries)
         {
-            var searchFor = searchWord;
+            var singleEntrySearchExpression = GetEntrySearchExpression(properties, convertedEntity, searchEntry);
 
-            var isExactMatch = false;
-            const char quote = '"';
-            if (searchWord.StartsWith(quote) && searchWord.EndsWith(quote))
-            {
-                const int startIndex = 1;
-                var endIndex = searchFor.LastIndexOf(quote);
-
-                searchFor = searchFor[startIndex..endIndex];
-
-                isExactMatch = true;
-            }
-
-            var searchConstant = Expression.Constant(searchFor);
-
-            Expression? searchExpressions = null;
-            foreach (var property in properties)
-            {
-                var searchType = property.SearchType;
-                if (!searchType.HasValue)
-                {
-                    continue;
-                }
-
-                // entity => ((entityType)entity).propertyName
-                var propertyExpression = Expression.Property(convertedEntity, property.Name);
-
-                if (isExactMatch)
-                {
-                    searchType = SearchType.ExactMatch;
-                }
-
-                var searchMethodCall = searchType switch
-                {
-                    SearchType.CaseInsensitiveContains
-                        => GetCaseInsensitiveContainsMethodCall(propertyExpression, searchConstant),
-
-                    SearchType.CaseSensitiveStartsWith
-                        => GetCaseSensitiveStartsWithCall(propertyExpression, searchConstant),
-
-                    SearchType.ExactMatch
-                        => GetExactMatchCall(propertyExpression, searchConstant),
-
-                    _ => throw new NotImplementedException("Unsupported search type was used.")
-                };
-
-                if (searchExpressions is null)
-                {
-                    searchExpressions = searchMethodCall;
-                }
-                else
-                {
-                    // Example:
-                    // entity => Regex.IsMatch(((entityType)entity).propertyName, searchWord, RegexOptions.IgnoreCase) ||
-                    //           ((entityType)entity).propertyName2.StartsWith(searchConstant)
-                    searchExpressions = Expression.OrElse(searchExpressions, searchMethodCall);
-                }
-            }
-
-            if (combinedSearchExpressions is null)
-            {
-                combinedSearchExpressions = searchExpressions;
-            }
-            else
-            {
-                combinedSearchExpressions = Expression.And(combinedSearchExpressions, searchExpressions!);
-            }
+            combinedSearchExpressions =
+                AddAndBetweenSearchExpressions(combinedSearchExpressions, singleEntrySearchExpression);
         }
 
-        var predicate = Expression.Lambda<Func<object, bool>>(combinedSearchExpressions!, entity);
+        if (combinedSearchExpressions is null)
+        {
+            return query;
+        }
 
+        var predicate = Expression.Lambda<Func<object, bool>>(combinedSearchExpressions, entity);
         return query.Where(predicate);
     }
 
-    private MethodCallExpression GetCaseInsensitiveContainsMethodCall(
-        MemberExpression propertyExpression, ConstantExpression searchConstant)
+    /// <summary>
+    /// Applies search using search entry to every searchable property, every property can have their own search type.
+    /// </summary>
+    private static Expression GetEntrySearchExpression(
+        IEnumerable<PropertyMetadata> properties, Expression entity, string searchEntry)
     {
-        var isMatch = typeof(Regex).GetMethod(
-            nameof(Regex.IsMatch),
-            new[]
+        Expression? singleEntrySearchExpression = null;
+        foreach (var property in properties)
+        {
+            var searchType = property.SearchType;
+            if (searchType == SearchType.None)
             {
-                typeof(string), typeof(string), typeof(RegexOptions)
-            });
+                continue;
+            }
+
+            // entity => ((entityType)entity).propertyName
+            var propertyExpression = Expression.Property(entity, property.Name);
+
+            var searchMethodCallExpression = searchType switch
+            {
+                SearchType.ContainsCaseInsensitive
+                    => GetContainsCaseInsensitiveMethodCall(propertyExpression, searchEntry),
+
+                SearchType.StartsWithCaseSensitive
+                    => GetStartsWithCaseSensitiveMethodCall(propertyExpression, searchEntry),
+
+                SearchType.ExactMatchCaseInsensitive
+                    => GetExactMatchCaseInsensitiveMethodCall(propertyExpression, searchEntry),
+
+                _ => throw new InvalidOperationException("Incorrect search type was used.")
+            };
+
+            singleEntrySearchExpression =
+                AddOrBetweenSearchExpressions(singleEntrySearchExpression, searchMethodCallExpression);
+        }
+
+        return singleEntrySearchExpression!;
+    }
+
+    /// <summary>
+    /// Combines all search method call expressions to one expression with <see langword="OR"/> operator between.
+    /// </summary>
+    private static Expression AddOrBetweenSearchExpressions(
+        Expression? singleEntrySearchExpression, Expression searchMethodCallExpression)
+    {
+        if (singleEntrySearchExpression is not null)
+        {
+            // Add OR operator between every searchable property using search entry
+            // Example:
+            // entity => Regex.IsMatch(((entityType)entity).propertyName, searchEntry, RegexOptions.IgnoreCase) ||
+            //           ((entityType)entity).propertyName2.StartsWith(searchEntry) ||
+            //           ...
+            return Expression.OrElse(singleEntrySearchExpression, searchMethodCallExpression);
+        }
+
+        return searchMethodCallExpression;
+    }
+
+    /// <summary>
+    /// Combines all search entry expressions to one expression with <see langword="AND"/> operator between.
+    /// </summary>
+    private static Expression AddAndBetweenSearchExpressions(
+        Expression? combinedSearchExpressions, Expression singleEntrySearchExpression)
+    {
+        if (combinedSearchExpressions is not null)
+        {
+            // Example:
+            // entity => (Regex.IsMatch(((entityType)entity).propertyName, searchEntry, RegexOptions.IgnoreCase) ||
+            //           ((entityType)entity).propertyName2.StartsWith(searchEntry) ||
+            //           ...) &&
+            //           (Regex.IsMatch(((entityType)entity).propertyName, searchEntry2, RegexOptions.IgnoreCase) ||
+            //           ((entityType)entity).propertyName2.StartsWith(searchEntry2) ||
+            //           ...) && ...
+            return Expression.And(combinedSearchExpressions, singleEntrySearchExpression);
+        }
+
+        return singleEntrySearchExpression;
+    }
+
+    /// <summary>
+    /// Retrieves search entries from <paramref name="searchString"/> using regular expression. Handles single and double quotes.
+    /// </summary>
+    /// <param name="searchString">Search string.</param>
+    /// <returns>Collection of search entries.</returns>
+    /// <remarks>
+    /// For example if search string is: <c>"Double quotes" 'Single quotes' Without quotes</c>,
+    /// then result will have these entries:
+    /// <list type="bullet">
+    ///     <item>Double quotes</item>
+    ///     <item>Single quotes</item>
+    ///     <item>Without</item>
+    ///     <item>quotes</item>
+    /// </list>
+    /// </remarks>
+    private static IEnumerable<string> GetSearchEntries(string searchString)
+    {
+        const string splitSearchStringRegex = """(?<=["])[^"]*(?="\s|"$)|(?<=['])[^']*(?='\s|'$)|[^\s"']+""";
+        var matches = Regex.Matches(searchString, splitSearchStringRegex);
+
+        return matches.Select(match => match.Value);
+    }
+
+    private static readonly MethodInfo isMatch =
+        typeof(Regex).GetMethod(nameof(Regex.IsMatch), new[] { typeof(string), typeof(string), typeof(RegexOptions) })!;
+
+    private static readonly MethodInfo startsWith =
+        typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string) })!;
+
+    /// <summary>
+    /// Gets call of method similar to <see cref="string.Contains(string)"/> but case insensitive.
+    /// </summary>
+    /// <remarks>
+    /// Uses <see cref="Regex.IsMatch(string, string, RegexOptions)"/> with <see cref="RegexOptions.IgnoreCase"/>.
+    /// </remarks>
+    private static Expression GetContainsCaseInsensitiveMethodCall(
+        MemberExpression propertyExpression, string searchEntry)
+    {
+        var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
+        var entryConstant = Expression.Constant(searchEntry);
 
         // entity => Regex.IsMatch(((entityType)entity).propertyName, searchWord, RegexOptions.IgnoreCase)
         return Expression.Call(
-            isMatch!, propertyExpression, searchConstant, Expression.Constant(RegexOptions.IgnoreCase));
+            isMatch, property, entryConstant, Expression.Constant(RegexOptions.IgnoreCase));
     }
 
-    private MethodCallExpression GetCaseSensitiveStartsWithCall(
-        MemberExpression propertyExpression, ConstantExpression searchConstant)
+    /// <summary>
+    /// Gets call of <see cref="string.StartsWith(string)"/>.
+    /// </summary>
+    /// <remarks>
+    /// If given search entry is not string, <c>ToString</c> will be called.
+    /// </remarks>
+    private static Expression GetStartsWithCaseSensitiveMethodCall(
+        MemberExpression propertyExpression, string searchEntry)
     {
-        var startsWith = typeof(string).GetMethod(
-            nameof(string.StartsWith),
-            new[]
-            {
-                typeof(string)
-            });
-
         var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
+        var entryConstant = Expression.Constant(searchEntry);
 
         // entity => ((entityType)entity).propertyName.StartsWith(searchConstant)
-        return Expression.Call(property, startsWith!, searchConstant);
+        return Expression.Call(property, startsWith, entryConstant);
     }
 
-    private MethodCallExpression GetExactMatchCall(
-        MemberExpression propertyExpression, ConstantExpression searchConstant)
+    /// <summary>
+    /// Gets call of method similar to <see cref="string.Equals(string)"/> but case insensitive.
+    /// If provided search entry is <c>None</c>, then this method will perform <c>IS NULL</c> check.
+    /// </summary>
+    /// <remarks>
+    /// Adds <c>^</c> at the start and <c>$</c> at the end of search entry to make exact match.
+    /// Uses <see cref="Regex.IsMatch(string, string, RegexOptions)"/> with <see cref="RegexOptions.IgnoreCase"/>.
+    /// </remarks>
+    private static Expression GetExactMatchCaseInsensitiveMethodCall(
+        MemberExpression propertyExpression, string searchEntry)
     {
-        var equal = typeof(string).GetMethod(
-            nameof(string.Equals),
-            new[]
-            {
-                typeof(string)
-            });
+        if (searchEntry.Equals("None"))
+        {
+            return GetNullCheckExpression(propertyExpression);
+        }
+
+        var entryConstant = Expression.Constant($"^{searchEntry}$");
 
         var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
 
-        // entity => ((entityType)entity).propertyName.Equal(searchConstant)
-        return Expression.Call(property, equal!, searchConstant);
+        // entity => Regex.IsMatch(((entityType)entity).propertyName, ^searchWord$, RegexOptions.IgnoreCase)
+        return Expression.Call(
+            isMatch, property, entryConstant, Expression.Constant(RegexOptions.IgnoreCase));
     }
 
+    /// <summary>
+    /// Gets equal expression where <paramref name="expression"/> will be compared to <see langword="null"/>.
+    /// </summary>
+    /// <param name="expression">Expression to check.</param>
+    private static Expression GetNullCheckExpression(Expression expression)
+    {
+        var nullConstant = Expression.Constant(null, typeof(object));
+        return Expression.Equal(expression, nullConstant);
+    }
+
+    /// <summary>
+    /// When <paramref name="propertyExpression"/> does not represent <see langword="string"/>
+    /// then <c>ToString</c> will be called to underlying property.
+    /// </summary>
     private static Expression GetConvertedExpressionWhenPropertyIsNotString(MemberExpression propertyExpression)
     {
         var propertyType = ((PropertyInfo)propertyExpression.Member).PropertyType;
 
         if (propertyType != typeof(string))
         {
-            // When passed property expression does not represent string we call ToString()
             return Expression.Call(propertyExpression, typeof(object).GetMethod(nameof(ToString))!);
         }
 

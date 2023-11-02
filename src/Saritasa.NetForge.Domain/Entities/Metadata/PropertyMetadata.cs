@@ -51,7 +51,7 @@ public class PropertyMetadata
     /// <summary>
     /// Search type.
     /// </summary>
-    public SearchType? SearchType { get; set; }
+    public SearchType SearchType { get; set; } = SearchType.None;
 
     /// <summary>
     /// The order of the property.
@@ -83,4 +83,14 @@ public class PropertyMetadata
     /// Whether the property value is generated on entity database update.
     /// </summary>
     public bool IsValueGeneratedOnUpdate { get; set; }
+
+    /// <summary>
+    /// Display format of the property value.
+    /// </summary>
+    public string? DisplayFormat { get; set; }
+
+    /// <summary>
+    /// Format provider for the property value.
+    /// </summary>
+    public IFormatProvider? FormatProvider { get; set; }
 }

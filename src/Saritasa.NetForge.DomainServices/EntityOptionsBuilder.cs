@@ -26,9 +26,9 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     /// Sets the name for the entity being configured.
     /// </summary>
     /// <param name="name">The name to set for the entity.</param>
-    public EntityOptionsBuilder<TEntity> SetName(string name)
+    public EntityOptionsBuilder<TEntity> SetDisplayName(string name)
     {
-        options.Name = name;
+        options.DisplayName = name;
         return this;
     }
 
