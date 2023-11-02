@@ -13,13 +13,15 @@ namespace Saritasa.NetForge.UseCases.Metadata.SearchDataForEntity;
 internal class SearchDataForEntityQueryHandler : IRequestHandler<SearchDataForEntityQuery, PagedListMetadataDto<object>>
 {
     private readonly IOrmDataService dataService;
+    private readonly IServiceProvider serviceProvider;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public SearchDataForEntityQueryHandler(IOrmDataService dataService)
+    public SearchDataForEntityQueryHandler(IOrmDataService dataService, IServiceProvider serviceProvider)
     {
         this.dataService = dataService;
+        this.serviceProvider = serviceProvider;
     }
 
     /// <inheritdoc/>
@@ -57,7 +59,7 @@ internal class SearchDataForEntityQueryHandler : IRequestHandler<SearchDataForEn
 
             if (request.SearchFunction is not null)
             {
-                query = request.SearchFunction(null, query, searchOptions.SearchString);
+                query = request.SearchFunction(serviceProvider, query, searchOptions.SearchString);
             }
         }
 
