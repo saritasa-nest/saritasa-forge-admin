@@ -208,3 +208,7 @@ services.AddNetForge(optionsBuilder =>
 ## Search
 
 You can read about search [here](docs/SEARCH.md)
+
+## Grouping
+
+You can read about grouping [here](docs/Grouping.md)
