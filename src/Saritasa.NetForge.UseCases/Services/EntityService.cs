@@ -83,7 +83,7 @@ public class EntityService : IEntityService
 
         query = query.SelectProperties(entityType, properties);
 
-        query = Search(query, searchOptions, entityType, properties, searchFunction);
+        query = Search(query, searchOptions.SearchString, entityType, properties, searchFunction);
 
         var pagedList = PagedListFactory.FromSource(query, searchOptions.Page, searchOptions.PageSize);
 
@@ -92,22 +92,21 @@ public class EntityService : IEntityService
 
     private IQueryable<object> Search(
         IQueryable<object> query,
-        SearchOptions searchOptions,
+        string? searchString,
         Type entityType,
         ICollection<PropertyMetadata> properties,
         Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? searchFunction)
     {
-        if (!string.IsNullOrEmpty(searchOptions.SearchString))
+        if (!string.IsNullOrEmpty(searchString))
         {
             if (properties.Any(property => property.SearchType != SearchType.None))
             {
-                query = dataService
-                    .Search(query, searchOptions.SearchString, entityType, properties);
+                query = dataService.Search(query, searchString, entityType, properties);
             }
 
             if (searchFunction is not null)
             {
-                query = searchFunction(serviceProvider, query, searchOptions.SearchString);
+                query = searchFunction(serviceProvider, query, searchString);
             }
         }
 
