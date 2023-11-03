@@ -184,5 +184,10 @@ public static class EntityMetadataExtensions
         {
             property.SearchType = netForgePropertyAttribute.SearchType;
         }
+
+        if (netForgePropertyAttribute.IsSortable)
+        {
+            property.IsSortable = netForgePropertyAttribute.IsSortable;
+        }
     }
 }
