@@ -7,6 +7,7 @@ namespace Saritasa.NetForge.Demo.Net7.Models;
 /// Represents an address entity.
 /// </summary>
 [Comment("Represents the address of the shop.")]
+[NetForgeEntity(GroupName = "Test Name")]
 public class Address
 {
     /// <summary>

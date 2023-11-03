@@ -61,4 +61,16 @@ public class AdminOptionsBuilder
         options.EntityOptionsList.Add(entityOptionsBuilder.Create());
         return this;
     }
+
+    /// <summary>
+    /// Add new group for entities.
+    /// </summary>
+    /// <param name="name">Name of the group.</param>
+    /// <param name="description">Description of the group.</param>
+    public AdminOptionsBuilder AddGroup(string name, string description)
+    {
+        var newEntityGroup = new EntityGroup { Name = name, Description = description };
+        options.EntityGroupsList.Add(newEntityGroup);
+        return this;
+    }
 }

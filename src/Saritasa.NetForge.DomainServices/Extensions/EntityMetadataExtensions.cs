@@ -46,16 +46,19 @@ public static class EntityMetadataExtensions
             entityMetadata.IsHidden = entityOptions.IsHidden;
         }
 
-        if (!string.IsNullOrEmpty(entityOptions.Group))
-        {
-            entityMetadata.Group = entityOptions.Group;
-        }
-
         foreach (var option in entityOptions.PropertyOptions)
         {
             var property = entityMetadata.Properties.FirstOrDefault(property => property.Name == option.PropertyName);
 
             property?.ApplyPropertyOptions(option);
+        }
+
+        var entityGroup =
+            adminOptions.EntityGroupsList.FirstOrDefault(options => options.Name == entityOptions.GroupName);
+
+        if (entityGroup != null && !string.IsNullOrEmpty(entityGroup.Name))
+        {
+            entityMetadata.Group = entityGroup;
         }
     }
 
@@ -87,7 +90,8 @@ public static class EntityMetadataExtensions
     /// Applies entity-specific attributes to the given <see cref="EntityMetadata"/>.
     /// </summary>
     /// <param name="entityMetadata">The metadata of the entity to which attributes are applied.</param>
-    public static void ApplyEntityAttributes(this EntityMetadata entityMetadata)
+    /// <param name="adminOptions">Options to apply for the entity metadata</param>
+    public static void ApplyEntityAttributes(this EntityMetadata entityMetadata, AdminOptions adminOptions)
     {
         foreach (var property in entityMetadata.Properties)
         {
@@ -136,9 +140,13 @@ public static class EntityMetadataExtensions
             entityMetadata.IsHidden = netForgeEntityAttribute.IsHidden;
         }
 
-        if (!string.IsNullOrEmpty(netForgeEntityAttribute.Group))
+        if (!string.IsNullOrEmpty(netForgeEntityAttribute.GroupName))
         {
-            entityMetadata.Group = netForgeEntityAttribute.Group;
+            var entityGroup = adminOptions.EntityGroupsList.FirstOrDefault(e => e.Name == netForgeEntityAttribute.GroupName);
+            if (entityGroup != null)
+            {
+                entityMetadata.Group = entityGroup;
+            }
         }
     }
 

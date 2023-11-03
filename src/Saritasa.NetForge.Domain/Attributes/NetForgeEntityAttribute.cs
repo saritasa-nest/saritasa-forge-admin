@@ -27,7 +27,7 @@ public class NetForgeEntityAttribute : Attribute
     public bool IsHidden { get; set; }
 
     /// <summary>
-    /// Group which entity belongs to.
+    /// Name of the group which entity belongs to.
     /// </summary>
-    public string Group { get; set; } = string.Empty;
+    public string GroupName { get; set; } = string.Empty;
 }

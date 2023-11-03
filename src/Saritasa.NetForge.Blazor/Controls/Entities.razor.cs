@@ -18,9 +18,9 @@ public partial class Entities : MvvmComponentBase<EntitiesViewModel>
 
     private readonly TableGroupDefinition<EntityMetadataDto> groupDefinition = new()
     {
-        Indentation = false,
+        Indentation = true,
         Expandable = true,
-        IsInitiallyExpanded = false,
-        Selector = (e) => e.Group
+        Selector = (e) => e.Group.Name,
+        IsInitiallyExpanded = false
     };
 }

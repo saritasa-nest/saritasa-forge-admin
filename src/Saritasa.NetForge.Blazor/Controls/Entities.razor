@@ -17,7 +17,11 @@
         <MudTh>Description</MudTh>
     </HeaderContent>
     <GroupHeaderTemplate>
-        <MudTh Class="mud-table-cell-custom-group" colspan="2">@($"{context.Key}") </MudTh>
+        <MudTh Class="mud-table-cell-custom-group" colspan="2">
+            <MudTooltip Text=@($"{context.Items.FirstOrDefault()?.Group.Description}")>
+                @($"{context.Key}")
+            </MudTooltip>
+        </MudTh>
     </GroupHeaderTemplate>
     <RowTemplate Context="entity">
         <MudTd DataLabel="Entity Name">

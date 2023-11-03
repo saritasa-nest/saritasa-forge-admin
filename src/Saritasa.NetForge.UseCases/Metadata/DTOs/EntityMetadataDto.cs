@@ -1,4 +1,6 @@
-﻿namespace Saritasa.NetForge.UseCases.Metadata.DTOs;
+﻿using Saritasa.NetForge.Domain.Entities.Options;
+
+namespace Saritasa.NetForge.UseCases.Metadata.DTOs;
 
 /// <summary>
 /// Represents entity metadata DTO.
@@ -33,5 +35,5 @@ public class EntityMetadataDto
     /// <summary>
     /// Group which entity belongs to.
     /// </summary>
-    public string? Group { get; set; }
+    public EntityGroup Group { get; set; } = new();
 }

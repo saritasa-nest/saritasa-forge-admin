@@ -20,10 +20,15 @@ internal static class NetForgeModule
             optionsBuilder.UseEntityFramework(efOptionsBuilder =>
             {
                 efOptionsBuilder.UseDbContext<ShopDbContext>();
-            }).ConfigureEntity<Shop>(entityOptionsBuilder =>
+            })
+            .AddGroup("Test Name", "Test Description")
+            .AddGroup("Test Name 1", "Test Description 1")
+            .ConfigureEntity<Shop>(entityOptionsBuilder =>
             {
+                entityOptionsBuilder.SetGroup("Test Name");
                 entityOptionsBuilder.SetDescription("The base Shop entity.");
-            }).ConfigureEntity<ProductTag>(entityOptionsBuilder =>
+            })
+            .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
             {
                 entityOptionsBuilder.SetIsHidden(true);
             }).ConfigureEntity(new AddressAdminConfiguration());
