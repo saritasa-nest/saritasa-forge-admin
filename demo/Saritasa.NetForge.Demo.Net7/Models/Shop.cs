@@ -30,6 +30,7 @@ public class Shop
     /// <summary>
     /// The date when the shop was opened.
     /// </summary>
+    [NetForgeProperty(IsSortable = true)]
     public DateTime OpenedDate { get; set; }
 
     /// <summary>
@@ -41,6 +42,7 @@ public class Shop
     /// <summary>
     /// The shop is currently open for business.
     /// </summary>
+    [NetForgeProperty(IsSortable = true)]
     public bool IsOpen { get; set; }
 
     /// <summary>
