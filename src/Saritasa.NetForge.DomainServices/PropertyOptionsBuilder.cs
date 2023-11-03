@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.DomainServices;
 
@@ -77,6 +78,15 @@ public class PropertyOptionsBuilder
     public PropertyOptionsBuilder SetFormatProvider(IFormatProvider formatProvider)
     {
         options.FormatProvider = formatProvider;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets search type to property.
+    /// </summary>
+    public PropertyOptionsBuilder SetSearchType(SearchType searchType)
+    {
+        options.SearchType = searchType;
         return this;
     }
 }

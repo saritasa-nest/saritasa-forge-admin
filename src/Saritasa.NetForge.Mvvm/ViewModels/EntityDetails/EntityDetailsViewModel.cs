@@ -12,6 +12,11 @@ namespace Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 /// </summary>
 public class EntityDetailsViewModel : BaseViewModel
 {
+    /// <summary>
+    /// Entity details model.
+    /// </summary>
+    public EntityDetailsModel Model { get; private set; }
+
     private readonly IEntityService entityService;
     private readonly IMapper mapper;
 
@@ -27,9 +32,14 @@ public class EntityDetailsViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// Entity details model.
+    /// Search string.
     /// </summary>
-    public EntityDetailsModel Model { get; private set; }
+    public string? SearchString { get; set; }
+
+    /// <summary>
+    /// Data grid reference.
+    /// </summary>
+    public MudDataGrid<object>? DataGrid { get; set; }
 
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
@@ -49,7 +59,8 @@ public class EntityDetailsViewModel : BaseViewModel
         var searchOptions = new SearchOptions
         {
             Page = gridState.Page + 1,
-            PageSize = gridState.PageSize
+            PageSize = gridState.PageSize,
+            SearchString = SearchString
         };
 
         var entityData = await entityService.SearchDataForEntityAsync(Model.ClrType, Model.Properties, searchOptions);
@@ -99,5 +110,13 @@ public class EntityDetailsViewModel : BaseViewModel
         var propertyMetadata = Model.Properties.FirstOrDefault(property => property.Name == propertyName);
         return DataFormatUtils.GetFormattedValue(value, propertyMetadata?.DisplayFormat,
             propertyMetadata?.FormatProvider);
+    }
+
+    /// <summary>
+    /// Searches data by search string.
+    /// </summary>
+    public void Search()
+    {
+        DataGrid?.ReloadServerData();
     }
 }
