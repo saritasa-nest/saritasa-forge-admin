@@ -24,6 +24,7 @@ internal static class NetForgeModule
             })
             .AddGroup("Test Name", "Test Description")
             .AddGroup("Test Name 1", "Test Description 1")
+            .AddGroup("Test Empty")
             .ConfigureEntity<Shop>(entityOptionsBuilder =>
             {
                 entityOptionsBuilder.SetGroup("Test Name");
