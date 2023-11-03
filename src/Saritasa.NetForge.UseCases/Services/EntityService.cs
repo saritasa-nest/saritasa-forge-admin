@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
@@ -8,6 +9,7 @@ using Saritasa.NetForge.UseCases.Metadata.DTOs;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.UseCases.Metadata.Services;
 using Saritasa.Tools.Common.Pagination;
+using Saritasa.Tools.Common.Utils;
 using Saritasa.Tools.Domain.Exceptions;
 
 namespace Saritasa.NetForge.UseCases.Services;
@@ -75,8 +77,18 @@ public class EntityService : IEntityService
 
         query = dataService.Search(query, searchOptions.SearchString, entityType, properties);
 
+        query = Order(query, searchOptions.OrderBy);
+
         var pagedList = PagedListFactory.FromSource(query, searchOptions.Page, searchOptions.PageSize);
 
         return Task.FromResult(pagedList.ToMetadataObject());
+    }
+
+    private static IQueryable<object> Order(IQueryable<object> query, string? orderBy)
+    {
+        if (string.IsNullOrEmpty(orderBy))
+        {
+            return query;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text;
+using AutoMapper;
 using MudBlazor;
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Mvvm.Utils;
@@ -56,11 +57,32 @@ public class EntityDetailsViewModel : BaseViewModel
     /// <returns>Grid data collection populated with entity's data.</returns>
     public async Task<GridData<object>> LoadEntityGridDataAsync(GridState<object> gridState)
     {
+        var sortDefinitions = gridState.SortDefinitions
+            .Select(sort => new
+            {
+                DataGrid!.RenderedColumns.First(column => column.PropertyName.Equals(sort.SortBy)).Title,
+                sort.Descending,
+                sort.Index
+            })
+            .ToList();
+
+        var orderBy = new StringBuilder();
+        foreach (var sort in sortDefinitions)
+        {
+            orderBy.Append($"{sort.Title}:{(sort.Descending ? "desc" : "asc")}");
+
+            if (sortDefinitions.IndexOf(sort) + 1 != sortDefinitions.Count)
+            {
+                orderBy.Append(',');
+            }
+        }
+
         var searchOptions = new SearchOptions
         {
             Page = gridState.Page + 1,
             PageSize = gridState.PageSize,
-            SearchString = SearchString
+            SearchString = SearchString,
+            OrderBy = orderBy.ToString()
         };
 
         var entityData = await entityService.SearchDataForEntityAsync(Model.ClrType, Model.Properties, searchOptions);

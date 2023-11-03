@@ -24,4 +24,12 @@ public record SearchOptions
     /// Search string.
     /// </summary>
     public string? SearchString { get; init; }
+
+    /// <summary>
+    /// Specifies results ordering logic.
+    /// Specify ascending / descending condition by appending :asc or :desc to the field name.
+    /// You can also order by multiple fields by concatenating conditions with comma.
+    /// Example: "id:desc,name:asc".
+    /// </summary>
+    public string? OrderBy { get; init; }
 }
