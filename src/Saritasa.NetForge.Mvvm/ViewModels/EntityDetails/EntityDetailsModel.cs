@@ -10,6 +10,9 @@ public class EntityDetailsModel
     /// <inheritdoc cref="EntityMetadata.Id"/>
     public Guid Id { get; set; }
 
+    /// <inheritdoc cref="EntityMetadata.Id"/>
+    public string StringId { get; set; } = string.Empty;
+
     /// <inheritdoc cref="EntityMetadata.DisplayName"/>
     public string DisplayName { get; set; } = string.Empty;
 

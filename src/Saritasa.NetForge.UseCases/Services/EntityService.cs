@@ -38,11 +38,11 @@ public class EntityService : IEntityService
     }
 
     /// <inheritdoc />
-    public Task<GetEntityByIdDto> GetEntityByIdAsync(Guid id, CancellationToken cancellationToken)
+    public Task<GetEntityByIdDto> GetEntityByIdAsync(string stringId, CancellationToken cancellationToken)
     {
         var metadata = adminMetadataService
             .GetMetadata()
-            .First(entityMetadata => entityMetadata.Id == id);
+            .First(entityMetadata => entityMetadata.StringId.Equals(stringId));
 
         var metadataDto = mapper.Map<GetEntityByIdDto>(metadata);
 
