@@ -13,6 +13,6 @@ public class ProductAdminConfiguration : IEntityAdminConfiguration<Product>
     public void Configure(EntityOptionsBuilder<Product> entityOptionsBuilder)
     {
         entityOptionsBuilder
-            .AddCalculatedProperties(entity => entity.VolumeInCentimeters, entity => entity.Name);
+            .AddCalculatedProperties(entity => entity.VolumeInCentimeters);
     }
 }

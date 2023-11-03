@@ -86,7 +86,7 @@ public class AdminMetadataService
             {
                 Name = propertyName,
                 IsEditable = false,
-                PropertyInformation = entityOptions.EntityType.GetProperty(propertyName),
+                PropertyInformation = propertyInformation,
                 IsCalculatedProperty = true
             };
 
