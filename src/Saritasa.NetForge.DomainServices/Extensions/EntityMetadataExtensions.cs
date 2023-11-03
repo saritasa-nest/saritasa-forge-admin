@@ -79,6 +79,11 @@ public static class EntityMetadataExtensions
         property.FormatProvider = propertyOptions.FormatProvider ?? property.FormatProvider;
 
         property.SearchType = propertyOptions.SearchType;
+
+        if (propertyOptions.IsSortable)
+        {
+            property.IsSortable = propertyOptions.IsSortable;
+        }
     }
 
     /// <summary>

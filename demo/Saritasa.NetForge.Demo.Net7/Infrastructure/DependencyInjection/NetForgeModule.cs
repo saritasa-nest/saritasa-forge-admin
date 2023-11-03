@@ -24,6 +24,16 @@ internal static class NetForgeModule
             }).ConfigureEntity<Shop>(entityOptionsBuilder =>
             {
                 entityOptionsBuilder.SetDescription("The base Shop entity.");
+
+                entityOptionsBuilder.ConfigureProperty(shop => shop.IsOpen, builder =>
+                {
+                    builder.SetIsSortable(true);
+                });
+
+                entityOptionsBuilder.ConfigureProperty(shop => shop.OpenedDate, builder =>
+                {
+                    builder.SetIsSortable(true);
+                });
             }).ConfigureEntity<ProductTag>(entityOptionsBuilder =>
             {
                 entityOptionsBuilder.SetIsHidden(true);
