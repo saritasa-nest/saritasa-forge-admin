@@ -21,6 +21,11 @@ public class EntityMetadata
     public string PluralName { get; set; } = string.Empty;
 
     /// <summary>
+    /// Human readable entity identifier.
+    /// </summary>
+    public string StringId { get; set; } = string.Empty;
+
+    /// <summary>
     /// Entity description.
     /// </summary>
     public string Description { get; set; } = string.Empty;
