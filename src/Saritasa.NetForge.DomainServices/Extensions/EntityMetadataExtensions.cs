@@ -93,7 +93,7 @@ public static class EntityMetadataExtensions
     /// Applies entity-specific attributes to the given <see cref="EntityMetadata"/>.
     /// </summary>
     /// <param name="entityMetadata">The metadata of the entity to which attributes are applied.</param>
-    /// <param name="adminOptions">Options to apply for the entity metadata</param>
+    /// <param name="adminOptions">Options to apply for the entity metadata.</param>
     public static void ApplyEntityAttributes(this EntityMetadata entityMetadata, AdminOptions adminOptions)
     {
         foreach (var property in entityMetadata.Properties)
