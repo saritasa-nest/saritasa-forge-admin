@@ -80,7 +80,7 @@ public string Name { get; set; }
 
 # Custom Search
 
-You can configure your own search. Custom search exists separately with search from above. You can apply both of them.
+You can configure your own search.
 
 ```csharp
 .ConfigureEntity<Shop>(entityOptionsBuilder =>
