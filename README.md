@@ -208,3 +208,27 @@ services.AddNetForge(optionsBuilder =>
 ## Search
 
 You can read about search [here](docs/SEARCH.md)
+
+## Sorting
+
+You can make some properties to be sortable. By default, they are not sortable.
+It is configurable via `[NetForgeProperty]` and `Fluent API`.
+
+### Using Attribute
+
+```csharp
+[NetForgeProperty(IsSortable = true)]
+public string Name { get; set; }
+```
+
+### Using Fluent API
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(shop => shop.OpenedDate, builder =>
+{
+    builder.SetIsSortable(true);
+});
+```
+
+You can sort multiple properties at once. It can be achieved by pressing sort buttons with `CTRL`.
+Sorting can be cancelled by pressing on it with `ALT`.
