@@ -77,3 +77,20 @@ Search type can be customized via Fluent API or attribute.
 [NetForgeProperty(SearchType = SearchType.StartsWithCaseSensitive)]
 public string Name { get; set; }
 ```
+
+# Custom Search
+
+You can configure your own search. Custom search exists separately with search from above. You can apply both of them.
+
+```csharp
+.ConfigureEntity<Shop>(entityOptionsBuilder =>
+    {
+        entityOptionsBuilder
+            .ConfigureSearch((serviceProvider, query, searchTerm) =>
+            {
+                return query.Where(e => e.Name.Contains(searchTerm));
+            });
+    })
+```
+
+You can use `ServiceProvider` to access your services.
