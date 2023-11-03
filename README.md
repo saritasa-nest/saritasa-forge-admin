@@ -211,4 +211,4 @@ You can read about search [here](docs/SEARCH.md)
 
 ## Grouping
 
-You can read about grouping [here](docs/Grouping.md)
+You can read about grouping [here](docs/GROUPING.md)
