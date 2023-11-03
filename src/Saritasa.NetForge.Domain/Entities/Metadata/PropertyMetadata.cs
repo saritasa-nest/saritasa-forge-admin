@@ -93,4 +93,9 @@ public class PropertyMetadata
     /// Format provider for the property value.
     /// </summary>
     public IFormatProvider? FormatProvider { get; set; }
+
+    /// <summary>
+    /// Whether the property is sortable.
+    /// </summary>
+    public bool IsSortable { get; set; }
 }
