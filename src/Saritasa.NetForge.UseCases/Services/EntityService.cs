@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.ComponentModel;
+using System.Linq.Expressions;
 using AutoMapper;
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.DomainServices.Extensions;
@@ -77,18 +78,63 @@ public class EntityService : IEntityService
 
         query = dataService.Search(query, searchOptions.SearchString, entityType, properties);
 
-        query = Order(query, searchOptions.OrderBy);
+        if (!string.IsNullOrEmpty(searchOptions.OrderBy))
+        {
+            query = Order(query, searchOptions.OrderBy, entityType);
+        }
 
         var pagedList = PagedListFactory.FromSource(query, searchOptions.Page, searchOptions.PageSize);
 
         return Task.FromResult(pagedList.ToMetadataObject());
     }
 
-    private static IQueryable<object> Order(IQueryable<object> query, string? orderBy)
+    private static IOrderedQueryable<object> Order(IQueryable<object> query, string orderBy, Type entityType)
     {
-        if (string.IsNullOrEmpty(orderBy))
+        var separatedOrderBy = OrderParsingDelegates.ParseSeparated(orderBy);
+        var keySelectors = GetKeySelectors(separatedOrderBy, entityType);
+
+        return CollectionUtils.OrderMultiple(query, separatedOrderBy, keySelectors);
+    }
+
+    private static (string FieldName, Expression<Func<object, object>> Selector)[] GetKeySelectors(
+        (string FieldName, ListSortDirection Order)[] orderBy, Type entityType)
+    {
+        // entity
+        var entity = Expression.Parameter(typeof(object), "entity");
+
+        // (entityType)entity
+        var convertedEntity = Expression.Convert(entity, entityType);
+
+        // Collection of sorted properties. For example:
+        // ((entityType)entity).Name
+        // ((entityType)entity).Description
+        // ((entityType)entity).Count
+        // ...
+        // Note that there are converting property to object.
+        // We need it to sort types that are not string. For example, numbers.
+        var propertyExpressions = orderBy
+            .Select(order => Expression.Convert(Expression.Property(convertedEntity, order.FieldName), typeof(object)));
+
+        // Make lambdas with properties. For example:
+        // entity => ((entityType)entity).Name
+        // entity => ((entityType)entity).Description
+        // entity => ((entityType)entity).Count
+        // ...
+        var lambdas = propertyExpressions
+            .Select(property => Expression.Lambda<Func<object, object>>(property, entity))
+            .ToList();
+
+        // Make tuple with selected property names and property lambdas. For example:
+        // ("name", entity => ((entityType)entity).Name)
+        // ("description", entity => ((entityType)entity).Description)
+        // ("count", entity => ((entityType)entity).Count)
+        // ...
+        var keySelectors = new (string, Expression<Func<object, object>>)[orderBy.Length];
+        for (var i = 0; i < orderBy.Length; i++)
         {
-            return query;
+            keySelectors[i] = (orderBy[i].FieldName, lambdas[i]);
         }
+
+        return keySelectors;
     }
 }
