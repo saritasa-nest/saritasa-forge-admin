@@ -27,6 +27,26 @@ public class AdminOptionsBuilder
     }
 
     /// <summary>
+    /// Set the header title for the admin panel web page.
+    /// </summary>
+    /// <param name="title">Header title.</param>
+    public AdminOptionsBuilder SetHeaderTitle(string title)
+    {
+        options.AdminPanelHeaderTitle = title;
+        return this;
+    }
+
+    /// <summary>
+    /// Set the html title for the admin panel web page.
+    /// </summary>
+    /// <param name="title">Html title.</param>
+    public AdminOptionsBuilder SetHtmlTitle(string title)
+    {
+        options.AdminPanelHtmlTitle = title;
+        return this;
+    }
+
+    /// <summary>
     /// Get options for the admin panel.
     /// </summary>
     public AdminOptions Create()
