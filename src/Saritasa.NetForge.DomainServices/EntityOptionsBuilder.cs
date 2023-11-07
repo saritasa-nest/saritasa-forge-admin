@@ -59,8 +59,8 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         Func<IServiceProvider?, IQueryable<TEntity>, string, IQueryable<TEntity>> searchFunction)
     {
         // We need to override provided Func to perform successful cast from IQueryable<TEntity> to IQueryable<object>
-        options.SearchFunction =
-            (serviceProvider, query, searchTerm) => searchFunction(serviceProvider, query.Cast<TEntity>(), searchTerm);
+        options.SearchFunction = (serviceProvider, query, searchTerm) =>
+                searchFunction.Invoke(serviceProvider, query.Cast<TEntity>(), searchTerm);
         return this;
     }
 
