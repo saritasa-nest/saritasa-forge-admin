@@ -24,4 +24,7 @@ public class EntityDetailsModel
 
     /// <inheritdoc cref="EntityMetadata.Properties"/>
     public ICollection<PropertyMetadata> Properties { get; set; } = new List<PropertyMetadata>();
+
+    /// <inheritdoc cref="EntityMetadata.SearchFunction"/>
+    public Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? SearchFunction { get; set; }
 }

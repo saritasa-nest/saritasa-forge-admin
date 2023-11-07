@@ -23,7 +23,12 @@ internal static class NetForgeModule
                 efOptionsBuilder.UseDbContext<ShopDbContext>();
             }).ConfigureEntity<Shop>(entityOptionsBuilder =>
             {
-                entityOptionsBuilder.SetDescription("The base Shop entity.");
+                entityOptionsBuilder
+                    .SetDescription("The base Shop entity.")
+                    .ConfigureSearch((serviceProvider, query, searchTerm) =>
+                    {
+                        return query.Where(e => e.Name.Contains(searchTerm));
+                    });
             }).ConfigureEntity<ProductTag>(entityOptionsBuilder =>
             {
                 entityOptionsBuilder.SetIsHidden(true);

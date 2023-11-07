@@ -49,13 +49,8 @@ public class EfCoreDataService : IOrmDataService
 
     /// <inheritdoc />
     public IQueryable<object> Search(
-        IQueryable<object> query, string? searchString, Type entityType, IEnumerable<PropertyMetadata> properties)
+        IQueryable<object> query, string searchString, Type entityType, IEnumerable<PropertyMetadata> properties)
     {
-        if (string.IsNullOrEmpty(searchString))
-        {
-            return query;
-        }
-
         // entity => entity
         var entity = Expression.Parameter(typeof(object), Entity);
 

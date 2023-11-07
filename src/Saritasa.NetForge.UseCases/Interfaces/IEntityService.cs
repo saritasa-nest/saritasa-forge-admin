@@ -30,6 +30,10 @@ public interface IEntityService
     /// <param name="entityType">Entity type to search data. For example, search all data for entity with type <c>Address</c>.</param>
     /// <param name="properties">Entity properties metadata to be included in returned data.</param>
     /// <param name="searchOptions">Search options.</param>
-    Task<PagedListMetadataDto<object>> SearchDataForEntityAsync(Type? entityType,
-        ICollection<PropertyMetadata> properties, SearchOptions searchOptions);
+    /// <param name="searchFunction">Custom search function.</param>
+    Task<PagedListMetadataDto<object>> SearchDataForEntityAsync(
+        Type? entityType,
+        ICollection<PropertyMetadata> properties,
+        SearchOptions searchOptions,
+        Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? searchFunction);
 }
