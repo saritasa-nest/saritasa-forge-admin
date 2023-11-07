@@ -23,7 +23,7 @@
             <Columns>
                 @foreach (var property in ViewModel.Model.Properties)
                 {
-                    <TemplateColumn Title="@property.Name.ToLower()" Sortable="property.IsSortable">
+                    <TemplateColumn Title="@property.Name" Sortable="property.IsSortable">
                         <HeaderTemplate>
                             @{
                                 var displayName = ViewModel.GetPropertyDisplayName(property);
