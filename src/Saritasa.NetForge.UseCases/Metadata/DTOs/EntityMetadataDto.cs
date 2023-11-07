@@ -1,4 +1,6 @@
-﻿namespace Saritasa.NetForge.UseCases.Metadata.DTOs;
+﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+
+namespace Saritasa.NetForge.UseCases.Metadata.DTOs;
 
 /// <summary>
 /// Represents entity metadata DTO.
@@ -29,4 +31,7 @@ public class EntityMetadataDto
     /// Id of the entity.
     /// </summary>
     public Guid Id { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.StringId"/>
+    public string StringId { get; set; } = string.Empty;
 }

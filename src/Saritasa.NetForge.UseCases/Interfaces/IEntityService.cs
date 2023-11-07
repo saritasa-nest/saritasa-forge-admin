@@ -20,9 +20,9 @@ public interface IEntityService
     /// <summary>
     /// Get <see cref="EntityMetadata"/> by <see cref="EntityMetadata.Id"/>.
     /// </summary>
-    /// <param name="id">Entity identifier.</param>
+    /// <param name="stringId">Entity string identifier.</param>
     /// <param name="cancellationToken">Token for cancelling async operation.</param>
-    Task<GetEntityByIdDto> GetEntityByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<GetEntityByIdDto> GetEntityByIdAsync(string stringId, CancellationToken cancellationToken);
 
     /// <summary>
     /// Get the data for the specific entity type.
