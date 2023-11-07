@@ -46,6 +46,7 @@ public class AdminMetadataService
         foreach (var entityMetadata in metadata)
         {
             entityMetadata.PluralName = PluralizationProvider.Pluralize(entityMetadata.DisplayName);
+            entityMetadata.StringId = entityMetadata.PluralName;
             entityMetadata.ApplyOptions(adminOptions);
             entityMetadata.ApplyEntityAttributes();
             entityMetadata.Id = Guid.NewGuid();

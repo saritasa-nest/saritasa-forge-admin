@@ -21,6 +21,11 @@ public class EntityMetadata
     public string PluralName { get; set; } = string.Empty;
 
     /// <summary>
+    /// String entity identifier.
+    /// </summary>
+    public string StringId { get; set; } = string.Empty;
+
+    /// <summary>
     /// Entity description.
     /// </summary>
     public string Description { get; set; } = string.Empty;
@@ -44,4 +49,9 @@ public class EntityMetadata
     /// A collection of properties metadata associated with this entity.
     /// </summary>
     public ICollection<PropertyMetadata> Properties { get; set; } = new List<PropertyMetadata>();
+
+    /// <summary>
+    /// Represents custom search function.
+    /// </summary>
+    public Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? SearchFunction { get; set; }
 }

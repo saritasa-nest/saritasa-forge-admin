@@ -24,9 +24,9 @@ public class EntityDetailsViewModel : BaseViewModel
     /// <summary>
     /// Constructor.
     /// </summary>
-    public EntityDetailsViewModel(Guid id, IMapper mapper, IEntityService entityService)
+    public EntityDetailsViewModel(string stringId, IMapper mapper, IEntityService entityService)
     {
-        Model = new EntityDetailsModel { Id = id };
+        Model = new EntityDetailsModel { StringId = stringId };
 
         this.mapper = mapper;
         this.entityService = entityService;
@@ -45,7 +45,7 @@ public class EntityDetailsViewModel : BaseViewModel
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
     {
-        var entity = await entityService.GetEntityByIdAsync(Model.Id, cancellationToken);
+        var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
 
         Model = mapper.Map<EntityDetailsModel>(entity);
     }
@@ -85,7 +85,8 @@ public class EntityDetailsViewModel : BaseViewModel
             OrderBy = orderBy.ToString()
         };
 
-        var entityData = await entityService.SearchDataForEntityAsync(Model.ClrType, Model.Properties, searchOptions);
+        var entityData = await entityService
+            .SearchDataForEntityAsync(Model.ClrType, Model.Properties, searchOptions, Model.SearchFunction);
 
         var data = new GridData<object>
         {

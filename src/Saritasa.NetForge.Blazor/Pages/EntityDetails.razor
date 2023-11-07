@@ -6,7 +6,8 @@
         <MudText Typo="Typo.h4">@ViewModel.Model.PluralName</MudText>
         <MudText Typo="Typo.body1">@ViewModel.Model.Description</MudText>
 
-        @if (ViewModel.Model.Properties.Any(property => property.SearchType != SearchType.None))
+        @if (ViewModel.Model.Properties.Any(property => property.SearchType != SearchType.None)
+            || ViewModel.Model.SearchFunction is not null)
         {
             const int debounceInterval = 250;
 

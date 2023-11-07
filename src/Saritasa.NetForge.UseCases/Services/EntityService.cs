@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using Saritasa.NetForge.Domain.Entities.Metadata;
+using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Common;
@@ -21,15 +22,21 @@ public class EntityService : IEntityService
     private readonly IMapper mapper;
     private readonly AdminMetadataService adminMetadataService;
     private readonly IOrmDataService dataService;
+    private readonly IServiceProvider serviceProvider;
 
     /// <summary>
     /// Constructor for <see cref="EntityService"/>.
     /// </summary>
-    public EntityService(IMapper mapper, AdminMetadataService adminMetadataService, IOrmDataService dataService)
+    public EntityService(
+        IMapper mapper,
+        AdminMetadataService adminMetadataService,
+        IOrmDataService dataService,
+        IServiceProvider serviceProvider)
     {
         this.mapper = mapper;
         this.adminMetadataService = adminMetadataService;
         this.dataService = dataService;
+        this.serviceProvider = serviceProvider;
     }
 
     /// <inheritdoc />
@@ -41,11 +48,11 @@ public class EntityService : IEntityService
     }
 
     /// <inheritdoc />
-    public Task<GetEntityByIdDto> GetEntityByIdAsync(Guid id, CancellationToken cancellationToken)
+    public Task<GetEntityByIdDto> GetEntityByIdAsync(string stringId, CancellationToken cancellationToken)
     {
         var metadata = adminMetadataService
             .GetMetadata()
-            .First(entityMetadata => entityMetadata.Id == id);
+            .First(entityMetadata => entityMetadata.StringId.Equals(stringId));
 
         var metadataDto = mapper.Map<GetEntityByIdDto>(metadata);
 
@@ -64,8 +71,11 @@ public class EntityService : IEntityService
     }
 
     /// <inheritdoc />
-    public Task<PagedListMetadataDto<object>> SearchDataForEntityAsync(Type? entityType,
-        ICollection<PropertyMetadata> properties, SearchOptions searchOptions)
+    public Task<PagedListMetadataDto<object>> SearchDataForEntityAsync(
+        Type? entityType,
+        ICollection<PropertyMetadata> properties,
+        SearchOptions searchOptions,
+        Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? searchFunction)
     {
         if (entityType is null)
         {
@@ -76,7 +86,7 @@ public class EntityService : IEntityService
 
         query = query.SelectProperties(entityType, properties);
 
-        query = dataService.Search(query, searchOptions.SearchString, entityType, properties);
+        query = Search(query, searchOptions.SearchString, entityType, properties, searchFunction);
 
         if (!string.IsNullOrEmpty(searchOptions.OrderBy))
         {
@@ -86,6 +96,29 @@ public class EntityService : IEntityService
         var pagedList = PagedListFactory.FromSource(query, searchOptions.Page, searchOptions.PageSize);
 
         return Task.FromResult(pagedList.ToMetadataObject());
+    }
+
+    private IQueryable<object> Search(
+        IQueryable<object> query,
+        string? searchString,
+        Type entityType,
+        ICollection<PropertyMetadata> properties,
+        Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? searchFunction)
+    {
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            if (properties.Any(property => property.SearchType != SearchType.None))
+            {
+                query = dataService.Search(query, searchString, entityType, properties);
+            }
+
+            if (searchFunction is not null)
+            {
+                query = searchFunction(serviceProvider, query, searchString);
+            }
+        }
+
+        return query;
     }
 
     private static IOrderedQueryable<object> Order(IQueryable<object> query, string orderBy, Type entityType)
