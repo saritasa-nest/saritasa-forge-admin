@@ -211,7 +211,7 @@ You can read about search [here](docs/SEARCH.md)
 
 ## Sort
 
-You can make some properties to be sortable. By default, they are not sortable.
+You can apply alphabet sorting to some properties. By default, they are not sortable.
 
 It is configurable via `[NetForgeProperty]` and `Fluent API`.
 
