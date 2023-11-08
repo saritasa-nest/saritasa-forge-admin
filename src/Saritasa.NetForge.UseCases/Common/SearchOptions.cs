@@ -26,10 +26,7 @@ public record SearchOptions
     public string? SearchString { get; init; }
 
     /// <summary>
-    /// Specifies results ordering logic.
-    /// Specify ascending / descending condition by appending :asc or :desc to the field name.
-    /// You can also order by multiple fields by concatenating conditions with comma.
-    /// Example: "id:desc,name:asc".
+    /// Collection of order by fields with directions.
     /// </summary>
-    public string? OrderBy { get; init; }
+    public IEnumerable<OrderByDto>? OrderBy { get; init; }
 }

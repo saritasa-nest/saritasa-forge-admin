@@ -57,32 +57,20 @@ public class EntityDetailsViewModel : BaseViewModel
     /// <returns>Grid data collection populated with entity's data.</returns>
     public async Task<GridData<object>> LoadEntityGridDataAsync(GridState<object> gridState)
     {
-        var sortDefinitions = gridState.SortDefinitions
-            .Select(sort => new
+        var orderBy = gridState.SortDefinitions
+            .Select(sort => new OrderByDto
             {
-                DataGrid!.RenderedColumns.First(column => column.PropertyName.Equals(sort.SortBy)).Title,
-                sort.Descending,
-                sort.Index
-            })
-            .ToList();
-
-        var orderBy = new StringBuilder();
-        foreach (var sort in sortDefinitions)
-        {
-            orderBy.Append($"{sort.Title}:{(sort.Descending ? "desc" : "asc")}");
-
-            if (sortDefinitions.IndexOf(sort) + 1 != sortDefinitions.Count)
-            {
-                orderBy.Append(',');
-            }
-        }
+                FieldName =
+                    DataGrid!.RenderedColumns.First(column => column.PropertyName.Equals(sort.SortBy)).Title,
+                IsDescending = sort.Descending
+            });
 
         var searchOptions = new SearchOptions
         {
             Page = gridState.Page + 1,
             PageSize = gridState.PageSize,
             SearchString = SearchString,
-            OrderBy = orderBy.ToString()
+            OrderBy = orderBy
         };
 
         var entityData = await entityService

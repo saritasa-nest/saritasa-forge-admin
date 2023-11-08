@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System.ComponentModel;
+using System.Linq.Expressions;
 using AutoMapper;
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Enums;
@@ -87,7 +88,7 @@ public class EntityService : IEntityService
 
         query = Search(query, searchOptions.SearchString, entityType, properties, searchFunction);
 
-        if (!string.IsNullOrEmpty(searchOptions.OrderBy))
+        if (searchOptions.OrderBy is not null)
         {
             query = Order(query, searchOptions.OrderBy, entityType);
         }
@@ -120,12 +121,17 @@ public class EntityService : IEntityService
         return query;
     }
 
-    private static IOrderedQueryable<object> Order(IQueryable<object> query, string orderBy, Type entityType)
+    private static IOrderedQueryable<object> Order(
+        IQueryable<object> query, IEnumerable<OrderByDto> orderBy, Type entityType)
     {
-        var separatedOrderBy = OrderParsingDelegates.ParseSeparated(orderBy);
-        var keySelectors = GetKeySelectors(separatedOrderBy.Select(order => order.FieldName).ToArray(), entityType);
+        var orderByTuples = orderBy
+            .Select(order =>
+                (order.FieldName, order.IsDescending ? ListSortDirection.Descending : ListSortDirection.Ascending))
+            .ToArray();
 
-        return CollectionUtils.OrderMultiple(query, separatedOrderBy, keySelectors);
+        var keySelectors = GetKeySelectors(orderByTuples.Select(order => order.FieldName).ToArray(), entityType);
+
+        return CollectionUtils.OrderMultiple(query, orderByTuples, keySelectors);
     }
 
     private static (string FieldName, Expression<Func<object, object>> Selector)[] GetKeySelectors(
