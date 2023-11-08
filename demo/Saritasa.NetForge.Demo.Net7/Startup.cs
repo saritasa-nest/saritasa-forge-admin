@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Saritasa.NetForge.Blazor.Extensions;
 using Saritasa.NetForge.Demo.Net7.Infrastructure.Startup;
 using Saritasa.NetForge.Demo.Net7.Infrastructure.Startup.HealthCheck;
 using Saritasa.NetForge.Demo.Net7.Models;
-using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
 namespace Saritasa.NetForge.Demo.Net7;
 
@@ -60,5 +60,9 @@ public class Startup
     {
         app.UseNetForge();
         HealthCheckModule.Register(app);
+        
+        var cultureInfo = new CultureInfo("en-US");
+        CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+        CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
     }
 }

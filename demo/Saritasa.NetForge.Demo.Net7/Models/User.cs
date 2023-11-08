@@ -21,4 +21,14 @@ public class User : IdentityUser
     /// Gets or sets the date of birth of the user.
     /// </summary>
     public DateTime? DateOfBirth { get; set; }
+
+    /// <summary>
+    /// Gets the full name of the user.
+    /// </summary>
+    public string FullName => $"{FirstName} {LastName}";
+
+    /// <summary>
+    /// Gets the age of the user.
+    /// </summary>
+    public int? Age => DateOfBirth == null ? null : DateTime.Now.Subtract((DateTime)DateOfBirth).Days / 364;
 }
