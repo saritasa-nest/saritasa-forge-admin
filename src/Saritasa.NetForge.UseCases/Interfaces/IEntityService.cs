@@ -20,9 +20,9 @@ public interface IEntityService
     /// <summary>
     /// Get <see cref="EntityMetadata"/> by <see cref="EntityMetadata.Id"/>.
     /// </summary>
-    /// <param name="id">Entity identifier.</param>
+    /// <param name="stringId">Entity string identifier.</param>
     /// <param name="cancellationToken">Token for cancelling async operation.</param>
-    Task<GetEntityByIdDto> GetEntityByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<GetEntityByIdDto> GetEntityByIdAsync(string stringId, CancellationToken cancellationToken);
 
     /// <summary>
     /// Get the data for the specific entity type.
@@ -30,6 +30,10 @@ public interface IEntityService
     /// <param name="entityType">Entity type to search data. For example, search all data for entity with type <c>Address</c>.</param>
     /// <param name="properties">Entity properties metadata to be included in returned data.</param>
     /// <param name="searchOptions">Search options.</param>
-    Task<PagedListMetadataDto<object>> SearchDataForEntityAsync(Type? entityType,
-        ICollection<PropertyMetadata> properties, SearchOptions searchOptions);
+    /// <param name="searchFunction">Custom search function.</param>
+    Task<PagedListMetadataDto<object>> SearchDataForEntityAsync(
+        Type? entityType,
+        ICollection<PropertyMetadata> properties,
+        SearchOptions searchOptions,
+        Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? searchFunction);
 }

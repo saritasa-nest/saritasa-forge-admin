@@ -39,6 +39,11 @@ public static class EntityMetadataExtensions
             entityMetadata.IsHidden = entityOptions.IsHidden;
         }
 
+        if (entityOptions.SearchFunction is not null)
+        {
+            entityMetadata.SearchFunction = entityOptions.SearchFunction;
+        }
+
         foreach (var option in entityOptions.PropertyOptions)
         {
             var property = entityMetadata.Properties.FirstOrDefault(property => property.Name == option.PropertyName);

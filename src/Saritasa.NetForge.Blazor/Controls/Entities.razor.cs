@@ -13,6 +13,6 @@ public partial class Entities : MvvmComponentBase<EntitiesViewModel>
 {
     private void NavigateToDetails(TableRowClickEventArgs<EntityMetadataDto> rowEventArgs)
     {
-        NavigationService.NavigateTo<EntityDetailsViewModel>(parameters: rowEventArgs.Item.Id);
+        NavigationService.NavigateTo<EntityDetailsViewModel>(parameters: rowEventArgs.Item.StringId);
     }
 }

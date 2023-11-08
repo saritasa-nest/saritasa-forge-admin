@@ -52,6 +52,19 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
+    /// Configure custom search.
+    /// </summary>
+    /// <param name="searchFunction">Custom search function.</param>
+    public EntityOptionsBuilder<TEntity> ConfigureSearch(
+        Func<IServiceProvider?, IQueryable<TEntity>, string, IQueryable<TEntity>> searchFunction)
+    {
+        // We need to override provided Func to perform successful cast from IQueryable<TEntity> to IQueryable<object>
+        options.SearchFunction = (serviceProvider, query, searchTerm) =>
+                searchFunction.Invoke(serviceProvider, query.Cast<TEntity>(), searchTerm);
+        return this;
+    }
+
+    /// <summary>
     /// Creates and returns the configured entity options.
     /// </summary>
     public EntityOptions Create()

@@ -46,6 +46,7 @@ public class AdminMetadataService
         foreach (var entityMetadata in metadata)
         {
             entityMetadata.PluralName = PluralizationProvider.Pluralize(entityMetadata.DisplayName);
+            entityMetadata.StringId = entityMetadata.PluralName;
             var entityOptions =
                 adminOptions.EntityOptionsList.FirstOrDefault(options => options.EntityType == entityMetadata.ClrType);
 
