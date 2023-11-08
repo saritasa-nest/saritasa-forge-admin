@@ -1,7 +1,6 @@
 ﻿using Saritasa.NetForge.Blazor.Extensions;
 using Saritasa.NetForge.Demo.Net7.Infrastructure.Admin;
 using Saritasa.NetForge.Demo.Net7.Models;
-using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
 namespace Saritasa.NetForge.Demo.Net7.Infrastructure.DependencyInjection;
@@ -27,9 +26,7 @@ internal static class NetForgeModule
             }).ConfigureEntity<ProductTag>(entityOptionsBuilder =>
             {
                 entityOptionsBuilder.SetIsHidden(true);
-            }).ConfigureEntity(new UserAdminConfiguration())
-            .ConfigureEntity(new AddressAdminConfiguration())
-            .ConfigureEntity(new ProductAdminConfiguration());
+            }).ConfigureEntity(new UserAdminConfiguration());
         });
     }
 }

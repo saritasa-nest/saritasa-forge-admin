@@ -73,7 +73,7 @@ public class AdminMetadataService
     {
         var propertiesMetadata = new List<PropertyMetadata>();
 
-        foreach (var propertyName in entityOptions.CalculatedPropertiesNames)
+        foreach (var propertyName in entityOptions.CalculatedPropertyNames)
         {
             var propertyInformation = entityOptions.EntityType.GetProperty(propertyName);
 

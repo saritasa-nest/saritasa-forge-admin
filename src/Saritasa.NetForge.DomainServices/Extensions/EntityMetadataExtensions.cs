@@ -16,7 +16,7 @@ public static class EntityMetadataExtensions
     /// Applies entity-specific options to the given <see cref="EntityMetadata"/> using the provided options.
     /// </summary>
     /// <param name="entityMetadata">The metadata of the entity to which options are applied.</param>
-    /// <param name="adminOptions">Options to apply for the entity metadata.</param>
+    /// <param name="entityOptions">Options to apply for the entity metadata.</param>
     public static void ApplyOptions(this EntityMetadata entityMetadata, EntityOptions entityOptions)
     {
         if (!string.IsNullOrEmpty(entityOptions.Description))

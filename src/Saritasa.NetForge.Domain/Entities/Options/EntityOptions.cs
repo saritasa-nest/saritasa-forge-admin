@@ -46,5 +46,5 @@ public class EntityOptions
     /// <summary>
     /// Collection of the calculated property names.
     /// </summary>
-    public List<string> CalculatedPropertiesNames { get; } = new();
+    public List<string> CalculatedPropertyNames { get; } = new();
 }

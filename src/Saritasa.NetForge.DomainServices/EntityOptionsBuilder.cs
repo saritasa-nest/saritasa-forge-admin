@@ -88,7 +88,7 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         params Expression<Func<TEntity, object?>>[] propertyExpressions)
     {
         var propertyNames = propertyExpressions.Select(expression => expression.GetMemberName());
-        options.CalculatedPropertiesNames.AddRange(propertyNames);
+        options.CalculatedPropertyNames.AddRange(propertyNames);
         return this;
     }
 }

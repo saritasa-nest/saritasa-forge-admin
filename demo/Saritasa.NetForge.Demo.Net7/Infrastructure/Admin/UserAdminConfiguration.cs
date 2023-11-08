@@ -4,6 +4,9 @@ using Saritasa.NetForge.DomainServices.Interfaces;
 
 namespace Saritasa.NetForge.Demo.Net7.Infrastructure.Admin;
 
+/// <summary>
+/// <see cref="User"/> admin panel configuration.
+/// </summary>
 public class UserAdminConfiguration : IEntityAdminConfiguration<User>
 {
     /// <inheritdoc />
