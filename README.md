@@ -209,7 +209,7 @@ services.AddNetForge(optionsBuilder =>
 
 You can read about search [here](docs/SEARCH.md)
 
-## Sort
+## Data sorting
 
 You can apply alphabet sorting to some properties. By default, they are not sortable.
 
