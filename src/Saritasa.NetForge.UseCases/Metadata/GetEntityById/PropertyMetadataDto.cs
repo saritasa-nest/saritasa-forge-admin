@@ -20,6 +20,9 @@ public record PropertyMetadataDto
     /// <inheritdoc cref="PropertyMetadata.SearchType"/>
     public SearchType SearchType { get; set; } = SearchType.None;
 
+    /// <inheritdoc cref="PropertyMetadata.Order"/>
+    public int? Order { get; set; }
+
     /// <inheritdoc cref="PropertyMetadata.DisplayFormat"/>
     public string? DisplayFormat { get; set; }
 
@@ -28,4 +31,9 @@ public record PropertyMetadataDto
 
     /// <inheritdoc cref="PropertyMetadata.IsCalculatedProperty"/>
     public bool IsCalculatedProperty { get; set; }
+
+    /// <summary>
+    /// Whether the property is navigation or not.
+    /// </summary>
+    public bool IsNavigation { get; set; }
 }

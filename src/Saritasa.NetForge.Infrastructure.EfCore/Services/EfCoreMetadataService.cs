@@ -94,6 +94,11 @@ internal class EfCoreMetadataService : IOrmMetadataService
         return propertyMetadata;
     }
 
+    /// <summary>
+    /// Retrieve metadata for a navigation of an entity type.
+    /// </summary>
+    /// <param name="navigation">The EF Core navigation to retrieve metadata for.</param>
+    /// <returns>A <see cref="PropertyMetadata"/> object containing metadata information for the navigation.</returns>
     private static NavigationMetadata GetNavigationMetadata(IReadOnlyNavigation navigation)
     {
         var navigationMetadata = new NavigationMetadata

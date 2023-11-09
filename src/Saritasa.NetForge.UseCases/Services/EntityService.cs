@@ -52,16 +52,26 @@ public class EntityService : IEntityService
             .GetMetadata()
             .First(entityMetadata => entityMetadata.StringId.Equals(stringId));
 
+        var metadataDto = mapper.Map<GetEntityByIdDto>(metadata);
+
         var displayableProperties = metadata.Properties
             .Where(property => property is { IsForeignKey: false, IsHidden: false });
 
-        metadata.Properties = displayableProperties
+        var displayableProperties2 = mapper
+            .Map<IEnumerable<PropertyMetadata>, IEnumerable<PropertyMetadataDto>>(displayableProperties);
+
+        var displayableNavigations = mapper
+            .Map<IEnumerable<NavigationMetadata>, IEnumerable<PropertyMetadataDto>>(metadata.Navigations);
+
+        var allProperties = displayableProperties2.Union(displayableNavigations);
+
+        var orderedProperties = allProperties
             .OrderByDescending(property => property is { Name: "Id", Order: null })
             .ThenByDescending(property => property.Order.HasValue)
             .ThenBy(property => property.Order)
             .ToList();
 
-        var metadataDto = mapper.Map<GetEntityByIdDto>(metadata);
+        metadataDto = metadataDto with { Properties = orderedProperties };
 
         return Task.FromResult(metadataDto);
     }
