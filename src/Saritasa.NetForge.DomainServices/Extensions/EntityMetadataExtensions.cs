@@ -54,12 +54,14 @@ public static class EntityMetadataExtensions
             property?.ApplyPropertyOptions(option);
         }
 
-        var entityGroup =
-            adminOptions.EntityGroupsList.FirstOrDefault(options => options.Name == entityOptions.GroupName);
-
-        if (entityGroup != null && !string.IsNullOrEmpty(entityGroup.Name))
+        if (!string.IsNullOrEmpty(entityOptions.GroupName))
         {
-            entityMetadata.Group = entityGroup;
+            var entityGroup =
+                adminOptions.EntityGroupsList.FirstOrDefault(group => group.Name == entityOptions.GroupName);
+            if (entityGroup != null)
+            {
+                entityMetadata.Group = entityGroup;
+            }
         }
     }
 

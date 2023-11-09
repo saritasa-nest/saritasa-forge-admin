@@ -1,6 +1,7 @@
 ﻿using Saritasa.NetForge.Blazor.Extensions;
 using Saritasa.NetForge.Demo.Net7.Infrastructure.Admin;
 using Saritasa.NetForge.Demo.Net7.Models;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
@@ -21,16 +22,16 @@ internal static class NetForgeModule
             optionsBuilder.UseEntityFramework(efOptionsBuilder =>
             {
                 efOptionsBuilder.UseDbContext<ShopDbContext>();
-            })
-            .AddGroup("Test Name", "Test Description")
-            .AddGroup("Test Name 1", "Test Description 1")
-            .AddGroup("Test Empty")
-            .ConfigureEntity<Shop>(entityOptionsBuilder =>
+            }).AddGroups(new List<EntityGroup>
             {
-                entityOptionsBuilder.SetGroup("Test Name");
+                new EntityGroup{ Name = "Group Entities 1", Description = "Group Description" },
+                new EntityGroup{ Name = "Group Entities 2", Description = "Group Description" },
+                new EntityGroup{ Name = "Group Entities 3"}
+            }).ConfigureEntity<Shop>(entityOptionsBuilder =>
+            {
+                entityOptionsBuilder.SetGroup("Group Entities 1");
                 entityOptionsBuilder.SetDescription("The base Shop entity.");
-            })
-            .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
+            }).ConfigureEntity<ProductTag>(entityOptionsBuilder =>
             {
                 entityOptionsBuilder.SetIsHidden(true);
             }).ConfigureEntity(new AddressAdminConfiguration())

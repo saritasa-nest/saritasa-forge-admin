@@ -20,7 +20,7 @@ public partial class Entities : MvvmComponentBase<EntitiesViewModel>
     {
         Indentation = true,
         Expandable = true,
-        Selector = (e) => e.Group.Name,
+        Selector = e => e.Group.Name,
         IsInitiallyExpanded = false
     };
 }

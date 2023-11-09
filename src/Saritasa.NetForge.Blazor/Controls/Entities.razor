@@ -4,35 +4,37 @@
 @inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.EntitiesViewModel>
 @inject INavigationService NavigationService;
 
-<MudTable Items="@ViewModel.EntitiesMetadata" Hover="true" Color="Color.Dark" T="EntityMetadataDto"
-          RowClass="cursor-pointer" OnRowClick="NavigateToDetails"
-          GroupBy="@groupDefinition" GroupHeaderStyle="background-color:var(--mud-palette-background-grey)">
-    <HeaderContent>
-        <MudTh>
-            <MudTableSortLabel InitialDirection="SortDirection.Ascending"
-                               SortBy="new Func<EntityMetadataDto, object>(x => x.PluralName)">
-                <MudText Typo="Typo.h6">Entity Name</MudText>
-            </MudTableSortLabel>
-        </MudTh>
-        <MudTh>Description</MudTh>
-    </HeaderContent>
-    <GroupHeaderTemplate>
-        <MudTh Class="mud-table-cell-custom-group" colspan="2">
-            <MudTooltip Text=@($"{context.Items.FirstOrDefault()?.Group.Description}")>
-                @($"{context.Key}")
-            </MudTooltip>
-        </MudTh>
-    </GroupHeaderTemplate>
-    <RowTemplate Context="entity">
-        <MudTd DataLabel="Entity Name">
-            <MudText Typo="Typo.subtitle1">@entity.PluralName</MudText>
-        </MudTd>
-        <MudTd DataLabel="Description">
-            <div>
-                <MudText Typo="Typo.body2" Class="grey-text text-darken-1 entities-table__description-text">
-                    @entity.Description
-                </MudText>
-            </div>
-        </MudTd>
-    </RowTemplate>
-</MudTable>
+<div>
+    <MudTable Items="@ViewModel.EntitiesMetadata" Hover="true" Color="Color.Dark" T="EntityMetadataDto"
+              RowClass="cursor-pointer" OnRowClick="NavigateToDetails"
+              GroupBy="@groupDefinition">
+        <HeaderContent>
+            <MudTh>
+                <MudTableSortLabel InitialDirection="SortDirection.Ascending"
+                                   SortBy="new Func<EntityMetadataDto, object>(x => x.PluralName)">
+                    <MudText Typo="Typo.h6">Entity Name</MudText>
+                </MudTableSortLabel>
+            </MudTh>
+            <MudTh>Description</MudTh>
+        </HeaderContent>
+        <GroupHeaderTemplate Context="group">
+            <MudTh Class="mud-table-cell-custom-group" colspan="2">
+                <MudTooltip Text="@ViewModel.GetGroupDescription(group.Items)">
+                    @group.Key
+                </MudTooltip>
+            </MudTh>
+        </GroupHeaderTemplate>
+        <RowTemplate Context="entity">
+            <MudTd DataLabel="Entity Name">
+                <MudText Typo="Typo.subtitle1">@entity.PluralName</MudText>
+            </MudTd>
+            <MudTd DataLabel="Description">
+                <div>
+                    <MudText Typo="Typo.body2" Class="grey-text text-darken-1 entities-table__description-text">
+                        @entity.Description
+                    </MudText>
+                </div>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+</div>

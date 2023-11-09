@@ -63,14 +63,21 @@ public class AdminOptionsBuilder
     }
 
     /// <summary>
-    /// Add new group for entities.
+    /// Adds new groups to the configuration. Duplicates will be automatically filtered out based on group names.
     /// </summary>
-    /// <param name="name">Name of the group.</param>
-    /// <param name="description">Description of the group.</param>
-    public AdminOptionsBuilder AddGroup(string name, string description = "")
+    /// <param name="groups">The groups to be added.</param>
+    public AdminOptionsBuilder AddGroups(IEnumerable<EntityGroup> groups)
     {
-        var newEntityGroup = new EntityGroup { Name = name, Description = description };
-        options.EntityGroupsList.Add(newEntityGroup);
+        var groupNames = new HashSet<string>();
+        foreach (var group in groups)
+        {
+            // Check for duplicated group's name.
+            if (!groupNames.Contains(group.Name))
+            {
+                options.EntityGroupsList.Add(group);
+                groupNames.Add(group.Name);
+            }
+        }
         return this;
     }
 }

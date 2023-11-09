@@ -5,7 +5,7 @@ namespace Saritasa.NetForge.Demo.Net7.Models;
 /// <summary>
 /// Represents a product entity.
 /// </summary>
-[NetForgeEntity(Description = "The product in the shop.", GroupName = "Test Empty")]
+[NetForgeEntity(Description = "The product in the shop.", GroupName = "Group Entities 2")]
 public class Product
 {
     /// <summary>

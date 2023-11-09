@@ -4,3 +4,11 @@
     text-overflow: ellipsis;
     max-width: 100ch;
 }
+
+::deep .mud-table-row {
+    background-color: var(--mud-palette-background-grey);
+}
+
+::deep .mud-table-row-group-indented-0 {
+    background-color: var(--mud-palette-surface);
+}
