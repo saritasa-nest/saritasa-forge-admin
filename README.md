@@ -209,7 +209,7 @@ services.AddNetForge(optionsBuilder =>
 
 You can read about search [here](docs/SEARCH.md)
 
-### NetForge - Grouping
+## Grouping
 
 Group rows of entities into categories and make it easier for users to navigate and understand the data presented.
 
