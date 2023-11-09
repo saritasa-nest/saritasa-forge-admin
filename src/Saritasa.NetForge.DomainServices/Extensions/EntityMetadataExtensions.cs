@@ -147,7 +147,8 @@ public static class EntityMetadataExtensions
 
         if (!string.IsNullOrEmpty(netForgeEntityAttribute.GroupName))
         {
-            var entityGroup = adminOptions.EntityGroupsList.FirstOrDefault(e => e.Name == netForgeEntityAttribute.GroupName);
+            var entityGroup =
+                adminOptions.EntityGroupsList.FirstOrDefault(e => e.Name == netForgeEntityAttribute.GroupName);
             if (entityGroup != null)
             {
                 entityMetadata.Group = entityGroup;

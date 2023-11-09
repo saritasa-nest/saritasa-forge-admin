@@ -4,10 +4,10 @@
 @inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.EntitiesViewModel>
 @inject INavigationService NavigationService;
 
+// Add div so the styles in Entities.razor.css can be applied.
 <div>
     <MudTable Items="@ViewModel.EntitiesMetadata" Hover="true" Color="Color.Dark" T="EntityMetadataDto"
-              RowClass="cursor-pointer" OnRowClick="NavigateToDetails"
-              GroupBy="@groupDefinition">
+              RowClass="cursor-pointer" OnRowClick="NavigateToDetails" GroupBy="@groupDefinition">
         <HeaderContent>
             <MudTh>
                 <MudTableSortLabel InitialDirection="SortDirection.Ascending"
