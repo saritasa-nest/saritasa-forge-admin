@@ -17,5 +17,6 @@ public class MetadataMappingProfile : Profile
     {
         CreateMap<EntityMetadata, EntityMetadataDto>();
         CreateMap<EntityMetadata, GetEntityByIdDto>();
+        CreateMap<PropertyMetadata, PropertyMetadataDto>();
     }
 }

@@ -4,6 +4,7 @@ using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Mvvm.Utils;
 using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Interfaces;
+using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 
@@ -80,7 +81,7 @@ public class EntityDetailsViewModel : BaseViewModel
     /// </summary>
     /// <param name="property">Property.</param>
     /// <returns>Display name.</returns>
-    public string GetPropertyDisplayName(PropertyMetadata property)
+    public string GetPropertyDisplayName(PropertyMetadataDto property)
     {
         return !string.IsNullOrEmpty(property.DisplayName)
             ? property.DisplayName
