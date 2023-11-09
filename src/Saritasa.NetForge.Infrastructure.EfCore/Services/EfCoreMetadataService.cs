@@ -54,6 +54,8 @@ internal class EfCoreMetadataService : IOrmMetadataService
     /// <returns>An <see cref="EntityMetadata"/> object containing metadata information for the entity type.</returns>
     private static EntityMetadata GetEntityMetadata(IReadOnlyEntityType entityType)
     {
+        var navigationsMetadata = entityType.GetNavigations().Select(GetNavigationMetadata);
+
         var propertiesMetadata = entityType.GetProperties().Select(GetPropertyMetadata);
         var entityMetadata = new EntityMetadata
         {
@@ -61,7 +63,8 @@ internal class EfCoreMetadataService : IOrmMetadataService
             ClrType = entityType.ClrType,
             Description = entityType.GetComment() ?? string.Empty,
             IsHidden = entityType.IsPropertyBag,
-            Properties = propertiesMetadata.ToList()
+            Properties = propertiesMetadata.ToList(),
+            Navigations = navigationsMetadata.ToList()
         };
 
         return entityMetadata;
@@ -89,5 +92,15 @@ internal class EfCoreMetadataService : IOrmMetadataService
             IsValueGeneratedOnUpdate = property.ValueGenerated.HasFlag(ValueGenerated.OnUpdate),
         };
         return propertyMetadata;
+    }
+
+    private static NavigationMetadata GetNavigationMetadata(IReadOnlyNavigation navigation)
+    {
+        var navigationMetadata = new NavigationMetadata
+        {
+            Name = navigation.Name
+        };
+
+        return navigationMetadata;
     }
 }
