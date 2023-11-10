@@ -57,6 +57,18 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     public EntityOptionsBuilder<TEntity> SetGroup(string groupName)
     {
         options.GroupName = groupName;
+    }
+
+    /// <summary>
+    /// Configure custom search.
+    /// </summary>
+    /// <param name="searchFunction">Custom search function.</param>
+    public EntityOptionsBuilder<TEntity> ConfigureSearch(
+        Func<IServiceProvider?, IQueryable<TEntity>, string, IQueryable<TEntity>> searchFunction)
+    {
+        // We need to override provided Func to perform successful cast from IQueryable<TEntity> to IQueryable<object>
+        options.SearchFunction = (serviceProvider, query, searchTerm) =>
+                searchFunction.Invoke(serviceProvider, query.Cast<TEntity>(), searchTerm);
         return this;
     }
 
@@ -76,7 +88,7 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     /// </param>
     /// <param name="propertyOptionsBuilderAction">An action that builds property options.</param>
     public EntityOptionsBuilder<TEntity> ConfigureProperty(
-        Expression<Func<TEntity, object>> propertyExpression,
+        Expression<Func<TEntity, object?>> propertyExpression,
         Action<PropertyOptionsBuilder> propertyOptionsBuilderAction)
     {
         var propertyOptionsBuilder = new PropertyOptionsBuilder();
@@ -86,6 +98,18 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         var propertyOptions = propertyOptionsBuilder.Create(propertyName);
 
         options.PropertyOptions.Add(propertyOptions);
+        return this;
+    }
+
+    /// <summary>
+    /// Adds calculated properties for the specified entity type.
+    /// </summary>
+    /// <param name="propertyExpressions">An array of lambda expressions representing calculated properties.</param>
+    public EntityOptionsBuilder<TEntity> AddCalculatedProperties(
+        params Expression<Func<TEntity, object?>>[] propertyExpressions)
+    {
+        var propertyNames = propertyExpressions.Select(expression => expression.GetMemberName());
+        options.CalculatedPropertyNames.AddRange(propertyNames);
         return this;
     }
 }

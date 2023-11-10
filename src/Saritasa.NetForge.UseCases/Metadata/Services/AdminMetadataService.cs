@@ -46,13 +46,55 @@ public class AdminMetadataService
         foreach (var entityMetadata in metadata)
         {
             entityMetadata.PluralName = PluralizationProvider.Pluralize(entityMetadata.DisplayName);
-            entityMetadata.ApplyOptions(adminOptions);
+            entityMetadata.StringId = entityMetadata.PluralName;
+            var entityOptions =
+                adminOptions.EntityOptionsList.FirstOrDefault(options => options.EntityType == entityMetadata.ClrType);
+
+            if (entityOptions != null)
+            {
+                var calculatedProperties = GetCalculatedPropertiesMetadata(entityOptions);
+                entityMetadata.Properties.AddRange(calculatedProperties);
+                entityMetadata.ApplyOptions(entityOptions);
+            }
+
             entityMetadata.ApplyEntityAttributes(adminOptions);
             entityMetadata.Id = Guid.NewGuid();
         }
 
         CacheMetadata(metadata);
         return metadata;
+    }
+
+    /// <summary>
+    /// Retrieves metadata for calculated properties defined in the entity options.
+    /// </summary>
+    /// <param name="entityOptions">The entity options that specify the calculated properties.</param>
+    /// <returns>An enumerable collection of calculated property metadata.</returns>
+    private static IEnumerable<PropertyMetadata> GetCalculatedPropertiesMetadata(EntityOptions entityOptions)
+    {
+        var propertiesMetadata = new List<PropertyMetadata>();
+
+        foreach (var propertyName in entityOptions.CalculatedPropertyNames)
+        {
+            var propertyInformation = entityOptions.EntityType.GetProperty(propertyName);
+
+            if (propertyInformation == null)
+            {
+                continue;
+            }
+
+            var propertyMetadata = new PropertyMetadata
+            {
+                Name = propertyName,
+                IsEditable = false,
+                PropertyInformation = propertyInformation,
+                IsCalculatedProperty = true
+            };
+
+            propertiesMetadata.Add(propertyMetadata);
+        }
+
+        return propertiesMetadata;
     }
 
     /// <summary>
