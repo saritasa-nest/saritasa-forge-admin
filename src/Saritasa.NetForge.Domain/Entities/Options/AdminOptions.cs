@@ -18,7 +18,7 @@ public class AdminOptions
     /// <summary>
     /// HTML title for the admin panel web page.
     /// </summary>
-    public string AdminPanelHtmlTitle { get; set; } = "NetForge Admin - Index";
+    public string AdminPanelHtmlTitle { get; set; } = "NetForge Admin - Main";
 
     /// <summary>
     /// Options for configuring entities in the admin panel.
