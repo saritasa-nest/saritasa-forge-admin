@@ -89,4 +89,13 @@ public class PropertyOptionsBuilder
         options.SearchType = searchType;
         return this;
     }
+
+    /// <summary>
+    /// Sets whether the property is sortable.
+    /// </summary>
+    public PropertyOptionsBuilder SetIsSortable(bool isSortable)
+    {
+        options.IsSortable = isSortable;
+        return this;
+    }
 }
