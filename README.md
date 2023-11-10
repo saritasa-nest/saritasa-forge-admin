@@ -251,3 +251,35 @@ entityOptionsBuilder.ConfigureProperty(shop => shop.OpenedDate, builder =>
 You can sort multiple properties at once. It can be achieved by pressing sort buttons with `CTRL`.
 
 Sorting can be cancelled by pressing on it with `ALT`.
+
+## Navigation properties
+
+By default, navigation properties are hidden from view. But you can customize display them or not for each entity.
+
+Relationships are displayed in that way:
+
+### Reference
+
+When navigation represents reference to another entity, then primary key of this entity will be displayed.
+
+### Collection
+
+When navigation represents collection, then primary keys of all items will be displayed. For example: `[1, 15, 99]`
+
+Displaying navigation properties are configurable via `[NetForgeProperty]` and `Fluent API`.
+
+### Using attribute
+
+```csharp
+[NetForgeEntity(IsDisplayNavigations = true)]
+public class Product
+```
+
+### Using Fluent API
+
+```csharp
+public void Configure(EntityOptionsBuilder<Shop> entityOptionsBuilder)
+{
+    entityOptionsBuilder.SetIsDisplayNavigations(true)
+}
+```
