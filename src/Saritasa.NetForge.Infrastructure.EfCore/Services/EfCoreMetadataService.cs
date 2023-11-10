@@ -54,6 +54,8 @@ internal class EfCoreMetadataService : IOrmMetadataService
     /// <returns>An <see cref="EntityMetadata"/> object containing metadata information for the entity type.</returns>
     private static EntityMetadata GetEntityMetadata(IReadOnlyEntityType entityType)
     {
+        // GetNavigations retrieves all navigations except many-to-many navigations.
+        // GetSkipNavigations retrieves many-to-many navigations
         var navigationsMetadata = entityType
             .GetNavigations()
             .Concat<IReadOnlyNavigationBase>(entityType.GetSkipNavigations())
