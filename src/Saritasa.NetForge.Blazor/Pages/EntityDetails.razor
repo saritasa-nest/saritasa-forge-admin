@@ -47,7 +47,7 @@
                         </HeaderTemplate>
 
                         <CellTemplate Context="cell">
-                            @ViewModel.GetPropertyValue(cell.Item, property.Name, property.IsNavigation)
+                            @ViewModel.GetPropertyValue(cell.Item, property)
                         </CellTemplate>
                     </TemplateColumn>
                 }

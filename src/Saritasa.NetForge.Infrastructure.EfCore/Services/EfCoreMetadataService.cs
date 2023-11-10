@@ -103,7 +103,8 @@ internal class EfCoreMetadataService : IOrmMetadataService
     {
         var navigationMetadata = new NavigationMetadata
         {
-            Name = navigation.Name
+            Name = navigation.Name,
+            TargetEntityProperties = navigation.TargetEntityType.GetProperties().Select(GetPropertyMetadata).ToList()
         };
 
         return navigationMetadata;

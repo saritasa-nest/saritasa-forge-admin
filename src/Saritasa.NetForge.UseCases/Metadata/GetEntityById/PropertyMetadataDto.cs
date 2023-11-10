@@ -17,6 +17,9 @@ public record PropertyMetadataDto
     /// <inheritdoc cref="PropertyMetadata.Description"/>
     public string Description { get; set; } = string.Empty;
 
+    /// <inheritdoc cref="PropertyMetadata.IsPrimaryKey"/>
+    public bool IsPrimaryKey { get; set; }
+
     /// <inheritdoc cref="PropertyMetadata.SearchType"/>
     public SearchType SearchType { get; set; } = SearchType.None;
 
@@ -36,4 +39,7 @@ public record PropertyMetadataDto
     /// Whether the property is navigation or not.
     /// </summary>
     public bool IsNavigation { get; set; }
+
+    /// <inheritdoc cref="NavigationMetadata.TargetEntityProperties"/>
+    public ICollection<PropertyMetadataDto> TargetEntityProperties { get; set; } = new List<PropertyMetadataDto>();
 }

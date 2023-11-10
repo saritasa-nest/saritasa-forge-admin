@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Reflection;
+using AutoMapper;
 using MudBlazor;
 using Saritasa.NetForge.Mvvm.Utils;
 using Saritasa.NetForge.UseCases.Common;
@@ -91,22 +92,26 @@ public class EntityDetailsViewModel : BaseViewModel
     /// Gets property value via <c>Reflection</c>.
     /// </summary>
     /// <param name="source">Source object.</param>
-    /// <param name="propertyName">Property name.</param>
-    /// <param name="isNavigation"></param>
+    /// <param name="property">Property metadata.</param>
     /// <returns>Property value.</returns>
-    public object? GetPropertyValue(object source, string propertyName, bool isNavigation)
+    public object? GetPropertyValue(object source, PropertyMetadataDto property)
     {
-        var propertyInfo = source.GetType().GetProperty(propertyName);
+        var propertyInfo = source.GetType().GetProperty(property.Name);
         var value = propertyInfo?.GetValue(source);
 
-        if (isNavigation)
+        if (property.IsNavigation)
         {
-            value = value?.GetType().GetProperty("Id")?.GetValue(value);
+            var primaryKey = property.TargetEntityProperties.FirstOrDefault(targetProperty => targetProperty.IsPrimaryKey);
+
+            if (primaryKey is not null)
+            {
+                value = value?.GetType().GetProperty(primaryKey.Name)?.GetValue(value);
+            }
         }
 
         if (value != null)
         {
-            value = FormatValue(value, propertyName);
+            value = FormatValue(value, property.Name);
         }
 
         return value;
