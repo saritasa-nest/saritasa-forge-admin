@@ -19,6 +19,7 @@ public class Shop
     /// The name of the shop.
     /// </summary>
     [Description("Shop name.")]
+    [NetForgeProperty(IsSortable = true)]
     public required string Name { get; set; }
 
     /// <summary>
@@ -34,7 +35,7 @@ public class Shop
     /// <summary>
     /// The total sales amount for the shop.
     /// </summary>
-    [NetForgeProperty(DisplayName = "Sales", Description = "Total sales.")]
+    [NetForgeProperty(DisplayName = "Sales", Description = "Total sales.", IsSortable = true)]
     public decimal TotalSales { get; set; }
 
     /// <summary>

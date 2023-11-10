@@ -30,4 +30,7 @@ public class NetForgePropertyAttribute : Attribute
 
     /// <inheritdoc cref="PropertyMetadata.SearchType"/>
     public SearchType SearchType { get; set; } = SearchType.None;
+
+    /// <inheritdoc cref="PropertyMetadata.IsSortable"/>
+    public bool IsSortable { get; set; }
 }

@@ -98,4 +98,9 @@ public class PropertyMetadata
     /// Whether this property is calculated.
     /// </summary>
     public bool IsCalculatedProperty { get; set; }
+
+    /// <summary>
+    /// Whether the property is sortable.
+    /// </summary>
+    public bool IsSortable { get; set; }
 }

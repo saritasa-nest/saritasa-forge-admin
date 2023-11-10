@@ -35,6 +35,9 @@ public record PropertyMetadataDto
     /// <inheritdoc cref="PropertyMetadata.IsCalculatedProperty"/>
     public bool IsCalculatedProperty { get; set; }
 
+    /// <inheritdoc cref="PropertyMetadata.IsSortable"/>
+    public bool IsSortable { get; set; }
+
     /// <summary>
     /// Whether the property is navigation or not.
     /// </summary>
