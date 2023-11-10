@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using Saritasa.NetForge.Domain.Attributes;
+using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.Demo.Net7.Models;
 
@@ -25,6 +26,8 @@ public class Shop
     /// <summary>
     /// The address of the shop.
     /// </summary>
+    [NetForgeProperty(DisplayName = "AddressId", Description = "Address identifier.", IsSortable = true, 
+        SearchType = SearchType.ExactMatchCaseInsensitive, Order = 1)]
     public Address? Address { get; set; }
 
     /// <summary>
@@ -46,11 +49,13 @@ public class Shop
     /// <summary>
     /// The list of products available in the shop.
     /// </summary>
+    [DisplayName("ShopProducts")]
     public List<Product> Products { get; set; } = new();
 
     /// <summary>
     /// The shop owner's contact information.
     /// </summary>
+    [Description("Owner of the shop.")]
     public ContactInfo? OwnerContact { get; set; }
 }
 

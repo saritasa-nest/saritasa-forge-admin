@@ -64,10 +64,12 @@ public class EntityService : IEntityService
 
         if (metadata.IsDisplayNavigations)
         {
-            var displayableNavigations = mapper
-                .Map<IEnumerable<NavigationMetadata>, IEnumerable<PropertyMetadataDto>>(metadata.Navigations);
+            var displayableNavigations = metadata.Navigations.Where(navigation => !navigation.IsHidden);
 
-            properties = properties.Union(displayableNavigations);
+            var navigations = mapper
+                .Map<IEnumerable<NavigationMetadata>, IEnumerable<PropertyMetadataDto>>(displayableNavigations);
+
+            properties = properties.Union(navigations);
         }
 
         var orderedProperties = properties

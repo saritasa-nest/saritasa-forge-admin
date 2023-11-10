@@ -99,6 +99,11 @@ public static class EntityMetadataExtensions
             property.ApplyPropertyAttributes();
         }
 
+        foreach (var navigation in entityMetadata.Navigations)
+        {
+            navigation.ApplyNavigationAttributes();
+        }
+
         // Try to get the description from the System.ComponentModel.DisplayNameAttribute.
         var displayNameAttribute = entityMetadata.ClrType?.GetCustomAttribute<DisplayNameAttribute>();
 
@@ -200,6 +205,45 @@ public static class EntityMetadataExtensions
         if (netForgePropertyAttribute.IsSortable)
         {
             property.IsSortable = netForgePropertyAttribute.IsSortable;
+        }
+    }
+
+    private static void ApplyNavigationAttributes(this NavigationMetadata navigation)
+    {
+        var descriptionAttribute = navigation.PropertyInformation?.GetCustomAttribute<DescriptionAttribute>();
+
+        if (!string.IsNullOrEmpty(descriptionAttribute?.Description))
+        {
+            navigation.Description = descriptionAttribute.Description;
+        }
+
+        var displayNameAttribute = navigation.PropertyInformation?.GetCustomAttribute<DisplayNameAttribute>();
+
+        if (!string.IsNullOrEmpty(displayNameAttribute?.DisplayName))
+        {
+            navigation.DisplayName = displayNameAttribute.DisplayName;
+        }
+
+        var netForgePropertyAttribute = navigation.PropertyInformation?.GetCustomAttribute<NetForgePropertyAttribute>();
+
+        if (netForgePropertyAttribute is null)
+        {
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(netForgePropertyAttribute.Description))
+        {
+            navigation.Description = netForgePropertyAttribute.Description;
+        }
+
+        if (!string.IsNullOrEmpty(netForgePropertyAttribute.DisplayName))
+        {
+            navigation.DisplayName = netForgePropertyAttribute.DisplayName;
+        }
+
+        if (netForgePropertyAttribute.IsHidden)
+        {
+            navigation.IsHidden = netForgePropertyAttribute.IsHidden;
         }
     }
 }
