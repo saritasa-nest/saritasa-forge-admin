@@ -54,7 +54,7 @@ public class AdminMetadataService
             {
                 var calculatedProperties = GetCalculatedPropertiesMetadata(entityOptions);
                 entityMetadata.Properties.AddRange(calculatedProperties);
-                entityMetadata.ApplyOptions(entityOptions);
+                entityMetadata.ApplyOptions(entityOptions, adminOptions);
             }
 
             entityMetadata.ApplyEntityAttributes(adminOptions);

@@ -1,6 +1,7 @@
 ﻿using Saritasa.NetForge.Blazor.Extensions;
 using Saritasa.NetForge.Demo.Net7.Infrastructure.Admin;
 using Saritasa.NetForge.Demo.Net7.Models;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
 namespace Saritasa.NetForge.Demo.Net7.Infrastructure.DependencyInjection;
@@ -32,8 +33,8 @@ internal static class NetForgeModule
                     .ConfigureSearch((serviceProvider, query, searchTerm) =>
                     {
                         return query.Where(e => e.Name.Contains(searchTerm));
-                    });
-                    .SetGroup("Group Entities 1");
+                    })
+                    .SetGroup("Group Entities 1")
                     .SetDescription("The base Shop entity.");
             }).ConfigureEntity<ProductTag>(entityOptionsBuilder =>
             {

@@ -57,6 +57,7 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     public EntityOptionsBuilder<TEntity> SetGroup(string groupName)
     {
         options.GroupName = groupName;
+        return this;
     }
 
     /// <summary>

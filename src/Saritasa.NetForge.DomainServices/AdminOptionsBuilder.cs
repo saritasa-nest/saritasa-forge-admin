@@ -68,15 +68,14 @@ public class AdminOptionsBuilder
     /// <param name="groups">The groups to be added.</param>
     public AdminOptionsBuilder AddGroups(IEnumerable<EntityGroup> groups)
     {
-        var groupNames = new HashSet<string>();
         foreach (var group in groups)
         {
             // Check for duplicated group's name.
-            if (!groupNames.Contains(group.Name))
+            if (options.EntityGroupsList.Any(entityGroup => entityGroup.Name == group.Name))
             {
-                options.EntityGroupsList.Add(group);
-                groupNames.Add(group.Name);
+                continue;
             }
+            options.EntityGroupsList.Add(group);
         }
         return this;
     }

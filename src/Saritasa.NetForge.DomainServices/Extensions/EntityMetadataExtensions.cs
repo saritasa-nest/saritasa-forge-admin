@@ -17,7 +17,8 @@ public static class EntityMetadataExtensions
     /// </summary>
     /// <param name="entityMetadata">The metadata of the entity to which options are applied.</param>
     /// <param name="entityOptions">Options to apply for the entity metadata.</param>
-    public static void ApplyOptions(this EntityMetadata entityMetadata, EntityOptions entityOptions)
+    /// <param name="adminOptions">Options to apply for the entity metadata.</param>
+    public static void ApplyOptions(this EntityMetadata entityMetadata, EntityOptions entityOptions, AdminOptions adminOptions)
     {
         if (!string.IsNullOrEmpty(entityOptions.Description))
         {
