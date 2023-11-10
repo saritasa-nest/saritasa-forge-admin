@@ -66,7 +66,7 @@ public class EntityService : IEntityService
         var allProperties = displayablePropertyDtos.Union(displayableNavigations);
 
         var orderedProperties = allProperties
-            .OrderByDescending(property => property is { Name: "Id", Order: null })
+            .OrderByDescending(property => property is { IsPrimaryKey: true, Order: null })
             .ThenByDescending(property => property.Order.HasValue)
             .ThenBy(property => property.Order)
             .ToList();
