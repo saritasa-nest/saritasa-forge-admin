@@ -54,7 +54,10 @@ internal class EfCoreMetadataService : IOrmMetadataService
     /// <returns>An <see cref="EntityMetadata"/> object containing metadata information for the entity type.</returns>
     private static EntityMetadata GetEntityMetadata(IReadOnlyEntityType entityType)
     {
-        var navigationsMetadata = entityType.GetNavigations().Select(GetNavigationMetadata);
+        var navigationsMetadata = entityType
+            .GetNavigations()
+            .Concat<IReadOnlyNavigationBase>(entityType.GetSkipNavigations())
+            .Select(GetNavigationMetadata);
 
         var propertiesMetadata = entityType.GetProperties().Select(GetPropertyMetadata);
         var entityMetadata = new EntityMetadata
@@ -99,7 +102,7 @@ internal class EfCoreMetadataService : IOrmMetadataService
     /// </summary>
     /// <param name="navigation">The EF Core navigation to retrieve metadata for.</param>
     /// <returns>A <see cref="PropertyMetadata"/> object containing metadata information for the navigation.</returns>
-    private static NavigationMetadata GetNavigationMetadata(IReadOnlyNavigation navigation)
+    private static NavigationMetadata GetNavigationMetadata(IReadOnlyNavigationBase navigation)
     {
         var navigationMetadata = new NavigationMetadata
         {
