@@ -40,6 +40,11 @@ public record PropertyMetadataDto
     /// </summary>
     public bool IsNavigation { get; set; }
 
+    /// <summary>
+    /// Whether the property is navigation collection or not.
+    /// </summary>
+    public bool IsNavigationCollection { get; set; }
+
     /// <inheritdoc cref="NavigationMetadata.TargetEntityProperties"/>
     public ICollection<PropertyMetadataDto> TargetEntityProperties { get; set; } = new List<PropertyMetadataDto>();
 }

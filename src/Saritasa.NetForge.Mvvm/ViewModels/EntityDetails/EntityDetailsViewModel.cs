@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections;
+using System.Reflection;
 using AutoMapper;
 using MudBlazor;
 using Saritasa.NetForge.Mvvm.Utils;
@@ -99,20 +100,37 @@ public class EntityDetailsViewModel : BaseViewModel
         var propertyInfo = source.GetType().GetProperty(property.Name);
         var value = propertyInfo?.GetValue(source);
 
+        if (value is null)
+        {
+            return value;
+        }
+
         if (property.IsNavigation)
         {
-            var primaryKey = property.TargetEntityProperties.FirstOrDefault(targetProperty => targetProperty.IsPrimaryKey);
+            var primaryKey = property.TargetEntityProperties
+                .FirstOrDefault(targetProperty => targetProperty.IsPrimaryKey);
 
             if (primaryKey is not null)
             {
-                value = value?.GetType().GetProperty(primaryKey.Name)?.GetValue(value);
+                if (!property.IsNavigationCollection)
+                {
+                    value = value.GetType().GetProperty(primaryKey.Name)!.GetValue(value);
+                }
+                else
+                {
+                    var primaryKeys = new List<object?>();
+
+                    foreach (var item in (value as IEnumerable)!)
+                    {
+                        primaryKeys.Add(item.GetType().GetProperty(primaryKey.Name)!.GetValue(item));
+                    }
+
+                    value = $"[{string.Join(", ", primaryKeys)}]";
+                }
             }
         }
 
-        if (value != null)
-        {
-            value = FormatValue(value, property.Name);
-        }
+        value = FormatValue(value!, property.Name);
 
         return value;
     }

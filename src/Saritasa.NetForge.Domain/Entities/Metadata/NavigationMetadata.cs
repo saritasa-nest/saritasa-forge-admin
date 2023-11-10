@@ -11,7 +11,13 @@ public class NavigationMetadata
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
+    /// Whether this navigation is collection.
+    /// </summary>
+    public bool IsCollection { get; set; }
+
+    /// <summary>
     /// Target navigation entity's properties.
     /// </summary>
     public List<PropertyMetadata> TargetEntityProperties { get; set; } = new();
+
 }

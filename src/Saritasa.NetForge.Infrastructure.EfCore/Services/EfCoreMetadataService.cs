@@ -104,6 +104,7 @@ internal class EfCoreMetadataService : IOrmMetadataService
         var navigationMetadata = new NavigationMetadata
         {
             Name = navigation.Name,
+            IsCollection = navigation.IsCollection,
             TargetEntityProperties = navigation.TargetEntityType.GetProperties().Select(GetPropertyMetadata).ToList()
         };
 
