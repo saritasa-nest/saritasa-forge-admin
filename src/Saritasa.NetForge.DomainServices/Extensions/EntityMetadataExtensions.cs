@@ -44,6 +44,11 @@ public static class EntityMetadataExtensions
             entityMetadata.SearchFunction = entityOptions.SearchFunction;
         }
 
+        if (entityOptions.IsDisplayNavigations)
+        {
+            entityMetadata.IsDisplayNavigations = entityOptions.IsDisplayNavigations;
+        }
+
         foreach (var option in entityOptions.PropertyOptions)
         {
             var property = entityMetadata.Properties.FirstOrDefault(property => property.Name == option.PropertyName);
@@ -129,6 +134,11 @@ public static class EntityMetadataExtensions
         if (netForgeEntityAttribute.IsHidden)
         {
             entityMetadata.IsHidden = netForgeEntityAttribute.IsHidden;
+        }
+
+        if (netForgeEntityAttribute.IsDisplayNavigations)
+        {
+            entityMetadata.IsDisplayNavigations = netForgeEntityAttribute.IsDisplayNavigations;
         }
     }
 

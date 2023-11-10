@@ -457,27 +457,6 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.ToTable("shops", (string)null);
                 });
 
-            modelBuilder.Entity("Saritasa.NetForge.Demo.Net7.Models.Supplier", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .IsUnicode(false)
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id")
-                        .HasName("pk_suppliers");
-
-                    b.ToTable("suppliers", (string)null);
-                });
-
             modelBuilder.Entity("Saritasa.NetForge.Demo.Net7.Models.User", b =>
                 {
                     b.Property<string>("Id")
@@ -583,25 +562,6 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("ShopSupplier", b =>
-                {
-                    b.Property<int>("ShopsId")
-                        .HasColumnType("integer")
-                        .HasColumnName("shops_id");
-
-                    b.Property<int>("SuppliersId")
-                        .HasColumnType("integer")
-                        .HasColumnName("suppliers_id");
-
-                    b.HasKey("ShopsId", "SuppliersId")
-                        .HasName("pk_shop_supplier");
-
-                    b.HasIndex("SuppliersId")
-                        .HasDatabaseName("ix_shop_supplier_suppliers_id");
-
-                    b.ToTable("shop_supplier", (string)null);
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -702,23 +662,6 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.Navigation("Address");
 
                     b.Navigation("OwnerContact");
-                });
-
-            modelBuilder.Entity("ShopSupplier", b =>
-                {
-                    b.HasOne("Saritasa.NetForge.Demo.Net7.Models.Shop", null)
-                        .WithMany()
-                        .HasForeignKey("ShopsId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("fk_shop_supplier_shops_shops_id");
-
-                    b.HasOne("Saritasa.NetForge.Demo.Net7.Models.Supplier", null)
-                        .WithMany()
-                        .HasForeignKey("SuppliersId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("fk_shop_supplier_suppliers_suppliers_id");
                 });
 
             modelBuilder.Entity("Saritasa.NetForge.Demo.Net7.Models.Shop", b =>

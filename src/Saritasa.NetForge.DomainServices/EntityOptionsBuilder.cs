@@ -104,4 +104,13 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         options.CalculatedPropertyNames.AddRange(propertyNames);
         return this;
     }
+
+    /// <summary>
+    /// Sets whether display navigations or not.
+    /// </summary>
+    public EntityOptionsBuilder<TEntity> SetIsDisplayNavigations(bool isDisplayNavigations)
+    {
+        options.IsDisplayNavigations = isDisplayNavigations;
+        return this;
+    }
 }

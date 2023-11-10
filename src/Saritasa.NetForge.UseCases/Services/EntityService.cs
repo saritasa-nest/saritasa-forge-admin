@@ -57,15 +57,18 @@ public class EntityService : IEntityService
         var displayableProperties = metadata.Properties
             .Where(property => property is { IsForeignKey: false, IsHidden: false });
 
-        var displayablePropertyDtos = mapper
+        var properties = mapper
             .Map<IEnumerable<PropertyMetadata>, IEnumerable<PropertyMetadataDto>>(displayableProperties);
 
-        var displayableNavigations = mapper
-            .Map<IEnumerable<NavigationMetadata>, IEnumerable<PropertyMetadataDto>>(metadata.Navigations);
+        if (metadata.IsDisplayNavigations)
+        {
+            var displayableNavigations = mapper
+                .Map<IEnumerable<NavigationMetadata>, IEnumerable<PropertyMetadataDto>>(metadata.Navigations);
 
-        var allProperties = displayablePropertyDtos.Union(displayableNavigations);
+            properties = properties.Union(displayableNavigations);
+        }
 
-        var orderedProperties = allProperties
+        var orderedProperties = properties
             .OrderByDescending(property => property is { IsPrimaryKey: true, Order: null })
             .ThenByDescending(property => property.Order.HasValue)
             .ThenBy(property => property.Order)

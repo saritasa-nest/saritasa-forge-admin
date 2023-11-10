@@ -37,7 +37,6 @@ Available seeders:
 - `ContactInfo` - adds random contact information to the database.
 - `ProductTags` - adds random product tags to the database.
 - `Shops` - adds random shops to the database.
-- `Suppliers` - adds random suppliers to the database.
 
 Example usage:
 

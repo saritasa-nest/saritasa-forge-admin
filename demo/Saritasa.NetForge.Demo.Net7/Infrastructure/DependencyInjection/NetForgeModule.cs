@@ -24,6 +24,7 @@ internal static class NetForgeModule
             {
                 entityOptionsBuilder
                     .SetDescription("The base Shop entity.")
+                    .SetIsDisplayNavigations(true)
                     .ConfigureSearch((serviceProvider, query, searchTerm) =>
                     {
                         return query.Where(e => e.Name.Contains(searchTerm));

@@ -52,4 +52,7 @@ public class EntityOptions
 
     /// <inheritdoc cref="EntityMetadata.SearchFunction"/>
     public Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? SearchFunction { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.IsDisplayNavigations"/>
+    public bool IsDisplayNavigations { get; set; }
 }

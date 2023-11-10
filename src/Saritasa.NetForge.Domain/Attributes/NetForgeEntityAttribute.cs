@@ -25,4 +25,9 @@ public class NetForgeEntityAttribute : Attribute
     /// Whether the entity is hidden from the view.
     /// </summary>
     public bool IsHidden { get; set; }
+
+    /// <summary>
+    /// Whether display navigations.
+    /// </summary>
+    public bool IsDisplayNavigations { get; set; }
 }

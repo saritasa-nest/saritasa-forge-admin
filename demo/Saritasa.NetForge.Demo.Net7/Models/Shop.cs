@@ -51,10 +51,5 @@ public class Shop
     /// The shop owner's contact information.
     /// </summary>
     public ContactInfo? OwnerContact { get; set; }
-
-    /// <summary>
-    /// Suppliers that work with this shop.
-    /// </summary>
-    public List<Supplier> Suppliers { get; set; } = new();
 }
 
