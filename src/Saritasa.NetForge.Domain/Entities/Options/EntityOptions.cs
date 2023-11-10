@@ -45,6 +45,11 @@ public class EntityOptions
     /// </summary>
     public ICollection<PropertyOptions> PropertyOptions { get; set; } = new List<PropertyOptions>();
 
+    /// <summary>
+    /// Collection of the calculated property names.
+    /// </summary>
+    public List<string> CalculatedPropertyNames { get; } = new();
+
     /// <inheritdoc cref="EntityMetadata.SearchFunction"/>
     public Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? SearchFunction { get; set; }
 }

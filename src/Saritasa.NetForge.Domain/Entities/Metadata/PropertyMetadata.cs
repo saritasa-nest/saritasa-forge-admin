@@ -95,6 +95,11 @@ public class PropertyMetadata
     public IFormatProvider? FormatProvider { get; set; }
 
     /// <summary>
+    /// Whether this property is calculated.
+    /// </summary>
+    public bool IsCalculatedProperty { get; set; }
+
+    /// <summary>
     /// Whether the property is sortable.
     /// </summary>
     public bool IsSortable { get; set; }

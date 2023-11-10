@@ -84,7 +84,7 @@ public class EntityService : IEntityService
 
         var query = dataService.GetQuery(entityType);
 
-        query = query.SelectProperties(entityType, properties);
+        query = query.SelectProperties(entityType, properties.Where(property => !property.IsCalculatedProperty));
 
         query = Search(query, searchOptions.SearchString, entityType, properties, searchFunction);
 

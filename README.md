@@ -209,6 +209,23 @@ services.AddNetForge(optionsBuilder =>
 
 You can read about search [here](docs/SEARCH.md)
 
+## Calculated Properties
+Calculated properties are properties that don't have a direct representation in your database but are computed based on other existing properties. These properties can be useful for displaying calculated values in the admin panel.
+
+You can add calculated properties to your entities using the Fluent API:
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
+    {
+        entityOptionsBuilder.AddCalculatedProperties(user => user.FullName, user => user.Age);
+    });
+
+    // Other settings...
+});
+```
+
 ## Data sorting
 
 You can apply alphabet sorting to some properties. By default, they are not sortable.
