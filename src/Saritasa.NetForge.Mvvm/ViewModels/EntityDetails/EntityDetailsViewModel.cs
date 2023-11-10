@@ -92,11 +92,17 @@ public class EntityDetailsViewModel : BaseViewModel
     /// </summary>
     /// <param name="source">Source object.</param>
     /// <param name="propertyName">Property name.</param>
+    /// <param name="isNavigation"></param>
     /// <returns>Property value.</returns>
-    public object? GetPropertyValue(object source, string propertyName)
+    public object? GetPropertyValue(object source, string propertyName, bool isNavigation)
     {
         var propertyInfo = source.GetType().GetProperty(propertyName);
         var value = propertyInfo?.GetValue(source);
+
+        if (isNavigation)
+        {
+            value = value?.GetType().GetProperty("Id")?.GetValue(value);
+        }
 
         if (value != null)
         {
