@@ -220,20 +220,19 @@ To create a new group, utilize the Fluent API through `AdminOptionsBuilder`. A n
 
 ```csharp
 services.AddNetForge(optionsBuilder =>
-        {
-            optionsBuilder.UseEntityFramework(efOptionsBuilder =>
-            {
-                efOptionsBuilder.UseDbContext<ShopDbContext>();
-            }).AddGroups(new List<EntityGroup>
-            {
-                new EntityGroup{ Name = "Group Entities 1", Description = "Group Description" },
-                new EntityGroup{ Name = "Group Entities 2", Description = "Group Description" },
-                new EntityGroup{ Name = "Group Entities 3"}
-            }).ConfigureEntity<Shop>(entityOptionsBuilder =>
-            {
-                entityOptionsBuilder.SetDescription("The base Shop entity.");
-            });
-        });
+{
+    optionsBuilder.UseEntityFramework(efOptionsBuilder =>
+    {
+        efOptionsBuilder.UseDbContext<ShopDbContext>();
+    }).AddGroups(new List<EntityGroup>
+    {
+        new EntityGroup{ Name = "Product", Description = "Contains all information related to products" },
+        new EntityGroup{ Name = "Shop"}
+    }).ConfigureEntity<Shop>(entityOptionsBuilder =>
+    {
+        entityOptionsBuilder.SetDescription("The base Shop entity.");
+    });
+});
 ```
 
 ### Configuration
@@ -248,28 +247,27 @@ By utilizing `EntityOptionsBuilder`, user can set group for entity using group's
 
 ```csharp
 services.AddNetForge(optionsBuilder =>
-        {
-            optionsBuilder.UseEntityFramework(efOptionsBuilder =>
-            {
-                efOptionsBuilder.UseDbContext<ShopDbContext>();
-            }).AddGroups(new List<EntityGroup>
-            {
-                new EntityGroup{ Name = "Group Entities 1", Description = "Group Description" },
-                new EntityGroup{ Name = "Group Entities 2", Description = "Group Description" },
-                new EntityGroup{ Name = "Group Entities 3"}
-            }).ConfigureEntity<Shop>(entityOptionsBuilder =>
-            {
-                entityOptionsBuilder.SetGroup("Group Entities 1");
-                entityOptionsBuilder.SetDescription("The base Shop entity.");
-            });
-        });
+{
+    optionsBuilder.UseEntityFramework(efOptionsBuilder =>
+    {
+        efOptionsBuilder.UseDbContext<ShopDbContext>();
+    }).AddGroups(new List<EntityGroup>
+    {
+        new EntityGroup{ Name = "Product", Description = "Contains all information related to products" },
+        new EntityGroup{ Name = "Shop"}
+    }).ConfigureEntity<Shop>(entityOptionsBuilder =>
+    {
+        entityOptionsBuilder.SetGroup("Shop");
+        entityOptionsBuilder.SetDescription("The base Shop entity.");
+    });
+});
 ```
 
 ### Attribute
 
 ```csharp
-[NetForgeEntity(GroupName = "Group Entities 1")]
-public class Address
+[NetForgeEntity(GroupName = "Product")]
+public class ProductTag
 ```
 
 ## Calculated Properties

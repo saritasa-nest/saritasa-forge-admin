@@ -23,9 +23,8 @@ internal static class NetForgeModule
                 efOptionsBuilder.UseDbContext<ShopDbContext>();
             }).AddGroups(new List<EntityGroup>
             {
-                new EntityGroup{ Name = "Group Entities 1", Description = "Group Description" },
-                new EntityGroup{ Name = "Group Entities 2", Description = "Group Description" },
-                new EntityGroup{ Name = "Group Entities 3"}
+                new EntityGroup{ Name = "Product", Description = "Contains all information related to products" },
+                new EntityGroup{ Name = "Shop"}
             }).ConfigureEntity<Shop>(entityOptionsBuilder =>
             {
                 entityOptionsBuilder
@@ -34,7 +33,7 @@ internal static class NetForgeModule
                     {
                         return query.Where(e => e.Name.Contains(searchTerm));
                     })
-                    .SetGroup("Group Entities 1")
+                    .SetGroup("Shop")
                     .SetDescription("The base Shop entity.");
             }).ConfigureEntity<ProductTag>(entityOptionsBuilder =>
             {

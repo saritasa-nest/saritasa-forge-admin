@@ -52,15 +52,7 @@ public static class EntityMetadataExtensions
             property?.ApplyPropertyOptions(option);
         }
 
-        if (!string.IsNullOrEmpty(entityOptions.GroupName))
-        {
-            var entityGroup =
-                adminOptions.EntityGroupsList.FirstOrDefault(group => group.Name == entityOptions.GroupName);
-            if (entityGroup != null)
-            {
-                entityMetadata.Group = entityGroup;
-            }
-        }
+        SetGroupForEntity(entityOptions.GroupName, entityMetadata, adminOptions);
     }
 
     private static void ApplyPropertyOptions(
@@ -143,15 +135,7 @@ public static class EntityMetadataExtensions
             entityMetadata.IsHidden = netForgeEntityAttribute.IsHidden;
         }
 
-        if (!string.IsNullOrEmpty(netForgeEntityAttribute.GroupName))
-        {
-            var entityGroup =
-                adminOptions.EntityGroupsList.FirstOrDefault(e => e.Name == netForgeEntityAttribute.GroupName);
-            if (entityGroup != null)
-            {
-                entityMetadata.Group = entityGroup;
-            }
-        }
+        SetGroupForEntity(netForgeEntityAttribute.GroupName, entityMetadata, adminOptions);
     }
 
     private static void ApplyPropertyAttributes(this PropertyMetadata property)
@@ -202,6 +186,19 @@ public static class EntityMetadataExtensions
         if (netForgePropertyAttribute.SearchType != SearchType.None)
         {
             property.SearchType = netForgePropertyAttribute.SearchType;
+        }
+    }
+
+    private static void SetGroupForEntity(string groupName, EntityMetadata entityMetadata, AdminOptions adminOptions)
+    {
+        if (!string.IsNullOrEmpty(groupName))
+        {
+            var entityGroup =
+                adminOptions.EntityGroupsList.FirstOrDefault(group => group.Name == groupName);
+            if (entityGroup != null)
+            {
+                entityMetadata.Group = entityGroup;
+            }
         }
     }
 }
