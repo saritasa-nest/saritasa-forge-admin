@@ -209,6 +209,67 @@ services.AddNetForge(optionsBuilder =>
 
 You can read about search [here](docs/SEARCH.md)
 
+## Grouping
+
+Group rows of entities into categories and make it easier for users to navigate and understand the data presented.
+
+### Create Groups for Entities
+
+Before assigning entities to specific groups, users need to define the groups to which the entities will belong.
+To create a new group, utilize the Fluent API through `AdminOptionsBuilder`. A name is required for each group, and a description is optional.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.UseEntityFramework(efOptionsBuilder =>
+    {
+        efOptionsBuilder.UseDbContext<ShopDbContext>();
+    }).AddGroups(new List<EntityGroup>
+    {
+        new EntityGroup{ Name = "Product", Description = "Contains all information related to products" },
+        new EntityGroup{ Name = "Shop"}
+    }).ConfigureEntity<Shop>(entityOptionsBuilder =>
+    {
+        entityOptionsBuilder.SetDescription("The base Shop entity.");
+    });
+});
+```
+
+### Configuration
+
+By default, entities are assigned to the "empty" group. Grouping can be customized either through the Fluent API or by using attributes.
+When assigning entities to a group, users only need to specify the group's name. If user specifies a group that does not exists for an entity,
+that entity will belong to the default group.
+
+### Fluent API
+
+By utilizing `EntityOptionsBuilder`, user can set group for entity using group's name.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.UseEntityFramework(efOptionsBuilder =>
+    {
+        efOptionsBuilder.UseDbContext<ShopDbContext>();
+    }).AddGroups(new List<EntityGroup>
+    {
+        new EntityGroup{ Name = "Product", Description = "Contains all information related to products" },
+        new EntityGroup{ Name = "Shop"}
+    }).ConfigureEntity<Shop>(entityOptionsBuilder =>
+    {
+        entityOptionsBuilder.SetGroup("Shop");
+        entityOptionsBuilder.SetDescription("The base Shop entity.");
+    });
+});
+```
+
+### Attribute
+
+```csharp
+[NetForgeEntity(GroupName = "Product")]
+public class ProductTag
+```
+
 ## Calculated Properties
 Calculated properties are properties that don't have a direct representation in your database but are computed based on other existing properties. These properties can be useful for displaying calculated values in the admin panel.
 

@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+using Saritasa.NetForge.Domain.Entities.Options;
 
 namespace Saritasa.NetForge.UseCases.Metadata.DTOs;
 
@@ -31,6 +32,11 @@ public class EntityMetadataDto
     /// Id of the entity.
     /// </summary>
     public Guid Id { get; set; }
+
+    /// <summary>
+    /// Group which entity belongs to.
+    /// </summary>
+    public EntityGroup Group { get; set; } = new();
 
     /// <inheritdoc cref="EntityMetadata.StringId"/>
     public string StringId { get; set; } = string.Empty;
