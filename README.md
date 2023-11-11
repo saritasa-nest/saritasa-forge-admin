@@ -286,3 +286,29 @@ services.AddNetForge(optionsBuilder =>
     // Other settings...
 });
 ```
+
+## Data sorting
+
+You can apply alphabet sorting to some properties. By default, they are not sortable.
+
+It is configurable via `[NetForgeProperty]` and `Fluent API`.
+
+### Using Attribute
+
+```csharp
+[NetForgeProperty(IsSortable = true)]
+public string Name { get; set; }
+```
+
+### Using Fluent API
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(shop => shop.OpenedDate, builder =>
+{
+    builder.SetIsSortable(true);
+});
+```
+
+You can sort multiple properties at once. It can be achieved by pressing sort buttons with `CTRL`.
+
+Sorting can be cancelled by pressing on it with `ALT`.

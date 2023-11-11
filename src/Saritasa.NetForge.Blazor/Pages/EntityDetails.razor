@@ -19,11 +19,11 @@
 
     <MudItem xs="12">
         <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true"
-        @ref="ViewModel.DataGrid">
+        @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple">
             <Columns>
                 @foreach (var property in ViewModel.Model.Properties)
                 {
-                    <TemplateColumn>
+                    <TemplateColumn Title="@property.Name" Sortable="property.IsSortable">
                         <HeaderTemplate>
                             @{
                                 var displayName = ViewModel.GetPropertyDisplayName(property);

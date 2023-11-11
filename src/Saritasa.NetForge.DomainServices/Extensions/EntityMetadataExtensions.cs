@@ -79,6 +79,11 @@ public static class EntityMetadataExtensions
         property.FormatProvider = propertyOptions.FormatProvider ?? property.FormatProvider;
 
         property.SearchType = propertyOptions.SearchType;
+
+        if (propertyOptions.IsSortable)
+        {
+            property.IsSortable = propertyOptions.IsSortable;
+        }
     }
 
     /// <summary>
@@ -186,6 +191,11 @@ public static class EntityMetadataExtensions
         if (netForgePropertyAttribute.SearchType != SearchType.None)
         {
             property.SearchType = netForgePropertyAttribute.SearchType;
+        }
+
+        if (netForgePropertyAttribute.IsSortable)
+        {
+            property.IsSortable = netForgePropertyAttribute.IsSortable;
         }
     }
 
