@@ -17,7 +17,8 @@ public static class EntityMetadataExtensions
     /// </summary>
     /// <param name="entityMetadata">The metadata of the entity to which options are applied.</param>
     /// <param name="entityOptions">Options to apply for the entity metadata.</param>
-    public static void ApplyOptions(this EntityMetadata entityMetadata, EntityOptions entityOptions)
+    /// <param name="adminOptions">Options to apply for the entity metadata.</param>
+    public static void ApplyOptions(this EntityMetadata entityMetadata, EntityOptions entityOptions, AdminOptions adminOptions)
     {
         if (!string.IsNullOrEmpty(entityOptions.Description))
         {
@@ -50,6 +51,8 @@ public static class EntityMetadataExtensions
 
             property?.ApplyPropertyOptions(option);
         }
+
+        SetGroupForEntity(entityOptions.GroupName, entityMetadata, adminOptions);
     }
 
     private static void ApplyPropertyOptions(
@@ -76,13 +79,19 @@ public static class EntityMetadataExtensions
         property.FormatProvider = propertyOptions.FormatProvider ?? property.FormatProvider;
 
         property.SearchType = propertyOptions.SearchType;
+
+        if (propertyOptions.IsSortable)
+        {
+            property.IsSortable = propertyOptions.IsSortable;
+        }
     }
 
     /// <summary>
     /// Applies entity-specific attributes to the given <see cref="EntityMetadata"/>.
     /// </summary>
     /// <param name="entityMetadata">The metadata of the entity to which attributes are applied.</param>
-    public static void ApplyEntityAttributes(this EntityMetadata entityMetadata)
+    /// <param name="adminOptions">Options to apply for the entity metadata.</param>
+    public static void ApplyEntityAttributes(this EntityMetadata entityMetadata, AdminOptions adminOptions)
     {
         foreach (var property in entityMetadata.Properties)
         {
@@ -130,6 +139,8 @@ public static class EntityMetadataExtensions
         {
             entityMetadata.IsHidden = netForgeEntityAttribute.IsHidden;
         }
+
+        SetGroupForEntity(netForgeEntityAttribute.GroupName, entityMetadata, adminOptions);
     }
 
     private static void ApplyPropertyAttributes(this PropertyMetadata property)
@@ -180,6 +191,24 @@ public static class EntityMetadataExtensions
         if (netForgePropertyAttribute.SearchType != SearchType.None)
         {
             property.SearchType = netForgePropertyAttribute.SearchType;
+        }
+
+        if (netForgePropertyAttribute.IsSortable)
+        {
+            property.IsSortable = netForgePropertyAttribute.IsSortable;
+        }
+    }
+
+    private static void SetGroupForEntity(string groupName, EntityMetadata entityMetadata, AdminOptions adminOptions)
+    {
+        if (!string.IsNullOrEmpty(groupName))
+        {
+            var entityGroup =
+                adminOptions.EntityGroupsList.FirstOrDefault(group => group.Name == groupName);
+            if (entityGroup != null)
+            {
+                entityMetadata.Group = entityGroup;
+            }
         }
     }
 }

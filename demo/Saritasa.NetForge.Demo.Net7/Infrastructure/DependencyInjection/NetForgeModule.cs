@@ -1,6 +1,7 @@
 ﻿using Saritasa.NetForge.Blazor.Extensions;
 using Saritasa.NetForge.Demo.Net7.Infrastructure.Admin;
 using Saritasa.NetForge.Demo.Net7.Models;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
 namespace Saritasa.NetForge.Demo.Net7.Infrastructure.DependencyInjection;
@@ -20,15 +21,8 @@ internal static class NetForgeModule
             optionsBuilder.UseEntityFramework(efOptionsBuilder =>
             {
                 efOptionsBuilder.UseDbContext<ShopDbContext>();
-            }).ConfigureEntity<Shop>(entityOptionsBuilder =>
-            {
-                entityOptionsBuilder
-                    .SetDescription("The base Shop entity.")
-                    .ConfigureSearch((serviceProvider, query, searchTerm) =>
-                    {
-                        return query.Where(e => e.Name.Contains(searchTerm));
-                    });
-            }).ConfigureEntity<ProductTag>(entityOptionsBuilder =>
+            }).ConfigureEntity(new ShopAdminConfiguration())
+            .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
             {
                 entityOptionsBuilder.SetIsHidden(true);
             }).ConfigureEntity(new UserAdminConfiguration());

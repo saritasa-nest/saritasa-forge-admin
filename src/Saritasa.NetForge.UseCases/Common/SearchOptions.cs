@@ -24,4 +24,9 @@ public record SearchOptions
     /// Search string.
     /// </summary>
     public string? SearchString { get; init; }
+
+    /// <summary>
+    /// Collection of order by fields with directions.
+    /// </summary>
+    public IEnumerable<OrderByDto>? OrderBy { get; init; }
 }

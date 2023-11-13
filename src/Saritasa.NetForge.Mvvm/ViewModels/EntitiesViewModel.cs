@@ -40,4 +40,13 @@ public class EntitiesViewModel : BaseViewModel
         var entitiesMetadataDto = await entityService.SearchEntitiesAsync(cancellationToken);
         EntitiesMetadata = entitiesMetadataDto;
     }
+
+    /// <summary>
+    /// Retrieve group description based on the first entity in that group.
+    /// </summary>
+    /// <param name="entities">Entities in the group.</param>
+    public string? GetGroupDescription(IEnumerable<EntityMetadataDto> entities)
+    {
+        return entities.FirstOrDefault()?.Group.Description;
+    }
 }
