@@ -54,7 +54,6 @@ public class Shop
     /// <summary>
     /// The shop owner's contact information.
     /// </summary>
-    [Description("Owner of the shop.")]
     public ContactInfo? OwnerContact { get; set; }
 }
 

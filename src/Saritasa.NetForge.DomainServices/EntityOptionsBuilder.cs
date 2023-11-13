@@ -94,6 +94,27 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
+    /// Configures options for specific entity's navigation.
+    /// </summary>
+    /// <param name="navigationExpression">
+    /// Expression that represents navigation. For example: <c>entity => entity.Address</c>.
+    /// </param>
+    /// <param name="navigationOptionsBuilderAction">An action that builds navigation options.</param>
+    public EntityOptionsBuilder<TEntity> ConfigureNavigation(
+        Expression<Func<TEntity, object?>> navigationExpression,
+        Action<NavigationOptionsBuilder> navigationOptionsBuilderAction)
+    {
+        var navigationOptionsBuilder = new NavigationOptionsBuilder();
+        navigationOptionsBuilderAction.Invoke(navigationOptionsBuilder);
+
+        var navigationName = navigationExpression.GetMemberName();
+        var navigationOptions = navigationOptionsBuilder.Create(navigationName);
+
+        options.NavigationOptions.Add(navigationOptions);
+        return this;
+    }
+
+    /// <summary>
     /// Adds calculated properties for the specified entity type.
     /// </summary>
     /// <param name="propertyExpressions">An array of lambda expressions representing calculated properties.</param>

@@ -55,6 +55,14 @@ public static class EntityMetadataExtensions
 
             property?.ApplyPropertyOptions(option);
         }
+
+        foreach (var option in entityOptions.NavigationOptions)
+        {
+            var navigation = entityMetadata.Navigations
+                .FirstOrDefault(navigation => navigation.Name == option.NavigationName);
+
+            navigation?.ApplyNavigationsOptions(option);
+        }
     }
 
     private static void ApplyPropertyOptions(
@@ -86,6 +94,30 @@ public static class EntityMetadataExtensions
         {
             property.IsSortable = propertyOptions.IsSortable;
         }
+    }
+
+    private static void ApplyNavigationsOptions(
+        this NavigationMetadata navigation, NavigationOptions navigationOptions)
+    {
+        navigation.IsHidden = navigationOptions.IsHidden;
+
+        if (!string.IsNullOrEmpty(navigationOptions.DisplayName))
+        {
+            navigation.DisplayName = navigationOptions.DisplayName;
+        }
+
+        if (!string.IsNullOrEmpty(navigationOptions.Description))
+        {
+            navigation.Description = navigationOptions.Description;
+        }
+
+        if (navigationOptions.Order.HasValue)
+        {
+            navigation.Order = navigationOptions.Order.Value;
+        }
+
+        navigation.DisplayFormat = navigationOptions.DisplayFormat ?? navigation.DisplayFormat;
+        navigation.FormatProvider = navigationOptions.FormatProvider ?? navigation.FormatProvider;
     }
 
     /// <summary>
