@@ -224,7 +224,8 @@ public static class EntityMetadataExtensions
             navigation.DisplayName = displayNameAttribute.DisplayName;
         }
 
-        var netForgePropertyAttribute = navigation.PropertyInformation?.GetCustomAttribute<NetForgePropertyAttribute>();
+        var netForgePropertyAttribute = navigation.PropertyInformation?
+            .GetCustomAttribute<NetForgeNavigationAttribute>();
 
         if (netForgePropertyAttribute is null)
         {

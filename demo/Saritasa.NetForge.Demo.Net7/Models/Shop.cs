@@ -26,8 +26,7 @@ public class Shop
     /// <summary>
     /// The address of the shop.
     /// </summary>
-    [NetForgeProperty(DisplayName = "AddressId", Description = "Address identifier.", IsSortable = true, 
-        SearchType = SearchType.ExactMatchCaseInsensitive, Order = 1)]
+    [NetForgeNavigation(DisplayName = "AddressId", Description = "Address identifier.", Order = 1)]
     public Address? Address { get; set; }
 
     /// <summary>
