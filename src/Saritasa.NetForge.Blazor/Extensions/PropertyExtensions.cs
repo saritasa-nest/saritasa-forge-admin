@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Saritasa.NetForge.Infrastructure.EfCore.Services;
+namespace Saritasa.NetForge.Blazor.Extensions;
 
 /// <summary>
 /// Extensions for entity properties.

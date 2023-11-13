@@ -76,7 +76,7 @@ internal class EfCoreMetadataService : IOrmMetadataService
     {
         var propertyMetadata = new PropertyMetadata
         {
-            Name = property.Name.ToMeaningfulName(),
+            Name = property.Name,
             Description = property.GetComment() ?? string.Empty,
             ClrType = property.ClrType,
             PropertyInformation = property.PropertyInfo,

@@ -1,4 +1,5 @@
 ﻿@using Saritasa.NetForge.Domain.Enums
+@using Saritasa.NetForge.Blazor.Extensions
 @inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.EntityDetails.EntityDetailsViewModel>
 
 <MudGrid>
@@ -26,7 +27,7 @@
                     <TemplateColumn Title="@property.Name" Sortable="property.IsSortable">
                         <HeaderTemplate>
                             @{
-                                var displayName = ViewModel.GetPropertyDisplayName(property);
+                                var displayName = ViewModel.GetPropertyDisplayName(property).ToMeaningfulName();
 
                                 if (string.IsNullOrEmpty(property.Description))
                                 {
