@@ -1,4 +1,5 @@
-﻿using Saritasa.NetForge.Domain.Entities.Options;
+﻿using System.Text.RegularExpressions;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices.Interfaces;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
@@ -78,5 +79,30 @@ public class AdminOptionsBuilder
             options.EntityGroupsList.Add(group);
         }
         return this;
+    }
+
+    /// <summary>
+    /// Configure the url to an external site.
+    /// </summary>
+    /// <param name="url">The url to be configured.</param>
+    public AdminOptionsBuilder ConfigureUrl(string url)
+    {
+        if (string.IsNullOrEmpty(url))
+        {
+            return this;
+        }
+
+        if (IsUrlValid(url))
+        {
+            options.ConfigurableUrl = url;
+        }
+        return this;
+    }
+
+    private static bool IsUrlValid(string url)
+    {
+        const string pattern = @"^(https?|ftp)://[^\s/$.?#].[^\s]*$";
+        var regex = new Regex(pattern, RegexOptions.IgnoreCase);
+        return regex.IsMatch(url);
     }
 }
