@@ -11,6 +11,11 @@ public class AdminOptions
     public string AdminPanelEndpoint { get; set; } = "/admin";
 
     /// <summary>
+    /// Url that can be configured in admin panel.
+    /// </summary>
+    public string ConfigurableUrl { get; set; } = string.Empty;
+
+    /// <summary>
     /// Options for configuring entities in the admin panel.
     /// </summary>
     public ICollection<EntityOptions> EntityOptionsList { get; } = new List<EntityOptions>();
