@@ -1,4 +1,5 @@
-﻿using Saritasa.NetForge.Blazor.Extensions;
+﻿using Microsoft.AspNetCore.Identity;
+using Saritasa.NetForge.Blazor.Extensions;
 using Saritasa.NetForge.Demo.Net7.Infrastructure.Admin;
 using Saritasa.NetForge.Demo.Net7.Models;
 using Saritasa.NetForge.Domain.Entities.Options;
@@ -21,10 +22,35 @@ internal static class NetForgeModule
             optionsBuilder.UseEntityFramework(efOptionsBuilder =>
             {
                 efOptionsBuilder.UseDbContext<ShopDbContext>();
+            }).AddGroups(new List<EntityGroup>
+            {
+                new EntityGroup{ Name = "Identity", Description = "Managing user identity within the system" },
+                new EntityGroup{ Name = "Shops"}
             }).ConfigureEntity(new ShopAdminConfiguration())
             .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
             {
                 entityOptionsBuilder.SetIsHidden(true);
+            }).ConfigureEntity<IdentityRole>(entityOptionsBuilder =>
+            {
+                entityOptionsBuilder.SetGroup("Identity");
+            }).ConfigureEntity<User>(entityOptionsBuilder =>
+            {
+                entityOptionsBuilder.SetGroup("Identity");
+            }).ConfigureEntity<IdentityRoleClaim<string>>(entityOptionsBuilder =>
+            {
+                entityOptionsBuilder.SetGroup("Identity");
+            }).ConfigureEntity<IdentityUserClaim<string>>(entityOptionsBuilder =>
+            {
+                entityOptionsBuilder.SetGroup("Identity");
+            }).ConfigureEntity<IdentityUserLogin<string>>(entityOptionsBuilder =>
+            {
+                entityOptionsBuilder.SetGroup("Identity");
+            }).ConfigureEntity<IdentityUserRole<string>>(entityOptionsBuilder =>
+            {
+                entityOptionsBuilder.SetGroup("Identity");
+            }).ConfigureEntity<IdentityUserToken<string>>(entityOptionsBuilder =>
+            {
+                entityOptionsBuilder.SetGroup("Identity");
             }).ConfigureEntity(new UserAdminConfiguration());
         });
     }

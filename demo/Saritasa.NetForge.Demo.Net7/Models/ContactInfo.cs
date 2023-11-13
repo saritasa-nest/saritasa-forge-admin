@@ -5,7 +5,7 @@ namespace Saritasa.NetForge.Demo.Net7.Models;
 /// <summary>
 /// Represents contact information of a user or entity.
 /// </summary>
-[NetForgeEntity(PluralName = "Contact Information")]
+[NetForgeEntity(PluralName = "Contact Information", GroupName = "Shops")]
 public class ContactInfo
 {
     /// <summary>

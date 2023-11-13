@@ -1,11 +1,12 @@
-﻿using System.ComponentModel;
-using Saritasa.NetForge.Domain.Attributes;
+﻿using Saritasa.NetForge.Domain.Attributes;
+using System.ComponentModel;
 
 namespace Saritasa.NetForge.Demo.Net7.Models;
 
 /// <summary>
 /// Represents a shop entity.
 /// </summary>
+[NetForgeEntity(GroupName = "Shops")]
 public class Shop
 {
     /// <summary>
