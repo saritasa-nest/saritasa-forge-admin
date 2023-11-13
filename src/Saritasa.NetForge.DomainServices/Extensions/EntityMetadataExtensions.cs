@@ -245,5 +245,17 @@ public static class EntityMetadataExtensions
         {
             navigation.IsHidden = netForgePropertyAttribute.IsHidden;
         }
+
+        if (netForgePropertyAttribute.Order >= 0)
+        {
+            navigation.Order = netForgePropertyAttribute.Order;
+        }
+
+        navigation.DisplayFormat = netForgePropertyAttribute.DisplayFormat ?? navigation.DisplayFormat;
+
+        if (netForgePropertyAttribute.SearchType != SearchType.None)
+        {
+            navigation.SearchType = netForgePropertyAttribute.SearchType;
+        }
     }
 }

@@ -2,7 +2,6 @@
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
-using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
@@ -95,7 +94,7 @@ public class EfCoreDataService : IOrmDataService
             }
 
             // entity => ((entityType)entity).propertyName
-            var propertyExpression = Expression.Property(entity, propertyName);
+            var propertyExpression = GetPropertyExpression(entity, propertyName);
 
             var searchMethodCallExpression = searchType switch
             {
@@ -269,5 +268,29 @@ public class EfCoreDataService : IOrmDataService
         }
 
         return propertyExpression;
+    }
+
+    /// <summary>
+    /// Gets property expression that contains in <paramref name="entity"/>.
+    /// To get property, just pass its name in <paramref name="propertyName"/>. For example: <c>Description</c>.
+    /// This method supports getting nested properties.
+    /// For example: You can pass <paramref name="propertyName"/> as <c>Address.Id</c>.
+    /// </summary>
+    /// <param name="entity">
+    /// Entity <see cref="ParameterExpression"/>. Can have different <see cref="Expression"/> representation.
+    /// For example:
+    /// When you use <see cref="Expression.Convert(Expression, Type)"/> to <see cref="ParameterExpression"/>.
+    /// </param>
+    /// <param name="propertyName">Property name.</param>
+    /// <returns>Property <see cref="MemberExpression"/>.</returns>
+    private static MemberExpression GetPropertyExpression(Expression entity, string propertyName)
+    {
+        var body = entity;
+        foreach (var member in propertyName.Split('.'))
+        {
+            body = Expression.Property(body, member);
+        }
+
+        return (MemberExpression)body;
     }
 }

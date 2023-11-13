@@ -3,7 +3,6 @@ using System.Linq.Expressions;
 using AutoMapper;
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Enums;
-using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Interfaces;
@@ -158,7 +157,10 @@ public class EntityService : IEntityService
         {
             if (properties.Any(property => property.SearchType != SearchType.None))
             {
-                var propertyNamesWithSearchType = properties.Select(property => (property.Name, property.SearchType));
+                var propertyNamesWithSearchType = properties
+                    .Select(property => (property.IsNavigation
+                        ? property.TargetEntityProperties.First(targetProperty => targetProperty.IsPrimaryKey).Name
+                        : property.Name, property.SearchType));
 
                 query = dataService.Search(query, searchString, entityType, propertyNamesWithSearchType);
             }
