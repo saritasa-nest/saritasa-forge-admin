@@ -157,10 +157,7 @@ public class EntityService : IEntityService
         {
             if (properties.Any(property => property.SearchType != SearchType.None))
             {
-                var propertyNamesWithSearchType = properties
-                    .Select(property => (property.IsNavigation
-                        ? property.TargetEntityProperties.First(targetProperty => targetProperty.IsPrimaryKey).Name
-                        : property.Name, property.SearchType));
+                var propertyNamesWithSearchType = properties.Select(property => (property.Name, property.SearchType));
 
                 query = dataService.Search(query, searchString, entityType, propertyNamesWithSearchType);
             }

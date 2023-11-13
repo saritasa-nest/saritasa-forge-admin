@@ -252,10 +252,5 @@ public static class EntityMetadataExtensions
         }
 
         navigation.DisplayFormat = netForgePropertyAttribute.DisplayFormat ?? navigation.DisplayFormat;
-
-        if (netForgePropertyAttribute.SearchType != SearchType.None)
-        {
-            navigation.SearchType = netForgePropertyAttribute.SearchType;
-        }
     }
 }

@@ -29,11 +29,6 @@ public class NavigationMetadata
     public PropertyInfo? PropertyInformation { get; set; }
 
     /// <summary>
-    /// Search type.
-    /// </summary>
-    public SearchType SearchType { get; set; } = SearchType.None;
-
-    /// <summary>
     /// The order of the navigation.
     /// </summary>
     public int? Order { get; set; }
