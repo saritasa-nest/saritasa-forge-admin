@@ -353,8 +353,8 @@ Navigation property can be configured in similar way with property.
 
 When configuring navigation property there are some property configuration feature that are not appliable to navigation:
 
-1. SearchType
-2. IsSortable
+    1. SearchType
+    2. IsSortable
 
 ### Using attribute
 
