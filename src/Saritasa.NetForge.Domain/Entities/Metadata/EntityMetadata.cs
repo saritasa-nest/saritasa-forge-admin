@@ -1,4 +1,6 @@
-﻿namespace Saritasa.NetForge.Domain.Entities.Metadata;
+﻿using Saritasa.NetForge.Domain.Entities.Options;
+
+namespace Saritasa.NetForge.Domain.Entities.Metadata;
 
 /// <summary>
 /// Metadata of the Database Entity.
@@ -44,6 +46,11 @@ public class EntityMetadata
     /// Whether the entity is hidden.
     /// </summary>
     public bool IsHidden { get; set; }
+
+    /// <summary>
+    /// Group which entity belongs to.
+    /// </summary>
+    public EntityGroup Group { get; set; } = new();
 
     /// <summary>
     /// A collection of properties metadata associated with this entity.

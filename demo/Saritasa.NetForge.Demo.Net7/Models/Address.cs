@@ -18,7 +18,7 @@ public class Address
     /// <summary>
     /// The street name and number.
     /// </summary>
-    [NetForgeProperty(DisplayName = "Street name", Description = "Street name without street number.", 
+    [NetForgeProperty(DisplayName = "Street name", Description = "Street name without street number.",
         Order = 3, SearchType = SearchType.StartsWithCaseSensitive)]
     public required string Street { get; set; }
 

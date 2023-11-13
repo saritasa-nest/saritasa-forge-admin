@@ -52,6 +52,15 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
+    /// Sets the group for the entity being configured.
+    /// </summary>
+    public EntityOptionsBuilder<TEntity> SetGroup(string groupName)
+    {
+        options.GroupName = groupName;
+        return this;
+    }
+
+    /// <summary>
     /// Configure custom search.
     /// </summary>
     /// <param name="searchFunction">Custom search function.</param>

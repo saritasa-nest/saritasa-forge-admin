@@ -4,3 +4,13 @@
     text-overflow: ellipsis;
     max-width: 100ch;
 }
+
+/* Set background color for header of group */
+::deep .mud-table-row {
+    background-color: var(--mud-palette-background-grey);
+}
+
+/* Set background color for entity inside of group */
+::deep .mud-table-row-group-indented-0 {
+    background-color: var(--mud-palette-surface);
+}
