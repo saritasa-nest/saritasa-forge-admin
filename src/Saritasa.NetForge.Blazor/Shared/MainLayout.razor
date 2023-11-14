@@ -1,4 +1,6 @@
-﻿@inherits MainLayoutComponent
+﻿@using Saritasa.NetForge.Domain.Entities.Options
+@inherits MainLayoutComponent
+@inject AdminOptions AdminOptions;
 
 <MudThemeProvider />
 <MudDialogProvider />
@@ -7,7 +9,7 @@
 <MudLayout>
     <MudAppBar Color="Color.Dark" Fixed="false" Elevation="0">
         <div class="d-flex align-center px-6">
-            <MudLink Color="Color.Inherit" Underline="Underline.None" Href="@GetHomePageRoute()" Typo="Typo.h6">NetForge Admin</MudLink>
+            <MudLink Color="Color.Inherit" Underline="Underline.None" Href="@GetHomePageRoute()" Typo="Typo.h6">@AdminOptions.AdminPanelHeaderTitle</MudLink>
         </div>
     </MudAppBar>
     <MudContainer Fixed="true">
