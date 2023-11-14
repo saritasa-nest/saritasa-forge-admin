@@ -137,7 +137,7 @@ public static class EntityMetadataExtensions
 
         foreach (var navigation in entityMetadata.Navigations)
         {
-            navigation.ApplyNavigationAttributes();
+            navigation.ApplyPropertyAttributes();
         }
 
         // Try to get the description from the System.ComponentModel.DisplayNameAttribute.
@@ -190,7 +190,7 @@ public static class EntityMetadataExtensions
         }
     }
 
-    private static void ApplyPropertyAttributes(this PropertyMetadata property)
+    private static void ApplyPropertyAttributes(this PropertyMetadataBase property)
     {
         var descriptionAttribute = property.PropertyInformation?.GetCustomAttribute<DescriptionAttribute>();
 
@@ -206,43 +206,49 @@ public static class EntityMetadataExtensions
             property.DisplayName = displayNameAttribute.DisplayName;
         }
 
-        var netForgePropertyAttribute = property.PropertyInformation?.GetCustomAttribute<NetForgePropertyAttribute>();
+        var netForgePropertyAttributeBase = property.PropertyInformation?
+            .GetCustomAttribute<NetForgePropertyAttributeBase>();
 
-        if (netForgePropertyAttribute is null)
+        if (netForgePropertyAttributeBase is null)
         {
             return;
         }
 
-        if (!string.IsNullOrEmpty(netForgePropertyAttribute.Description))
+        if (!string.IsNullOrEmpty(netForgePropertyAttributeBase.Description))
         {
-            property.Description = netForgePropertyAttribute.Description;
+            property.Description = netForgePropertyAttributeBase.Description;
         }
 
-        if (!string.IsNullOrEmpty(netForgePropertyAttribute.DisplayName))
+        if (!string.IsNullOrEmpty(netForgePropertyAttributeBase.DisplayName))
         {
-            property.DisplayName = netForgePropertyAttribute.DisplayName;
+            property.DisplayName = netForgePropertyAttributeBase.DisplayName;
         }
 
-        if (netForgePropertyAttribute.IsHidden)
+        if (netForgePropertyAttributeBase.IsHidden)
         {
-            property.IsHidden = netForgePropertyAttribute.IsHidden;
+            property.IsHidden = netForgePropertyAttributeBase.IsHidden;
         }
 
-        if (netForgePropertyAttribute.Order >= 0)
+        if (netForgePropertyAttributeBase.Order >= 0)
         {
-            property.Order = netForgePropertyAttribute.Order;
+            property.Order = netForgePropertyAttributeBase.Order;
         }
 
-        property.DisplayFormat = netForgePropertyAttribute.DisplayFormat ?? property.DisplayFormat;
+        property.DisplayFormat = netForgePropertyAttributeBase.DisplayFormat ?? property.DisplayFormat;
 
-        if (netForgePropertyAttribute.SearchType != SearchType.None)
+        if (property is PropertyMetadata propertyMetadata)
         {
-            property.SearchType = netForgePropertyAttribute.SearchType;
-        }
+            var netForgePropertyAttribute = (NetForgePropertyAttribute)netForgePropertyAttributeBase;
 
-        if (netForgePropertyAttribute.IsSortable)
-        {
-            property.IsSortable = netForgePropertyAttribute.IsSortable;
+            if (netForgePropertyAttribute.SearchType != SearchType.None)
+            {
+                propertyMetadata.SearchType = netForgePropertyAttribute.SearchType;
+            }
+
+            if (netForgePropertyAttribute.IsSortable)
+            {
+                propertyMetadata.IsSortable = netForgePropertyAttribute.IsSortable;
+            }
         }
     }
 
@@ -257,52 +263,5 @@ public static class EntityMetadataExtensions
                 entityMetadata.Group = entityGroup;
             }
         }
-    }
-
-    private static void ApplyNavigationAttributes(this NavigationMetadata navigation)
-    {
-        var descriptionAttribute = navigation.PropertyInformation?.GetCustomAttribute<DescriptionAttribute>();
-
-        if (!string.IsNullOrEmpty(descriptionAttribute?.Description))
-        {
-            navigation.Description = descriptionAttribute.Description;
-        }
-
-        var displayNameAttribute = navigation.PropertyInformation?.GetCustomAttribute<DisplayNameAttribute>();
-
-        if (!string.IsNullOrEmpty(displayNameAttribute?.DisplayName))
-        {
-            navigation.DisplayName = displayNameAttribute.DisplayName;
-        }
-
-        var netForgePropertyAttribute = navigation.PropertyInformation?
-            .GetCustomAttribute<NetForgeNavigationAttribute>();
-
-        if (netForgePropertyAttribute is null)
-        {
-            return;
-        }
-
-        if (!string.IsNullOrEmpty(netForgePropertyAttribute.Description))
-        {
-            navigation.Description = netForgePropertyAttribute.Description;
-        }
-
-        if (!string.IsNullOrEmpty(netForgePropertyAttribute.DisplayName))
-        {
-            navigation.DisplayName = netForgePropertyAttribute.DisplayName;
-        }
-
-        if (netForgePropertyAttribute.IsHidden)
-        {
-            navigation.IsHidden = netForgePropertyAttribute.IsHidden;
-        }
-
-        if (netForgePropertyAttribute.Order >= 0)
-        {
-            navigation.Order = netForgePropertyAttribute.Order;
-        }
-
-        navigation.DisplayFormat = netForgePropertyAttribute.DisplayFormat ?? navigation.DisplayFormat;
     }
 }
