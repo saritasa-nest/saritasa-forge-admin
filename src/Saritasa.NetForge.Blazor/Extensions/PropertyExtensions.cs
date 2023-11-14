@@ -8,9 +8,9 @@ namespace Saritasa.NetForge.Blazor.Extensions;
 public static class PropertyExtensions
 {
     /// <summary>
-    /// Convert camel case word into words with space between.
+    /// Convert CamelCase word into words with space between.
     /// </summary>
-    /// <param name="value">The camelcase word need to be convert.</param>
+    /// <param name="value">The CamelCase word need to be convert.</param>
     public static string ToMeaningfulName(this string value)
     {
         // Using regex to add a space at the beginning of every single uppercase letter except the beginning of the word.
