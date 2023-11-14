@@ -79,4 +79,13 @@ public class AdminOptionsBuilder
         }
         return this;
     }
+
+    /// <summary>
+    /// Disable the display of entity properties in Title Case format.
+    /// </summary>
+    public AdminOptionsBuilder DisableCamelCaseProperties()
+    {
+        options.TitleCaseProperties = false;
+        return this;
+    }
 }
