@@ -53,12 +53,10 @@ public class EntityService : IEntityService
             .GetMetadata()
             .First(entityMetadata => entityMetadata.StringId.Equals(stringId));
 
-        var metadataDto = mapper.Map<GetEntityByIdDto>(metadata);
-
         var displayableProperties = metadata.Properties
             .Where(property => property is { IsForeignKey: false, IsHidden: false });
 
-        var properties = mapper
+        var propertyDtos = mapper
             .Map<IEnumerable<PropertyMetadata>, IEnumerable<PropertyMetadataDto>>(displayableProperties);
 
         if (metadata.IsDisplayNavigations)
@@ -68,16 +66,16 @@ public class EntityService : IEntityService
             var navigations = mapper
                 .Map<IEnumerable<NavigationMetadata>, IEnumerable<PropertyMetadataDto>>(displayableNavigations);
 
-            properties = properties.Union(navigations);
+            propertyDtos = propertyDtos.Union(navigations);
         }
 
-        var orderedProperties = properties
+        var orderedProperties = propertyDtos
             .OrderByDescending(property => property is { IsPrimaryKey: true, Order: null })
             .ThenByDescending(property => property.Order.HasValue)
             .ThenBy(property => property.Order)
             .ToList();
 
-        metadataDto = metadataDto with { Properties = orderedProperties };
+        var metadataDto = mapper.Map<GetEntityByIdDto>(metadata) with { Properties = orderedProperties };
 
         return Task.FromResult(metadataDto);
     }
