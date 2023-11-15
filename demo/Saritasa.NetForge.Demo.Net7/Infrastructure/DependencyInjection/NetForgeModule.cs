@@ -22,11 +22,11 @@ internal static class NetForgeModule
             {
                 efOptionsBuilder.UseDbContext<ShopDbContext>();
             }).ConfigureEntity(new ShopAdminConfiguration())
-              .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
+            .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
             {
                 entityOptionsBuilder.SetIsHidden(true);
             }).ConfigureEntity(new UserAdminConfiguration())
-              .ConfigureEntity(new AddressAdminConfiguration());
+            .ConfigureEntity(new AddressAdminConfiguration());
         });
     }
 }
