@@ -1,4 +1,6 @@
 ﻿@using Saritasa.NetForge.Blazor.Controls
+@using Saritasa.NetForge.Domain.Entities.Options
+@inject AdminOptions AdminOptions;
 
-<PageTitle>NetForge Admin - Index</PageTitle>
+<PageTitle>NetForge @AdminOptions.AdminPanelHtmlTitle</PageTitle>
 <Entities/>
