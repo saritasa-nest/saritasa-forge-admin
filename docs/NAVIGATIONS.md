@@ -2,6 +2,8 @@
 
 By default, navigation properties are hidden from view. But you can customize it for each entity.
 
+## Relationships
+
 Relationships are displayed in that way:
 
 ### Reference
@@ -12,7 +14,7 @@ When navigation represents reference to another entity, then primary key of this
 
 When navigation represents collection, then primary keys of all items will be displayed. For example: `[1, 15, 99]`
 
-### Display navigations configuration
+## Display navigations configuration
 
 Displaying navigation properties are configurable via `[NetForgeProperty]` and `Fluent API`.
 
@@ -32,7 +34,7 @@ public void Configure(EntityOptionsBuilder<Shop> entityOptionsBuilder)
 }
 ```
 
-### Navigation property configuration
+## Navigation property configuration
 
 Navigation property can be configured in similar way with property.
 
