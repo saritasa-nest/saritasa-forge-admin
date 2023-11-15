@@ -63,7 +63,21 @@ public class EntityDetailsViewModel : BaseViewModel
                 FieldName =
                     DataGrid!.RenderedColumns.First(column => column.PropertyName.Equals(sort.SortBy)).Title,
                 IsDescending = sort.Descending
-            });
+            })
+            .ToList();
+
+        if (!orderBy.Any())
+        {
+            var primaryKeyName = Model.Properties.FirstOrDefault(property => property.IsPrimaryKey)?.Name;
+
+            if (primaryKeyName is not null)
+            {
+                orderBy.Add(new OrderByDto
+                {
+                    FieldName = primaryKeyName
+                });
+            }
+        }
 
         var searchOptions = new SearchOptions
         {
