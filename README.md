@@ -337,14 +337,15 @@ Sorting can be cancelled by pressing on it with `ALT`.
 
 ## External link
 
-On the top right side of the admin panel, there is a "View Site" link that can be configured to link to another website.
-By default, the link will open the home page of the application.
+Located in the top right corner of the admin panel is a "View Site" link, configurable to direct users to an external website.
+The link supports two types of URLs: full paths, e.g., "https://www.example.com/", and relative routes, such as "/index".
+If left unconfigured, the link will default to opening the home page of the application.
 
 ### Using Fluent API
 
 ```csharp
 services.AddNetForge(optionsBuilder =>
 {
-    optionsBuilder.ConfigureUrl("https://stackoverflow.com/");
+    optionsBuilder.ConfigureUrl("https://www.example.com/");
 });
 ```

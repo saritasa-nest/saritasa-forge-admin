@@ -11,19 +11,10 @@
         <div class="d-flex align-center px-6">
             <MudLink Color="Color.Inherit" Underline="Underline.None" Href="@GetHomePageRoute()" Typo="Typo.h6">@AdminOptions.AdminPanelHeaderTitle</MudLink>
         </div>
-        <MudSpacer />
-        @if (!string.IsNullOrEmpty(AdminOptions.ConfigurableUrl))
-        {
-            <MudLink Color="Color.Inherit" Underline="Underline.None" Href="@AdminOptions.ConfigurableUrl" Typo="Typo.subtitle1" Target="_blank">
-                View Site
-            </MudLink>
-        }
-        else
-        {
-            <MudLink Color="Color.Inherit" Underline="Underline.None" Href="/" Typo="Typo.subtitle1" Target="_blank">
-                View Site
-            </MudLink>
-        }
+        <MudSpacer /> 
+        <MudLink Color="Color.Inherit" Underline="Underline.None" Href="@AdminOptions.SiteUrl" Typo="Typo.subtitle1" Target="_blank">
+            View Site
+        </MudLink>
     </MudAppBar>
     <MudContainer Fixed="true">
         <MudMainContent>

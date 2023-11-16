@@ -13,7 +13,7 @@ public class AdminOptions
     /// <summary>
     /// Url that can be configured in admin panel.
     /// </summary>
-    public string ConfigurableUrl { get; set; } = string.Empty;
+    public string SiteUrl { get; set; } = "/";
 
     /// <summary>
     /// Header title for the admin panel web page.

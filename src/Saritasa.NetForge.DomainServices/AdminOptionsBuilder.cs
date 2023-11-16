@@ -105,7 +105,7 @@ public class AdminOptionsBuilder
     /// Configure the url to an external site.
     /// </summary>
     /// <param name="url">The url to be configured.</param>
-    public AdminOptionsBuilder ConfigureUrl(string url)
+    public AdminOptionsBuilder SetSiteUrl(string url)
     {
         if (string.IsNullOrEmpty(url))
         {
@@ -114,14 +114,15 @@ public class AdminOptionsBuilder
 
         if (IsUrlValid(url))
         {
-            options.ConfigurableUrl = url;
+            options.SiteUrl = url;
         }
         return this;
     }
 
     private static bool IsUrlValid(string url)
     {
-        const string pattern = @"^(https?|ftp)://[^\s/$.?#].[^\s]*$";
+        const string pattern =
+            @"^(https?:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(\/[a-zA-Z0-9\-\/]*)?)|(\/[a-zA-Z0-9\-\/]+)$";
         var regex = new Regex(pattern, RegexOptions.IgnoreCase);
         return regex.IsMatch(url);
     }
