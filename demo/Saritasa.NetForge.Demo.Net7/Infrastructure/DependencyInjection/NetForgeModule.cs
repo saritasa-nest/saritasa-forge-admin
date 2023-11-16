@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Blazor.Extensions;
+using Saritasa.NetForge.Demo.Net7.Constants;
 using Saritasa.NetForge.Demo.Net7.Infrastructure.Admin;
 using Saritasa.NetForge.Demo.Net7.Infrastructure.Extensions;
 using Saritasa.NetForge.Demo.Net7.Models;
@@ -12,10 +13,6 @@ namespace Saritasa.NetForge.Demo.Net7.Infrastructure.DependencyInjection;
 /// </summary>
 internal static class NetForgeModule
 {
-    private const string IdentityGroupName = "Identity";
-    private const string IdentityGroupDescription = "Managing user identity within the system";
-    private const string ShopGroupName = "Shops";
-
     /// <summary>
     /// Register dependencies.
     /// </summary>
@@ -28,8 +25,8 @@ internal static class NetForgeModule
                     efOptionsBuilder.UseDbContext<ShopDbContext>();
                 }).AddGroups(new List<EntityGroup>
                 {
-                    new() { Name = IdentityGroupName, Description = IdentityGroupDescription },
-                    new() { Name = ShopGroupName }
+                    new() { Name = GroupConstants.Identity, Description = GroupConstants.IdentityDescription },
+                    new() { Name = GroupConstants.Shops }
                 }).ConfigureEntity(new ShopAdminConfiguration())
                 .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
                 {

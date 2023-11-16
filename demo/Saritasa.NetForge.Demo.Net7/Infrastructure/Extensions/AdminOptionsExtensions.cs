@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Saritasa.NetForge.Demo.Net7.Constants;
 using Saritasa.NetForge.Demo.Net7.Infrastructure.Admin;
 using Saritasa.NetForge.Demo.Net7.Models;
 using Saritasa.NetForge.DomainServices;
@@ -18,25 +19,25 @@ public static class AdminOptionsExtensions
     {
         optionsBuilder.ConfigureEntity<IdentityRole>(entityOptionsBuilder =>
         {
-            entityOptionsBuilder.SetGroup("Identity");
+            entityOptionsBuilder.SetGroup(GroupConstants.Identity);
         }).ConfigureEntity<User>(entityOptionsBuilder =>
         {
-            entityOptionsBuilder.SetGroup("Identity");
+            entityOptionsBuilder.SetGroup(GroupConstants.Identity);
         }).ConfigureEntity<IdentityRoleClaim<string>>(entityOptionsBuilder =>
         {
-            entityOptionsBuilder.SetGroup("Identity");
+            entityOptionsBuilder.SetGroup(GroupConstants.Identity);
         }).ConfigureEntity<IdentityUserClaim<string>>(entityOptionsBuilder =>
         {
-            entityOptionsBuilder.SetGroup("Identity");
+            entityOptionsBuilder.SetGroup(GroupConstants.Identity);
         }).ConfigureEntity<IdentityUserLogin<string>>(entityOptionsBuilder =>
         {
-            entityOptionsBuilder.SetGroup("Identity");
+            entityOptionsBuilder.SetGroup(GroupConstants.Identity);
         }).ConfigureEntity<IdentityUserRole<string>>(entityOptionsBuilder =>
         {
-            entityOptionsBuilder.SetGroup("Identity");
+            entityOptionsBuilder.SetGroup(GroupConstants.Identity);
         }).ConfigureEntity<IdentityUserToken<string>>(entityOptionsBuilder =>
         {
-            entityOptionsBuilder.SetGroup("Identity");
+            entityOptionsBuilder.SetGroup(GroupConstants.Identity);
         }).ConfigureEntity(new UserAdminConfiguration());
     }
 }
