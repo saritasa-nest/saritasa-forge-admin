@@ -338,8 +338,7 @@ Sorting can be cancelled by pressing on it with `ALT`.
 ## View Site URL
 
 Located in the top right corner of the admin panel is a "View Site" link, configurable to direct users to the website URL.
-The default URL is "/".
-You can customize this value using the Fluent API:
+The default URL is "/".You can customize this value using the Fluent API:
 
 ### Using Fluent API
 
