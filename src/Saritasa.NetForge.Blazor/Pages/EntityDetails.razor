@@ -1,4 +1,7 @@
 ﻿@using Saritasa.NetForge.Domain.Enums
+@using Saritasa.NetForge.Domain.Entities.Options
+@using Saritasa.NetForge.Blazor.Extensions
+@inject AdminOptions AdminOptions
 @inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.EntityDetails.EntityDetailsViewModel>
 
 <MudGrid>
@@ -27,6 +30,10 @@
                         <HeaderTemplate>
                             @{
                                 var displayName = ViewModel.GetPropertyDisplayName(property);
+                                if (AdminOptions.TitleCaseProperties)
+                                {
+                                    displayName = displayName.ToMeaningfulName();
+                                }
 
                                 if (string.IsNullOrEmpty(property.Description))
                                 {

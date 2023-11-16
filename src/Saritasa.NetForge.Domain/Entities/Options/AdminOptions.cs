@@ -11,6 +11,17 @@ public class AdminOptions
     public string AdminPanelEndpoint { get; set; } = "/admin";
 
     /// <summary>
+    /// Url that can be configured in admin panel.
+    /// </summary>
+    public string SiteUrl { get; set; } = "/";
+
+    /// <summary>
+    /// Whether the properties of entities are displayed in Title Case.
+    /// By default, property names like "ContactInfo" will be displayed as "Contact Info".
+    /// </summary>
+    public bool TitleCaseProperties { get; set; } = true;
+
+    /// <summary>
     /// Header title for the admin panel web page.
     /// </summary>
     public string AdminPanelHeaderTitle { get; set; } = "NetForge Admin";

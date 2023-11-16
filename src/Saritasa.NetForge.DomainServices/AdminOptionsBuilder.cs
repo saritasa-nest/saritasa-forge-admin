@@ -99,4 +99,31 @@ public class AdminOptionsBuilder
         }
         return this;
     }
+
+    /// <summary>
+    /// Configure the url to an external site.
+    /// </summary>
+    /// <param name="url">The url to be configured.</param>
+    public AdminOptionsBuilder SetSiteUrl(string url)
+    {
+        if (string.IsNullOrEmpty(url))
+        {
+            throw new ArgumentException($"Invalid URL: {url}");
+        }
+
+        if (Uri.IsWellFormedUriString(url, UriKind.RelativeOrAbsolute))
+        {
+            options.SiteUrl = url;
+        }
+        return this;
+    }
+
+    /// <summary>
+    /// Disable the display of entity properties in Title Case format.
+    /// </summary>
+    public AdminOptionsBuilder DisableTitleCaseProperties()
+    {
+        options.TitleCaseProperties = false;
+        return this;
+    }
 }
