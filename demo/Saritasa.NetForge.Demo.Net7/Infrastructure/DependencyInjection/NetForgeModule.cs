@@ -1,5 +1,7 @@
 ﻿using Saritasa.NetForge.Blazor.Extensions;
+using Saritasa.NetForge.Demo.Net7.Constants;
 using Saritasa.NetForge.Demo.Net7.Infrastructure.Admin;
+using Saritasa.NetForge.Demo.Net7.Infrastructure.Extensions;
 using Saritasa.NetForge.Demo.Net7.Models;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
@@ -19,13 +21,17 @@ internal static class NetForgeModule
         services.AddNetForge(optionsBuilder =>
         {
             optionsBuilder.UseEntityFramework(efOptionsBuilder =>
-            {
-                efOptionsBuilder.UseDbContext<ShopDbContext>();
-            }).ConfigureEntity(new ShopAdminConfiguration())
-            .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
-            {
-                entityOptionsBuilder.SetIsHidden(true);
-            }).ConfigureEntity(new UserAdminConfiguration());
+                {
+                    efOptionsBuilder.UseDbContext<ShopDbContext>();
+                }).AddGroups(new List<EntityGroup>
+                {
+                    new() { Name = GroupConstants.Identity, Description = GroupConstants.IdentityDescription },
+                    new() { Name = GroupConstants.Shops }
+                }).ConfigureEntity(new ShopAdminConfiguration())
+                .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
+                {
+                    entityOptionsBuilder.SetIsHidden(true);
+                }).AddIdentityGroup();
         });
     }
 }
