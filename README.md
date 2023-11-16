@@ -349,3 +349,19 @@ services.AddNetForge(optionsBuilder =>
     optionsBuilder.ConfigureUrl("https://www.example.com/");
 });
 ```
+
+## Display Properties as Title Case
+
+By default, all entity properties are displayed in Title Case.
+
+For example, the `Product` entity will have the property `StockQuantity`. By default, it will be displayed as `Stock Quantity` in the admin panel.
+This behavior can be disabled, and the entities will use CamelCase display instead.
+
+### Using Fluent API
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.DisableTitleCaseProperties();
+});
+```

@@ -126,4 +126,13 @@ public class AdminOptionsBuilder
         var regex = new Regex(pattern, RegexOptions.IgnoreCase);
         return regex.IsMatch(url);
     }
+
+    /// <summary>
+    /// Disable the display of entity properties in Title Case format.
+    /// </summary>
+    public AdminOptionsBuilder DisableTitleCaseProperties()
+    {
+        options.TitleCaseProperties = false;
+        return this;
+    }
 }
