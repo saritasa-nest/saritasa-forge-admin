@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Saritasa.NetForge.Demo.Net7.Constants;
 using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.Domain.Enums;
 
@@ -8,7 +9,7 @@ namespace Saritasa.NetForge.Demo.Net7.Models;
 /// Represents an address entity.
 /// </summary>
 [Comment("Represents the address of the shop.")]
-[NetForgeEntity(GroupName = "Shops")]
+[NetForgeEntity(GroupName = GroupConstants.Shops)]
 public class Address
 {
     /// <summary>

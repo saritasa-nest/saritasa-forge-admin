@@ -1,11 +1,12 @@
-﻿using Saritasa.NetForge.Domain.Attributes;
+﻿using Saritasa.NetForge.Demo.Net7.Constants;
+using Saritasa.NetForge.Domain.Attributes;
 
 namespace Saritasa.NetForge.Demo.Net7.Models;
 
 /// <summary>
 /// Represents a product entity.
 /// </summary>
-[NetForgeEntity(Description = "The product in the shop.", GroupName = "Shops")]
+[NetForgeEntity(Description = "The product in the shop.", GroupName = GroupConstants.Shops)]
 public class Product
 {
     /// <summary>
