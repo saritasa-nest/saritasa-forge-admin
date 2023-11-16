@@ -33,7 +33,7 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
         entityOptionsBuilder.ConfigureNavigation(shop => shop.OwnerContact, builder =>
         {
             builder
-                .SetDisplayName("OwnerContactData")
+                .SetDisplayName("OwnerContactInfo")
                 .SetDescription("Information about owner contact.")
                 .SetOrder(2);
         });
