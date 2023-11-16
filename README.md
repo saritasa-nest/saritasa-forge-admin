@@ -334,3 +334,17 @@ entityOptionsBuilder.ConfigureProperty(shop => shop.OpenedDate, builder =>
 You can sort multiple properties at once. It can be achieved by pressing sort buttons with `CTRL`.
 
 Sorting can be cancelled by pressing on it with `ALT`.
+
+## Display Properties as Title Case
+
+By default, all entity properties are displayed in Title Case.
+
+For example, the `Product` entity will have the property `StockQuantity`. By default, it will be displayed as `Stock Quantity` in the admin panel.
+This behavior can be disabled, and the entities will use CamelCase display instead.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.DisableTitleCaseProperties();
+});
+```
