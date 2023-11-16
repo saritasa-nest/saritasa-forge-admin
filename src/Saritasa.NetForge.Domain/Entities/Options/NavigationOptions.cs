@@ -7,24 +7,24 @@ namespace Saritasa.NetForge.Domain.Entities.Options;
 /// </summary>
 public class NavigationOptions
 {
-    /// <inheritdoc cref="NavigationMetadata.Name"/>
+    /// <inheritdoc cref="PropertyMetadataBase.Name"/>
     public string NavigationName { get; set; } = string.Empty;
 
-    /// <inheritdoc cref="NavigationMetadata.IsHidden"/>
+    /// <inheritdoc cref="PropertyMetadataBase.IsHidden"/>
     public bool IsHidden { get; set; }
 
-    /// <inheritdoc cref="NavigationMetadata.DisplayName"/>
+    /// <inheritdoc cref="PropertyMetadataBase.DisplayName"/>
     public string? DisplayName { get; set; }
 
-    /// <inheritdoc cref="NavigationMetadata.Description"/>
+    /// <inheritdoc cref="PropertyMetadataBase.Description"/>
     public string? Description { get; set; }
 
-    /// <inheritdoc cref="NavigationMetadata.Order"/>
+    /// <inheritdoc cref="PropertyMetadataBase.Order"/>
     public int? Order { get; set; }
 
-    /// <inheritdoc cref="NavigationMetadata.Order"/>
+    /// <inheritdoc cref="PropertyMetadataBase.DisplayFormat"/>
     public string? DisplayFormat { get; set; }
 
-    /// <inheritdoc cref="NavigationMetadata.FormatProvider"/>
+    /// <inheritdoc cref="PropertyMetadataBase.FormatProvider"/>
     public IFormatProvider? FormatProvider { get; set; }
 }
