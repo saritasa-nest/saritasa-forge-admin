@@ -4,15 +4,15 @@ By default, navigation properties are hidden from view. But you can customize it
 
 ## Relationships
 
-Relationships are displayed in that way:
+Relationships are displayed in the following ways:
 
 ### Reference
 
-When navigation represents reference to another entity, then primary key of this entity will be displayed.
+When navigation represents a reference to another entity, the primary key of this entity will be displayed.
 
 ### Collection
 
-When navigation represents collection, then primary keys of all items will be displayed. For example: `[1, 15, 99]`
+When navigation represents by a collection, the primary keys of all items will be displayed. For example: `[1, 15, 99]`.
 
 ## Display navigations configuration
 
