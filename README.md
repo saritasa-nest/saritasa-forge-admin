@@ -335,6 +335,20 @@ You can sort multiple properties at once. It can be achieved by pressing sort bu
 
 Sorting can be cancelled by pressing on it with `ALT`.
 
+## View Site URL
+
+Located in the top right corner of the admin panel is a "View Site" link, configurable to direct users to the website URL.
+The default URL is "/".You can customize this value using the Fluent API:
+
+### Using Fluent API
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.ConfigureUrl("https://www.example.com/");
+});
+```
+
 ## Display Properties as Title Case
 
 By default, all entity properties are displayed in Title Case.
