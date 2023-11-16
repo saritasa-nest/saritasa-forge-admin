@@ -358,7 +358,6 @@ For example, the `Product` entity will have the property `StockQuantity`. By def
 This behavior can be disabled, and the entities will use CamelCase display instead.
 
 ### Using Fluent API
-
 ```csharp
 services.AddNetForge(optionsBuilder =>
 {
