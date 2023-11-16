@@ -3,6 +3,7 @@ using Saritasa.NetForge.Demo.Net7.Constants;
 using Saritasa.NetForge.Demo.Net7.Infrastructure.Admin;
 using Saritasa.NetForge.Demo.Net7.Infrastructure.Extensions;
 using Saritasa.NetForge.Demo.Net7.Models;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
 namespace Saritasa.NetForge.Demo.Net7.Infrastructure.DependencyInjection;
