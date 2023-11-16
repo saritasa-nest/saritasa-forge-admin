@@ -335,11 +335,11 @@ You can sort multiple properties at once. It can be achieved by pressing sort bu
 
 Sorting can be cancelled by pressing on it with `ALT`.
 
-## External link
+## View Site URL
 
-Located in the top right corner of the admin panel is a "View Site" link, configurable to direct users to an external website.
-The link supports two types of URLs: full paths, e.g., "https://www.example.com/", and relative routes, such as "/index".
-If left unconfigured, the link will default to opening the home page of the application.
+Located in the top right corner of the admin panel is a "View Site" link, configurable to direct users to the website URL.
+The default URL is "/".
+You can customize this value using the Fluent API:
 
 ### Using Fluent API
 

@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using Saritasa.NetForge.Domain.Entities.Options;
+﻿using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices.Interfaces;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
@@ -109,22 +108,14 @@ public class AdminOptionsBuilder
     {
         if (string.IsNullOrEmpty(url))
         {
-            return this;
+            throw new ArgumentException($"Invalid URL: {url}");
         }
 
-        if (IsUrlValid(url))
+        if (Uri.IsWellFormedUriString(url, UriKind.RelativeOrAbsolute))
         {
             options.SiteUrl = url;
         }
         return this;
-    }
-
-    private static bool IsUrlValid(string url)
-    {
-        const string pattern =
-            @"^(https?:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(\/[a-zA-Z0-9\-\/]*)?)|(\/[a-zA-Z0-9\-\/]+)$";
-        var regex = new Regex(pattern, RegexOptions.IgnoreCase);
-        return regex.IsMatch(url);
     }
 
     /// <summary>
