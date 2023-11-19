@@ -2,5 +2,7 @@
 @using Saritasa.NetForge.Domain.Entities.Options
 @inject AdminOptions AdminOptions;
 
+@attribute [Authorize]
+
 <PageTitle>NetForge @AdminOptions.AdminPanelHtmlTitle</PageTitle>
 <Entities/>
