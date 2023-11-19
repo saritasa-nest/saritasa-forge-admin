@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Saritasa.NetForge.Blazor;
 using Saritasa.NetForge.Blazor.Extensions;
 using Saritasa.NetForge.Demo.Net7.Infrastructure.Startup;
 using Saritasa.NetForge.Demo.Net7.Infrastructure.Startup.HealthCheck;
@@ -31,6 +32,7 @@ public class Startup
     /// <param name="environment">Application environment.</param>
     public void ConfigureServices(IServiceCollection services, IWebHostEnvironment environment)
     {
+        services.AddRazorPages();
         var connectionString = configuration.GetConnectionString("AppDatabase")
                                ?? throw new ArgumentNullException("ConnectionStrings:AppDatabase",
                                    "Database connection string is not initialized");
@@ -60,7 +62,12 @@ public class Startup
     {
         app.UseNetForge();
         HealthCheckModule.Register(app);
-        
+
+        app.UseRouting();
+        app.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=Home}/{action=Index}/{id?}");
+
         var cultureInfo = new CultureInfo("en-US");
         CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
         CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
