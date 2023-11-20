@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 
 namespace Saritasa.NetForge.Blazor.Pages;
@@ -15,9 +16,27 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     [Parameter]
     public string StringId { get; set; } = null!;
 
+    private EntityDetailsViewModel entityDetailsViewModel = null!;
+
     /// <inheritdoc/>
     protected override EntityDetailsViewModel CreateViewModel()
     {
-        return ViewModelFactory.Create<EntityDetailsViewModel>(StringId);
+        entityDetailsViewModel = ViewModelFactory.Create<EntityDetailsViewModel>(StringId);
+        return entityDetailsViewModel;
+    }
+
+    private readonly List<BreadcrumbItem> items = new()
+    {
+        new BreadcrumbItem("Home", href: "/"),
+        new BreadcrumbItem("Entities", href: "/admin"),
+    };
+
+    /// <inheritdoc />
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        // Add BreadcrumbItem with the new href value because can not get StringId directly.
+        items.Add(new BreadcrumbItem(entityDetailsViewModel.Model.PluralName, href: $"/admin/entities/{StringId}"));
     }
 }

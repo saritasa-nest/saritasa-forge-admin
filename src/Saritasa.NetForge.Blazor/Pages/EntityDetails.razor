@@ -4,6 +4,7 @@
 @inject AdminOptions AdminOptions
 @inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.EntityDetails.EntityDetailsViewModel>
 
+<MudBreadcrumbs Items="items"></MudBreadcrumbs>
 <MudGrid>
     <MudItem xs="6">
         <MudText Typo="Typo.h4">@ViewModel.Model.PluralName</MudText>
