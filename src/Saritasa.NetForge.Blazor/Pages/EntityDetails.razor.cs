@@ -18,18 +18,18 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
 
     private EntityDetailsViewModel entityDetailsViewModel = null!;
 
+    private readonly List<BreadcrumbItem> items = new()
+    {
+        new BreadcrumbItem("Home", href: "/"),
+        new BreadcrumbItem("Entities", href: "/admin"),
+    };
+
     /// <inheritdoc/>
     protected override EntityDetailsViewModel CreateViewModel()
     {
         entityDetailsViewModel = ViewModelFactory.Create<EntityDetailsViewModel>(StringId);
         return entityDetailsViewModel;
     }
-
-    private readonly List<BreadcrumbItem> items = new()
-    {
-        new BreadcrumbItem("Home", href: "/"),
-        new BreadcrumbItem("Entities", href: "/admin"),
-    };
 
     /// <inheritdoc />
     protected override void OnParametersSet()
