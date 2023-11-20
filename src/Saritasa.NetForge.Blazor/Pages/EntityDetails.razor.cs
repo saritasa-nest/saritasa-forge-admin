@@ -18,7 +18,7 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
 
     private EntityDetailsViewModel entityDetailsViewModel = null!;
 
-    private readonly List<BreadcrumbItem> items = new()
+    private readonly List<BreadcrumbItem> breadcrumbItems = new()
     {
         new BreadcrumbItem("Home", href: "/"),
         new BreadcrumbItem("Entities", href: "/admin"),
@@ -37,6 +37,6 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
         base.OnParametersSet();
 
         // Add BreadcrumbItem with the new href value because can not get StringId directly.
-        items.Add(new BreadcrumbItem(entityDetailsViewModel.Model.PluralName, href: $"/admin/entities/{StringId}"));
+        breadcrumbItems.Add(new BreadcrumbItem(entityDetailsViewModel.Model.PluralName, href: $"/admin/entities/{StringId}"));
     }
 }
