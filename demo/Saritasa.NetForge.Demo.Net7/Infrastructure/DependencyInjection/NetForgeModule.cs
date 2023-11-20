@@ -20,18 +20,21 @@ internal static class NetForgeModule
     {
         services.AddNetForge(optionsBuilder =>
         {
-            optionsBuilder.UseEntityFramework(efOptionsBuilder =>
-                {
-                    efOptionsBuilder.UseDbContext<ShopDbContext>();
-                }).AddGroups(new List<EntityGroup>
+            // optionsBuilder.AddAccessRoles("admin", "hieu");
+
+            optionsBuilder.SetCustomAuthFunction(async provider =>
+            {
+                return true;
+            });
+
+            optionsBuilder.UseEntityFramework(efOptionsBuilder => { efOptionsBuilder.UseDbContext<ShopDbContext>(); })
+                .AddGroups(new List<EntityGroup>
                 {
                     new() { Name = GroupConstants.Identity, Description = GroupConstants.IdentityDescription },
                     new() { Name = GroupConstants.Shops }
                 }).ConfigureEntity(new ShopAdminConfiguration())
-                .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
-                {
-                    entityOptionsBuilder.SetIsHidden(true);
-                }).AddIdentityGroup();
+                .ConfigureEntity<ProductTag>(entityOptionsBuilder => { entityOptionsBuilder.SetIsHidden(true); })
+                .AddIdentityGroup();
         });
     }
 }
