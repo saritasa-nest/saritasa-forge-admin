@@ -32,6 +32,16 @@ public class AdminOptions
     public string AdminPanelHtmlTitle { get; set; } = "NetForge Admin - Main";
 
     /// <summary>
+    /// Roles with access to the admin panel.
+    /// </summary>
+    public ICollection<string> AdminPanelAccessRoles { get; set; } = new List<string>();
+
+    /// <summary>
+    /// Custom authentication function for admin panel access.
+    /// </summary>
+    public Func<IServiceProvider, Task<bool>>? CustomAuthFunction { get; set; }
+
+    /// <summary>
     /// Options for configuring entities in the admin panel.
     /// </summary>
     public ICollection<EntityOptions> EntityOptionsList { get; } = new List<EntityOptions>();

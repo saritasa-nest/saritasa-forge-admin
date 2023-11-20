@@ -47,6 +47,37 @@ public class AdminOptionsBuilder
     }
 
     /// <summary>
+    /// Adds roles that have access to the admin panel.
+    /// </summary>
+    /// <param name="roles">Roles to be added for access.</param>
+    public AdminOptionsBuilder AddAccessRoles(params string[] roles)
+    {
+        if (!roles.Any())
+        {
+            return this;
+        }
+
+        foreach (var role in roles)
+        {
+            options.AdminPanelAccessRoles.Add(role);
+        }
+
+        options.AdminPanelAccessRoles = options.AdminPanelAccessRoles.Distinct().ToList();
+        return this;
+    }
+
+    /// <summary>
+    /// Specifies a custom authentication function for admin panel access.
+    /// </summary>
+    /// <param name="customAuthFunction"></param>
+    /// <returns></returns>
+    public AdminOptionsBuilder SetCustomAuthFunction(Func<IServiceProvider, Task<bool>> customAuthFunction)
+    {
+        options.CustomAuthFunction = customAuthFunction;
+        return this;
+    }
+
+    /// <summary>
     /// Get options for the admin panel.
     /// </summary>
     public AdminOptions Create()
@@ -95,8 +126,10 @@ public class AdminOptionsBuilder
             {
                 continue;
             }
+
             options.EntityGroupsList.Add(group);
         }
+
         return this;
     }
 
@@ -115,6 +148,7 @@ public class AdminOptionsBuilder
         {
             options.SiteUrl = url;
         }
+
         return this;
     }
 
