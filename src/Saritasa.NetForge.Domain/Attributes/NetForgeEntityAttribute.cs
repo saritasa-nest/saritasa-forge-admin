@@ -30,9 +30,4 @@ public class NetForgeEntityAttribute : Attribute
     /// Name of the group which entity belongs to.
     /// </summary>
     public string GroupName { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Whether display navigations.
-    /// </summary>
-    public bool IsDisplayNavigations { get; set; }
 }

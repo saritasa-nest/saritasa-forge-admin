@@ -59,7 +59,7 @@ public class EntityService : IEntityService
         var propertyDtos = mapper
             .Map<IEnumerable<PropertyMetadata>, IEnumerable<PropertyMetadataDto>>(displayableProperties);
 
-        if (metadata.IsDisplayNavigations)
+        if (metadata.Navigations.Any())
         {
             var displayableNavigations = metadata.Navigations.Where(navigation => !navigation.IsHidden);
 

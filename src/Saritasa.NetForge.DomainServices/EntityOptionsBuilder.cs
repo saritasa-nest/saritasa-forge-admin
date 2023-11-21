@@ -115,11 +115,13 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
-    /// Sets whether display navigations or not.
+    /// Include navigations when entity data accessed.
     /// </summary>
-    public EntityOptionsBuilder<TEntity> SetIsDisplayNavigations(bool isDisplayNavigations)
+    /// <param name="navigationExpression">An array of lambda expressions representing navigations to include.</param>
+    public EntityOptionsBuilder<TEntity> IncludeNavigations(params Expression<Func<TEntity, object?>>[] navigationExpression)
     {
-        options.IsDisplayNavigations = isDisplayNavigations;
+        var navigationNames = navigationExpression.Select(expression => expression.GetMemberName());
+        options.IncludedNavigations.AddRange(navigationNames);
         return this;
     }
 }

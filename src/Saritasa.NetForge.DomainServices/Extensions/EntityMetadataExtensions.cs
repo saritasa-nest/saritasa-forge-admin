@@ -45,9 +45,11 @@ public static class EntityMetadataExtensions
             entityMetadata.SearchFunction = entityOptions.SearchFunction;
         }
 
-        if (entityOptions.IsDisplayNavigations)
+        if (entityOptions.IncludedNavigations.Any())
         {
-            entityMetadata.IsDisplayNavigations = entityOptions.IsDisplayNavigations;
+            entityMetadata.Navigations = entityMetadata.Navigations
+                .Where(navigation => entityOptions.IncludedNavigations.Contains(navigation.Name))
+                .ToList();
         }
 
         foreach (var option in entityOptions.PropertyOptions)
@@ -161,11 +163,6 @@ public static class EntityMetadataExtensions
         }
 
         SetGroupForEntity(netForgeEntityAttribute.GroupName, entityMetadata, adminOptions);
-
-        if (netForgeEntityAttribute.IsDisplayNavigations)
-        {
-            entityMetadata.IsDisplayNavigations = netForgeEntityAttribute.IsDisplayNavigations;
-        }
     }
 
     private static void ApplyPropertyAttributes(this PropertyMetadataBase property)

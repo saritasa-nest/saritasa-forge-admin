@@ -14,7 +14,6 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
     {
         entityOptionsBuilder
             .SetDescription("The base Shop entity.")
-            .SetIsDisplayNavigations(true)
             .ConfigureSearch((serviceProvider, query, searchTerm) =>
             {
                 return query.Where(e => e.Name.Contains(searchTerm));
@@ -30,12 +29,14 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             builder.SetIsSortable(true);
         });
 
-        entityOptionsBuilder.ConfigureProperty(shop => shop.OwnerContact, builder =>
-        {
-            builder
+        entityOptionsBuilder
+            .IncludeNavigations(shop => shop.Address, shop => shop.OwnerContact, shop => shop.Products)
+            .ConfigureProperty(shop => shop.OwnerContact, builder =>
+            {
+                builder
                 .SetDisplayName("OwnerContactInfo")
                 .SetDescription("Information about owner contact.")
                 .SetOrder(2);
-        });
+            });
     }
 }

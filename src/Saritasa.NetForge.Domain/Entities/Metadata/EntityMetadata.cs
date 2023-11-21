@@ -66,9 +66,4 @@ public class EntityMetadata
     /// A collection of navigations metadata associated with this entity.
     /// </summary>
     public List<NavigationMetadata> Navigations { get; set; } = new();
-
-    /// <summary>
-    /// Whether display navigations.
-    /// </summary>
-    public bool IsDisplayNavigations { get; set; }
 }
