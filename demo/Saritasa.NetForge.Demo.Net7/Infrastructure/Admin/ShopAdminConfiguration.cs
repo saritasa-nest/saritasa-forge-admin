@@ -30,7 +30,7 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             builder.SetIsSortable(true);
         });
 
-        entityOptionsBuilder.ConfigureNavigation(shop => shop.OwnerContact, builder =>
+        entityOptionsBuilder.ConfigureProperty(shop => shop.OwnerContact, builder =>
         {
             builder
                 .SetDisplayName("OwnerContactInfo")

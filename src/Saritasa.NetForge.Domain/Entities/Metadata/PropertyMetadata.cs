@@ -1,6 +1,4 @@
-﻿using Saritasa.NetForge.Domain.Enums;
-
-namespace Saritasa.NetForge.Domain.Entities.Metadata;
+﻿namespace Saritasa.NetForge.Domain.Entities.Metadata;
 
 /// <summary>
 /// Represents metadata about a property of an entity model.
@@ -27,10 +25,6 @@ public class PropertyMetadata : PropertyMetadataBase
     /// </summary>
     public bool IsEditable { get; set; } = true;
 
-    /// <summary>
-    /// Search type.
-    /// </summary>
-    public SearchType SearchType { get; set; } = SearchType.None;
 
     /// <summary>
     /// The type of the property.
@@ -57,9 +51,4 @@ public class PropertyMetadata : PropertyMetadataBase
     /// Whether this property is calculated.
     /// </summary>
     public bool IsCalculatedProperty { get; set; }
-
-    /// <summary>
-    /// Whether the property is sortable.
-    /// </summary>
-    public bool IsSortable { get; set; }
 }

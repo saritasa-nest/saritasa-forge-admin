@@ -51,11 +51,6 @@ public class EntityOptions
     public ICollection<PropertyOptions> PropertyOptions { get; set; } = new List<PropertyOptions>();
 
     /// <summary>
-    /// Options for navigations of entity.
-    /// </summary>
-    public ICollection<NavigationOptions> NavigationOptions { get; set; } = new List<NavigationOptions>();
-
-    /// <summary>
     /// Collection of the calculated property names.
     /// </summary>
     public List<string> CalculatedPropertyNames { get; } = new();

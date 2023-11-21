@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.Domain.Entities.Metadata;
 
@@ -46,4 +47,14 @@ public abstract class PropertyMetadataBase
     /// Format provider for the property value.
     /// </summary>
     public IFormatProvider? FormatProvider { get; set; }
+
+    /// <summary>
+    /// Search type.
+    /// </summary>
+    public SearchType SearchType { get; set; } = SearchType.None;
+
+    /// <summary>
+    /// Whether the property is sortable.
+    /// </summary>
+    public bool IsSortable { get; set; }
 }

@@ -52,24 +52,26 @@ public static class EntityMetadataExtensions
 
         foreach (var option in entityOptions.PropertyOptions)
         {
-            var property = entityMetadata.Properties.FirstOrDefault(property => property.Name == option.PropertyName);
+            var property = entityMetadata.Properties
+                .FirstOrDefault(property => property.Name == option.PropertyName);
 
-            property?.ApplyPropertyOptions(option);
-        }
+            if (property is not null)
+            {
+                property.ApplyPropertyOptions(option);
+                continue;
+            }
 
-        foreach (var option in entityOptions.NavigationOptions)
-        {
             var navigation = entityMetadata.Navigations
-                .FirstOrDefault(navigation => navigation.Name == option.NavigationName);
+                .FirstOrDefault(navigation => navigation.Name == option.PropertyName);
 
-            navigation?.ApplyNavigationsOptions(option);
+            navigation?.ApplyPropertyOptions(option);
         }
 
         SetGroupForEntity(entityOptions.GroupName, entityMetadata, adminOptions);
     }
 
     private static void ApplyPropertyOptions(
-        this PropertyMetadata property, PropertyOptions propertyOptions)
+        this PropertyMetadataBase property, PropertyOptions propertyOptions)
     {
         property.IsHidden = propertyOptions.IsHidden;
 
@@ -97,30 +99,6 @@ public static class EntityMetadataExtensions
         {
             property.IsSortable = propertyOptions.IsSortable;
         }
-    }
-
-    private static void ApplyNavigationsOptions(
-        this NavigationMetadata navigation, NavigationOptions navigationOptions)
-    {
-        navigation.IsHidden = navigationOptions.IsHidden;
-
-        if (!string.IsNullOrEmpty(navigationOptions.DisplayName))
-        {
-            navigation.DisplayName = navigationOptions.DisplayName;
-        }
-
-        if (!string.IsNullOrEmpty(navigationOptions.Description))
-        {
-            navigation.Description = navigationOptions.Description;
-        }
-
-        if (navigationOptions.Order.HasValue)
-        {
-            navigation.Order = navigationOptions.Order.Value;
-        }
-
-        navigation.DisplayFormat = navigationOptions.DisplayFormat ?? navigation.DisplayFormat;
-        navigation.FormatProvider = navigationOptions.FormatProvider ?? navigation.FormatProvider;
     }
 
     /// <summary>
