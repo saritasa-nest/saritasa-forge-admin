@@ -62,6 +62,12 @@ internal class ProductsSeeder
         LengthInCentimeters = GetRandomFloat(1000),
         CreatedDate = DateTime.UtcNow,
         UpdatedDate = DateTime.UtcNow,
+        Supplier = new Supplier
+        {
+            Name = faker.Company.CompanyName(),
+            City = faker.Address.City(),
+            IsActive = faker.Random.Bool()
+        }
     };
 
     private float GetRandomFloat(float max = 0)

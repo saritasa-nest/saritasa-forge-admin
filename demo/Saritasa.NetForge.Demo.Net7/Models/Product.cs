@@ -69,5 +69,10 @@ public class Product
     /// The list of tags associated with the product.
     /// </summary>
     public List<ProductTag> Tags { get; set; } = new();
+
+    /// <summary>
+    /// Supplier that providing this product.
+    /// </summary>
+    public required Supplier Supplier { get; set; }
 }
 

@@ -30,7 +30,11 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
         });
 
         entityOptionsBuilder
-            .IncludeNavigations(shop => shop.Address, shop => shop.OwnerContact, shop => shop.Products)
+            .IncludeNavigations(
+                shop => shop.Address,
+                shop => shop.OwnerContact,
+                shop => shop.Products,
+                shop => shop.Suppliers)
             .ConfigureProperty(shop => shop.OwnerContact, builder =>
             {
                 builder
