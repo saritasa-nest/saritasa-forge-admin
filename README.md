@@ -362,3 +362,16 @@ services.AddNetForge(optionsBuilder =>
     optionsBuilder.DisableTitleCaseProperties();
 });
 ```
+
+## Set value for empty fields in records.
+
+Users can customize the string value for empty records. By default, it will be displayed as "-".
+
+### Using Fluent API
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetValueForEmptyFieldsInRecord("N/A");
+});
+```

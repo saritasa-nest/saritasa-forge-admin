@@ -126,4 +126,21 @@ public class AdminOptionsBuilder
         options.TitleCaseProperties = false;
         return this;
     }
+
+    /// <summary>
+    /// Configure the value for empty fields in records.
+    /// </summary>
+    /// <param name="value">The value for empty field in record.</param>
+    public AdminOptionsBuilder SetValueForEmptyFieldsInRecord(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            throw new ArgumentException($"Invalid value: {value}");
+        }
+        else
+        {
+            options.EmptyFieldInRecord = value;
+        }
+        return this;
+    }
 }
