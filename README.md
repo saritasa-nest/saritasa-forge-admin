@@ -370,8 +370,16 @@ Users can customize the string value for empty records. By default, it will be d
 ### Using Fluent API
 
 ```csharp
-services.AddNetForge(optionsBuilder =>
+optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
 {
-    optionsBuilder.SetValueForEmptyFieldsInRecord("N/A");
+    entityOptionsBuilder.ConfigureProperty(user => user.DateOfBirth,
+        propertyBuilder => propertyBuilder.SetEmptyDefaultValue("N/A"));
 });
+```
+
+### Using Attribute
+
+```csharp
+[NetForgeProperty(EmptyDefaultValue = "N/A")]
+public string Property { get; set; }
 ```
