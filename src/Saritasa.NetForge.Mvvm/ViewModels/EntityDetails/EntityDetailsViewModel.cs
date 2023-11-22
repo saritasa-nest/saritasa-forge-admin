@@ -2,7 +2,6 @@
 using AutoMapper;
 using MudBlazor;
 using Saritasa.NetForge.Domain.Entities.Metadata;
-using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Mvvm.Utils;
 using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Interfaces;
@@ -14,7 +13,7 @@ namespace Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 /// </summary>
 public class EntityDetailsViewModel : BaseViewModel
 {
-    private const string EmptyFieldInRecord = "-";
+    private const string DefaultEmptyFieldInRecord = "-";
 
     /// <summary>
     /// Entity details model.
@@ -112,7 +111,7 @@ public class EntityDetailsViewModel : BaseViewModel
             return property.EmptyDefaultValue;
         }
 
-        return EmptyFieldInRecord;
+        return DefaultEmptyFieldInRecord;
     }
 
     /// <summary>

@@ -27,11 +27,6 @@ public class AdminOptions
     public string AdminPanelHeaderTitle { get; set; } = "NetForge Admin";
 
     /// <summary>
-    /// Default value for empty field in records.
-    /// </summary>
-    public string EmptyFieldInRecord { get; set; } = "-";
-
-    /// <summary>
     /// HTML title for the admin panel web page.
     /// </summary>
     public string AdminPanelHtmlTitle { get; set; } = "NetForge Admin - Main";

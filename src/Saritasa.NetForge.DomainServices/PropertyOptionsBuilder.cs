@@ -100,7 +100,7 @@ public class PropertyOptionsBuilder
     }
 
     /// <summary>
-    /// Sets how the empty property displays.
+    /// Sets the value to display when value of property is empty.
     /// </summary>
     public PropertyOptionsBuilder SetEmptyDefaultValue(string emptyDefaultValue)
     {

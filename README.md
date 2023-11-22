@@ -365,7 +365,7 @@ services.AddNetForge(optionsBuilder =>
 
 ## Set value for empty fields in records.
 
-Users can customize the string value for empty records. By default, it will be displayed as "-".
+Users can customize the value for empty fields in records. By default, it will be displayed as "-".
 
 ### Using Fluent API
 

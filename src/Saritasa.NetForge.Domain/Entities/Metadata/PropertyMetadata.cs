@@ -105,7 +105,7 @@ public class PropertyMetadata
     public bool IsSortable { get; set; }
 
     /// <summary>
-    /// Display this value when the property is empty.
+    /// Display this value when the value of property is empty.
     /// </summary>
     public string EmptyDefaultValue { get; set; } = string.Empty;
 }
