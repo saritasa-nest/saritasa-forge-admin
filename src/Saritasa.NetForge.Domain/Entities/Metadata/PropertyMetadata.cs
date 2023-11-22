@@ -103,4 +103,9 @@ public class PropertyMetadata
     /// Whether the property is sortable.
     /// </summary>
     public bool IsSortable { get; set; }
+
+    /// <summary>
+    /// Display this value when the property is empty.
+    /// </summary>
+    public string EmptyDefaultValue { get; set; } = string.Empty;
 }

@@ -84,6 +84,11 @@ public static class EntityMetadataExtensions
         {
             property.IsSortable = propertyOptions.IsSortable;
         }
+
+        if (!string.IsNullOrEmpty(propertyOptions.EmptyDefaultValue))
+        {
+            property.EmptyDefaultValue = propertyOptions.EmptyDefaultValue;
+        }
     }
 
     /// <summary>
@@ -196,6 +201,11 @@ public static class EntityMetadataExtensions
         if (netForgePropertyAttribute.IsSortable)
         {
             property.IsSortable = netForgePropertyAttribute.IsSortable;
+        }
+
+        if (!string.IsNullOrEmpty(netForgePropertyAttribute.EmptyDefaultValue))
+        {
+            property.EmptyDefaultValue = netForgePropertyAttribute.EmptyDefaultValue;
         }
     }
 

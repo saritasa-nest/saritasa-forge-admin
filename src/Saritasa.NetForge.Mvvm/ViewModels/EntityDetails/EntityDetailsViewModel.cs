@@ -101,6 +101,21 @@ public class EntityDetailsViewModel : BaseViewModel
     }
 
     /// <summary>
+    /// Gets property's default empty value.
+    /// </summary>
+    /// <param name="property">Property.</param>
+    /// <returns>Empty default value.</returns>
+    public string GetPropertyEmptyDefaultValue(PropertyMetadata property)
+    {
+        if (!string.IsNullOrEmpty(property.EmptyDefaultValue))
+        {
+            return property.EmptyDefaultValue;
+        }
+
+        return EmptyFieldInRecord;
+    }
+
+    /// <summary>
     /// Gets property value via <c>Reflection</c>.
     /// </summary>
     /// <param name="source">Source object.</param>
@@ -114,10 +129,6 @@ public class EntityDetailsViewModel : BaseViewModel
         if (value != null)
         {
             value = FormatValue(value, propertyName);
-        }
-        else
-        {
-            value = EmptyFieldInRecord;
         }
 
         return value;
