@@ -129,32 +129,59 @@ public class EntityDetailsViewModel : BaseViewModel
 
         if (property.IsNavigation)
         {
-            var primaryKey = property.TargetEntityProperties
-                .FirstOrDefault(targetProperty => targetProperty.IsPrimaryKey);
+            value = GetNavigationValue(value, property);
+        }
 
-            if (primaryKey is not null)
+        value = FormatValue(value, property.Name);
+
+        return value;
+    }
+
+    private static object GetNavigationValue(object navigation, PropertyMetadataDto property)
+    {
+        var primaryKeys = property.TargetEntityProperties
+            .Where(targetProperty => targetProperty.IsPrimaryKey)
+            .ToList();
+
+        if (primaryKeys.Any())
+        {
+            if (!property.IsNavigationCollection)
             {
-                if (!property.IsNavigationCollection)
+                if (primaryKeys.Count == 1)
                 {
-                    value = value.GetType().GetProperty(primaryKey.Name)!.GetValue(value);
+                    return navigation.GetType().GetProperty(primaryKeys[0].Name)!.GetValue(navigation)!;
+                }
+
+                return JoinPrimaryKeys(primaryKeys, navigation);
+            }
+
+            var primaryKeyValues = new List<object?>();
+
+            foreach (var item in (navigation as IEnumerable)!)
+            {
+                if (primaryKeys.Count == 1)
+                {
+                    primaryKeyValues.Add(item.GetType().GetProperty(primaryKeys[0].Name)!.GetValue(item));
                 }
                 else
                 {
-                    var primaryKeys = new List<object?>();
-
-                    foreach (var item in (value as IEnumerable)!)
-                    {
-                        primaryKeys.Add(item.GetType().GetProperty(primaryKey.Name)!.GetValue(item));
-                    }
-
-                    value = $"[{string.Join(", ", primaryKeys)}]";
+                    primaryKeyValues.Add($"{{ {JoinPrimaryKeys(primaryKeys, item)} }}");
                 }
             }
+
+            return $"[ {string.Join(", ", primaryKeyValues)} ]";
         }
 
-        value = FormatValue(value!, property.Name);
+        return navigation;
+    }
 
-        return value;
+    private static string JoinPrimaryKeys(IEnumerable<PropertyMetadataDto> primaryKeys, object navigation)
+    {
+        var primaryKeyValues = primaryKeys
+            .Select(primaryKey => primaryKey.Name)
+            .Select(primaryKeyName => navigation.GetType().GetProperty(primaryKeyName)!.GetValue(navigation));
+
+        return string.Join("; ", primaryKeyValues);
     }
 
     private string FormatValue(object value, string propertyName)
