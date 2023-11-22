@@ -14,6 +14,8 @@ namespace Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 /// </summary>
 public class EntityDetailsViewModel : BaseViewModel
 {
+    private const string EmptyFieldInRecord = "-";
+
     /// <summary>
     /// Entity details model.
     /// </summary>
@@ -21,18 +23,16 @@ public class EntityDetailsViewModel : BaseViewModel
 
     private readonly IEntityService entityService;
     private readonly IMapper mapper;
-    private readonly AdminOptions adminOptions;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public EntityDetailsViewModel(string stringId, IMapper mapper, IEntityService entityService, AdminOptions adminOptions)
+    public EntityDetailsViewModel(string stringId, IMapper mapper, IEntityService entityService)
     {
         Model = new EntityDetailsModel { StringId = stringId };
 
         this.mapper = mapper;
         this.entityService = entityService;
-        this.adminOptions = adminOptions;
     }
 
     /// <summary>
@@ -117,7 +117,7 @@ public class EntityDetailsViewModel : BaseViewModel
         }
         else
         {
-            value = adminOptions.EmptyFieldInRecord;
+            value = EmptyFieldInRecord;
         }
 
         return value;
