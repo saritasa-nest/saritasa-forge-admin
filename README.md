@@ -366,4 +366,4 @@ Sorting can be cancelled by pressing on it with `ALT`.
 
 ## Navigation properties
 
-You can read about search [here](docs/NAVIGATIONS.md)
+You can read about navigation properties [here](docs/NAVIGATIONS.md)
