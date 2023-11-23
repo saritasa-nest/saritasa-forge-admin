@@ -98,4 +98,13 @@ public class PropertyOptionsBuilder
         options.IsSortable = isSortable;
         return this;
     }
+
+    /// <summary>
+    /// Sets the value to display when value of property is empty.
+    /// </summary>
+    public PropertyOptionsBuilder SetEmptyValueDisplay(string emptyDefaultValue)
+    {
+        options.EmptyDefaultValue = emptyDefaultValue;
+        return this;
+    }
 }

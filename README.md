@@ -362,3 +362,24 @@ services.AddNetForge(optionsBuilder =>
     optionsBuilder.DisableTitleCaseProperties();
 });
 ```
+
+## Set the default value for empty property records.
+
+Users can customize the value used for displaying the empty record values. By default, it will be displayed as "-" (a dash).
+
+### Using Fluent API
+
+```csharp
+optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
+{
+    entityOptionsBuilder.ConfigureProperty(user => user.DateOfBirth,
+        propertyBuilder => propertyBuilder.SetEmptyDefaultValue("N/A"));
+});
+```
+
+### Using Attribute
+
+```csharp
+[NetForgeProperty(EmptyDefaultValue = "N/A")]
+public string Property { get; set; }
+```

@@ -33,4 +33,7 @@ public class NetForgePropertyAttribute : Attribute
 
     /// <inheritdoc cref="PropertyMetadata.IsSortable"/>
     public bool IsSortable { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.EmptyValueDisplay"/>
+    public string EmptyValueDisplay { get; set; } = string.Empty;
 }
