@@ -13,6 +13,8 @@ namespace Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 /// </summary>
 public class EntityDetailsViewModel : BaseViewModel
 {
+    private const string DefaultEmptyValueDisplay = "-";
+
     /// <summary>
     /// Entity details model.
     /// </summary>
@@ -122,9 +124,11 @@ public class EntityDetailsViewModel : BaseViewModel
         var propertyInfo = source.GetType().GetProperty(property.Name);
         var value = propertyInfo?.GetValue(source);
 
-        if (value is null)
+        if (value is null || value.ToString() == string.Empty)
         {
-            return value;
+            return !string.IsNullOrEmpty(property.EmptyValueDisplay)
+                ? property.EmptyValueDisplay
+                : DefaultEmptyValueDisplay;
         }
 
         if (property.IsNavigation)

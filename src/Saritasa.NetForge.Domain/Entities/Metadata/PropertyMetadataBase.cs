@@ -57,4 +57,9 @@ public abstract class PropertyMetadataBase
     /// Whether the property is sortable.
     /// </summary>
     public bool IsSortable { get; set; }
+
+    /// <summary>
+    /// Display this value when the value of property is empty.
+    /// </summary>
+    public string EmptyValueDisplay { get; set; } = string.Empty;
 }

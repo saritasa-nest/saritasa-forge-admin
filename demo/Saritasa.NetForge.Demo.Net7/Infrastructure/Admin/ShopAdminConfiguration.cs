@@ -40,7 +40,8 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                 builder
                 .SetDisplayName("OwnerContactInfo")
                 .SetDescription("Information about owner contact.")
-                .SetOrder(2);
+                .SetOrder(2)
+                .SetEmptyValueDisplay("N/A");
             });
     }
 }

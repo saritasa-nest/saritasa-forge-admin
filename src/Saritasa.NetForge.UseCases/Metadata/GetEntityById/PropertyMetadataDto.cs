@@ -50,4 +50,7 @@ public record PropertyMetadataDto
 
     /// <inheritdoc cref="NavigationMetadata.TargetEntityProperties"/>
     public ICollection<PropertyMetadataDto> TargetEntityProperties { get; set; } = new List<PropertyMetadataDto>();
+
+    /// <inheritdoc cref="PropertyMetadata.EmptyValueDisplay"/>
+    public string EmptyValueDisplay { get; set; } = string.Empty;
 }
