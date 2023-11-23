@@ -181,48 +181,48 @@ public static class EntityMetadataExtensions
             property.DisplayName = displayNameAttribute.DisplayName;
         }
 
-        var netForgePropertyAttributeBase = property.PropertyInformation?
+        var netForgePropertyAttribute = property.PropertyInformation?
             .GetCustomAttribute<NetForgePropertyAttributeBase>();
 
-        if (netForgePropertyAttributeBase is null)
+        if (netForgePropertyAttribute is null)
         {
             return;
         }
 
-        if (!string.IsNullOrEmpty(netForgePropertyAttributeBase.Description))
+        if (!string.IsNullOrEmpty(netForgePropertyAttribute.Description))
         {
-            property.Description = netForgePropertyAttributeBase.Description;
+            property.Description = netForgePropertyAttribute.Description;
         }
 
-        if (!string.IsNullOrEmpty(netForgePropertyAttributeBase.DisplayName))
+        if (!string.IsNullOrEmpty(netForgePropertyAttribute.DisplayName))
         {
-            property.DisplayName = netForgePropertyAttributeBase.DisplayName;
+            property.DisplayName = netForgePropertyAttribute.DisplayName;
         }
 
-        if (netForgePropertyAttributeBase.IsHidden)
+        if (netForgePropertyAttribute.IsHidden)
         {
-            property.IsHidden = netForgePropertyAttributeBase.IsHidden;
+            property.IsHidden = netForgePropertyAttribute.IsHidden;
         }
 
-        if (netForgePropertyAttributeBase.Order >= 0)
+        if (netForgePropertyAttribute.Order >= 0)
         {
-            property.Order = netForgePropertyAttributeBase.Order;
+            property.Order = netForgePropertyAttribute.Order;
         }
 
-        property.DisplayFormat = netForgePropertyAttributeBase.DisplayFormat ?? property.DisplayFormat;
+        property.DisplayFormat = netForgePropertyAttribute.DisplayFormat ?? property.DisplayFormat;
 
         if (property is PropertyMetadata propertyMetadata)
         {
-            var netForgePropertyAttribute = (NetForgePropertyAttribute)netForgePropertyAttributeBase;
+            var propertyAttribute = (NetForgePropertyAttribute)netForgePropertyAttribute;
 
-            if (netForgePropertyAttribute.SearchType != SearchType.None)
+            if (propertyAttribute.SearchType != SearchType.None)
             {
-                propertyMetadata.SearchType = netForgePropertyAttribute.SearchType;
+                propertyMetadata.SearchType = propertyAttribute.SearchType;
             }
 
-            if (netForgePropertyAttribute.IsSortable)
+            if (propertyAttribute.IsSortable)
             {
-                propertyMetadata.IsSortable = netForgePropertyAttribute.IsSortable;
+                propertyMetadata.IsSortable = propertyAttribute.IsSortable;
             }
         }
     }
