@@ -26,6 +26,6 @@ public abstract class NetForgePropertyAttributeBase : Attribute
     /// <inheritdoc cref="PropertyMetadataBase.DisplayFormat"/>
     public string? DisplayFormat { get; set; }
 
-    /// <inheritdoc cref="PropertyMetadata.EmptyValueDisplay"/>
+    /// <inheritdoc cref="PropertyMetadataBase.EmptyValueDisplay"/>
     public string EmptyValueDisplay { get; set; } = string.Empty;
 }

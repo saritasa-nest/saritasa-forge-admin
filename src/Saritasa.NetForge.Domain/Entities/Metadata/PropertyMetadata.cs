@@ -25,7 +25,6 @@ public class PropertyMetadata : PropertyMetadataBase
     /// </summary>
     public bool IsEditable { get; set; } = true;
 
-
     /// <summary>
     /// The type of the property.
     /// </summary>

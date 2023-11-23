@@ -8,34 +8,34 @@ namespace Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 /// </summary>
 public record PropertyMetadataDto
 {
-    /// <inheritdoc cref="PropertyMetadata.Name"/>
+    /// <inheritdoc cref="PropertyMetadataBase.Name"/>
     public string Name { get; set; } = string.Empty;
 
-    /// <inheritdoc cref="PropertyMetadata.DisplayName"/>
+    /// <inheritdoc cref="PropertyMetadataBase.DisplayName"/>
     public string DisplayName { get; set; } = string.Empty;
 
-    /// <inheritdoc cref="PropertyMetadata.Description"/>
+    /// <inheritdoc cref="PropertyMetadataBase.Description"/>
     public string Description { get; set; } = string.Empty;
 
     /// <inheritdoc cref="PropertyMetadata.IsPrimaryKey"/>
     public bool IsPrimaryKey { get; set; }
 
-    /// <inheritdoc cref="PropertyMetadata.SearchType"/>
+    /// <inheritdoc cref="PropertyMetadataBase.SearchType"/>
     public SearchType SearchType { get; set; } = SearchType.None;
 
-    /// <inheritdoc cref="PropertyMetadata.Order"/>
+    /// <inheritdoc cref="PropertyMetadataBase.Order"/>
     public int? Order { get; set; }
 
-    /// <inheritdoc cref="PropertyMetadata.DisplayFormat"/>
+    /// <inheritdoc cref="PropertyMetadataBase.DisplayFormat"/>
     public string? DisplayFormat { get; set; }
 
-    /// <inheritdoc cref="PropertyMetadata.FormatProvider"/>
+    /// <inheritdoc cref="PropertyMetadataBase.FormatProvider"/>
     public IFormatProvider? FormatProvider { get; set; }
 
     /// <inheritdoc cref="PropertyMetadata.IsCalculatedProperty"/>
     public bool IsCalculatedProperty { get; set; }
 
-    /// <inheritdoc cref="PropertyMetadata.IsSortable"/>
+    /// <inheritdoc cref="PropertyMetadataBase.IsSortable"/>
     public bool IsSortable { get; set; }
 
     /// <summary>
@@ -51,6 +51,6 @@ public record PropertyMetadataDto
     /// <inheritdoc cref="NavigationMetadata.TargetEntityProperties"/>
     public ICollection<PropertyMetadataDto> TargetEntityProperties { get; set; } = new List<PropertyMetadataDto>();
 
-    /// <inheritdoc cref="PropertyMetadata.EmptyValueDisplay"/>
+    /// <inheritdoc cref="PropertyMetadataBase.EmptyValueDisplay"/>
     public string EmptyValueDisplay { get; set; } = string.Empty;
 }
