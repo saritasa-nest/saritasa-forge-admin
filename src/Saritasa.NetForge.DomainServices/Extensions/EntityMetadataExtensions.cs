@@ -45,12 +45,9 @@ public static class EntityMetadataExtensions
             entityMetadata.SearchFunction = entityOptions.SearchFunction;
         }
 
-        if (entityOptions.IncludedNavigations.Any())
-        {
-            entityMetadata.Navigations = entityMetadata.Navigations
-                .Where(navigation => entityOptions.IncludedNavigations.Contains(navigation.Name))
-                .ToList();
-        }
+        entityMetadata.Navigations = entityMetadata.Navigations
+            .Where(navigation => entityOptions.IncludedNavigations.Contains(navigation.Name))
+            .ToList();
 
         foreach (var option in entityOptions.PropertyOptions)
         {
