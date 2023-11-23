@@ -143,36 +143,36 @@ public class EntityDetailsViewModel : BaseViewModel
             .Where(targetProperty => targetProperty.IsPrimaryKey)
             .ToList();
 
-        if (primaryKeys.Any())
+        if (!primaryKeys.Any())
         {
-            if (!property.IsNavigationCollection)
-            {
-                if (primaryKeys.Count == 1)
-                {
-                    return navigation.GetType().GetProperty(primaryKeys[0].Name)!.GetValue(navigation)!;
-                }
-
-                return JoinPrimaryKeys(primaryKeys, navigation);
-            }
-
-            var primaryKeyValues = new List<object?>();
-
-            foreach (var item in (navigation as IEnumerable)!)
-            {
-                if (primaryKeys.Count == 1)
-                {
-                    primaryKeyValues.Add(item.GetType().GetProperty(primaryKeys[0].Name)!.GetValue(item));
-                }
-                else
-                {
-                    primaryKeyValues.Add($"{{ {JoinPrimaryKeys(primaryKeys, item)} }}");
-                }
-            }
-
-            return $"[ {string.Join(", ", primaryKeyValues)} ]";
+            return navigation;
         }
 
-        return navigation;
+        if (!property.IsNavigationCollection)
+        {
+            if (primaryKeys.Count == 1)
+            {
+                return navigation.GetType().GetProperty(primaryKeys[0].Name)!.GetValue(navigation)!;
+            }
+
+            return JoinPrimaryKeys(primaryKeys, navigation);
+        }
+
+        var primaryKeyValues = new List<object?>();
+
+        foreach (var item in (navigation as IEnumerable)!)
+        {
+            if (primaryKeys.Count == 1)
+            {
+                primaryKeyValues.Add(item.GetType().GetProperty(primaryKeys[0].Name)!.GetValue(item));
+            }
+            else
+            {
+                primaryKeyValues.Add($"{{ {JoinPrimaryKeys(primaryKeys, item)} }}");
+            }
+        }
+
+        return $"[ {string.Join(", ", primaryKeyValues)} ]";
     }
 
     private static string JoinPrimaryKeys(IEnumerable<PropertyMetadataDto> primaryKeys, object navigation)
