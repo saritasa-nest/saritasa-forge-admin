@@ -9,9 +9,9 @@ namespace Saritasa.NetForge.Domain.Attributes;
 [AttributeUsage(AttributeTargets.Property)]
 public class NetForgePropertyAttribute : NetForgePropertyAttributeBase
 {
-    /// <inheritdoc cref="PropertyMetadata.SearchType"/>
+    /// <inheritdoc cref="PropertyMetadataBase.SearchType"/>
     public SearchType SearchType { get; set; } = SearchType.None;
 
-    /// <inheritdoc cref="PropertyMetadata.IsSortable"/>
+    /// <inheritdoc cref="PropertyMetadataBase.IsSortable"/>
     public bool IsSortable { get; set; }
 }
