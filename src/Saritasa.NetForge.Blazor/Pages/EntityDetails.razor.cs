@@ -16,19 +16,12 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     [Parameter]
     public string StringId { get; set; } = null!;
 
-    private EntityDetailsViewModel entityDetailsViewModel = null!;
-
-    private readonly List<BreadcrumbItem> breadcrumbItems = new()
-    {
-        new BreadcrumbItem("Home", href: "/"),
-        new BreadcrumbItem("Entities", href: "/admin"),
-    };
+    private readonly List<BreadcrumbItem> breadcrumbItems = new();
 
     /// <inheritdoc/>
     protected override EntityDetailsViewModel CreateViewModel()
     {
-        entityDetailsViewModel = ViewModelFactory.Create<EntityDetailsViewModel>(StringId);
-        return entityDetailsViewModel;
+        return ViewModelFactory.Create<EntityDetailsViewModel>(StringId);
     }
 
     /// <inheritdoc />
@@ -36,7 +29,10 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     {
         base.OnParametersSet();
 
+        var adminPanelEndpoint = AdminOptions.AdminPanelEndpoint;
+
+        breadcrumbItems.Add(new BreadcrumbItem("Entities", href: adminPanelEndpoint));
         // Add BreadcrumbItem with the new href value because can not get StringId directly.
-        breadcrumbItems.Add(new BreadcrumbItem(entityDetailsViewModel.Model.PluralName, href: $"/admin/entities/{StringId}"));
+        breadcrumbItems.Add(new BreadcrumbItem(ViewModel.Model.PluralName, href: $"{adminPanelEndpoint}/{StringId}"));
     }
 }
