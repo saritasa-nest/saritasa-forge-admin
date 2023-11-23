@@ -363,9 +363,9 @@ services.AddNetForge(optionsBuilder =>
 });
 ```
 
-## Set value for empty fields in records.
+## Set the default value for empty property records.
 
-Users can customize the value for empty fields in records. By default, it will be displayed as "-".
+Users can customize the value used for displaying the empty record values. By default, it will be displayed as "-" (a dash).
 
 ### Using Fluent API
 

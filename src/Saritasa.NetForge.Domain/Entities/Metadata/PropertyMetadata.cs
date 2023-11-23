@@ -107,5 +107,5 @@ public class PropertyMetadata
     /// <summary>
     /// Display this value when the value of property is empty.
     /// </summary>
-    public string EmptyDefaultValue { get; set; } = string.Empty;
+    public string EmptyValueDisplay { get; set; } = string.Empty;
 }

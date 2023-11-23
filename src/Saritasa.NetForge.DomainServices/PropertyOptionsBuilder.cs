@@ -102,7 +102,7 @@ public class PropertyOptionsBuilder
     /// <summary>
     /// Sets the value to display when value of property is empty.
     /// </summary>
-    public PropertyOptionsBuilder SetEmptyDefaultValue(string emptyDefaultValue)
+    public PropertyOptionsBuilder SetEmptyValueDisplay(string emptyDefaultValue)
     {
         options.EmptyDefaultValue = emptyDefaultValue;
         return this;

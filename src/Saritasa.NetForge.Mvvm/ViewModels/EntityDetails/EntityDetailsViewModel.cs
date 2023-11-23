@@ -13,7 +13,7 @@ namespace Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 /// </summary>
 public class EntityDetailsViewModel : BaseViewModel
 {
-    private const string DefaultEmptyFieldInRecord = "-";
+    private const string DefaultEmptyValueDisplay = "-";
 
     /// <summary>
     /// Entity details model.
@@ -100,34 +100,30 @@ public class EntityDetailsViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// Gets property's default empty value.
-    /// </summary>
-    /// <param name="property">Property.</param>
-    /// <returns>Empty default value.</returns>
-    public string GetPropertyEmptyDefaultValue(PropertyMetadata property)
-    {
-        if (!string.IsNullOrEmpty(property.EmptyDefaultValue))
-        {
-            return property.EmptyDefaultValue;
-        }
-
-        return DefaultEmptyFieldInRecord;
-    }
-
-    /// <summary>
     /// Gets property value via <c>Reflection</c>.
     /// </summary>
     /// <param name="source">Source object.</param>
-    /// <param name="propertyName">Property name.</param>
+    /// <param name="property">Property.</param>
     /// <returns>Property value.</returns>
-    public object? GetPropertyValue(object source, string propertyName)
+    public object? GetPropertyValue(object source, PropertyMetadata property)
     {
-        var propertyInfo = source.GetType().GetProperty(propertyName);
+        var propertyInfo = source.GetType().GetProperty(property.Name);
         var value = propertyInfo?.GetValue(source);
 
-        if (value != null)
+        if (value != null && value.ToString() != string.Empty)
         {
-            value = FormatValue(value, propertyName);
+            value = FormatValue(value, property.Name);
+        }
+        else
+        {
+            if (!string.IsNullOrEmpty(property.EmptyValueDisplay))
+            {
+                value = property.EmptyValueDisplay;
+            }
+            else
+            {
+                value = DefaultEmptyValueDisplay;
+            }
         }
 
         return value;

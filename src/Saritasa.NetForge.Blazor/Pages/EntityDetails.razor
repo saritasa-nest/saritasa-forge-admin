@@ -54,14 +54,7 @@
                         </HeaderTemplate>
 
                         <CellTemplate Context="cell">
-                            @{
-                                var propertyValue = ViewModel.GetPropertyValue(cell.Item, property.Name);
-                                if (propertyValue == null)
-                                {
-                                    propertyValue = ViewModel.GetPropertyEmptyDefaultValue(property);
-                                }
-                                @propertyValue
-                            }
+                            @ViewModel.GetPropertyValue(cell.Item, property)
                         </CellTemplate>
                     </TemplateColumn>
                 }
