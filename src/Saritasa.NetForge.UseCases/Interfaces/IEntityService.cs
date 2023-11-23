@@ -33,7 +33,7 @@ public interface IEntityService
     /// <param name="searchFunction">Custom search function.</param>
     Task<PagedListMetadataDto<object>> SearchDataForEntityAsync(
         Type? entityType,
-        ICollection<PropertyMetadata> properties,
+        ICollection<PropertyMetadataDto> properties,
         SearchOptions searchOptions,
         Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? searchFunction);
 }

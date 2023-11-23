@@ -57,4 +57,9 @@ public class EntityOptions
 
     /// <inheritdoc cref="EntityMetadata.SearchFunction"/>
     public Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? SearchFunction { get; set; }
+
+    /// <summary>
+    /// Collection of included navigation names.
+    /// </summary>
+    public List<string> IncludedNavigations { get; set; } = new();
 }

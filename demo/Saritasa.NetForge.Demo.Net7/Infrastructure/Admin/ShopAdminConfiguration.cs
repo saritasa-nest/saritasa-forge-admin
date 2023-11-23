@@ -28,5 +28,20 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
         {
             builder.SetIsSortable(true);
         });
+
+        entityOptionsBuilder
+            .IncludeNavigations(
+                shop => shop.Address,
+                shop => shop.OwnerContact,
+                shop => shop.Products,
+                shop => shop.Suppliers)
+            .ConfigureProperty(shop => shop.OwnerContact, builder =>
+            {
+                builder
+                .SetDisplayName("OwnerContactInfo")
+                .SetDescription("Information about owner contact.")
+                .SetOrder(2)
+                .SetEmptyValueDisplay("N/A");
+            });
     }
 }

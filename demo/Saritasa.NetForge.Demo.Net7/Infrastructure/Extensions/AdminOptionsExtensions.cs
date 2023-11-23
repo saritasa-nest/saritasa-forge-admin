@@ -15,7 +15,7 @@ public static class AdminOptionsExtensions
     /// Add entities into identity group.
     /// </summary>
     /// <param name="optionsBuilder">Admin options builder.</param>
-    public static void AddIdentityGroup(this AdminOptionsBuilder optionsBuilder)
+    public static AdminOptionsBuilder AddIdentityGroup(this AdminOptionsBuilder optionsBuilder)
     {
         optionsBuilder.ConfigureEntity<IdentityRole>(entityOptionsBuilder =>
         {
@@ -39,5 +39,7 @@ public static class AdminOptionsExtensions
         {
             entityOptionsBuilder.SetGroup(GroupConstants.Identity);
         }).ConfigureEntity(new UserAdminConfiguration());
+
+        return optionsBuilder;
     }
 }

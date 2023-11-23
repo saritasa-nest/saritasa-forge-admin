@@ -41,6 +41,11 @@ public class ShopDbContext : IdentityDbContext<User>
     /// Gets or sets the database set for the contact information.
     /// </summary>
     public DbSet<ContactInfo> ContactInfos { get; private set; }
+
+    /// <summary>
+    /// Gets or sets the database set for the suppliers.
+    /// </summary>
+    public DbSet<Supplier> Suppliers { get; private set; }
     
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)

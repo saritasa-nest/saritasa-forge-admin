@@ -383,3 +383,7 @@ optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
 [NetForgeProperty(EmptyDefaultValue = "N/A")]
 public string Property { get; set; }
 ```
+
+## Navigation properties
+
+You can read about navigation properties [here](docs/NAVIGATIONS.md)
