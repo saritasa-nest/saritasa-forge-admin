@@ -6,4 +6,8 @@
 [AttributeUsage(AttributeTargets.Property)]
 public class NetForgeNavigationAttribute : NetForgePropertyAttributeBase
 {
+    /// <summary>
+    /// Whether include the navigation to an entity.
+    /// </summary>
+    public bool IsIncluded { get; set; }
 }

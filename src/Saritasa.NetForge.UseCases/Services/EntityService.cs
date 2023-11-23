@@ -61,7 +61,8 @@ public class EntityService : IEntityService
 
         if (metadata.Navigations.Any())
         {
-            var displayableNavigations = metadata.Navigations.Where(navigation => !navigation.IsHidden);
+            var displayableNavigations = metadata.Navigations
+                .Where(navigation => navigation is { IsHidden: false, IsIncluded: true });
 
             var navigations = mapper
                 .Map<IEnumerable<NavigationMetadata>, IEnumerable<PropertyMetadataDto>>(displayableNavigations);

@@ -16,13 +16,13 @@ When navigation represents by a collection, the primary keys of all items will b
 
 ## Display navigations configuration
 
-Displaying navigation properties are configurable via `[NetForgeProperty]` and `Fluent API`.
+Displaying navigation properties are configurable via `[NetForgeNavigation]` and `Fluent API`.
 
 ### Using attribute
 
 ```csharp
-[NetForgeEntity(IsDisplayNavigations = true)]
-public class Product
+[NetForgeNavigation(IsIncluded = true)]
+public List<ProductTag> Tags { get; set; } = new();
 ```
 
 ### Using Fluent API

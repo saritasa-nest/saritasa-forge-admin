@@ -68,11 +68,13 @@ public class Product
     /// <summary>
     /// The list of tags associated with the product.
     /// </summary>
+    [NetForgeNavigation(IsIncluded = true)]
     public List<ProductTag> Tags { get; set; } = new();
 
     /// <summary>
     /// Supplier that providing this product.
     /// </summary>
+    [NetForgeNavigation(IsIncluded = true)]
     public required Supplier Supplier { get; set; }
 }
 

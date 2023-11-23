@@ -49,6 +49,8 @@ public static class EntityMetadataExtensions
             .Where(navigation => entityOptions.IncludedNavigations.Contains(navigation.Name))
             .ToList();
 
+        entityMetadata.Navigations.ForEach(navigation => navigation.IsIncluded = true);
+
         foreach (var option in entityOptions.PropertyOptions)
         {
             var property = entityMetadata.Properties
@@ -208,19 +210,36 @@ public static class EntityMetadataExtensions
 
         property.DisplayFormat = netForgePropertyAttribute.DisplayFormat ?? property.DisplayFormat;
 
-        if (property is PropertyMetadata propertyMetadata)
+        switch (property)
         {
-            var propertyAttribute = (NetForgePropertyAttribute)netForgePropertyAttribute;
+            case PropertyMetadata propertyMetadata:
+                {
+                    var propertyAttribute = (NetForgePropertyAttribute)netForgePropertyAttribute;
 
-            if (propertyAttribute.SearchType != SearchType.None)
-            {
-                propertyMetadata.SearchType = propertyAttribute.SearchType;
-            }
+                    if (propertyAttribute.SearchType != SearchType.None)
+                    {
+                        propertyMetadata.SearchType = propertyAttribute.SearchType;
+                    }
 
-            if (propertyAttribute.IsSortable)
-            {
-                propertyMetadata.IsSortable = propertyAttribute.IsSortable;
-            }
+                    if (propertyAttribute.IsSortable)
+                    {
+                        propertyMetadata.IsSortable = propertyAttribute.IsSortable;
+                    }
+
+                    break;
+                }
+
+            case NavigationMetadata navigationMetadata:
+                {
+                    var navigationAttribute = (NetForgeNavigationAttribute)netForgePropertyAttribute;
+
+                    if (navigationAttribute.IsIncluded)
+                    {
+                        navigationMetadata.IsIncluded = navigationAttribute.IsIncluded;
+                    }
+
+                    break;
+                }
         }
     }
 
