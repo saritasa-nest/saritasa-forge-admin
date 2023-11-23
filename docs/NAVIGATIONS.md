@@ -30,7 +30,12 @@ public class Product
 ```csharp
 public void Configure(EntityOptionsBuilder<Shop> entityOptionsBuilder)
 {
-    entityOptionsBuilder.SetIsDisplayNavigations(true)
+    entityOptionsBuilder
+        .IncludeNavigations(
+            shop => shop.Address,
+            shop => shop.OwnerContact,
+            shop => shop.Products,
+            shop => shop.Suppliers);
 }
 ```
 
@@ -54,10 +59,10 @@ public Address? Address { get; set; }
 
 ### Using Fluent API
 
-Navigation Fluent API configuration uses different method - `ConfigureNavigation`.
+Navigation Fluent API configuration uses the same method as property - `ConfigureProperty`.
 
 ```csharp
-entityOptionsBuilder.ConfigureNavigation(shop => shop.OwnerContact, builder =>
+entityOptionsBuilder.ConfigureProperty(shop => shop.OwnerContact, builder =>
 {
     builder
         .SetDisplayName("OwnerContactInfo")
