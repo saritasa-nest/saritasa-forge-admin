@@ -52,7 +52,12 @@ public class EntityService : IEntityService
     {
         var metadata = adminMetadataService
             .GetMetadata()
-            .First(entityMetadata => entityMetadata.StringId.Equals(stringId));
+            .FirstOrDefault(entityMetadata => entityMetadata.StringId.Equals(stringId));
+
+        if (metadata is null)
+        {
+            throw new NotFoundException("Metadata for entity was not found.");
+        }
 
         var metadataDto = mapper.Map<GetEntityByIdDto>(metadata);
 
