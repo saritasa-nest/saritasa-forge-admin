@@ -1,21 +1,12 @@
 @using Microsoft.AspNetCore.Mvc.ModelBinding
 @model Saritasa.NetForge.Demo.Net7.ViewModels.LoginViewModel
+@{
+    Layout = "_Layout";
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>NetForge demo site</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <style>
-        html, body {
-            margin: 0;
-            height: 100%;
-        }
-    </style>
-</head>
-<body>
+    const string usernameTextBoxPlaceholder = "Username";
+    const string passwordTextBoxPlaceholder = "Password";
+}
+
 <div class="h-100 d-flex flex-column justify-content-center">
     <div class="container d-flex flex-column justify-content-center align-items-center">
         <div class="p-5 col-6 d-flex flex-column justify-content-center align-items-center border-1 rounded shadow-lg">
@@ -25,18 +16,18 @@
             @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @class = "mt-2 px-5 row" }))
             {
                 @Html.AntiForgeryToken()
-                ;
+
 
                 <div class="row">
                     @Html.LabelFor(e => e.Username, new { @class = "form-label" })
                     @if (ViewData.ModelState.GetFieldValidationState("Username") == ModelValidationState.Invalid)
                     {
-                        @Html.TextBoxFor(e => e.Username, "", new { @class = "form-control is-invalid", @placeholder = "Username" })
-                        @Html.ValidationMessageFor(e => e.Username, "", new { @class = "text-danger" })
+                        @Html.TextBoxFor(e => e.Username, string.Empty, new { @class = "form-control is-invalid", placeholder = usernameTextBoxPlaceholder })
+                        @Html.ValidationMessageFor(e => e.Username, string.Empty, new { @class = "text-danger" })
                     }
                     else
                     {
-                        @Html.TextBoxFor(e => e.Username, "", new { @class = "form-control", @placeholder = "Username" })
+                        @Html.TextBoxFor(e => e.Username, string.Empty, new { @class = "form-control", placeholder = usernameTextBoxPlaceholder })
                     }
                 </div>
                 <div class="row mt-3">
@@ -44,12 +35,12 @@
 
                     @if (ViewData.ModelState.GetFieldValidationState("Password") == ModelValidationState.Invalid)
                     {
-                        @Html.PasswordFor(e => e.Password, new { @class = "form-control is-invalid", @placeholder = "Password" })
-                        @Html.ValidationMessageFor(e => e.Password, "", new { @class = "text-danger" })
+                        @Html.PasswordFor(e => e.Password, new { @class = "form-control is-invalid", placeholder = passwordTextBoxPlaceholder })
+                        @Html.ValidationMessageFor(e => e.Password, string.Empty, new { @class = "text-danger" })
                     }
                     else
                     {
-                        @Html.PasswordFor(e => e.Password, new { @class = "form-control", @placeholder = "Password" })
+                        @Html.PasswordFor(e => e.Password, new { @class = "form-control", placeholder = passwordTextBoxPlaceholder })
                     }
                 </div>
                 <div class="row mt-4 justify-content-center">
@@ -59,7 +50,3 @@
         </div>
     </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-</body>
-</html>

@@ -63,6 +63,8 @@ public class Startup
         app.UseNetForge();
         HealthCheckModule.Register(app);
 
+        app.UseStaticFiles();
+
         app.UseRouting();
         app.MapControllerRoute(
             name: "default",
