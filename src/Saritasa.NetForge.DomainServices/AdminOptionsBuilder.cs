@@ -69,8 +69,7 @@ public class AdminOptionsBuilder
     /// <summary>
     /// Specifies a custom authentication function for admin panel access.
     /// </summary>
-    /// <param name="customAuthFunction"></param>
-    /// <returns></returns>
+    /// <param name="customAuthFunction">Custom authenticate function.</param>
     public AdminOptionsBuilder SetCustomAuthFunction(Func<IServiceProvider, Task<bool>> customAuthFunction)
     {
         options.CustomAuthFunction = customAuthFunction;

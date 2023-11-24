@@ -26,17 +26,20 @@ public class AuthorizationOptionsSetup
     /// <param name="options">Authorization options.</param>
     public void Setup(AuthorizationOptions options)
     {
-        options.AddPolicy("AdminPanelAccess", policy =>
+        if (adminOptions.AdminPanelAccessRoles.Any() || adminOptions.CustomAuthFunction is not null)
         {
-            if (adminOptions.AdminPanelAccessRoles.Any())
+            options.AddPolicy("AdminPanelAccess", policy =>
             {
-                policy.RequireRole(adminOptions.AdminPanelAccessRoles);
-            }
+                if (adminOptions.AdminPanelAccessRoles.Any())
+                {
+                    policy.RequireRole(adminOptions.AdminPanelAccessRoles);
+                }
 
-            if (adminOptions.CustomAuthFunction != null)
-            {
-                policy.AddRequirements(new CustomAuthFunctionRequirement(adminOptions.CustomAuthFunction));
-            }
-        });
+                if (adminOptions.CustomAuthFunction != null)
+                {
+                    policy.AddRequirements(new CustomAuthFunctionRequirement(adminOptions.CustomAuthFunction));
+                }
+            });
+        }
     }
 }

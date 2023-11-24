@@ -12,14 +12,14 @@ public class LoginViewModel
     /// </summary>
     [Display(Name = "Username")]
     [Required(ErrorMessage = "Username is required.")]
-    required public string Username { get; set; }
+    public required string Username { get; set; }
 
     /// <summary>
     /// Password of user.
     /// </summary>
     [Display(Name = "Password")]
     [Required(ErrorMessage = "Password is required.")]
-    required public string Password { get; set; }
+    public required string Password { get; set; }
 
     /// <summary>
     /// Value indicating whether the user's authentication should be remembered.
