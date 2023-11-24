@@ -2,7 +2,6 @@
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
-using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
@@ -49,7 +48,10 @@ public class EfCoreDataService : IOrmDataService
 
     /// <inheritdoc />
     public IQueryable<object> Search(
-        IQueryable<object> query, string searchString, Type entityType, IEnumerable<PropertyMetadata> properties)
+        IQueryable<object> query,
+        string searchString,
+        Type entityType,
+        IEnumerable<(string Name, SearchType SearchType)> properties)
     {
         // entity => entity
         var entity = Expression.Parameter(typeof(object), Entity);
@@ -81,19 +83,18 @@ public class EfCoreDataService : IOrmDataService
     /// Applies search using search entry to every searchable property, every property can have their own search type.
     /// </summary>
     private static Expression GetEntrySearchExpression(
-        IEnumerable<PropertyMetadata> properties, Expression entity, string searchEntry)
+        IEnumerable<(string Name, SearchType SearchType)> properties, Expression entity, string searchEntry)
     {
         Expression? singleEntrySearchExpression = null;
-        foreach (var property in properties)
+        foreach (var (propertyName, searchType) in properties)
         {
-            var searchType = property.SearchType;
             if (searchType == SearchType.None)
             {
                 continue;
             }
 
             // entity => ((entityType)entity).propertyName
-            var propertyExpression = Expression.Property(entity, property.Name);
+            var propertyExpression = Expression.Property(entity, propertyName);
 
             var searchMethodCallExpression = searchType switch
             {

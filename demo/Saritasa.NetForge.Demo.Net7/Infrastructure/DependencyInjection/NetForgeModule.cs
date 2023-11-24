@@ -31,7 +31,9 @@ internal static class NetForgeModule
                 .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
                 {
                     entityOptionsBuilder.SetIsHidden(true);
-                }).AddIdentityGroup();
+                }).AddIdentityGroup()
+                .ConfigureEntity(new UserAdminConfiguration())
+                .ConfigureEntity(new AddressAdminConfiguration());
         });
     }
 }

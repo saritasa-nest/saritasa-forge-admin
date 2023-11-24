@@ -7,6 +7,7 @@
 
 @if (ViewModel.IsEntityExists)
 {
+    <MudBreadcrumbs Items="breadcrumbItems"></MudBreadcrumbs>
     <MudGrid>
         <MudItem xs="6">
             <MudText Typo="Typo.h4">@ViewModel.Model.PluralName</MudText>
