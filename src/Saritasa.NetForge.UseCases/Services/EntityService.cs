@@ -231,7 +231,7 @@ public class EntityService : IEntityService
     private IQueryable<object> ApplyCustomQuery(
         IQueryable<object> query,
         Type entityType,
-        ICollection<PropertyMetadata> properties,
+        ICollection<PropertyMetadataDto> properties,
         Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? customQuery)
     {
         if (customQuery is not null)
