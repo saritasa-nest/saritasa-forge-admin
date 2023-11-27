@@ -45,6 +45,11 @@ public static class EntityMetadataExtensions
             entityMetadata.SearchFunction = entityOptions.SearchFunction;
         }
 
+        if (entityOptions.CustomQueryFunction is not null)
+        {
+            entityMetadata.CustomQueryFunction = entityOptions.CustomQueryFunction;
+        }
+
         entityMetadata.Navigations = entityMetadata.Navigations
             .Where(navigation => entityOptions.IncludedNavigations.Contains(navigation.Name))
             .ToList();

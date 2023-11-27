@@ -74,6 +74,18 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
+    /// Configure custom query.
+    /// </summary>
+    /// <param name="customQueryFunction">Custom query function.</param>
+    public EntityOptionsBuilder<TEntity> ConfigureCustomQuery(
+        Func<IServiceProvider?, IQueryable<TEntity>, IQueryable<TEntity>> customQueryFunction)
+    {
+        options.CustomQueryFunction = (serviceProvider, query) =>
+            customQueryFunction.Invoke(serviceProvider, query.Cast<TEntity>());
+        return this;
+    }
+
+    /// <summary>
     /// Creates and returns the configured entity options.
     /// </summary>
     public EntityOptions Create()

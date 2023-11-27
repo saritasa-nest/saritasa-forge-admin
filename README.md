@@ -387,3 +387,19 @@ public string Property { get; set; }
 ## Navigation properties
 
 You can read about navigation properties [here](docs/NAVIGATIONS.md)
+
+# Custom query
+
+You can configure your query for specific entity.
+
+```csharp
+.ConfigureEntity<Shop>(entityOptionsBuilder =>
+{
+    entityOptionsBuilder.ConfigureCustomQuery((serviceProvider, query) =>
+    {
+        return query.Where(e => e.IsOpen == true);
+    });
+})
+```
+
+You can use `ServiceProvider` to access your services.

@@ -90,7 +90,7 @@ public class EntityDetailsViewModel : BaseViewModel
         };
 
         var entityData = await entityService
-            .SearchDataForEntityAsync(Model.ClrType, Model.Properties, searchOptions, Model.SearchFunction);
+            .SearchDataForEntityAsync(Model.ClrType, Model.Properties, searchOptions, Model.SearchFunction, Model.CustomQueryFunction);
 
         var data = new GridData<object>
         {
