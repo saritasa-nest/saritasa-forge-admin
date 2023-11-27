@@ -87,7 +87,7 @@ public class EntityService : IEntityService
         ICollection<PropertyMetadataDto> properties,
         SearchOptions searchOptions,
         Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? searchFunction,
-        Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? customQuery)
+        Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? customQueryFunction)
     {
         if (entityType is null)
         {
@@ -98,7 +98,7 @@ public class EntityService : IEntityService
 
         query = SelectProperties(query, entityType, properties.Where(property => !property.IsCalculatedProperty));
 
-        query = ApplyCustomQuery(query, customQuery);
+        query = ApplyCustomQuery(query, customQueryFunction);
 
         query = Search(query, searchOptions.SearchString, entityType, properties, searchFunction);
 
@@ -230,11 +230,11 @@ public class EntityService : IEntityService
 
     private IQueryable<object> ApplyCustomQuery(
         IQueryable<object> query,
-        Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? customQuery)
+        Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? customQueryFunction)
     {
-        if (customQuery is not null)
+        if (customQueryFunction is not null)
         {
-            query = customQuery(serviceProvider, query);
+            query = customQueryFunction(serviceProvider, query);
         }
 
         return query;
