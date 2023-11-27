@@ -70,5 +70,5 @@ public class EntityMetadata
     /// <summary>
     /// Represents custom query function.
     /// </summary>
-    public Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? CustomQuery { get; set; }
+    public Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? CustomQueryFunction { get; set; }
 }

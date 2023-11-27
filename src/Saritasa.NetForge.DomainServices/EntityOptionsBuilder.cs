@@ -80,7 +80,7 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     public EntityOptionsBuilder<TEntity> ConfigureCustomQuery(
         Func<IServiceProvider?, IQueryable<TEntity>, IQueryable<TEntity>> customQuery)
     {
-        options.CustomQuery = (serviceProvider, query) =>
+        options.CustomQueryFunction = (serviceProvider, query) =>
             customQuery.Invoke(serviceProvider, query.Cast<TEntity>());
         return this;
     }

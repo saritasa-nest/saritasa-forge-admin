@@ -62,7 +62,7 @@ public class EntityOptions
     /// Collection of included navigation names.
     /// </summary>
     public List<string> IncludedNavigations { get; set; } = new();
-    
-    /// <inheritdoc cref="EntityMetadata.CustomQuery"/>
-    public Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? CustomQuery { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.CustomQueryFunction"/>
+    public Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? CustomQueryFunction { get; set; }
 }

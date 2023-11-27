@@ -28,6 +28,6 @@ public record GetEntityByIdDto
     /// <inheritdoc cref="EntityMetadata.SearchFunction"/>
     public Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? SearchFunction { get; set; }
 
-    /// <inheritdoc cref="EntityMetadata.CustomQuery"/>
+    /// <inheritdoc cref="EntityMetadata.CustomQueryFunction"/>
     public Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? CustomQuery { get; set; }
 }

@@ -45,9 +45,9 @@ public static class EntityMetadataExtensions
             entityMetadata.SearchFunction = entityOptions.SearchFunction;
         }
 
-        if (entityOptions.CustomQuery is not null)
+        if (entityOptions.CustomQueryFunction is not null)
         {
-            entityMetadata.CustomQuery = entityOptions.CustomQuery;
+            entityMetadata.CustomQueryFunction = entityOptions.CustomQueryFunction;
         }
 
         entityMetadata.Navigations = entityMetadata.Navigations
