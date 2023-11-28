@@ -1,3 +1,16 @@
-﻿@inherits MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.CreateEntity.CreateEntityViewModel>
+﻿@using Saritasa.NetForge.Blazor.Controls
+@inherits MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.CreateEntity.CreateEntityViewModel>
 
-<MudText>Creation of @StringId</MudText>
+@if (ViewModel.IsEntityExists)
+{
+    <MudText>Creation of @StringId</MudText>
+
+    @foreach (var property in ViewModel.Model.Properties)
+    {
+        <MudText>@property.Name</MudText>
+    }
+}
+else
+{
+    <NotFound />
+}
