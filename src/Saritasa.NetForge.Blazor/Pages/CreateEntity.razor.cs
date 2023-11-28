@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
+using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 
 namespace Saritasa.NetForge.Blazor.Pages;
 
@@ -36,5 +37,10 @@ public partial class CreateEntity : MvvmComponentBase<CreateEntityViewModel>
         breadcrumbItems.Add(new BreadcrumbItem("Entities", adminPanelEndpoint));
         breadcrumbItems.Add(new BreadcrumbItem(ViewModel.Model.PluralName, entityDetailsEndpoint));
         breadcrumbItems.Add(new BreadcrumbItem("Create", createEntityEndpoint));
+    }
+
+    private void NavigateToEntityDetails()
+    {
+        NavigationService.NavigateTo<EntityDetailsViewModel>(parameters: StringId);
     }
 }
