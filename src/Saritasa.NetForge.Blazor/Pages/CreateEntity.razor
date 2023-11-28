@@ -5,9 +5,20 @@
 {
     <MudText>Creation of @StringId</MudText>
 
-    @foreach (var property in ViewModel.Model.Properties)
+    @foreach (var property in ViewModel.Model.Properties.Where(property => !property.IsNavigation))
     {
-        <MudText>@property.Name</MudText>
+        var propertyType = @ViewModel.Model.ClrType?.GetProperty(property.Name)?.PropertyType;
+        if (propertyType == typeof(DateTime))
+        {
+            <MudTextField T="DateTime"
+                          Label="@property.Name"
+                          Placeholder="@propertyType.ToString()"
+                          InputType="InputType.Date"></MudTextField>
+        }
+        else
+        {
+            <MudTextField T="string" Label="@property.Name" Placeholder="@propertyType?.ToString()"></MudTextField>
+        }
     }
 }
 else
