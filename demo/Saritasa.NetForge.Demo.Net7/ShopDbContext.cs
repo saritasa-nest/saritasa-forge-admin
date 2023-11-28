@@ -9,6 +9,11 @@ namespace Saritasa.NetForge.Demo.Net7;
 /// </summary>
 public class ShopDbContext : IdentityDbContext<User>
 {
+    static ShopDbContext()
+    {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+    }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="ShopDbContext"/> class.
     /// </summary>
