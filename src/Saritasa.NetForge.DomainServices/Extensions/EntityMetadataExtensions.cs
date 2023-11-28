@@ -106,9 +106,9 @@ public static class EntityMetadataExtensions
             property.IsSortable = propertyOptions.IsSortable;
         }
 
-        if (!string.IsNullOrEmpty(propertyOptions.EmptyDefaultValue))
+        if (!string.IsNullOrEmpty(propertyOptions.EmptyValueDisplay))
         {
-            property.EmptyValueDisplay = propertyOptions.EmptyDefaultValue;
+            property.EmptyValueDisplay = propertyOptions.EmptyValueDisplay;
         }
     }
 
