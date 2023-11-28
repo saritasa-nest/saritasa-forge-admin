@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
 using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 
 namespace Saritasa.NetForge.Blazor.Pages;
@@ -34,5 +35,10 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
         breadcrumbItems.Add(new BreadcrumbItem("Entities", href: adminPanelEndpoint));
         // Add BreadcrumbItem with the new href value because can not get StringId directly.
         breadcrumbItems.Add(new BreadcrumbItem(ViewModel.Model.PluralName, href: $"{adminPanelEndpoint}/{StringId}"));
+    }
+
+    private void NavigateToCreation()
+    {
+        NavigationService.NavigateTo<CreateEntityViewModel>(parameters: StringId);
     }
 }
