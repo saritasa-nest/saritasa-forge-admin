@@ -3,7 +3,9 @@
 
 @if (ViewModel.IsEntityExists)
 {
-    <MudText>Creation of @StringId</MudText>
+    var title = $"Creation of {ViewModel.Model.DisplayName}";
+    <PageTitle>@title</PageTitle>
+    <MudText Typo="Typo.h4">@title</MudText>
 
     @foreach (var property in ViewModel.Model.Properties.Where(property => !property.IsNavigation))
     {
