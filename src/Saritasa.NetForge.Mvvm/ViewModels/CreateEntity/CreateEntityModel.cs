@@ -14,6 +14,9 @@ public class CreateEntityModel
     /// <inheritdoc cref="EntityMetadata.DisplayName"/>
     public string DisplayName { get; set; } = string.Empty;
 
+    /// <inheritdoc cref="EntityMetadata.PluralName"/>
+    public string PluralName { get; set; } = string.Empty;
+
     /// <inheritdoc cref="EntityMetadata.ClrType"/>
     public Type? ClrType { get; set; }
 

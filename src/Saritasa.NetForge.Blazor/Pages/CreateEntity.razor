@@ -1,15 +1,20 @@
 ﻿@using Saritasa.NetForge.Blazor.Controls
+@using Saritasa.NetForge.Domain.Entities.Options
+
+@inject AdminOptions AdminOptions
 @inherits MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.CreateEntity.CreateEntityViewModel>
 
 @if (ViewModel.IsEntityExists)
 {
+    <MudBreadcrumbs Items="breadcrumbItems"></MudBreadcrumbs>
+
     var title = $"Creation of {ViewModel.Model.DisplayName}";
     <PageTitle>@title</PageTitle>
     <MudText Typo="Typo.h4">@title</MudText>
 
     @foreach (var property in ViewModel.Model.Properties.Where(property => !property.IsNavigation))
     {
-        var propertyType = @ViewModel.Model.ClrType?.GetProperty(property.Name)?.PropertyType;
+        var propertyType = ViewModel.Model.ClrType?.GetProperty(property.Name)?.PropertyType;
         if (propertyType == typeof(DateTime))
         {
             <MudTextField T="DateTime"
