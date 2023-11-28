@@ -66,9 +66,16 @@ public class CreateEntityViewModel : BaseViewModel
     /// </summary>
     /// <param name="value">Input value.</param>
     /// <param name="propertyName">Name of property that related to the input.</param>
-    public void HandleInputChange(string value, string propertyName)
+    public void HandleInputChange(object value, string propertyName)
     {
         var property = EntityModel.GetType().GetProperty(propertyName)!;
+
+        if (string.IsNullOrEmpty(value.ToString()))
+        {
+            property.SetValue(EntityModel, null);
+            return;
+        }
+
         var convertedValue = Convert.ChangeType(value, property.PropertyType);
 
         property.SetValue(EntityModel, convertedValue);
