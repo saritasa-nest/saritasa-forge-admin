@@ -38,4 +38,12 @@ public interface IEntityService
         SearchOptions searchOptions,
         Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? searchFunction,
         Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? customQueryFunction);
+
+    /// <summary>
+    /// Creates entity.
+    /// </summary>
+    /// <param name="entity">Entity to create.</param>
+    /// <param name="clrType">Entity type.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    Task CreateEntityAsync(object entity, Type clrType, CancellationToken cancellationToken);
 }
