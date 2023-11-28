@@ -28,4 +28,12 @@ public interface IOrmDataService
         string searchString,
         Type entityType,
         IEnumerable<(string Name, SearchType SearchType)> properties);
+
+    /// <summary>
+    /// Adds entity to the database.
+    /// </summary>
+    /// <param name="entity">Entity to add.</param>
+    /// <param name="clrType">Entity type.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    Task AddAsync(object entity, Type clrType, CancellationToken cancellationToken);
 }
