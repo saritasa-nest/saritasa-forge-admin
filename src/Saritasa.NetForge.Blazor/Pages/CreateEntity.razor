@@ -18,10 +18,11 @@
             var propertyType = ViewModel.Model.ClrType?.GetProperty(property.Name)?.PropertyType;
             if (propertyType == typeof(DateTime))
             {
-                <MudTextField T="DateTime"
+                <MudTextField T="string"
                               Label="@property.Name"
                               Placeholder="@propertyType.ToString()"
-                              InputType="InputType.Date"></MudTextField>
+                              InputType="InputType.Date"
+                              TextChanged="value => ViewModel.HandleInputChange(value, property.Name)"></MudTextField>
             }
             else
             {
