@@ -24,6 +24,12 @@
                               InputType="InputType.Date"
                               TextChanged="value => ViewModel.HandleInputChange(value, property.Name)"></MudTextField>
             }
+            else if (propertyType == typeof(bool))
+            {
+                <MudCheckBox T="bool"
+                             Label="@property.Name"
+                             CheckedChanged="value => ViewModel.HandleInputChange(value!, property.Name)"></MudCheckBox>
+            }
             else
             {
                 <MudTextField T="string"
