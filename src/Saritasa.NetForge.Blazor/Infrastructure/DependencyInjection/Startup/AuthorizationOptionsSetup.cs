@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Saritasa.NetForge.Blazor.Constants;
 using Saritasa.NetForge.Blazor.Infrastructure.Authentication;
 using Saritasa.NetForge.Domain.Entities.Options;
 
@@ -26,20 +27,22 @@ public class AuthorizationOptionsSetup
     /// <param name="options">Authorization options.</param>
     public void Setup(AuthorizationOptions options)
     {
-        if (adminOptions.AdminPanelAccessRoles.Any() || adminOptions.CustomAuthFunction is not null)
+        options.AddPolicy(PolicyConstant.AdminAccessPolicyName, policy =>
         {
-            options.AddPolicy("AdminPanelAccess", policy =>
+            if (!adminOptions.AdminPanelAccessRoles.Any() && adminOptions.CustomAuthFunction is null)
             {
-                if (adminOptions.AdminPanelAccessRoles.Any())
-                {
-                    policy.RequireRole(adminOptions.AdminPanelAccessRoles);
-                }
+                policy.RequireAssertion(_ => true);
+            }
 
-                if (adminOptions.CustomAuthFunction != null)
-                {
-                    policy.AddRequirements(new CustomAuthFunctionRequirement(adminOptions.CustomAuthFunction));
-                }
-            });
-        }
+            if (adminOptions.AdminPanelAccessRoles.Any())
+            {
+                policy.RequireRole(adminOptions.AdminPanelAccessRoles);
+            }
+
+            if (adminOptions.CustomAuthFunction != null)
+            {
+                policy.AddRequirements(new CustomAuthFunctionRequirement(adminOptions.CustomAuthFunction));
+            }
+        });
     }
 }
