@@ -12,21 +12,28 @@
     <PageTitle>@title</PageTitle>
     <MudText Typo="Typo.h4">@title</MudText>
 
-    @foreach (var property in ViewModel.Model.Properties.Where(property => !property.IsNavigation))
-    {
-        var propertyType = ViewModel.Model.ClrType?.GetProperty(property.Name)?.PropertyType;
-        if (propertyType == typeof(DateTime))
+    <EditForm Model="ViewModel.EntityModel" OnValidSubmit="ViewModel.CreateEntityAsync">
+        @foreach (var property in ViewModel.Model.Properties.Where(property => !property.IsNavigation))
         {
-            <MudTextField T="DateTime"
-                          Label="@property.Name"
-                          Placeholder="@propertyType.ToString()"
-                          InputType="InputType.Date"></MudTextField>
+            var propertyType = ViewModel.Model.ClrType?.GetProperty(property.Name)?.PropertyType;
+            if (propertyType == typeof(DateTime))
+            {
+                <MudTextField T="DateTime"
+                              Label="@property.Name"
+                              Placeholder="@propertyType.ToString()"
+                              InputType="InputType.Date"></MudTextField>
+            }
+            else
+            {
+                <MudTextField T="string"
+                              Label="@property.Name"
+                              Placeholder="@propertyType?.ToString()"
+                              TextChanged="value => ViewModel.HandleInputChange(value, property.Name)"></MudTextField>
+            }
         }
-        else
-        {
-            <MudTextField T="string" Label="@property.Name" Placeholder="@propertyType?.ToString()"></MudTextField>
-        }
-    }
+
+        <MudButton ButtonType="ButtonType.Submit">Create</MudButton>
+    </EditForm>
 }
 else
 {
