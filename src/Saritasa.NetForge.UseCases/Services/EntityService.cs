@@ -51,7 +51,12 @@ public class EntityService : IEntityService
     {
         var metadata = adminMetadataService
             .GetMetadata()
-            .First(entityMetadata => entityMetadata.StringId.Equals(stringId));
+            .FirstOrDefault(entityMetadata => entityMetadata.StringId.Equals(stringId));
+
+        if (metadata is null)
+        {
+            throw new NotFoundException("Metadata for entity was not found.");
+        }
 
         var displayableProperties = metadata.Properties
             .Where(property => property is { IsForeignKey: false, IsHidden: false });

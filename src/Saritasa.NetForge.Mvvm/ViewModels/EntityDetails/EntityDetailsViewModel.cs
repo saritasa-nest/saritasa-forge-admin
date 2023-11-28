@@ -5,6 +5,7 @@ using Saritasa.NetForge.Mvvm.Utils;
 using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
+using Saritasa.Tools.Domain.Exceptions;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 
@@ -44,12 +45,23 @@ public class EntityDetailsViewModel : BaseViewModel
     /// </summary>
     public MudDataGrid<object>? DataGrid { get; set; }
 
+    /// <summary>
+    /// Whether the entity exists.
+    /// </summary>
+    public bool IsEntityExists { get; private set; } = true;
+
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
     {
-        var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
-
-        Model = mapper.Map<EntityDetailsModel>(entity);
+        try
+        {
+            var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
+            Model = mapper.Map<EntityDetailsModel>(entity);
+        }
+        catch (NotFoundException)
+        {
+            IsEntityExists = false;
+        }
     }
 
     /// <summary>
