@@ -57,6 +57,35 @@ appBuilder.Services.AddNetForge(optionsBuilder =>
 });
 ```
 
+## Customizing access policies for the admin panel
+
+You can customize the access policy by requiring specific roles:
+
+```csharp
+appBuilder.Services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.AddAccessRoles("Role1", "Role2", "Role3");
+    ...
+});
+```
+
+Alternatively, you can use a custom function to perform checks. Access the required service through the `serviceProvider` parameter:
+
+```csharp
+appBuilder.Services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetCustomAuthFunction(async (serviceProvider) =>
+    {
+        // Implement your custom checking logic here
+        // You can retrieve the needed service like this:
+        // var service = serviceProvider.GetRequiredService<SomeService>();
+
+        return true; // Return true if the access is granted, otherwise return false
+    });
+    ...
+});
+```
+
 ## Customizing entities
 
 In the admin panel, you can customize the way entities are displayed using the Fluent API or special attribites. This enables you to set various properties for your entities, such as their name, description, plural name, etc.
@@ -182,6 +211,7 @@ Properties also customizable via attributes.
 [NetForgeProperty(DisplayName = "Custom property display name", Description = "Custom property description.", Order = 5)]
 public string Property { get; set; }
 ```
+
 #### Built in `Description` and `DisplayName` attributes
 
 ```csharp
@@ -293,6 +323,7 @@ public class ProductTag
 ```
 
 ## Calculated Properties
+
 Calculated properties are properties that don't have a direct representation in your database but are computed based on other existing properties. These properties can be useful for displaying calculated values in the admin panel.
 
 You can add calculated properties to your entities using the Fluent API:
