@@ -20,11 +20,6 @@ internal static class NetForgeModule
     {
         services.AddNetForge(optionsBuilder =>
         {
-            optionsBuilder.SetCustomAuthFunction(async (provider) =>
-            {
-                return true;
-            });
-            
             optionsBuilder.UseEntityFramework(efOptionsBuilder => { efOptionsBuilder.UseDbContext<ShopDbContext>(); })
                 .AddGroups(new List<EntityGroup>
                 {
