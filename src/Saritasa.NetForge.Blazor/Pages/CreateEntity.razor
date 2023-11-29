@@ -38,6 +38,15 @@
                                  CheckedChanged="value => ViewModel.HandleInputChange(value!, property.Name)">
                     </MudCheckBox>
                 }
+                else if (propertyType == typeof(int))
+                {
+                    <MudTextField T="int"
+                                  Label="@property.Name"
+                                  Placeholder="@propertyType.ToString()"
+                                  InputType="InputType.Number"
+                                  TextChanged="value => ViewModel.HandleInputChange(value, property.Name)">
+                    </MudTextField>
+                }
                 else
                 {
                     <MudTextField T="string"
