@@ -11,23 +11,33 @@
 {
     <MudBreadcrumbs Items="breadcrumbItems"></MudBreadcrumbs>
     <MudGrid>
-        <MudItem xs="6">
+        <MudItem xs="12">
             <MudText Typo="Typo.h4">@ViewModel.Model.PluralName</MudText>
             <MudText Typo="Typo.body1">@ViewModel.Model.Description</MudText>
-
-            <MudButton OnClick="@NavigateToCreation">Add @ViewModel.Model.DisplayName</MudButton>
-            
-
-            @if (ViewModel.Model.Properties.Any(property => property.SearchType != SearchType.None)
-                 || ViewModel.Model.SearchFunction is not null)
-            {
-                const int debounceInterval = 250;
-
-                <MudTextField T="string" @bind-Value="ViewModel.SearchString" Placeholder="Search" Immediate="true"
-                              Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                              DebounceInterval="debounceInterval" OnDebounceIntervalElapsed="ViewModel.Search" />
-            }
         </MudItem>
+
+        <MudItem xs="12">
+            <MudButton Variant="Variant.Outlined" OnClick="@NavigateToCreation">
+                    Add @ViewModel.Model.DisplayName
+            </MudButton>
+        </MudItem>
+
+        @if (ViewModel.Model.Properties.Any(property => property.SearchType != SearchType.None)
+             || ViewModel.Model.SearchFunction is not null)
+        {
+            const int debounceInterval = 250;
+            <MudItem xs="6">
+                <MudTextField T="string"
+                              @bind-Value="ViewModel.SearchString"
+                              Placeholder="Search"
+                              Immediate="true"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              IconSize="Size.Medium"
+                              DebounceInterval="debounceInterval"
+                              OnDebounceIntervalElapsed="ViewModel.Search" />
+            </MudItem>
+        }
 
         <MudItem xs="12">
             <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true"
