@@ -7,6 +7,7 @@
 
 @if (ViewModel.IsEntityExists)
 {
+    <PageTitle>@ViewModel.Model.PluralName</PageTitle>
     <MudBreadcrumbs Items="breadcrumbItems"></MudBreadcrumbs>
     <MudGrid>
         <MudItem xs="6">
@@ -20,7 +21,7 @@
 
                 <MudTextField T="string" @bind-Value="ViewModel.SearchString" Placeholder="Search" Immediate="true"
                               Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                              DebounceInterval="debounceInterval" OnDebounceIntervalElapsed="ViewModel.Search" />
+                              DebounceInterval="debounceInterval" OnDebounceIntervalElapsed="ViewModel.Search"/>
             }
         </MudItem>
 
@@ -51,8 +52,8 @@
                                             </ChildContent>
                                             <TooltipContent>
                                                 <MudText Typo="@Typo.body2">@property.Description</MudText>
-                                                </TooltipContent>
-                                            </MudTooltip>
+                                            </TooltipContent>
+                                        </MudTooltip>
                                     }
                                 }
                             </HeaderTemplate>
@@ -65,7 +66,7 @@
                 </Columns>
 
                 <PagerContent>
-                    <MudDataGridPager T="object" />
+                    <MudDataGridPager T="object"/>
                 </PagerContent>
             </MudDataGrid>
         </MudItem>
@@ -73,5 +74,5 @@
 }
 else
 {
-    <NotFound />
+    <NotFound/>
 }
