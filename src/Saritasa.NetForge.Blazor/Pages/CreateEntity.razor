@@ -12,7 +12,7 @@
 
     var title = $"Create {ViewModel.Model.DisplayName}";
     <PageTitle>@title</PageTitle>
-    <MudText Typo="Typo.h4">@title</MudText>
+    <MudText Class="pb-4" Typo="Typo.h4">@title</MudText>
 
     <EditForm Model="ViewModel.EntityModel" OnValidSubmit="ViewModel.CreateEntityAsync">
         <div class="d-flex flex-column flex-grow-1 gap-4">
@@ -66,7 +66,7 @@
                 }
             }
 
-            <div class="d-flex flex-row gap-4">
+            <div class="d-flex flex-row gap-4 pt-4">
                 <MudButton Variant="Variant.Outlined" Color="Color.Success"
                            ButtonType="ButtonType.Submit" OnClick="NavigateToEntityDetails">
                     Save
