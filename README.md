@@ -74,7 +74,7 @@ Alternatively, you can use a custom function to perform checks. Access the requi
 ```csharp
 appBuilder.Services.AddNetForge(optionsBuilder =>
 {
-    optionsBuilder.SetCustomAuthFunction(async (serviceProvider) =>
+    optionsBuilder.ConfigureAuth(async (serviceProvider) =>
     {
         // Implement your custom checking logic here
         // You can retrieve the needed service like this:
