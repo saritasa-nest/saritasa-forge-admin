@@ -1,70 +1,78 @@
-﻿@using Saritasa.NetForge.Domain.Enums
+﻿@using Saritasa.NetForge.Blazor.Controls
+@using Saritasa.NetForge.Domain.Enums
 @using Saritasa.NetForge.Domain.Entities.Options
 @using Saritasa.NetForge.Blazor.Extensions
 @inject AdminOptions AdminOptions
 @inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.EntityDetails.EntityDetailsViewModel>
 
-<PageTitle>@ViewModel.Model.PluralName</PageTitle>
-<MudBreadcrumbs Items="breadcrumbItems"></MudBreadcrumbs>
-<MudGrid>
-    <MudItem xs="6">
-        <MudText Typo="Typo.h4">@ViewModel.Model.PluralName</MudText>
-        <MudText Typo="Typo.body1">@ViewModel.Model.Description</MudText>
+@if (ViewModel.IsEntityExists)
+{
+    <PageTitle>@ViewModel.Model.PluralName</PageTitle>
+    <MudBreadcrumbs Items="breadcrumbItems"></MudBreadcrumbs>
+    <MudGrid>
+        <MudItem xs="6">
+            <MudText Typo="Typo.h4">@ViewModel.Model.PluralName</MudText>
+            <MudText Typo="Typo.body1">@ViewModel.Model.Description</MudText>
 
-        @if (ViewModel.Model.Properties.Any(property => property.SearchType != SearchType.None)
-            || ViewModel.Model.SearchFunction is not null)
-        {
-            const int debounceInterval = 250;
+            @if (ViewModel.Model.Properties.Any(property => property.SearchType != SearchType.None)
+                 || ViewModel.Model.SearchFunction is not null)
+            {
+                const int debounceInterval = 250;
 
-            <MudTextField T="string" @bind-Value="ViewModel.SearchString" Placeholder="Search" Immediate="true"
-                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                          DebounceInterval="debounceInterval" OnDebounceIntervalElapsed="ViewModel.Search" />
-        }
-    </MudItem>
+                <MudTextField T="string" @bind-Value="ViewModel.SearchString" Placeholder="Search" Immediate="true"
+                              Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                              DebounceInterval="debounceInterval" OnDebounceIntervalElapsed="ViewModel.Search"/>
+            }
+        </MudItem>
 
-    <MudItem xs="12">
-        <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true"
-        @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple">
-            <Columns>
-                @foreach (var property in ViewModel.Model.Properties)
-                {
-                    <TemplateColumn Title="@property.Name" Sortable="property.IsSortable">
-                        <HeaderTemplate>
-                            @{
-                                var displayName = ViewModel.GetPropertyDisplayName(property);
-                                if (AdminOptions.TitleCaseProperties)
-                                {
-                                    displayName = displayName.ToMeaningfulName();
+        <MudItem xs="12">
+            <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true"
+                         @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple">
+                <Columns>
+                    @foreach (var property in ViewModel.Model.Properties)
+                    {
+                        <TemplateColumn Title="@property.Name" Sortable="property.IsSortable">
+                            <HeaderTemplate>
+                                @{
+                                    var displayName = ViewModel.GetPropertyDisplayName(property);
+                                    if (AdminOptions.TitleCaseProperties)
+                                    {
+                                        displayName = displayName.ToMeaningfulName();
+                                    }
+
+                                    if (string.IsNullOrEmpty(property.Description))
+                                    {
+                                        @displayName
+                                    }
+                                    else
+                                    {
+                                        <MudTooltip Arrow="true" Placement="@Placement.Top">
+                                            <ChildContent>
+                                                @displayName
+                                            </ChildContent>
+                                            <TooltipContent>
+                                                <MudText Typo="@Typo.body2">@property.Description</MudText>
+                                            </TooltipContent>
+                                        </MudTooltip>
+                                    }
                                 }
+                            </HeaderTemplate>
 
-                                if (string.IsNullOrEmpty(property.Description))
-                                {
-                                    @displayName
-                                }
-                                else
-                                {
-                                    <MudTooltip Arrow="true" Placement="@Placement.Top">
-                                        <ChildContent>
-                                            @displayName
-                                        </ChildContent>
-                                        <TooltipContent>
-                                            <MudText Typo="@Typo.body2">@property.Description</MudText>
-                                        </TooltipContent>
-                                    </MudTooltip>
-                                }
-                            }
-                        </HeaderTemplate>
+                            <CellTemplate Context="cell">
+                                @ViewModel.GetPropertyValue(cell.Item, property)
+                            </CellTemplate>
+                        </TemplateColumn>
+                    }
+                </Columns>
 
-                        <CellTemplate Context="cell">
-                            @ViewModel.GetPropertyValue(cell.Item, property)
-                        </CellTemplate>
-                    </TemplateColumn>
-                }
-            </Columns>
-
-            <PagerContent>
-                <MudDataGridPager T="object" />
-            </PagerContent>
-        </MudDataGrid>
-    </MudItem>
-</MudGrid>
+                <PagerContent>
+                    <MudDataGridPager T="object"/>
+                </PagerContent>
+            </MudDataGrid>
+        </MudItem>
+    </MudGrid>
+}
+else
+{
+    <NotFound/>
+}
