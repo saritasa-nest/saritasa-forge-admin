@@ -57,6 +57,35 @@ appBuilder.Services.AddNetForge(optionsBuilder =>
 });
 ```
 
+## Customizing access policies for the admin panel
+
+You can customize the access policy by requiring specific roles:
+
+```csharp
+appBuilder.Services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.AddAccessRoles("Role1", "Role2", "Role3");
+    ...
+});
+```
+
+Alternatively, you can use a custom function to perform checks. Access the required service through the `serviceProvider` parameter:
+
+```csharp
+appBuilder.Services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.ConfigureAuth(async (serviceProvider) =>
+    {
+        // Implement your custom checking logic here
+        // You can retrieve the needed service like this:
+        // var service = serviceProvider.GetRequiredService<SomeService>();
+
+        return true; // Return true if the access is granted, otherwise return false
+    });
+    ...
+});
+```
+
 ## Customizing entities
 
 In the admin panel, you can customize the way entities are displayed using the Fluent API or special attribites. This enables you to set various properties for your entities, such as their name, description, plural name, etc.

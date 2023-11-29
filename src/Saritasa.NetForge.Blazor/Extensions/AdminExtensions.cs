@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Saritasa.NetForge.Blazor.Infrastructure.Authentication;
+using Saritasa.NetForge.Blazor.Infrastructure.DependencyInjection.Startup;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices;
 using Saritasa.NetForge.UseCases.Metadata.Services;
@@ -26,6 +29,9 @@ public static class AdminExtensions
         services.TryAddSingleton(adminOptions);
         adminOptionsBuilder.AdminOrmServiceProvider?.ApplyServices(services);
         services.TryAddScoped<AdminMetadataService>();
+
+        services.Configure<AuthorizationOptions>(new AuthorizationOptionsSetup(adminOptions).Setup);
+        services.AddSingleton<IAuthorizationHandler, CustomAuthFunctionHandler>();
 
         Infrastructure.DependencyInjection.AutoMapperModule.Register(services);
         Infrastructure.DependencyInjection.ApplicationModule.Register(services);
