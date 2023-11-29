@@ -15,51 +15,67 @@
     <MudText Typo="Typo.h4">@title</MudText>
 
     <EditForm Model="ViewModel.EntityModel" OnValidSubmit="ViewModel.CreateEntityAsync">
-        @{
-            var properties = ViewModel.Model.Properties
-            .Where(property => property is { IsNavigation: false, IsCalculatedProperty: false });
+        <div class="d-flex flex-column flex-grow-1 gap-4">
+            @{
+                var properties = ViewModel.Model.Properties
+                .Where(property => property is { IsNavigation: false, IsCalculatedProperty: false });
 
-            foreach (var property in properties)
-            {
-                var propertyType = ViewModel.Model.ClrType?.GetProperty(property.Name)?.PropertyType;
-                if (propertyType == typeof(DateTime))
+                foreach (var property in properties)
                 {
-                    <MudTextField T="string"
-                                  Label="@property.Name"
-                                  Placeholder="@propertyType.ToString()"
-                                  InputType="InputType.Date"
-                                  TextChanged="value => ViewModel.HandleInputChange(value, property.Name)">
-                    </MudTextField>
-                }
-                else if (propertyType == typeof(bool))
-                {
-                    <MudCheckBox T="bool"
-                                 Label="@property.Name"
-                                 CheckedChanged="value => ViewModel.HandleInputChange(value!, property.Name)">
-                    </MudCheckBox>
-                }
-                else if (propertyType == typeof(int))
-                {
-                    <MudTextField T="int"
-                                  Label="@property.Name"
-                                  Placeholder="@propertyType.ToString()"
-                                  InputType="InputType.Number"
-                                  TextChanged="value => ViewModel.HandleInputChange(value, property.Name)">
-                    </MudTextField>
-                }
-                else
-                {
-                    <MudTextField T="string"
-                                  Label="@property.Name"
-                                  Placeholder="@propertyType?.ToString()"
-                                  TextChanged="value => ViewModel.HandleInputChange(value, property.Name)">
-                    </MudTextField>
+                    var propertyType = ViewModel.Model.ClrType?.GetProperty(property.Name)?.PropertyType;
+                    if (propertyType == typeof(DateTime))
+                    {
+                        <MudTextField T="string"
+                                      Label="@property.Name"
+                                      Variant="Variant.Outlined"
+                                      Class="create-entity__input"
+                                      Placeholder="@propertyType.ToString()"
+                                      InputType="InputType.Date"
+                                      TextChanged="value => ViewModel.HandleInputChange(value, property.Name)">
+                        </MudTextField>
+                    }
+                    else if (propertyType == typeof(bool))
+                    {
+                        <MudCheckBox T="bool"
+                                     Label="@property.Name"
+                                     Class="create-entity__input"
+                                     CheckedChanged="value => ViewModel.HandleInputChange(value!, property.Name)">
+                        </MudCheckBox>
+                    }
+                    else if (propertyType == typeof(int))
+                    {
+                        <MudTextField T="int"
+                                      Label="@property.Name"
+                                      Variant="Variant.Outlined"
+                                      Class="create-entity__input"
+                                      Placeholder="@propertyType.ToString()"
+                                      InputType="InputType.Number"
+                                      TextChanged="value => ViewModel.HandleInputChange(value, property.Name)">
+                        </MudTextField>
+                    }
+                    else
+                    {
+                        <MudTextField T="string"
+                                      Label="@property.Name"
+                                      Class="create-entity__input"
+                                      Variant="Variant.Outlined"
+                                      Placeholder="@propertyType?.ToString()"
+                                      TextChanged="value => ViewModel.HandleInputChange(value, property.Name)">
+                        </MudTextField>
+                    }
                 }
             }
-        }
 
-        <MudButton ButtonType="ButtonType.Submit">Save</MudButton>
-        <MudButton OnClick="NavigateToEntityDetails">Cancel</MudButton>
+            <div class="d-flex flex-row gap-4">
+                <MudButton Variant="Variant.Outlined" Color="Color.Success"
+                           ButtonType="ButtonType.Submit" OnClick="NavigateToEntityDetails">
+                    Save
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="NavigateToEntityDetails">
+                    Cancel
+                </MudButton>
+            </div>
+        </div>
     </EditForm>
 }
 else

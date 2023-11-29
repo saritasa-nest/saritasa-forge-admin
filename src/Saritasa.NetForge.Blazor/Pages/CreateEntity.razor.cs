@@ -36,7 +36,7 @@ public partial class CreateEntity : MvvmComponentBase<CreateEntityViewModel>
 
         breadcrumbItems.Add(new BreadcrumbItem("Entities", adminPanelEndpoint));
         breadcrumbItems.Add(new BreadcrumbItem(ViewModel.Model.PluralName, entityDetailsEndpoint));
-        breadcrumbItems.Add(new BreadcrumbItem("Create", createEntityEndpoint));
+        breadcrumbItems.Add(new BreadcrumbItem($"Create {ViewModel.Model.DisplayName}", createEntityEndpoint));
     }
 
     private void NavigateToEntityDetails()
