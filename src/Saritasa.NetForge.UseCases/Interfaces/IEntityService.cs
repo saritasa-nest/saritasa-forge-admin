@@ -31,9 +31,11 @@ public interface IEntityService
     /// <param name="properties">Entity properties metadata to be included in returned data.</param>
     /// <param name="searchOptions">Search options.</param>
     /// <param name="searchFunction">Custom search function.</param>
+    /// <param name="customQueryFunction">Custom query function.</param>
     Task<PagedListMetadataDto<object>> SearchDataForEntityAsync(
         Type? entityType,
-        ICollection<PropertyMetadata> properties,
+        ICollection<PropertyMetadataDto> properties,
         SearchOptions searchOptions,
-        Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? searchFunction);
+        Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? searchFunction,
+        Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? customQueryFunction);
 }

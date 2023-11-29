@@ -27,6 +27,7 @@ public class Shop
     /// <summary>
     /// The address of the shop.
     /// </summary>
+    [NetForgeNavigation(DisplayName = "AddressId", Description = "Address identifier.", Order = 1)]
     public Address? Address { get; set; }
 
     /// <summary>
@@ -48,11 +49,17 @@ public class Shop
     /// <summary>
     /// The list of products available in the shop.
     /// </summary>
+    [DisplayName("ShopProducts")]
     public List<Product> Products { get; set; } = new();
 
     /// <summary>
     /// The shop owner's contact information.
     /// </summary>
     public ContactInfo? OwnerContact { get; set; }
+
+    /// <summary>
+    /// The list of suppliers.
+    /// </summary>
+    public List<Supplier> Suppliers { get; set; } = new();
 }
 

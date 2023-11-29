@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
@@ -23,5 +24,8 @@ public interface IOrmDataService
     /// <param name="properties">Properties.</param>
     /// <returns>Query with searched data.</returns>
     IQueryable<object> Search(
-        IQueryable<object> query, string searchString, Type entityType, IEnumerable<PropertyMetadata> properties);
+        IQueryable<object> query,
+        string searchString,
+        Type entityType,
+        IEnumerable<(string Name, SearchType SearchType)> properties);
 }

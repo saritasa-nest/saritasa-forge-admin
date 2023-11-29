@@ -45,18 +45,39 @@ public static class EntityMetadataExtensions
             entityMetadata.SearchFunction = entityOptions.SearchFunction;
         }
 
+        if (entityOptions.CustomQueryFunction is not null)
+        {
+            entityMetadata.CustomQueryFunction = entityOptions.CustomQueryFunction;
+        }
+
+        entityMetadata.Navigations = entityMetadata.Navigations
+            .Where(navigation => entityOptions.IncludedNavigations.Contains(navigation.Name))
+            .ToList();
+
+        entityMetadata.Navigations.ForEach(navigation => navigation.IsIncluded = true);
+
         foreach (var option in entityOptions.PropertyOptions)
         {
-            var property = entityMetadata.Properties.FirstOrDefault(property => property.Name == option.PropertyName);
+            var property = entityMetadata.Properties
+                .FirstOrDefault(property => property.Name == option.PropertyName);
 
-            property?.ApplyPropertyOptions(option);
+            if (property is not null)
+            {
+                property.ApplyPropertyOptions(option);
+                continue;
+            }
+
+            var navigation = entityMetadata.Navigations
+                .FirstOrDefault(navigation => navigation.Name == option.PropertyName);
+
+            navigation?.ApplyPropertyOptions(option);
         }
 
         SetGroupForEntity(entityOptions.GroupName, entityMetadata, adminOptions);
     }
 
     private static void ApplyPropertyOptions(
-        this PropertyMetadata property, PropertyOptions propertyOptions)
+        this PropertyMetadataBase property, PropertyOptions propertyOptions)
     {
         property.IsHidden = propertyOptions.IsHidden;
 
@@ -84,6 +105,11 @@ public static class EntityMetadataExtensions
         {
             property.IsSortable = propertyOptions.IsSortable;
         }
+
+        if (!string.IsNullOrEmpty(propertyOptions.EmptyDefaultValue))
+        {
+            property.EmptyValueDisplay = propertyOptions.EmptyDefaultValue;
+        }
     }
 
     /// <summary>
@@ -96,6 +122,11 @@ public static class EntityMetadataExtensions
         foreach (var property in entityMetadata.Properties)
         {
             property.ApplyPropertyAttributes();
+        }
+
+        foreach (var navigation in entityMetadata.Navigations)
+        {
+            navigation.ApplyPropertyAttributes();
         }
 
         // Try to get the description from the System.ComponentModel.DisplayNameAttribute.
@@ -143,7 +174,7 @@ public static class EntityMetadataExtensions
         SetGroupForEntity(netForgeEntityAttribute.GroupName, entityMetadata, adminOptions);
     }
 
-    private static void ApplyPropertyAttributes(this PropertyMetadata property)
+    private static void ApplyPropertyAttributes(this PropertyMetadataBase property)
     {
         var descriptionAttribute = property.PropertyInformation?.GetCustomAttribute<DescriptionAttribute>();
 
@@ -159,7 +190,8 @@ public static class EntityMetadataExtensions
             property.DisplayName = displayNameAttribute.DisplayName;
         }
 
-        var netForgePropertyAttribute = property.PropertyInformation?.GetCustomAttribute<NetForgePropertyAttribute>();
+        var netForgePropertyAttribute = property.PropertyInformation?
+            .GetCustomAttribute<NetForgePropertyAttributeBase>();
 
         if (netForgePropertyAttribute is null)
         {
@@ -188,14 +220,41 @@ public static class EntityMetadataExtensions
 
         property.DisplayFormat = netForgePropertyAttribute.DisplayFormat ?? property.DisplayFormat;
 
-        if (netForgePropertyAttribute.SearchType != SearchType.None)
+        switch (property)
         {
-            property.SearchType = netForgePropertyAttribute.SearchType;
+            case PropertyMetadata propertyMetadata:
+                {
+                    var propertyAttribute = (NetForgePropertyAttribute)netForgePropertyAttribute;
+
+                    if (propertyAttribute.SearchType != SearchType.None)
+                    {
+                        propertyMetadata.SearchType = propertyAttribute.SearchType;
+                    }
+
+                    if (propertyAttribute.IsSortable)
+                    {
+                        propertyMetadata.IsSortable = propertyAttribute.IsSortable;
+                    }
+
+                    break;
+                }
+
+            case NavigationMetadata navigationMetadata:
+                {
+                    var navigationAttribute = (NetForgeNavigationAttribute)netForgePropertyAttribute;
+
+                    if (navigationAttribute.IsIncluded)
+                    {
+                        navigationMetadata.IsIncluded = navigationAttribute.IsIncluded;
+                    }
+
+                    break;
+                }
         }
 
-        if (netForgePropertyAttribute.IsSortable)
+        if (!string.IsNullOrEmpty(netForgePropertyAttribute.EmptyValueDisplay))
         {
-            property.IsSortable = netForgePropertyAttribute.IsSortable;
+            property.EmptyValueDisplay = netForgePropertyAttribute.EmptyValueDisplay;
         }
     }
 

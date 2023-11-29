@@ -391,3 +391,44 @@ services.AddNetForge(optionsBuilder =>
     optionsBuilder.DisableTitleCaseProperties();
 });
 ```
+
+## Set the default value for empty property records.
+
+Users can customize the value used for displaying the empty record values. By default, it will be displayed as "-" (a dash).
+
+### Using Fluent API
+
+```csharp
+optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
+{
+    entityOptionsBuilder.ConfigureProperty(user => user.DateOfBirth,
+        propertyBuilder => propertyBuilder.SetEmptyDefaultValue("N/A"));
+});
+```
+
+### Using Attribute
+
+```csharp
+[NetForgeProperty(EmptyDefaultValue = "N/A")]
+public string Property { get; set; }
+```
+
+## Navigation properties
+
+You can read about navigation properties [here](docs/NAVIGATIONS.md)
+
+# Custom query
+
+You can configure your query for specific entity.
+
+```csharp
+.ConfigureEntity<Shop>(entityOptionsBuilder =>
+{
+    entityOptionsBuilder.ConfigureCustomQuery((serviceProvider, query) =>
+    {
+        return query.Where(e => e.IsOpen == true);
+    });
+})
+```
+
+You can use `ServiceProvider` to access your services.

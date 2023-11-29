@@ -1,10 +1,11 @@
-﻿using System.Text;
+﻿using System.Collections;
 using AutoMapper;
 using MudBlazor;
-using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Mvvm.Utils;
 using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Interfaces;
+using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
+using Saritasa.Tools.Domain.Exceptions;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 
@@ -13,6 +14,8 @@ namespace Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 /// </summary>
 public class EntityDetailsViewModel : BaseViewModel
 {
+    private const string DefaultEmptyValueDisplay = "-";
+
     /// <summary>
     /// Entity details model.
     /// </summary>
@@ -42,12 +45,23 @@ public class EntityDetailsViewModel : BaseViewModel
     /// </summary>
     public MudDataGrid<object>? DataGrid { get; set; }
 
+    /// <summary>
+    /// Whether the entity exists.
+    /// </summary>
+    public bool IsEntityExists { get; private set; } = true;
+
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
     {
-        var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
-
-        Model = mapper.Map<EntityDetailsModel>(entity);
+        try
+        {
+            var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
+            Model = mapper.Map<EntityDetailsModel>(entity);
+        }
+        catch (NotFoundException)
+        {
+            IsEntityExists = false;
+        }
     }
 
     /// <summary>
@@ -63,7 +77,21 @@ public class EntityDetailsViewModel : BaseViewModel
                 FieldName =
                     DataGrid!.RenderedColumns.First(column => column.PropertyName.Equals(sort.SortBy)).Title,
                 IsDescending = sort.Descending
-            });
+            })
+            .ToList();
+
+        if (!orderBy.Any())
+        {
+            var primaryKeyName = Model.Properties.FirstOrDefault(property => property.IsPrimaryKey)?.Name;
+
+            if (primaryKeyName is not null)
+            {
+                orderBy.Add(new OrderByDto
+                {
+                    FieldName = primaryKeyName
+                });
+            }
+        }
 
         var searchOptions = new SearchOptions
         {
@@ -74,7 +102,7 @@ public class EntityDetailsViewModel : BaseViewModel
         };
 
         var entityData = await entityService
-            .SearchDataForEntityAsync(Model.ClrType, Model.Properties, searchOptions, Model.SearchFunction);
+            .SearchDataForEntityAsync(Model.ClrType, Model.Properties, searchOptions, Model.SearchFunction, Model.CustomQueryFunction);
 
         var data = new GridData<object>
         {
@@ -90,7 +118,7 @@ public class EntityDetailsViewModel : BaseViewModel
     /// </summary>
     /// <param name="property">Property.</param>
     /// <returns>Display name.</returns>
-    public string GetPropertyDisplayName(PropertyMetadata property)
+    public string GetPropertyDisplayName(PropertyMetadataDto property)
     {
         return !string.IsNullOrEmpty(property.DisplayName)
             ? property.DisplayName
@@ -101,19 +129,75 @@ public class EntityDetailsViewModel : BaseViewModel
     /// Gets property value via <c>Reflection</c>.
     /// </summary>
     /// <param name="source">Source object.</param>
-    /// <param name="propertyName">Property name.</param>
+    /// <param name="property">Property metadata.</param>
     /// <returns>Property value.</returns>
-    public object? GetPropertyValue(object source, string propertyName)
+    public object? GetPropertyValue(object source, PropertyMetadataDto property)
     {
-        var propertyInfo = source.GetType().GetProperty(propertyName);
+        var propertyInfo = source.GetType().GetProperty(property.Name);
         var value = propertyInfo?.GetValue(source);
 
-        if (value != null)
+        if (value is null || value.ToString() == string.Empty)
         {
-            value = FormatValue(value, propertyName);
+            return !string.IsNullOrEmpty(property.EmptyValueDisplay)
+                ? property.EmptyValueDisplay
+                : DefaultEmptyValueDisplay;
         }
 
+        if (property.IsNavigation)
+        {
+            value = GetNavigationValue(value, property);
+        }
+
+        value = FormatValue(value, property.Name);
+
         return value;
+    }
+
+    private static object GetNavigationValue(object navigation, PropertyMetadataDto property)
+    {
+        var primaryKeys = property.TargetEntityProperties
+            .Where(targetProperty => targetProperty.IsPrimaryKey)
+            .ToList();
+
+        if (!primaryKeys.Any())
+        {
+            return navigation;
+        }
+
+        if (!property.IsNavigationCollection)
+        {
+            if (primaryKeys.Count == 1)
+            {
+                return navigation.GetType().GetProperty(primaryKeys[0].Name)!.GetValue(navigation)!;
+            }
+
+            return JoinPrimaryKeys(primaryKeys, navigation);
+        }
+
+        var primaryKeyValues = new List<object?>();
+
+        foreach (var item in (navigation as IEnumerable)!)
+        {
+            if (primaryKeys.Count == 1)
+            {
+                primaryKeyValues.Add(item.GetType().GetProperty(primaryKeys[0].Name)!.GetValue(item));
+            }
+            else
+            {
+                primaryKeyValues.Add($"{{ {JoinPrimaryKeys(primaryKeys, item)} }}");
+            }
+        }
+
+        return $"[ {string.Join(", ", primaryKeyValues)} ]";
+    }
+
+    private static string JoinPrimaryKeys(IEnumerable<PropertyMetadataDto> primaryKeys, object navigation)
+    {
+        var primaryKeyValues = primaryKeys
+            .Select(primaryKey => primaryKey.Name)
+            .Select(primaryKeyName => navigation.GetType().GetProperty(primaryKeyName)!.GetValue(navigation));
+
+        return string.Join("; ", primaryKeyValues);
     }
 
     private string FormatValue(object value, string propertyName)

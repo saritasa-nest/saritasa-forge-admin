@@ -54,6 +54,13 @@ internal class EfCoreMetadataService : IOrmMetadataService
     /// <returns>An <see cref="EntityMetadata"/> object containing metadata information for the entity type.</returns>
     private static EntityMetadata GetEntityMetadata(IReadOnlyEntityType entityType)
     {
+        // GetNavigations retrieves all navigations except many-to-many navigations.
+        // GetSkipNavigations retrieves many-to-many navigations
+        var navigationsMetadata = entityType
+            .GetNavigations()
+            .Concat<IReadOnlyNavigationBase>(entityType.GetSkipNavigations())
+            .Select(GetNavigationMetadata);
+
         var propertiesMetadata = entityType.GetProperties().Select(GetPropertyMetadata);
         var entityMetadata = new EntityMetadata
         {
@@ -61,7 +68,8 @@ internal class EfCoreMetadataService : IOrmMetadataService
             ClrType = entityType.ClrType,
             Description = entityType.GetComment() ?? string.Empty,
             IsHidden = entityType.IsPropertyBag,
-            Properties = propertiesMetadata.ToList()
+            Properties = propertiesMetadata.ToList(),
+            Navigations = navigationsMetadata.ToList()
         };
 
         return entityMetadata;
@@ -89,5 +97,23 @@ internal class EfCoreMetadataService : IOrmMetadataService
             IsValueGeneratedOnUpdate = property.ValueGenerated.HasFlag(ValueGenerated.OnUpdate),
         };
         return propertyMetadata;
+    }
+
+    /// <summary>
+    /// Retrieve metadata for a navigation of an entity type.
+    /// </summary>
+    /// <param name="navigation">The EF Core navigation to retrieve metadata for.</param>
+    /// <returns>A <see cref="PropertyMetadata"/> object containing metadata information for the navigation.</returns>
+    private static NavigationMetadata GetNavigationMetadata(IReadOnlyNavigationBase navigation)
+    {
+        var navigationMetadata = new NavigationMetadata
+        {
+            Name = navigation.Name,
+            IsCollection = navigation.IsCollection,
+            TargetEntityProperties = navigation.TargetEntityType.GetProperties().Select(GetPropertyMetadata).ToList(),
+            PropertyInformation = navigation.PropertyInfo
+        };
+
+        return navigationMetadata;
     }
 }

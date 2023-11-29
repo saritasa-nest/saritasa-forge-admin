@@ -26,8 +26,12 @@ internal static class NetForgeModule
                     new() { Name = GroupConstants.Identity, Description = GroupConstants.IdentityDescription },
                     new() { Name = GroupConstants.Shops }
                 }).ConfigureEntity(new ShopAdminConfiguration())
-                .ConfigureEntity<ProductTag>(entityOptionsBuilder => { entityOptionsBuilder.SetIsHidden(true); })
-                .AddIdentityGroup();
+                .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
+                {
+                    entityOptionsBuilder.SetIsHidden(true);
+                }).AddIdentityGroup()
+                .ConfigureEntity(new UserAdminConfiguration())
+                .ConfigureEntity(new AddressAdminConfiguration());
         });
     }
 }

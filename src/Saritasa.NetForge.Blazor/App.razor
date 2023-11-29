@@ -1,4 +1,6 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
+﻿@using Saritasa.NetForge.Blazor.Controls
+
+<Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
             <NotAuthorized>
@@ -14,7 +16,7 @@
         <CascadingAuthenticationState>
             <PageTitle>Not found</PageTitle>
             <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
+                <NotFound/> 
             </LayoutView>
         </CascadingAuthenticationState>
     </NotFound>

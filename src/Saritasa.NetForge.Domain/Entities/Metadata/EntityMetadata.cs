@@ -61,4 +61,14 @@ public class EntityMetadata
     /// Represents custom search function.
     /// </summary>
     public Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? SearchFunction { get; set; }
+
+    /// <summary>
+    /// A collection of navigations metadata associated with this entity.
+    /// </summary>
+    public List<NavigationMetadata> Navigations { get; set; } = new();
+
+    /// <summary>
+    /// Represents custom query function.
+    /// </summary>
+    public Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? CustomQueryFunction { get; set; }
 }
