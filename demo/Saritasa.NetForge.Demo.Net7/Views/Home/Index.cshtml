@@ -17,10 +17,9 @@
             {
                 @Html.AntiForgeryToken()
 
-
                 <div class="row">
                     @Html.LabelFor(e => e.Username, new { @class = "form-label" })
-                    @if (ViewData.ModelState.GetFieldValidationState("Username") == ModelValidationState.Invalid)
+                    @if (ViewData.ModelState.GetFieldValidationState(nameof(Model.Username)) == ModelValidationState.Invalid)
                     {
                         @Html.TextBoxFor(e => e.Username, string.Empty, new { @class = "form-control is-invalid", placeholder = usernameTextBoxPlaceholder })
                         @Html.ValidationMessageFor(e => e.Username, string.Empty, new { @class = "text-danger" })
@@ -33,7 +32,7 @@
                 <div class="row mt-3">
                     @Html.LabelFor(e => e.Password, new { @class = "form-label" })
 
-                    @if (ViewData.ModelState.GetFieldValidationState("Password") == ModelValidationState.Invalid)
+                    @if (ViewData.ModelState.GetFieldValidationState(nameof(Model.Password)) == ModelValidationState.Invalid)
                     {
                         @Html.PasswordFor(e => e.Password, new { @class = "form-control is-invalid", placeholder = passwordTextBoxPlaceholder })
                         @Html.ValidationMessageFor(e => e.Password, string.Empty, new { @class = "text-danger" })
