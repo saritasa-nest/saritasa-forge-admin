@@ -31,9 +31,19 @@ public class Product
     public decimal Price { get; set; }
 
     /// <summary>
+    /// The highest price on the product by all the time.
+    /// </summary>
+    public decimal? MaxPrice { get; set; }
+
+    /// <summary>
     /// The quantity of the product in stock.
     /// </summary>
     public int StockQuantity { get; set; }
+
+    /// <summary>
+    /// The average number of product purchases.
+    /// </summary>
+    public int? AveragePurchaseCount { get; set; }
 
     /// <summary>
     /// The weight of the product in grams.
