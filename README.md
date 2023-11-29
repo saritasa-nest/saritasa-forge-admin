@@ -211,7 +211,6 @@ Properties also customizable via attributes.
 [NetForgeProperty(DisplayName = "Custom property display name", Description = "Custom property description.", Order = 5)]
 public string Property { get; set; }
 ```
-
 #### Built in `Description` and `DisplayName` attributes
 
 ```csharp
@@ -323,7 +322,6 @@ public class ProductTag
 ```
 
 ## Calculated Properties
-
 Calculated properties are properties that don't have a direct representation in your database but are computed based on other existing properties. These properties can be useful for displaying calculated values in the admin panel.
 
 You can add calculated properties to your entities using the Fluent API:
