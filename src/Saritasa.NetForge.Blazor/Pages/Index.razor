@@ -3,7 +3,7 @@
 @using Saritasa.NetForge.Blazor.Constants
 @inject AdminOptions AdminOptions;
 
-@attribute [Authorize(Policy = PolicyConstant.AdminAccessPolicyName)]
+@attribute [Authorize(Policy = PolicyConstants.AdminAccessPolicyName)]
 
 <PageTitle>NetForge @AdminOptions.AdminPanelHtmlTitle</PageTitle>
 <Entities/>

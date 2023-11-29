@@ -27,7 +27,7 @@ public class AuthorizationOptionsSetup
     /// <param name="options">Authorization options.</param>
     public void Setup(AuthorizationOptions options)
     {
-        options.AddPolicy(PolicyConstant.AdminAccessPolicyName, policy =>
+        options.AddPolicy(PolicyConstants.AdminAccessPolicyName, policy =>
         {
             if (!adminOptions.AdminPanelAccessRoles.Any() && adminOptions.CustomAuthFunction is null)
             {
