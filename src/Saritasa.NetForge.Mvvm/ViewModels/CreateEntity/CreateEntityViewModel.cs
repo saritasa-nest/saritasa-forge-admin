@@ -76,7 +76,8 @@ public class CreateEntityViewModel : BaseViewModel
             return;
         }
 
-        var convertedValue = Convert.ChangeType(value, property.PropertyType);
+        var propertyType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+        var convertedValue = Convert.ChangeType(value, propertyType);
 
         property.SetValue(EntityModel, convertedValue);
     }
