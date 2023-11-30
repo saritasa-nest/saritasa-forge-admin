@@ -50,6 +50,12 @@ public partial class CustomField
         { typeof(double?), InputType.Number },
         { typeof(decimal), InputType.Number },
         { typeof(decimal?), InputType.Number },
+        { typeof(DateTime), InputType.DateTimeLocal },
+        { typeof(DateTime?), InputType.DateTimeLocal },
+        { typeof(DateTimeOffset), InputType.DateTimeLocal },
+        { typeof(DateTimeOffset?), InputType.DateTimeLocal },
+        { typeof(DateOnly), InputType.Date },
+        { typeof(DateOnly?), InputType.Date },
     };
 
     /// <summary>
@@ -67,8 +73,20 @@ public partial class CustomField
             return;
         }
 
-        var propertyType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
-        var convertedValue = Convert.ChangeType(value, propertyType);
+        var propertyType = Nullable.GetUnderlyingType(PropertyType) ?? PropertyType;
+        object convertedValue;
+        if (propertyType == typeof(DateTimeOffset))
+        {
+            convertedValue = DateTimeOffset.Parse(value.ToString());
+        }
+        else if (propertyType == typeof(DateOnly))
+        {
+            convertedValue = DateOnly.Parse(value.ToString());
+        }
+        else
+        {
+            convertedValue = Convert.ChangeType(value, propertyType);
+        }
 
         property.SetValue(EntityModel, convertedValue);
     }
