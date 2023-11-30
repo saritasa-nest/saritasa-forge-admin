@@ -29,7 +29,7 @@ public partial class CustomField
     [EditorRequired]
     public object EntityModel { get; set; } = null!;
 
-    private IReadOnlyDictionary<Type, InputType> Mapping { get; set; } = new Dictionary<Type, InputType>
+    private IReadOnlyDictionary<Type, InputType> TypeMappingDictionary { get; set; } = new Dictionary<Type, InputType>
     {
         { typeof(string), InputType.Text },
         { typeof(short), InputType.Number },

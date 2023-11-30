@@ -95,7 +95,7 @@
 }
 else
 {
-    var isMappingSuccessful = Mapping.TryGetValue(PropertyType, out var inputType);
+    var isMappingSuccessful = TypeMappingDictionary.TryGetValue(PropertyType, out var inputType);
     <MudTextField T="string"
                   Label="@PropertyName"
                   Class="create-entity__input"
