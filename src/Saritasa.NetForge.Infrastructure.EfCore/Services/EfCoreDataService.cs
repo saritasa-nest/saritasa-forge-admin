@@ -282,9 +282,9 @@ public class EfCoreDataService : IOrmDataService
     }
 
     /// <inheritdoc />
-    public async Task AddAsync(object entity, Type clrType, CancellationToken cancellationToken)
+    public async Task AddAsync(object entity, Type entityType, CancellationToken cancellationToken)
     {
-        var dbContext = GetDbContextThatContainsEntity(clrType);
+        var dbContext = GetDbContextThatContainsEntity(entityType);
 
         dbContext.Add(entity);
         await dbContext.SaveChangesAsync(cancellationToken);

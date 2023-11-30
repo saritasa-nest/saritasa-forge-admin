@@ -246,8 +246,8 @@ public class EntityService : IEntityService
     }
 
     /// <inheritdoc />
-    public async Task CreateEntityAsync(object entity, Type clrType, CancellationToken cancellationToken)
+    public async Task CreateEntityAsync(object entity, Type entityType, CancellationToken cancellationToken)
     {
-        await dataService.AddAsync(entity, clrType, cancellationToken);
+        await dataService.AddAsync(entity, entityType, cancellationToken);
     }
 }

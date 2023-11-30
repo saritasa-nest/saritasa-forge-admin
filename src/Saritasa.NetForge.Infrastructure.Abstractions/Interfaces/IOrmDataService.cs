@@ -33,7 +33,7 @@ public interface IOrmDataService
     /// Adds entity to the database.
     /// </summary>
     /// <param name="entity">Entity to add.</param>
-    /// <param name="clrType">Entity type.</param>
+    /// <param name="entityType">Entity type.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    Task AddAsync(object entity, Type clrType, CancellationToken cancellationToken);
+    Task AddAsync(object entity, Type entityType, CancellationToken cancellationToken);
 }

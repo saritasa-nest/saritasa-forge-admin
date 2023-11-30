@@ -43,7 +43,7 @@ public interface IEntityService
     /// Creates entity.
     /// </summary>
     /// <param name="entity">Entity to create.</param>
-    /// <param name="clrType">Entity type.</param>
+    /// <param name="entityType">Entity type.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    Task CreateEntityAsync(object entity, Type clrType, CancellationToken cancellationToken);
+    Task CreateEntityAsync(object entity, Type entityType, CancellationToken cancellationToken);
 }
