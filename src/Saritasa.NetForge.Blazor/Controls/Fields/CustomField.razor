@@ -1,0 +1,53 @@
+﻿@{
+    if (PropertyType == typeof(DateTime))
+    {
+        <MudTextField T="string"
+                      Label="@PropertyName"
+                      Variant="Variant.Outlined"
+                      Class="create-entity__input"
+                      Placeholder="@PropertyType.ToString()"
+                      InputType="InputType.Date"
+                      TextChanged="value => HandleInputChange(value, PropertyName)">
+        </MudTextField>
+    }
+    else if (PropertyType == typeof(bool))
+    {
+        <MudCheckBox T="bool"
+                     Label="@PropertyName"
+                     Class="create-entity__input"
+                     CheckedChanged="value => HandleInputChange(value, PropertyName)">
+        </MudCheckBox>
+    }
+    else if (PropertyType == typeof(int) || PropertyType == typeof(long))
+    {
+        <MudTextField T="int"
+                      Label="@PropertyName"
+                      Variant="Variant.Outlined"
+                      Class="create-entity__input"
+                      Placeholder="@PropertyType.ToString()"
+                      InputType="InputType.Number"
+                      TextChanged="value => HandleInputChange(value, PropertyName)">
+        </MudTextField>
+    }
+    else if (PropertyType == typeof(int?))
+    {
+        <MudTextField T="int?"
+                      Label="@PropertyName"
+                      Variant="Variant.Outlined"
+                      Class="create-entity__input"
+                      Placeholder="@PropertyType.ToString()"
+                      InputType="InputType.Number"
+                      TextChanged="value => HandleInputChange(value, PropertyName)">
+        </MudTextField>
+    }
+    else
+    {
+        <MudTextField T="string"
+                      Label="@PropertyName"
+                      Class="create-entity__input"
+                      Variant="Variant.Outlined"
+                      Placeholder="@PropertyType?.ToString()"
+                      TextChanged="value => HandleInputChange(value, PropertyName)">
+        </MudTextField>
+    }
+}

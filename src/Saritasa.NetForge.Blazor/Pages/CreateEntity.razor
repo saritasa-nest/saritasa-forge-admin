@@ -1,4 +1,5 @@
 ﻿@using Saritasa.NetForge.Blazor.Controls
+@using Saritasa.NetForge.Blazor.Controls.Fields
 @using Saritasa.NetForge.Domain.Entities.Options
 @using Saritasa.NetForge.Mvvm.Navigation
 
@@ -23,57 +24,11 @@
                 foreach (var property in properties)
                 {
                     var propertyType = ViewModel.Model.ClrType?.GetProperty(property.Name)?.PropertyType;
-                    if (propertyType == typeof(DateTime))
-                    {
-                        <MudTextField T="string"
-                                      Label="@property.Name"
-                                      Variant="Variant.Outlined"
-                                      Class="create-entity__input"
-                                      Placeholder="@propertyType.ToString()"
-                                      InputType="InputType.Date"
-                                      TextChanged="value => ViewModel.HandleInputChange(value, property.Name)">
-                        </MudTextField>
-                    }
-                    else if (propertyType == typeof(bool))
-                    {
-                        <MudCheckBox T="bool"
-                                     Label="@property.Name"
-                                     Class="create-entity__input"
-                                     CheckedChanged="value => ViewModel.HandleInputChange(value!, property.Name)">
-                        </MudCheckBox>
-                    }
-                    else if (propertyType == typeof(int) || propertyType == typeof(long))
-                    {
-                        <MudTextField T="int"
-                                      Label="@property.Name"
-                                      Variant="Variant.Outlined"
-                                      Class="create-entity__input"
-                                      Placeholder="@propertyType.ToString()"
-                                      InputType="InputType.Number"
-                                      TextChanged="value => ViewModel.HandleInputChange(value, property.Name)">
-                        </MudTextField>
-                    }
-                    else if (propertyType == typeof(int?))
-                    {
-                        <MudTextField T="int?"
-                                      Label="@property.Name"
-                                      Variant="Variant.Outlined"
-                                      Class="create-entity__input"
-                                      Placeholder="@propertyType.ToString()"
-                                      InputType="InputType.Number"
-                                      TextChanged="value => ViewModel.HandleInputChange(value, property.Name)">
-                        </MudTextField>
-                    }
-                    else
-                    {
-                        <MudTextField T="string"
-                                      Label="@property.Name"
-                                      Class="create-entity__input"
-                                      Variant="Variant.Outlined"
-                                      Placeholder="@propertyType?.ToString()"
-                                      TextChanged="value => ViewModel.HandleInputChange(value, property.Name)">
-                        </MudTextField>
-                    }
+
+                    <CustomField PropertyName="@property.Name"
+                                 PropertyType="@propertyType"
+                                 EntityModel="@ViewModel.EntityModel">
+                    </CustomField>
                 }
             }
 
