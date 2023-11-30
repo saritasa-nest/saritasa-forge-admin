@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace Saritasa.NetForge.Blazor.Controls.Fields;
 
@@ -27,6 +28,29 @@ public partial class CustomField
     [Parameter]
     [EditorRequired]
     public object EntityModel { get; set; } = null!;
+
+    private IReadOnlyDictionary<Type, InputType> Mapping { get; set; } = new Dictionary<Type, InputType>
+    {
+        { typeof(string), InputType.Text },
+        { typeof(short), InputType.Number },
+        { typeof(short?), InputType.Number },
+        { typeof(ushort), InputType.Number },
+        { typeof(ushort?), InputType.Number },
+        { typeof(int), InputType.Number },
+        { typeof(int?), InputType.Number },
+        { typeof(uint), InputType.Number },
+        { typeof(uint?), InputType.Number },
+        { typeof(long), InputType.Number },
+        { typeof(long?), InputType.Number },
+        { typeof(ulong), InputType.Number },
+        { typeof(ulong?), InputType.Number },
+        { typeof(float), InputType.Number },
+        { typeof(float?), InputType.Number },
+        { typeof(double), InputType.Number },
+        { typeof(double?), InputType.Number },
+        { typeof(decimal), InputType.Number },
+        { typeof(decimal?), InputType.Number },
+    };
 
     /// <summary>
     /// Handles input changes.
