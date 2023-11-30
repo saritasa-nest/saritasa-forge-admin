@@ -48,7 +48,7 @@ public class Product
     /// <summary>
     /// The weight of the product in grams.
     /// </summary>
-    public float WeightInGrams { get; set; }
+    public float? WeightInGrams { get; set; }
 
     /// <summary>
     /// The length of the product in centimeters.
@@ -66,6 +66,26 @@ public class Product
     public float HeightInCentimeters { get; set; }
 
     /// <summary>
+    /// The volume of the product.
+    /// </summary>
+    public double Volume { get; set; }
+
+    /// <summary>
+    /// The barcode of the product.
+    /// </summary>
+    public long Barcode { get; set; }
+
+    /// <summary>
+    /// Whether the product still available.
+    /// </summary>
+    public bool IsAvailable { get; set; }
+    
+    /// <summary>
+    /// Whether sales of the product was ended.
+    /// </summary>
+    public bool? IsSalesEnded { get; set; }
+
+    /// <summary>
     /// The date and time when the product was created.
     /// </summary>
     public DateTime CreatedDate { get; set; }
@@ -74,6 +94,26 @@ public class Product
     /// The date and time when the product was last updated.
     /// </summary>
     public DateTime UpdatedDate { get; set; }
+
+    /// <summary>
+    /// The date when the product was removed.
+    /// </summary>
+    public DateTime? RemovedAt { get; set; }
+
+    /// <summary>
+    /// The date when sales of the product was ended.
+    /// </summary>
+    public DateTimeOffset? EndOfSalesDate { get; set; }
+
+    /// <summary>
+    /// The previous supply date of the product.
+    /// </summary>
+    public DateOnly PreviousSupplyDate { get; set; }
+
+    /// <summary>
+    /// The next date when the product will be supplied.
+    /// </summary>
+    public DateOnly? NextSupplyDate { get; set; }
 
     /// <summary>
     /// The list of tags associated with the product.
@@ -86,5 +126,36 @@ public class Product
     /// </summary>
     [NetForgeNavigation(IsIncluded = true)]
     public required Supplier Supplier { get; set; }
+
+    /// <summary>
+    /// The type of the product.
+    /// </summary>
+    public ProductType Type { get; set; }
+}
+
+/// <summary>
+/// Product type.
+/// </summary>
+public enum ProductType
+{
+    /// <summary>
+    /// Milk.
+    /// </summary>
+    Milk,
+
+    /// <summary>
+    /// Pasta.
+    /// </summary>
+    Pasta,
+
+    /// <summary>
+    /// Water.
+    /// </summary>
+    Water,
+
+    /// <summary>
+    /// Meat.
+    /// </summary>
+    Meat
 }
 
