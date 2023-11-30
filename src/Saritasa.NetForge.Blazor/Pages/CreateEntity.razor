@@ -42,9 +42,20 @@
                                      CheckedChanged="value => ViewModel.HandleInputChange(value!, property.Name)">
                         </MudCheckBox>
                     }
-                    else if (propertyType == typeof(int))
+                    else if (propertyType == typeof(int) || propertyType == typeof(long))
                     {
                         <MudTextField T="int"
+                                      Label="@property.Name"
+                                      Variant="Variant.Outlined"
+                                      Class="create-entity__input"
+                                      Placeholder="@propertyType.ToString()"
+                                      InputType="InputType.Number"
+                                      TextChanged="value => ViewModel.HandleInputChange(value, property.Name)">
+                        </MudTextField>
+                    }
+                    else if (propertyType == typeof(int?))
+                    {
+                        <MudTextField T="int?"
                                       Label="@property.Name"
                                       Variant="Variant.Outlined"
                                       Class="create-entity__input"
