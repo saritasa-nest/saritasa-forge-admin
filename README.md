@@ -1,6 +1,6 @@
 # NetForge - Admin Panel for ASP.NET Core 6 & 7 & 8
 
-The NetForge is a library that provides a user-friendly and intuitive user interface for performing CRUD operations on your database entities within your .NET 6 and 7 applications.
+The NetForge is a library that provides a user-friendly and intuitive user interface for performing CRUD operations on your database entities within your .NET applications.
 
 ## How to use
 
