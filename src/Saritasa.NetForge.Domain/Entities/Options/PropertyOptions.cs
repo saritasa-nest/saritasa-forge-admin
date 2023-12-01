@@ -36,5 +36,5 @@ public class PropertyOptions
     public bool IsSortable { get; set; }
 
     /// <inheritdoc cref="PropertyMetadataBase.EmptyValueDisplay"/>
-    public string EmptyDefaultValue { get; set; } = string.Empty;
+    public string EmptyValueDisplay { get; set; } = string.Empty;
 }

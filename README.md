@@ -402,14 +402,14 @@ Users can customize the value used for displaying the empty record values. By de
 optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
 {
     entityOptionsBuilder.ConfigureProperty(user => user.DateOfBirth,
-        propertyBuilder => propertyBuilder.SetEmptyDefaultValue("N/A"));
+        propertyBuilder => propertyBuilder.SetEmptyValueDisplay("N/A"));
 });
 ```
 
 ### Using Attribute
 
 ```csharp
-[NetForgeProperty(EmptyDefaultValue = "N/A")]
+[NetForgeProperty(EmptyValueDisplay = "N/A")]
 public string Property { get; set; }
 ```
 
