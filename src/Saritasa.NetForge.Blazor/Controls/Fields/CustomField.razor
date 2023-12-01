@@ -11,11 +11,10 @@ else if (PropertyType.IsEnum)
                Label="@PropertyName"
                Class="create-entity__input"
                Variant="Variant.Outlined"
-               Placeholder="@PropertyType.ToString()"
                TextChanged="value => HandleInputChange(value, PropertyName)">
         @foreach (var enumValue in Enum.GetNames(PropertyType))
         {
-            <MudSelectItem Value="enumValue"></MudSelectItem>
+            <MudSelectItem Value="enumValue" />
         }
     </MudSelect>
 }
@@ -26,7 +25,6 @@ else
                   Label="@PropertyName"
                   Class="create-entity__input"
                   Variant="Variant.Outlined"
-                  Placeholder="@PropertyType.ToString()"
                   InputType="isMappingSuccessful ? inputType : InputType.Text"
                   TextChanged="value => HandleInputChange(value, PropertyName)">
     </MudTextField>
