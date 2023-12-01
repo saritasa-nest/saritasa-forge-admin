@@ -34,7 +34,7 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
 
         breadcrumbItems.Add(new BreadcrumbItem("Entities", href: adminPanelEndpoint));
         // Add BreadcrumbItem with the new href value because can not get StringId directly.
-        breadcrumbItems.Add(new BreadcrumbItem(ViewModel.Model.PluralName, href: $"{adminPanelEndpoint}/{StringId}"));
+        breadcrumbItems.Add(new BreadcrumbItem(ViewModel.Model.PluralName, href: $"{adminPanelEndpoint}/entities/{StringId}"));
     }
 
     private void NavigateToCreation()

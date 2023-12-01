@@ -1,0 +1,51 @@
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+@model Saritasa.NetForge.Demo.Net7.ViewModels.LoginViewModel
+@{
+    Layout = "_Layout";
+
+    const string usernameTextBoxPlaceholder = "Username";
+    const string passwordTextBoxPlaceholder = "Password";
+}
+
+<div class="h-100 d-flex flex-column justify-content-center">
+    <div class="container d-flex flex-column justify-content-center align-items-center">
+        <div class="p-5 col-6 d-flex flex-column justify-content-center align-items-center border-1 rounded shadow-lg">
+            <div class="row">
+                <h2>NetForge</h2>
+            </div>
+            @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @class = "mt-2 px-5 row" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="row">
+                    @Html.LabelFor(e => e.Username, new { @class = "form-label" })
+                    @if (ViewData.ModelState.GetFieldValidationState(nameof(Model.Username)) == ModelValidationState.Invalid)
+                    {
+                        @Html.TextBoxFor(e => e.Username, string.Empty, new { @class = "form-control is-invalid", placeholder = usernameTextBoxPlaceholder })
+                        @Html.ValidationMessageFor(e => e.Username, string.Empty, new { @class = "text-danger" })
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(e => e.Username, string.Empty, new { @class = "form-control", placeholder = usernameTextBoxPlaceholder })
+                    }
+                </div>
+                <div class="row mt-3">
+                    @Html.LabelFor(e => e.Password, new { @class = "form-label" })
+
+                    @if (ViewData.ModelState.GetFieldValidationState(nameof(Model.Password)) == ModelValidationState.Invalid)
+                    {
+                        @Html.PasswordFor(e => e.Password, new { @class = "form-control is-invalid", placeholder = passwordTextBoxPlaceholder })
+                        @Html.ValidationMessageFor(e => e.Password, string.Empty, new { @class = "text-danger" })
+                    }
+                    else
+                    {
+                        @Html.PasswordFor(e => e.Password, new { @class = "form-control", placeholder = passwordTextBoxPlaceholder })
+                    }
+                </div>
+                <div class="row mt-4 justify-content-center">
+                    <input type="submit" class="btn btn-primary col-6" value="Login"/>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -9,6 +9,7 @@
 
 @if (ViewModel.IsEntityExists)
 {
+    <PageTitle>@ViewModel.Model.PluralName</PageTitle>
     <MudBreadcrumbs Items="breadcrumbItems"></MudBreadcrumbs>
     <MudGrid>
         <MudItem xs="12">
@@ -66,8 +67,8 @@
                                             </ChildContent>
                                             <TooltipContent>
                                                 <MudText Typo="@Typo.body2">@property.Description</MudText>
-                                                </TooltipContent>
-                                            </MudTooltip>
+                                            </TooltipContent>
+                                        </MudTooltip>
                                     }
                                 }
                             </HeaderTemplate>
@@ -80,7 +81,7 @@
                 </Columns>
 
                 <PagerContent>
-                    <MudDataGridPager T="object" />
+                    <MudDataGridPager T="object"/>
                 </PagerContent>
             </MudDataGrid>
         </MudItem>
@@ -88,5 +89,5 @@
 }
 else
 {
-    <NotFound />
+    <NotFound/>
 }
