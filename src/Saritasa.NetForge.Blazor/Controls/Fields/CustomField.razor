@@ -93,6 +93,20 @@
                  CheckedChanged="value => HandleInputChange(value!, PropertyName)">
     </MudCheckBox>
 }
+else if (PropertyType.IsEnum)
+{
+    <MudSelect T="string"
+               Label="@PropertyName"
+               Class="create-entity__input"
+               Variant="Variant.Outlined"
+               Placeholder="@PropertyType.ToString()"
+               TextChanged="value => HandleInputChange(value, PropertyName)">
+        @foreach (var enumValue in Enum.GetNames(PropertyType))
+        {
+            <MudSelectItem Value="enumValue"></MudSelectItem>
+        }
+    </MudSelect>
+}
 else
 {
     var isMappingSuccessful = TypeMappingDictionary.TryGetValue(PropertyType, out var inputType);

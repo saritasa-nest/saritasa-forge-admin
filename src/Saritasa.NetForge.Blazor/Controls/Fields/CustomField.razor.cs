@@ -83,6 +83,10 @@ public partial class CustomField
         {
             convertedValue = DateOnly.Parse(value.ToString());
         }
+        else if (propertyType.IsEnum)
+        {
+            convertedValue = Enum.Parse(propertyType, value.ToString());
+        }
         else
         {
             convertedValue = Convert.ChangeType(value, propertyType);
