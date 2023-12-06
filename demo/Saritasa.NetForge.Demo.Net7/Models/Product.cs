@@ -132,30 +132,3 @@ public class Product
     /// </summary>
     public ProductType Type { get; set; }
 }
-
-/// <summary>
-/// Product type.
-/// </summary>
-public enum ProductType
-{
-    /// <summary>
-    /// Milk.
-    /// </summary>
-    Milk,
-
-    /// <summary>
-    /// Pasta.
-    /// </summary>
-    Pasta,
-
-    /// <summary>
-    /// Water.
-    /// </summary>
-    Water,
-
-    /// <summary>
-    /// Meat.
-    /// </summary>
-    Meat
-}
-
