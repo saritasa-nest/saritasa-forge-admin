@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace Saritasa.NetForge.Blazor.Controls.Fields;
+namespace Saritasa.NetForge.Blazor.Controls;
 
 /// <summary>
 /// Represents C# type mapped to HTML field.
@@ -57,6 +57,54 @@ public partial class CustomField
         { typeof(DateOnly), InputType.Date },
         { typeof(DateOnly?), InputType.Date },
     };
+
+    private IReadOnlyDictionary<List<Type>, InputType> TypeMappingDictionary2 { get; set; } = new Dictionary<List<Type>, InputType>
+    {
+        {
+            new List<Type> { typeof(string) }, InputType.Text
+        },
+        {
+            new List<Type>
+            {
+                typeof(short), typeof(short?),
+                typeof(ushort), typeof(ushort?),
+                typeof(int), typeof(int?),
+                typeof(uint), typeof(uint?),
+                typeof(long), typeof(long?),
+                typeof(ulong), typeof(ulong?),
+                typeof(float), typeof(float?),
+                typeof(double), typeof(double?),
+                typeof(decimal), typeof(decimal?)
+            }, InputType.Number
+        },
+        {
+            new List<Type>
+            {
+                typeof(DateTime), typeof(DateTime?),
+                typeof(DateTimeOffset), typeof(DateTimeOffset?)
+            }, InputType.DateTimeLocal
+        },
+        {
+            new List<Type>
+            {
+                typeof(DateOnly), typeof(DateOnly?),
+            }, InputType.Date
+
+        },
+    };
+
+    public InputType GetInputType(Type propertyType)
+    {
+        foreach (var (types, inputType) in TypeMappingDictionary2)
+        {
+            if (types.Contains(propertyType))
+            {
+                return inputType;
+            }
+        }
+
+        return InputType.Text;
+    }
 
     /// <summary>
     /// Handles input changes.

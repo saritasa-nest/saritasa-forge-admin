@@ -20,12 +20,11 @@ else if (PropertyType.IsEnum)
 }
 else
 {
-    var isMappingSuccessful = TypeMappingDictionary.TryGetValue(PropertyType, out var inputType);
     <MudTextField T="string"
                   Label="@PropertyName"
                   Class="create-entity__input"
                   Variant="Variant.Outlined"
-                  InputType="isMappingSuccessful ? inputType : InputType.Text"
+                  InputType="GetInputType(PropertyType)"
                   TextChanged="value => HandleInputChange(value, PropertyName)">
     </MudTextField>
 }
