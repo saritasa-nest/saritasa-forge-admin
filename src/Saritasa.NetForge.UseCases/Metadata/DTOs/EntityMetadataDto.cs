@@ -11,7 +11,7 @@ public class EntityMetadataDto
     /// <summary>
     /// Name of the entity to display.
     /// </summary>
-    public string? Name { get; set; }
+    public string? DisplayName { get; set; }
 
     /// <summary>
     /// Plural name of the entity.
