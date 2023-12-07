@@ -6,20 +6,20 @@ namespace Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
 /// <summary>
 /// Model for create entity page.
 /// </summary>
-public class CreateEntityModel
+public record CreateEntityModel
 {
     /// <inheritdoc cref="EntityMetadata.Id"/>
-    public string StringId { get; set; } = string.Empty;
+    public string StringId { get; init; } = string.Empty;
 
     /// <inheritdoc cref="EntityMetadata.DisplayName"/>
-    public string DisplayName { get; set; } = string.Empty;
+    public string DisplayName { get; init; } = string.Empty;
 
     /// <inheritdoc cref="EntityMetadata.PluralName"/>
-    public string PluralName { get; set; } = string.Empty;
+    public string PluralName { get; init; } = string.Empty;
 
     /// <inheritdoc cref="EntityMetadata.ClrType"/>
-    public Type? ClrType { get; set; }
+    public Type? ClrType { get; init; }
 
     /// <inheritdoc cref="EntityMetadata.Properties"/>
-    public ICollection<PropertyMetadataDto> Properties { get; set; } = new List<PropertyMetadataDto>();
+    public ICollection<PropertyMetadataDto> Properties { get; init; } = new List<PropertyMetadataDto>();
 }
