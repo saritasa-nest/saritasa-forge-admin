@@ -6,7 +6,7 @@ namespace Saritasa.NetForge.Blazor.Infrastructure.DependencyInjection;
 /// <summary>
 /// Register AutoMapper dependencies.
 /// </summary>
-internal static class AutoMapperModule
+public static class AutoMapperModule
 {
     /// <summary>
     /// Register dependencies.
