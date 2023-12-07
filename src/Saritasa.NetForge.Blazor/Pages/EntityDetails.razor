@@ -19,7 +19,7 @@
 
         <MudItem xs="12">
             <MudButton Variant="Variant.Outlined" OnClick="@NavigateToCreation">
-                    Add @ViewModel.Model.DisplayName
+                    Add @ViewModel.Model.DisplayName.ToMeaningfulName()
             </MudButton>
         </MudItem>
 
