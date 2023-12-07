@@ -29,36 +29,7 @@ public partial class CustomField
     [EditorRequired]
     public object EntityModel { get; set; } = null!;
 
-    private IReadOnlyDictionary<Type, InputType> TypeMappingDictionary { get; set; } = new Dictionary<Type, InputType>
-    {
-        { typeof(string), InputType.Text },
-        { typeof(short), InputType.Number },
-        { typeof(short?), InputType.Number },
-        { typeof(ushort), InputType.Number },
-        { typeof(ushort?), InputType.Number },
-        { typeof(int), InputType.Number },
-        { typeof(int?), InputType.Number },
-        { typeof(uint), InputType.Number },
-        { typeof(uint?), InputType.Number },
-        { typeof(long), InputType.Number },
-        { typeof(long?), InputType.Number },
-        { typeof(ulong), InputType.Number },
-        { typeof(ulong?), InputType.Number },
-        { typeof(float), InputType.Number },
-        { typeof(float?), InputType.Number },
-        { typeof(double), InputType.Number },
-        { typeof(double?), InputType.Number },
-        { typeof(decimal), InputType.Number },
-        { typeof(decimal?), InputType.Number },
-        { typeof(DateTime), InputType.DateTimeLocal },
-        { typeof(DateTime?), InputType.DateTimeLocal },
-        { typeof(DateTimeOffset), InputType.DateTimeLocal },
-        { typeof(DateTimeOffset?), InputType.DateTimeLocal },
-        { typeof(DateOnly), InputType.Date },
-        { typeof(DateOnly?), InputType.Date },
-    };
-
-    private IReadOnlyDictionary<List<Type>, InputType> TypeMappingDictionary2 { get; set; } = new Dictionary<List<Type>, InputType>
+    private IReadOnlyDictionary<List<Type>, InputType> TypeMappingDictionary { get; set; } = new Dictionary<List<Type>, InputType>
     {
         {
             new List<Type> { typeof(string) }, InputType.Text
@@ -93,9 +64,12 @@ public partial class CustomField
         },
     };
 
+    /// <summary>
+    /// Gets <see cref="InputType"/> depends on <paramref name="propertyType"/>.
+    /// </summary>
     public InputType GetInputType(Type propertyType)
     {
-        foreach (var (types, inputType) in TypeMappingDictionary2)
+        foreach (var (types, inputType) in TypeMappingDictionary)
         {
             if (types.Contains(propertyType))
             {
@@ -115,7 +89,8 @@ public partial class CustomField
     {
         var property = EntityModel.GetType().GetProperty(propertyName)!;
 
-        if (string.IsNullOrEmpty(value.ToString()))
+        var stringValue = value.ToString();
+        if (string.IsNullOrEmpty(stringValue))
         {
             property.SetValue(EntityModel, null);
             return;
@@ -125,15 +100,15 @@ public partial class CustomField
         object convertedValue;
         if (propertyType == typeof(DateTimeOffset))
         {
-            convertedValue = DateTimeOffset.Parse(value.ToString());
+            convertedValue = DateTimeOffset.Parse(stringValue);
         }
         else if (propertyType == typeof(DateOnly))
         {
-            convertedValue = DateOnly.Parse(value.ToString());
+            convertedValue = DateOnly.Parse(stringValue);
         }
         else if (propertyType.IsEnum)
         {
-            convertedValue = Enum.Parse(propertyType, value.ToString());
+            convertedValue = Enum.Parse(propertyType, stringValue);
         }
         else
         {
