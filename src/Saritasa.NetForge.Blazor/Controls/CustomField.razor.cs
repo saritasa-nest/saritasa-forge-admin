@@ -60,8 +60,7 @@ public partial class CustomField
             {
                 typeof(DateOnly), typeof(DateOnly?),
             }, InputType.Date
-
-        },
+        }
     };
 
     /// <summary>
