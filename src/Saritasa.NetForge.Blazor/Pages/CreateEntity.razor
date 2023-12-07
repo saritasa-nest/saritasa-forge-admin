@@ -1,4 +1,5 @@
 ﻿@using Saritasa.NetForge.Blazor.Controls
+@using Saritasa.NetForge.Blazor.Extensions
 @using Saritasa.NetForge.Domain.Entities.Options
 @using Saritasa.NetForge.Mvvm.Navigation
 
@@ -10,7 +11,7 @@
 {
     <MudBreadcrumbs Items="breadcrumbItems"></MudBreadcrumbs>
 
-    var title = $"Create {ViewModel.Model.DisplayName}";
+    var title = $"Create {ViewModel.Model.DisplayName.ToMeaningfulName()}";
     <PageTitle>@title</PageTitle>
     <MudText Class="pb-4" Typo="Typo.h4">@title</MudText>
 
