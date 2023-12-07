@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Saritasa.NetForge.Mvvm.Navigation;
+using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.Tools.Domain.Exceptions;
 
@@ -16,16 +18,19 @@ public class CreateEntityViewModel : BaseViewModel
 
     private readonly IEntityService entityService;
     private readonly IMapper mapper;
+    private readonly INavigationService navigationService;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public CreateEntityViewModel(string stringId, IEntityService entityService, IMapper mapper)
+    public CreateEntityViewModel(
+        string stringId, IEntityService entityService, IMapper mapper, INavigationService navigationService)
     {
         Model = new CreateEntityModel { StringId = stringId };
 
         this.entityService = entityService;
         this.mapper = mapper;
+        this.navigationService = navigationService;
     }
 
     /// <summary>
@@ -59,5 +64,6 @@ public class CreateEntityViewModel : BaseViewModel
     public async Task CreateEntityAsync()
     {
         await entityService.CreateEntityAsync(EntityModel, Model.ClrType!, CancellationToken);
+        navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
     }
 }
