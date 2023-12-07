@@ -9,7 +9,7 @@ namespace Saritasa.NetForge.Tests.Utilities;
 /// </summary>
 public class TestDatabaseFixture : IDisposable
 {
-    private const string ConnectionString = "Server=localhost;Database=NetForgeTest;Uid=postgres;Pwd=cfif5555;";
+    private const string ConnectionString = "Server=localhost;Database=NetForgeTest;Uid=;Pwd=;";
 
     private static readonly object initDatabaseLock = new();
     private static bool databaseInitialized;
