@@ -31,6 +31,10 @@
                 <Columns>
                     @foreach (var property in ViewModel.Model.Properties)
                     {
+                        if (property.IsHidden)
+                        {
+                            continue;
+                        }
                         <TemplateColumn Title="@property.Name" Sortable="property.IsSortable">
                             <HeaderTemplate>
                                 @{
