@@ -13,23 +13,24 @@ public partial class CustomField
     /// </summary>
     [Parameter]
     [EditorRequired]
-    public string PropertyName { get; set; } = null!;
+    public string PropertyName { get; init; } = null!;
 
     /// <summary>
     /// Property type.
     /// </summary>
     [Parameter]
     [EditorRequired]
-    public Type PropertyType { get; set; } = null!;
+    public Type PropertyType { get; init; } = null!;
 
     /// <summary>
     /// Entity model that contains property value for this field.
     /// </summary>
     [Parameter]
     [EditorRequired]
-    public object EntityModel { get; set; } = null!;
+    public object EntityModel { get; init; } = null!;
 
-    private IReadOnlyDictionary<List<Type>, InputType> TypeMappingDictionary { get; set; } = new Dictionary<List<Type>, InputType>
+    private IReadOnlyDictionary<List<Type>, InputType> TypeMappingDictionary { get; init; }
+        = new Dictionary<List<Type>, InputType>
     {
         {
             new List<Type> { typeof(string) }, InputType.Text

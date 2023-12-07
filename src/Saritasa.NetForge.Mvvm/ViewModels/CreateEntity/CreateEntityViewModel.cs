@@ -41,7 +41,7 @@ public class CreateEntityViewModel : BaseViewModel
     /// <summary>
     /// Entity model.
     /// </summary>
-    public object EntityModel { get; set; } = null!;
+    public object EntityModel { get; private set; } = null!;
 
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)

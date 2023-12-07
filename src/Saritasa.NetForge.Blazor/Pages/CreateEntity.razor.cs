@@ -17,7 +17,7 @@ public partial class CreateEntity : MvvmComponentBase<CreateEntityViewModel>
     /// Entity id.
     /// </summary>
     [Parameter]
-    public string StringId { get; set; } = null!;
+    public string StringId { get; init; } = null!;
 
     /// <inheritdoc/>
     protected override CreateEntityViewModel CreateViewModel()
