@@ -6,7 +6,7 @@ using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 namespace Saritasa.NetForge.Mvvm.ViewModels;
 
 /// <summary>
-/// Mapping profile for details page.
+/// Mapping profile for entities.
 /// </summary>
 internal class EntityMappingProfile : Profile
 {
