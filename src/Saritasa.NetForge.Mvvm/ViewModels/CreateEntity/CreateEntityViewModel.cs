@@ -60,25 +60,4 @@ public class CreateEntityViewModel : BaseViewModel
     {
         await entityService.CreateEntityAsync(EntityModel, Model.ClrType!, CancellationToken);
     }
-
-    /// <summary>
-    /// Handles input changes.
-    /// </summary>
-    /// <param name="value">Input value.</param>
-    /// <param name="propertyName">Name of property that related to the input.</param>
-    public void HandleInputChange(object value, string propertyName)
-    {
-        var property = EntityModel.GetType().GetProperty(propertyName)!;
-
-        if (string.IsNullOrEmpty(value.ToString()))
-        {
-            property.SetValue(EntityModel, null);
-            return;
-        }
-
-        var propertyType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
-        var convertedValue = Convert.ChangeType(value, propertyType);
-
-        property.SetValue(EntityModel, convertedValue);
-    }
 }
