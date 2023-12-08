@@ -1,4 +1,7 @@
-﻿using Saritasa.NetForge.Blazor.Extensions;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Saritasa.NetForge.Blazor.Extensions;
 using Saritasa.NetForge.Demo.Net7.Constants;
 using Saritasa.NetForge.Demo.Net7.Infrastructure.Admin;
 using Saritasa.NetForge.Demo.Net7.Infrastructure.Extensions;
@@ -20,20 +23,12 @@ internal static class NetForgeModule
     {
         services.AddNetForge(optionsBuilder =>
         {
-            optionsBuilder.ConfigureAuth(async provider =>
+            optionsBuilder.ConfigureAuth(serviceProvider =>
             {
-                var context = provider.GetRequiredService<IHttpContextAccessor>().HttpContext;
-                if (context is null)
-                {
-                    return false;
-                }
-
-                // Check if user is authenticated.
-                var user = context.User;
-                var userIsAnonymous =
-                    user?.Identity == null || user.Identities.Any(i => i.IsAuthenticated == false);
-
-                return !userIsAnonymous;
+                var context = serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
+                var user = context?.User;
+                var signInManger = serviceProvider.GetRequiredService<SignInManager<User>>();
+                return Task.FromResult(user != null && signInManger.IsSignedIn(user));
             });
 
             optionsBuilder.UseEntityFramework(efOptionsBuilder => { efOptionsBuilder.UseDbContext<ShopDbContext>(); })
