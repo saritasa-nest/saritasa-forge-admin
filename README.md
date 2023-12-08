@@ -432,3 +432,24 @@ You can configure your query for specific entity.
 ```
 
 You can use `ServiceProvider` to access your services.
+
+## Exclude property from query
+
+Users can explicitly control whether a property should be excluded from the data query.
+
+### Using Fluent API
+
+```csharp
+optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
+{
+    entityOptionsBuilder.ConfigureProperty(user => user.DateOfBirth,
+        propertyBuilder => propertyBuilder.SetIsExcludeFromQuery(true));
+});
+```
+
+### Using Attribute
+
+```csharp
+[NetForgeProperty(IsExcludeFromQuery = true)]
+public string Property { get; set; }
+```
