@@ -13,6 +13,7 @@ internal class EntityDetailsMappingProfile : Profile
     /// </summary>
     public EntityDetailsMappingProfile()
     {
-        CreateMap<GetEntityByIdDto, EntityDetailsModel>();
+        CreateMap<GetEntityByIdDto, EntityDetailsModel>()
+            .ForMember(model => model.StringId, options => options.Ignore());
     }
 }
