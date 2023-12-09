@@ -73,7 +73,7 @@ public static class EntityMetadataExtensions
             navigation?.ApplyPropertyOptions(option);
         }
 
-        SetGroupForEntity(entityOptions.GroupName, entityMetadata, adminOptions);
+        entityMetadata.AssignGroupToEntity(entityOptions.GroupName, adminOptions);
     }
 
     private static void ApplyPropertyOptions(
@@ -171,7 +171,7 @@ public static class EntityMetadataExtensions
             entityMetadata.IsHidden = netForgeEntityAttribute.IsHidden;
         }
 
-        SetGroupForEntity(netForgeEntityAttribute.GroupName, entityMetadata, adminOptions);
+        entityMetadata.AssignGroupToEntity(netForgeEntityAttribute.GroupName, adminOptions);
     }
 
     private static void ApplyPropertyAttributes(this PropertyMetadataBase property)
@@ -255,19 +255,6 @@ public static class EntityMetadataExtensions
         if (!string.IsNullOrEmpty(netForgePropertyAttribute.EmptyValueDisplay))
         {
             property.EmptyValueDisplay = netForgePropertyAttribute.EmptyValueDisplay;
-        }
-    }
-
-    private static void SetGroupForEntity(string groupName, EntityMetadata entityMetadata, AdminOptions adminOptions)
-    {
-        if (!string.IsNullOrEmpty(groupName))
-        {
-            var entityGroup =
-                adminOptions.EntityGroupsList.FirstOrDefault(group => group.Name == groupName);
-            if (entityGroup != null)
-            {
-                entityMetadata.Group = entityGroup;
-            }
         }
     }
 }
