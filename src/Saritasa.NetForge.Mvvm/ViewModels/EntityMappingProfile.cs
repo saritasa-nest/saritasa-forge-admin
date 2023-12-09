@@ -15,7 +15,8 @@ internal class EntityMappingProfile : Profile
     /// </summary>
     public EntityMappingProfile()
     {
-        CreateMap<GetEntityByIdDto, EntityDetailsModel>();
+        CreateMap<GetEntityByIdDto, EntityDetailsModel>()
+            .ForMember(model => model.StringId, options => options.Ignore());
         CreateMap<GetEntityByIdDto, CreateEntityModel>();
     }
 }
