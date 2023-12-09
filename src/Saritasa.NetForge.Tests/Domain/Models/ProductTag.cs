@@ -25,4 +25,3 @@ public class ProductTag
     /// </summary>
     public List<Product> Products { get; set; } = new();
 }
-
