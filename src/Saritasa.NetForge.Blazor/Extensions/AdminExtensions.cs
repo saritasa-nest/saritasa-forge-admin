@@ -53,27 +53,27 @@ public static class AdminExtensions
             applicationBuilder.UsePathBase(adminPanelEndpoint);
             applicationBuilder.UseStaticFiles();
             applicationBuilder.UseRouting();
-
-            applicationBuilder.Use(async (context, next) =>
-            {
-                var authorizationService = context.RequestServices.GetRequiredService<IAuthorizationService>();
-                var isAuthorized = await authorizationService
-                    .AuthorizeAsync(context.User, PolicyConstants.AdminAccessPolicyName);
-
-                if (!isAuthorized.Succeeded)
-                {
-                    context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                    return;
-                }
-
-                await next();
-            });
-
+            applicationBuilder.Use(AuthMiddleware);
             applicationBuilder.UseEndpoints(endpointBuilder =>
             {
                 endpointBuilder.MapBlazorHub();
                 endpointBuilder.MapFallbackToPage("/_NetForge");
             });
         });
+    }
+
+    private static async Task AuthMiddleware(HttpContext httpContext, Func<Task> next)
+    {
+        var authorizationService = httpContext.RequestServices.GetRequiredService<IAuthorizationService>();
+        var isAuthorized = await authorizationService
+            .AuthorizeAsync(httpContext.User, PolicyConstants.AdminAccessPolicyName);
+
+        if (!isAuthorized.Succeeded)
+        {
+            httpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
+            return;
+        }
+
+        await next();
     }
 }

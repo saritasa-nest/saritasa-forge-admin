@@ -27,8 +27,7 @@ internal static class NetForgeModule
             {
                 var context = serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
                 var user = context?.User;
-                var signInManger = serviceProvider.GetRequiredService<SignInManager<User>>();
-                return Task.FromResult(user != null && signInManger.IsSignedIn(user));
+                return Task.FromResult(user?.Identity?.IsAuthenticated ?? false);
             });
 
             optionsBuilder.UseEntityFramework(efOptionsBuilder => { efOptionsBuilder.UseDbContext<ShopDbContext>(); })
