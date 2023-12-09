@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Saritasa.NetForge.Tests.Models;
+namespace Saritasa.NetForge.Tests.Domain.Models;
 
 /// <summary>
 /// Represents the application's user.

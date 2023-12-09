@@ -1,4 +1,4 @@
-﻿namespace Saritasa.NetForge.Tests.Models;
+﻿namespace Saritasa.NetForge.Tests.Domain.Models;
 
 /// <summary>
 /// Represents a tag associated with a product in the shop.
@@ -18,7 +18,7 @@ public class ProductTag
     /// <summary>
     /// The description of the tag.
     /// </summary>
-    public string Description { get; set; } = string.Empty; 
+    public string Description { get; set; } = string.Empty;
 
     /// <summary>
     /// List of products associated with this tag.

@@ -2,8 +2,9 @@
 using Moq;
 using Saritasa.NetForge.Infrastructure.EfCore;
 using Saritasa.NetForge.Infrastructure.EfCore.Services;
+using Saritasa.NetForge.Tests.Domain;
 using Xunit;
-using ContactInfo = Saritasa.NetForge.Tests.Models.ContactInfo;
+using ContactInfo = Saritasa.NetForge.Tests.Domain.Models.ContactInfo;
 
 namespace Saritasa.NetForge.Tests;
 

@@ -1,4 +1,4 @@
-﻿namespace Saritasa.NetForge.Tests.Models;
+﻿namespace Saritasa.NetForge.Tests.Domain.Models;
 
 /// <summary>
 /// Represents an address entity.
@@ -28,7 +28,7 @@ public class Address
     /// <summary>
     /// The name of the country.
     /// </summary>
-    public string Country { get; set; } = string.Empty; 
+    public string Country { get; set; } = string.Empty;
 
     /// <summary>
     /// The latitude coordinate of the address location.

@@ -1,4 +1,4 @@
-﻿namespace Saritasa.NetForge.Tests.Models;
+﻿namespace Saritasa.NetForge.Tests.Domain.Models;
 
 /// <summary>
 /// Represents contact information of a user or entity.
@@ -23,5 +23,5 @@ public class ContactInfo
     /// <summary>
     /// The phone number of the contact person.
     /// </summary>
-    public string PhoneNumber { get; set; } = string.Empty; 
+    public string PhoneNumber { get; set; } = string.Empty;
 }

@@ -1,6 +1,6 @@
 ﻿using Saritasa.NetForge.Domain.Attributes;
 
-namespace Saritasa.NetForge.Tests.Models;
+namespace Saritasa.NetForge.Tests.Domain.Models;
 
 /// <summary>
 /// Represents a product entity.
@@ -20,7 +20,7 @@ public class Product
     /// <summary>
     /// The description of the product.
     /// </summary>
-    public string Description { get; set; } = string.Empty; 
+    public string Description { get; set; } = string.Empty;
 
     /// <summary>
     /// The price of the product.

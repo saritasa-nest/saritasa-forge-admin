@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Saritasa.NetForge.Tests.Models;
+using Saritasa.NetForge.Tests.Domain.Models;
 
-namespace Saritasa.NetForge.Tests;
+namespace Saritasa.NetForge.Tests.Domain;
 
 /// <summary>
 /// Database context for tests.
