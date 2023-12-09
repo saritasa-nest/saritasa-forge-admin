@@ -53,6 +53,10 @@ public class CreateEntityTests : IDisposable
         GC.SuppressFinalize(this);
     }
 
+    /// <summary>
+    /// Deletes the database after one test is complete,
+    /// so it gives us the same state of the database for every test.
+    /// </summary>
     protected virtual void Dispose(bool disposing)
     {
         if (!disposedValue)
