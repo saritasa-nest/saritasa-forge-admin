@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moq;
-using Saritasa.NetForge.Demo.Net7;
-using Saritasa.NetForge.Demo.Net7.Models;
 using Saritasa.NetForge.Infrastructure.EfCore;
 using Saritasa.NetForge.Infrastructure.EfCore.Services;
 using Xunit;
+using ContactInfo = Saritasa.NetForge.Tests.Models.ContactInfo;
 
 namespace Saritasa.NetForge.Tests;
 
@@ -13,18 +12,18 @@ namespace Saritasa.NetForge.Tests;
 /// </summary>
 public class CreateEntityTests : IDisposable
 {
-    private ShopDbContext DbContext { get; set; }
+    private TestDbContext DbContext { get; set; }
 
     /// <summary>
     /// Constructor.
     /// </summary>
     public CreateEntityTests()
     {
-        var dbOptions = new DbContextOptionsBuilder<ShopDbContext>()
+        var dbOptions = new DbContextOptionsBuilder<TestDbContext>()
             .UseInMemoryDatabase("NetForgeTest")
             .Options;
 
-        DbContext = new ShopDbContext(dbOptions);
+        DbContext = new TestDbContext(dbOptions);
         DbContext.Database.EnsureCreated();
 
         DbContext.ContactInfos.Add(new ContactInfo
@@ -70,17 +69,17 @@ public class CreateEntityTests : IDisposable
         }
     }
 
-    private static EfCoreDataService CreateEfCoreDataService(ShopDbContext shopDbContext)
+    private static EfCoreDataService CreateEfCoreDataService(TestDbContext testDbContext)
     {
         var efCoreOptions = new EfCoreOptions();
-        var shopDbContextType = typeof(ShopDbContext);
+        var shopDbContextType = typeof(TestDbContext);
         efCoreOptions.DbContexts.Add(shopDbContextType);
 
         var serviceProvider = new Mock<IServiceProvider>();
 
         serviceProvider
             .Setup(provider => provider.GetService(shopDbContextType))
-            .Returns(shopDbContext);
+            .Returns(testDbContext);
 
         return new EfCoreDataService(efCoreOptions, serviceProvider.Object);
     }
