@@ -29,8 +29,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.DomainSer
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B249AEAE-01A6-412E-99FF-9162F6AA0E4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saritasa.NetForge.Tests", "Saritasa.NetForge.Tests\Saritasa.NetForge.Tests.csproj", "{075CBA98-DAA7-4EBF-9F3C-100CFBDCB6E6}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,10 +67,6 @@ Global
 		{45931B67-08DD-4192-B4D6-098452304DFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45931B67-08DD-4192-B4D6-098452304DFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45931B67-08DD-4192-B4D6-098452304DFD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{075CBA98-DAA7-4EBF-9F3C-100CFBDCB6E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{075CBA98-DAA7-4EBF-9F3C-100CFBDCB6E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{075CBA98-DAA7-4EBF-9F3C-100CFBDCB6E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{075CBA98-DAA7-4EBF-9F3C-100CFBDCB6E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -86,7 +80,6 @@ Global
 		{DC095BA1-A950-4432-A328-5FA75DBF03F3} = {448B6392-162C-44AB-9E79-96666A994B84}
 		{354621B9-E572-4303-B58B-976F16918342} = {448B6392-162C-44AB-9E79-96666A994B84}
 		{45931B67-08DD-4192-B4D6-098452304DFD} = {7D2CAD10-C8CC-48F2-992B-E2E52D9D8379}
-		{075CBA98-DAA7-4EBF-9F3C-100CFBDCB6E6} = {B249AEAE-01A6-412E-99FF-9162F6AA0E4A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0E58DD2B-6CF5-460A-BC26-048C50808B1B}
