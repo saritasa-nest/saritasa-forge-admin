@@ -44,10 +44,26 @@ public class CreateEntityTests : IDisposable
         DbContext.SaveChanges();
     }
 
+    private bool disposedValue;
+
     /// <inheritdoc />
     public void Dispose()
     {
-        DbContext.Database.EnsureDeleted();
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                DbContext.Database.EnsureDeleted();
+            }
+
+            disposedValue = true;
+        }
     }
 
     private static EfCoreDataService CreateEfCoreDataService(ShopDbContext shopDbContext)
