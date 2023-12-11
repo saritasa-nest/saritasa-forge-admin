@@ -32,6 +32,15 @@ public class PropertyOptionsBuilder
     }
 
     /// <summary>
+    /// Sets whether the property should be excluded from the query.
+    /// </summary>
+    public PropertyOptionsBuilder SetIsExcludedFromQuery(bool isExcludedFromQuery)
+    {
+        options.IsExcludedFromQuery = isExcludedFromQuery;
+        return this;
+    }
+
+    /// <summary>
     /// Sets new display name to property.
     /// </summary>
     /// <param name="displayName">Name to display.</param>
