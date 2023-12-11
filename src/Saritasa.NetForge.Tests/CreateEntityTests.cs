@@ -64,6 +64,7 @@ public class CreateEntityTests : IDisposable
             if (disposing)
             {
                 DbContext.Database.EnsureDeleted();
+                DbContext.Dispose();
             }
 
             disposedValue = true;
