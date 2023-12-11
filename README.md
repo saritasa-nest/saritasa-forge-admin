@@ -69,18 +69,16 @@ appBuilder.Services.AddNetForge(optionsBuilder =>
 });
 ```
 
-Alternatively, you can use a custom function to perform checks. Access the required service through the `serviceProvider` parameter:
+Alternatively, you can use a custom function to perform checks. Access the required service through the `serviceProvider` parameter. Example:
 
 ```csharp
 appBuilder.Services.AddNetForge(optionsBuilder =>
 {
-    optionsBuilder.ConfigureAuth(async (serviceProvider) =>
+    optionsBuilder.ConfigureAuth(serviceProvider =>
     {
-        // Implement your custom checking logic here
-        // You can retrieve the needed service like this:
-        // var service = serviceProvider.GetRequiredService<SomeService>();
-
-        return true; // Return true if the access is granted, otherwise return false
+        // Allow all authenticated users to see the Admin Panel.
+        var httpContext = serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
+        return Task.FromResult(httpContext?.User.Identity?.IsAuthenticated ?? false);
     });
     ...
 });

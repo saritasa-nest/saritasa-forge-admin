@@ -20,20 +20,10 @@ internal static class NetForgeModule
     {
         services.AddNetForge(optionsBuilder =>
         {
-            optionsBuilder.ConfigureAuth(async provider =>
+            optionsBuilder.ConfigureAuth(serviceProvider =>
             {
-                var context = provider.GetRequiredService<IHttpContextAccessor>().HttpContext;
-                if (context is null)
-                {
-                    return false;
-                }
-
-                // Check if user is authenticated.
-                var user = context.User;
-                var userIsAnonymous =
-                    user?.Identity == null || user.Identities.Any(i => i.IsAuthenticated == false);
-
-                return !userIsAnonymous;
+                var httpContext = serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
+                return Task.FromResult(httpContext?.User.Identity?.IsAuthenticated ?? false);
             });
 
             optionsBuilder.UseEntityFramework(efOptionsBuilder => { efOptionsBuilder.UseDbContext<ShopDbContext>(); })

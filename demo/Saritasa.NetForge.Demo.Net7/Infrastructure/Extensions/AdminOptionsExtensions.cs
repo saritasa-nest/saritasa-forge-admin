@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Saritasa.NetForge.Demo.Net7.Constants;
-using Saritasa.NetForge.Demo.Net7.Infrastructure.Admin;
 using Saritasa.NetForge.Demo.Net7.Models;
 using Saritasa.NetForge.DomainServices;
 
@@ -20,25 +19,22 @@ public static class AdminOptionsExtensions
         optionsBuilder.ConfigureEntity<IdentityRole>(entityOptionsBuilder =>
         {
             entityOptionsBuilder.SetGroup(GroupConstants.Identity);
-        }).ConfigureEntity<User>(entityOptionsBuilder =>
-        {
-            entityOptionsBuilder.SetGroup(GroupConstants.Identity);
         }).ConfigureEntity<IdentityRoleClaim<string>>(entityOptionsBuilder =>
         {
-            entityOptionsBuilder.SetGroup(GroupConstants.Identity);
+            entityOptionsBuilder.SetIsHidden(true);
         }).ConfigureEntity<IdentityUserClaim<string>>(entityOptionsBuilder =>
         {
-            entityOptionsBuilder.SetGroup(GroupConstants.Identity);
+            entityOptionsBuilder.SetIsHidden(true);
         }).ConfigureEntity<IdentityUserLogin<string>>(entityOptionsBuilder =>
         {
-            entityOptionsBuilder.SetGroup(GroupConstants.Identity);
+            entityOptionsBuilder.SetIsHidden(true);
         }).ConfigureEntity<IdentityUserRole<string>>(entityOptionsBuilder =>
         {
-            entityOptionsBuilder.SetGroup(GroupConstants.Identity);
+            entityOptionsBuilder.SetIsHidden(true);
         }).ConfigureEntity<IdentityUserToken<string>>(entityOptionsBuilder =>
         {
-            entityOptionsBuilder.SetGroup(GroupConstants.Identity);
-        }).ConfigureEntity(new UserAdminConfiguration());
+            entityOptionsBuilder.SetIsHidden(true);
+        });
 
         return optionsBuilder;
     }

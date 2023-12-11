@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Saritasa.NetForge.Blazor;
 using Saritasa.NetForge.Blazor.Extensions;
 using Saritasa.NetForge.Demo.Net7.Infrastructure.Startup;
 using Saritasa.NetForge.Demo.Net7.Infrastructure.Startup.HealthCheck;
@@ -60,15 +59,15 @@ public class Startup
     /// <param name="app">Application builder.</param>
     public void Configure(WebApplication app)
     {
-        app.UseNetForge();
         HealthCheckModule.Register(app);
 
         app.UseStaticFiles();
 
         app.UseRouting();
-        app.MapControllerRoute(
-            name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}");
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.MapControllers();
+        app.UseNetForge();
 
         var cultureInfo = new CultureInfo("en-US");
         CultureInfo.DefaultThreadCurrentCulture = cultureInfo;

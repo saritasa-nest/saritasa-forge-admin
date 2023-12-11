@@ -24,5 +24,5 @@ public class LoginViewModel
     /// <summary>
     /// Value indicating whether the user's authentication should be remembered.
     /// </summary>
-    public bool RememberMe { get; set; } = false;
+    public bool RememberMe { get; set; }
 }

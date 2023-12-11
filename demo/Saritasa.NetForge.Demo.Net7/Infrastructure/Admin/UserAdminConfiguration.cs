@@ -1,4 +1,5 @@
-﻿using Saritasa.NetForge.Demo.Net7.Models;
+﻿using Saritasa.NetForge.Demo.Net7.Constants;
+using Saritasa.NetForge.Demo.Net7.Models;
 using Saritasa.NetForge.DomainServices;
 using Saritasa.NetForge.DomainServices.Interfaces;
 
@@ -12,7 +13,15 @@ public class UserAdminConfiguration : IEntityAdminConfiguration<User>
     /// <inheritdoc />
     public void Configure(EntityOptionsBuilder<User> entityOptionsBuilder)
     {
-        entityOptionsBuilder.AddCalculatedProperties(user => user.FullName, user => user.Age)
-            .ConfigureProperty(user => user.FullName, builder => builder.SetOrder(1));
+        entityOptionsBuilder.SetGroup(GroupConstants.Identity)
+            .AddCalculatedProperties(user => user.FullName, user => user.Age)
+            .ConfigureProperty(user => user.FullName, builder => builder.SetOrder(1))
+            .ConfigureProperty(user => user.ConcurrencyStamp, builder => builder.SetIsHidden(true))
+            .ConfigureProperty(user => user.LockoutEnd, builder => builder.SetIsHidden(true))
+            .ConfigureProperty(user => user.NormalizedEmail, builder => builder.SetIsHidden(true))
+            .ConfigureProperty(user => user.LockoutEnabled, builder => builder.SetIsHidden(true))
+            .ConfigureProperty(user => user.SecurityStamp, builder => builder.SetIsHidden(true))
+            .ConfigureProperty(user => user.NormalizedUserName, builder => builder.SetIsHidden(true))
+            .ConfigureProperty(user => user.PasswordHash, builder => builder.SetIsHidden(true));
     }
 }

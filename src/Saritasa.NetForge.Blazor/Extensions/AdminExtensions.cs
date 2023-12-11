@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Saritasa.NetForge.Blazor.Constants;
 using Saritasa.NetForge.Blazor.Infrastructure.Authentication;
 using Saritasa.NetForge.Blazor.Infrastructure.DependencyInjection.Startup;
 using Saritasa.NetForge.Domain.Entities.Options;
@@ -31,7 +32,7 @@ public static class AdminExtensions
         services.TryAddScoped<AdminMetadataService>();
 
         services.Configure<AuthorizationOptions>(new AuthorizationOptionsSetup(adminOptions).Setup);
-        services.AddSingleton<IAuthorizationHandler, CustomAuthFunctionHandler>();
+        services.AddScoped<IAuthorizationHandler, CustomAuthFunctionHandler>();
 
         Infrastructure.DependencyInjection.AutoMapperModule.Register(services);
         Infrastructure.DependencyInjection.ApplicationModule.Register(services);
@@ -52,12 +53,27 @@ public static class AdminExtensions
             applicationBuilder.UsePathBase(adminPanelEndpoint);
             applicationBuilder.UseStaticFiles();
             applicationBuilder.UseRouting();
-
+            applicationBuilder.Use(AuthMiddleware);
             applicationBuilder.UseEndpoints(endpointBuilder =>
             {
                 endpointBuilder.MapBlazorHub();
                 endpointBuilder.MapFallbackToPage("/_NetForge");
             });
         });
+    }
+
+    private static async Task AuthMiddleware(HttpContext httpContext, Func<Task> next)
+    {
+        var authorizationService = httpContext.RequestServices.GetRequiredService<IAuthorizationService>();
+        var isAuthorized = await authorizationService
+            .AuthorizeAsync(httpContext.User, PolicyConstants.AdminAccessPolicyName);
+
+        if (!isAuthorized.Succeeded)
+        {
+            httpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
+            return;
+        }
+
+        await next();
     }
 }
