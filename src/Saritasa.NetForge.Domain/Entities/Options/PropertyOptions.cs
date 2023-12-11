@@ -14,8 +14,8 @@ public class PropertyOptions
     /// <inheritdoc cref="PropertyMetadataBase.IsHidden"/>
     public bool IsHidden { get; set; }
 
-    /// <inheritdoc cref="PropertyMetadataBase.IsExcludeFromQuery"/>
-    public bool IsExcludeFromQuery { get; set; }
+    /// <inheritdoc cref="PropertyMetadataBase.IsExcludedFromQuery"/>
+    public bool IsExcludedFromQuery { get; set; }
 
     /// <inheritdoc cref="PropertyMetadataBase.DisplayName"/>
     public string? DisplayName { get; set; }

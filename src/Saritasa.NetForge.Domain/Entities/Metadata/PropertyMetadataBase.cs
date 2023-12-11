@@ -39,9 +39,9 @@ public abstract class PropertyMetadataBase
     public bool IsHidden { get; set; }
 
     /// <summary>
-    /// Whether the property is exclude from the query.
+    /// Whether the property is excluded from the query.
     /// </summary>
-    public bool IsExcludeFromQuery { get; set; }
+    public bool IsExcludedFromQuery { get; set; }
 
     /// <summary>
     /// Display format of the property value.

@@ -435,7 +435,7 @@ You can use `ServiceProvider` to access your services.
 
 ## Exclude property from query
 
-Users can explicitly control whether a property should be excluded from the data query.
+You can explicitly control whether a property should be excluded from the data query.
 
 ### Using Fluent API
 

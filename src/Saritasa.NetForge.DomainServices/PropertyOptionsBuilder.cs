@@ -32,11 +32,11 @@ public class PropertyOptionsBuilder
     }
 
     /// <summary>
-    /// Sets whether the property should be exclude from the query.
+    /// Sets whether the property should be excluded from the query.
     /// </summary>
-    public PropertyOptionsBuilder SetIsExcludeFromQuery(bool isExcludeFromQuery)
+    public PropertyOptionsBuilder SetIsExcludedFromQuery(bool isExcludedFromQuery)
     {
-        options.IsExcludeFromQuery = isExcludeFromQuery;
+        options.IsExcludedFromQuery = isExcludedFromQuery;
         return this;
     }
 

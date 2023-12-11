@@ -80,7 +80,7 @@ public static class EntityMetadataExtensions
         this PropertyMetadataBase property, PropertyOptions propertyOptions)
     {
         property.IsHidden = propertyOptions.IsHidden;
-        property.IsExcludeFromQuery = propertyOptions.IsExcludeFromQuery;
+        property.IsExcludedFromQuery = propertyOptions.IsExcludedFromQuery;
 
         if (!string.IsNullOrEmpty(propertyOptions.DisplayName))
         {
@@ -214,9 +214,9 @@ public static class EntityMetadataExtensions
             property.IsHidden = netForgePropertyAttribute.IsHidden;
         }
 
-        if (netForgePropertyAttribute.IsExcludeFromQuery)
+        if (netForgePropertyAttribute.IsExcludedFromQuery)
         {
-            property.IsExcludeFromQuery = netForgePropertyAttribute.IsExcludeFromQuery;
+            property.IsExcludedFromQuery = netForgePropertyAttribute.IsExcludedFromQuery;
         }
 
         if (netForgePropertyAttribute.Order >= 0)
