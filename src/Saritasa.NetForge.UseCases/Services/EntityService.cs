@@ -51,7 +51,7 @@ public class EntityService : IEntityService
     {
         var metadata = adminMetadataService
             .GetMetadata()
-            .FirstOrDefault(entityMetadata => entityMetadata.StringId.Equals(stringId));
+            .FirstOrDefault(entityMetadata => entityMetadata.StringId.Equals(stringId, StringComparison.OrdinalIgnoreCase));
 
         if (metadata is null)
         {
