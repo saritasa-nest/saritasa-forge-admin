@@ -4,7 +4,7 @@
 
 [[ build.env ]]
     name = 'BP_DOTNET_PUBLISH_FLAGS'
-    value = '--self-contained=true'
+    value = '--self-contained=true --framework=net7.0'
 
 [[ build.buildpacks ]]
     id = "paketo-buildpacks/dotnet-core"
