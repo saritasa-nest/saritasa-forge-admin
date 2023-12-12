@@ -85,7 +85,7 @@ public partial class CustomField
     /// </summary>
     /// <param name="value">Input value.</param>
     /// <param name="propertyName">Name of property that related to the input.</param>
-    public void HandleInputChange(object value, string propertyName)
+    private void HandleInputChange(object value, string propertyName)
     {
         var property = EntityModel.GetType().GetProperty(propertyName)!;
 
