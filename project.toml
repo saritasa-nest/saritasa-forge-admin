@@ -8,7 +8,7 @@
 
 [[ io.buildpacks.build.env ]]
   name = 'BP_DOTNET_FRAMEWORK_VERSION'
-  value = '7.0.305'
+  value = '8.0.100'
 
 [[ build.buildpacks ]]
     id = "paketo-buildpacks/dotnet-core"
