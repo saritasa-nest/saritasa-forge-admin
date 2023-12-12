@@ -65,7 +65,7 @@ public partial class CustomField
     };
 
     /// <summary>
-    /// Gets <see cref="InputType"/> depends on <paramref name="propertyType"/>.
+    /// Gets <see cref="InputType"/> depending on <paramref name="propertyType"/>.
     /// </summary>
     private InputType GetInputType(Type propertyType)
     {
