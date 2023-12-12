@@ -67,7 +67,7 @@ public partial class CustomField
     /// <summary>
     /// Gets <see cref="InputType"/> depends on <paramref name="propertyType"/>.
     /// </summary>
-    public InputType GetInputType(Type propertyType)
+    private InputType GetInputType(Type propertyType)
     {
         foreach (var (types, inputType) in TypeMappingDictionary)
         {
