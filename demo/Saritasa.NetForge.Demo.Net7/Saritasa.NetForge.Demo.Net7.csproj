@@ -33,12 +33,8 @@
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Saritasa.NetForge.Blazor\Saritasa.NetForge.Blazor.csproj">
-          <SetTargetFramework>TargetFramework=net7.0</SetTargetFramework>
-      </ProjectReference>
-      <ProjectReference Include="..\..\src\Saritasa.NetForge.Infrastructure.EfCore\Saritasa.NetForge.Infrastructure.EfCore.csproj" >
-          <SetTargetFramework>TargetFramework=net7.0</SetTargetFramework>
-      </ProjectReference>
+      <ProjectReference Include="..\..\src\Saritasa.NetForge.Blazor\Saritasa.NetForge.Blazor.csproj" AdditionalProperties="TargetFramework=net7.0" />
+      <ProjectReference Include="..\..\src\Saritasa.NetForge.Infrastructure.EfCore\Saritasa.NetForge.Infrastructure.EfCore.csproj" AdditionalProperties="TargetFramework=net7.0" />
     </ItemGroup>
 
 </Project>
