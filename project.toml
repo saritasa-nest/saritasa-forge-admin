@@ -6,6 +6,10 @@
     name = 'BP_DOTNET_PUBLISH_FLAGS'
     value = '--self-contained=true'
 
+[[ io.buildpacks.build.env ]]
+  name = 'BP_DOTNET_FRAMEWORK_VERSION'
+  value = '7.0.305'
+
 [[ build.buildpacks ]]
     id = "paketo-buildpacks/dotnet-core"
     version = "0.40.1"
