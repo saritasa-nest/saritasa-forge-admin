@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.Infrastructure.EfCore", "Saritasa.NetForge.Infrastructure.EfCore\Saritasa.NetForge.Infrastructure.EfCore.csproj", "{DF212AD9-94C1-48BA-9C70-4F5E08BC5EFE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.Demo.Net7", "..\demo\Saritasa.NetForge.Demo.Net7\Saritasa.NetForge.Demo.Net7.csproj", "{E7273DBF-A83A-4D0C-A1AF-A63D3069B685}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.Demo", "..\demo\Saritasa.NetForge.Demo\Saritasa.NetForge.Demo.csproj", "{E7273DBF-A83A-4D0C-A1AF-A63D3069B685}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.UseCases", "Saritasa.NetForge.UseCases\Saritasa.NetForge.UseCases.csproj", "{41C5E508-3FE1-4359-9A4B-AD0F6237B4E9}"
 EndProject
@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.DomainSer
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5D2DF5E1-DF2A-491E-833B-F63D0E156F2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saritasa.NetForge.Tests", "Saritasa.NetForge.Tests\Saritasa.NetForge.Tests.csproj", "{26BBDB9F-643A-487C-BAD5-2DD5748D276C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.Tests", "Saritasa.NetForge.Tests\Saritasa.NetForge.Tests.csproj", "{26BBDB9F-643A-487C-BAD5-2DD5748D276C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
