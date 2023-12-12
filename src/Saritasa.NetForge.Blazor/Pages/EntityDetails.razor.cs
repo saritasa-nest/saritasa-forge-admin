@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
 using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 
@@ -11,6 +12,9 @@ namespace Saritasa.NetForge.Blazor.Pages;
 [Route("/entities/{stringId}")]
 public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
 {
+    [Inject]
+    private INavigationService NavigationService { get; set; } = null!;
+
     /// <summary>
     /// Entity id.
     /// </summary>
