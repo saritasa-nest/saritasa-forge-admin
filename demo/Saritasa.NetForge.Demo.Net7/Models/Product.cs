@@ -128,7 +128,7 @@ public class Product
     public required Supplier Supplier { get; set; }
 
     /// <summary>
-    /// The type of the product.
+    /// The category of the product.
     /// </summary>
-    public ProductType Type { get; set; }
+    public Category Category { get; set; }
 }

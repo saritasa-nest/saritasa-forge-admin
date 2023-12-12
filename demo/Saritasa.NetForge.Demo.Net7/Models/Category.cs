@@ -1,9 +1,9 @@
 ﻿namespace Saritasa.NetForge.Demo.Net7.Models;
 
 /// <summary>
-/// Product type.
+/// Product category.
 /// </summary>
-public enum ProductType
+public enum Category
 {
     /// <summary>
     /// Milk.

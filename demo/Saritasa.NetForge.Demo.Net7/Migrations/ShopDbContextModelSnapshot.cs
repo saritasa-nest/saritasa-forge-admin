@@ -17,7 +17,7 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.11")
+                .HasAnnotation("ProductVersion", "7.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -331,6 +331,10 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("barcode");
 
+                    b.Property<int>("Category")
+                        .HasColumnType("integer")
+                        .HasColumnName("category");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("created_date");
@@ -404,10 +408,6 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                         .IsUnicode(false)
                         .HasColumnType("text")
                         .HasColumnName("supplier_name");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("integer")
-                        .HasColumnName("type");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp without time zone")

@@ -123,7 +123,7 @@ public class Product
     public Supplier Supplier { get; set; } = null!;
 
     /// <summary>
-    /// The type of the product.
+    /// The category of the product.
     /// </summary>
-    public ProductType Type { get; set; }
+    public Category Category { get; set; }
 }

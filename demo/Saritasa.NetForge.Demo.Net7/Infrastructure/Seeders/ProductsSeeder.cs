@@ -72,7 +72,7 @@ internal class ProductsSeeder
         EndOfSalesDate = faker.Date.PastOffset().OrNull(faker),
         PreviousSupplyDate = faker.Date.PastDateOnly(),
         NextSupplyDate = faker.Date.FutureDateOnly().OrNull(faker),
-        Type = faker.Random.Enum<ProductType>(),
+        Category = faker.Random.Enum<Category>(),
         Supplier = new Supplier
         {
             Name = faker.Company.CompanyName(),

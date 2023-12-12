@@ -56,6 +56,13 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                 nullable: false,
                 defaultValue: 0L);
 
+            migrationBuilder.AddColumn<int>(
+                name: "category",
+                table: "products",
+                type: "integer",
+                nullable: false,
+                defaultValue: 0);
+
             migrationBuilder.AddColumn<DateTimeOffset>(
                 name: "end_of_sales_date",
                 table: "products",
@@ -100,13 +107,6 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                 type: "timestamp without time zone",
                 nullable: true);
 
-            migrationBuilder.AddColumn<int>(
-                name: "type",
-                table: "products",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
-
             migrationBuilder.AddColumn<double>(
                 name: "volume",
                 table: "products",
@@ -136,6 +136,10 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                 table: "products");
 
             migrationBuilder.DropColumn(
+                name: "category",
+                table: "products");
+
+            migrationBuilder.DropColumn(
                 name: "end_of_sales_date",
                 table: "products");
 
@@ -161,10 +165,6 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
 
             migrationBuilder.DropColumn(
                 name: "removed_at",
-                table: "products");
-
-            migrationBuilder.DropColumn(
-                name: "type",
                 table: "products");
 
             migrationBuilder.DropColumn(
