@@ -94,7 +94,7 @@ public class AdminOptionsBuilder
     {
         var entityOptionsBuilder = new EntityOptionsBuilder<TEntity>();
         entityOptionsBuilderAction.Invoke(entityOptionsBuilder);
-        options.EntityOptionsList.Add(entityOptionsBuilder.Create());
+        AddOrUpdateEntityOption(entityOptionsBuilder);
         return this;
     }
 
@@ -108,8 +108,38 @@ public class AdminOptionsBuilder
     {
         var entityOptionsBuilder = new EntityOptionsBuilder<TEntity>();
         entityConfiguration.Configure(entityOptionsBuilder);
-        options.EntityOptionsList.Add(entityOptionsBuilder.Create());
+        AddOrUpdateEntityOption(entityOptionsBuilder);
         return this;
+    }
+
+    private void AddOrUpdateEntityOption<TEntity>(EntityOptionsBuilder<TEntity> entityOptionsBuilder) where TEntity : class
+    {
+        var optionType = typeof(TEntity);
+        var existingOption = options.EntityOptionsList.FirstOrDefault(o => o.EntityType == optionType);
+        var newOption = entityOptionsBuilder.Create();
+        if (existingOption != null)
+        {
+            UpdateProperties<TEntity>(existingOption, newOption);
+            options.EntityOptionsList.Remove(existingOption);
+        }
+        options.EntityOptionsList.Add(newOption);
+    }
+
+    private static void UpdateProperties<TEntity>(EntityOptions source, EntityOptions destination) where TEntity : class
+    {
+        var type = source.GetType();
+        var properties = type.GetProperties();
+        foreach (var property in properties)
+        {
+            if (property is { CanRead: true, CanWrite: true })
+            {
+                var value = property.GetValue(source);
+                if (value != null && string.IsNullOrEmpty(property.GetValue(destination).ToString()))
+                {
+                    property.SetValue(destination, value);
+                }
+            }
+        }
     }
 
     /// <summary>
