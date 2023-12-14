@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Demo.Constants;
+using Saritasa.NetForge.Demo.Net7.Models;
 using Saritasa.NetForge.Domain.Attributes;
 
 namespace Saritasa.NetForge.Demo.Models;
