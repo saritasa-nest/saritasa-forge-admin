@@ -1,13 +1,10 @@
-﻿using Saritasa.NetForge.Demo.Constants;
-using Saritasa.NetForge.Demo.Net7.Models;
-using Saritasa.NetForge.Domain.Attributes;
+﻿using Saritasa.NetForge.Domain.Attributes;
 
-namespace Saritasa.NetForge.Demo.Models;
+namespace Saritasa.NetForge.Tests.Domain.Models;
 
 /// <summary>
 /// Represents a product entity.
 /// </summary>
-[NetForgeEntity(Description = "The product in the shop.", GroupName = GroupConstants.Shops)]
 public class Product
 {
     /// <summary>
@@ -18,17 +15,16 @@ public class Product
     /// <summary>
     /// The name of the product.
     /// </summary>
-    public required string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// The description of the product.
     /// </summary>
-    public required string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     /// <summary>
     /// The price of the product.
     /// </summary>
-    [NetForgeProperty(DisplayFormat = "{0:C}")]
     public decimal Price { get; set; }
 
     /// <summary>
@@ -80,7 +76,7 @@ public class Product
     /// Whether the product still available.
     /// </summary>
     public bool IsAvailable { get; set; }
-    
+
     /// <summary>
     /// Whether sales of the product was ended.
     /// </summary>
@@ -119,14 +115,12 @@ public class Product
     /// <summary>
     /// The list of tags associated with the product.
     /// </summary>
-    [NetForgeNavigation(IsIncluded = true)]
     public List<ProductTag> Tags { get; set; } = new();
 
     /// <summary>
     /// Supplier that providing this product.
     /// </summary>
-    [NetForgeNavigation(IsIncluded = true)]
-    public required Supplier Supplier { get; set; }
+    public Supplier Supplier { get; set; } = null!;
 
     /// <summary>
     /// The category of the product.

@@ -244,4 +244,10 @@ public class EntityService : IEntityService
 
         return query;
     }
+
+    /// <inheritdoc />
+    public async Task CreateEntityAsync(object entity, Type entityType, CancellationToken cancellationToken)
+    {
+        await dataService.AddAsync(entity, entityType, cancellationToken);
+    }
 }

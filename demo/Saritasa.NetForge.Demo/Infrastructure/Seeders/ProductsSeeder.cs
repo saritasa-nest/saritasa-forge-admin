@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using Saritasa.NetForge.Demo.Models;
+using Saritasa.NetForge.Demo.Net7.Models;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.Seeders;
 
@@ -55,13 +56,24 @@ internal class ProductsSeeder
         Name = faker.Commerce.ProductName(),
         Description = faker.Commerce.ProductDescription(),
         Price = decimal.Parse(faker.Commerce.Price()),
+        MaxPrice = decimal.Parse(faker.Commerce.Price()),
         StockQuantity = faker.Random.Int(min: 0, max: 100),
+        AveragePurchaseCount = faker.Random.Int(min: 0, max: 100),
         WidthInCentimeters = GetRandomFloat(1000),
         HeightInCentimeters = GetRandomFloat(1000),
         WeightInGrams = GetRandomFloat(1000),
         LengthInCentimeters = GetRandomFloat(1000),
+        Volume = Math.Round(faker.Random.Double(max: 10), 2),
+        Barcode = faker.Random.Long(min: 0),
+        IsAvailable = faker.Random.Bool(),
+        IsSalesEnded = faker.Random.Bool().OrNull(faker),
         CreatedDate = DateTime.UtcNow,
         UpdatedDate = DateTime.UtcNow,
+        RemovedAt = faker.Date.Past().OrNull(faker),
+        EndOfSalesDate = faker.Date.PastOffset().OrNull(faker),
+        PreviousSupplyDate = faker.Date.PastDateOnly(),
+        NextSupplyDate = faker.Date.FutureDateOnly().OrNull(faker),
+        Category = faker.Random.Enum<Category>(),
         Supplier = new Supplier
         {
             Name = faker.Company.CompanyName(),
