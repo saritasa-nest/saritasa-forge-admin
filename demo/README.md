@@ -6,7 +6,7 @@ This is a demo web project that contains the database context to be used in the 
 
 This project contains some helper commands that can be used to initialize / interact with basic project data.
 
-General syntax for executing a command (from command line): `Saritasa.NetForge.Demo.Net7.exe command-name parameters`
+General syntax for executing a command (from command line): `Saritasa.NetForge.Demo.exe command-name parameters`
 
 ### Create User
 
@@ -20,7 +20,7 @@ Arguments:
 
 Example usage:
 
-`Saritasa.NetForge.Demo.Net7.exe create-user --first-name=John --last-name=Doe --email=jdoe@dotnet-forge.com --password=11111111Aa`
+`Saritasa.NetForge.Demo.exe create-user --first-name=John --last-name=Doe --email=jdoe@dotnet-forge.com --password=11111111Aa`
 
 ### Data seed
 
@@ -40,4 +40,4 @@ Available seeders:
 
 Example usage:
 
-`Saritasa.NetForge.Demo.Net7.exe seed --name=Products`
+`Saritasa.NetForge.Demo.exe seed --name=Products`

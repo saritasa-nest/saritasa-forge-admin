@@ -51,7 +51,7 @@ public class EntityService : IEntityService
     {
         var metadata = adminMetadataService
             .GetMetadata()
-            .FirstOrDefault(entityMetadata => entityMetadata.StringId.Equals(stringId));
+            .FirstOrDefault(entityMetadata => entityMetadata.StringId.Equals(stringId, StringComparison.OrdinalIgnoreCase));
 
         if (metadata is null)
         {
@@ -59,7 +59,7 @@ public class EntityService : IEntityService
         }
 
         var displayableProperties = metadata.Properties
-            .Where(property => property is { IsForeignKey: false, IsHidden: false });
+            .Where(property => property is { IsForeignKey: false, IsExcludedFromQuery: false });
 
         var propertyDtos = mapper
             .Map<IEnumerable<PropertyMetadata>, IEnumerable<PropertyMetadataDto>>(displayableProperties);
@@ -67,7 +67,7 @@ public class EntityService : IEntityService
         if (metadata.Navigations.Any())
         {
             var displayableNavigations = metadata.Navigations
-                .Where(navigation => navigation is { IsHidden: false, IsIncluded: true });
+                .Where(navigation => navigation is { IsExcludedFromQuery: false, IsIncluded: true });
 
             var navigations = mapper
                 .Map<IEnumerable<NavigationMetadata>, IEnumerable<PropertyMetadataDto>>(displayableNavigations);
