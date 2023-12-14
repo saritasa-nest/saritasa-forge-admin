@@ -56,4 +56,7 @@ public record PropertyMetadataDto
 
     /// <inheritdoc cref="PropertyMetadataBase.IsHidden"/>
     public bool IsHidden { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadataBase.HtmlTemplate"/>
+    public string HtmlTemplate { get; set; } = string.Empty;
 }

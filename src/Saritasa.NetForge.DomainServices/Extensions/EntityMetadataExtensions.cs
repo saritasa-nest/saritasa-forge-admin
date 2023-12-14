@@ -111,6 +111,11 @@ public static class EntityMetadataExtensions
         {
             property.EmptyValueDisplay = propertyOptions.EmptyValueDisplay;
         }
+
+        if (!string.IsNullOrEmpty(propertyOptions.HtmlTemplate))
+        {
+            property.HtmlTemplate = propertyOptions.HtmlTemplate;
+        }
     }
 
     /// <summary>

@@ -116,4 +116,13 @@ public class PropertyOptionsBuilder
         options.EmptyValueDisplay = emptyValueDisplay;
         return this;
     }
+
+    /// <summary>
+    /// Sets the value to display when value of property is empty.
+    /// </summary>
+    public PropertyOptionsBuilder SetHtmlTemplate(string htmlTemplate)
+    {
+        options.HtmlTemplate = htmlTemplate;
+        return this;
+    }
 }

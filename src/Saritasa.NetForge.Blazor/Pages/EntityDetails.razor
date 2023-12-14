@@ -63,7 +63,15 @@
                             </HeaderTemplate>
 
                             <CellTemplate Context="cell">
-                                @ViewModel.GetPropertyValue(cell.Item, property)
+                                @if (!string.IsNullOrEmpty(property.HtmlTemplate))
+                                {
+                                    var htmlDisplay = property.HtmlTemplate.Replace(property.Name, ViewModel.GetPropertyValue(cell.Item, property)?.ToString());
+                                    @((MarkupString)htmlDisplay)
+                                }
+                                else
+                                {
+                                    @ViewModel.GetPropertyValue(cell.Item, property) 
+                                }
                             </CellTemplate>
                         </TemplateColumn>
                     }
