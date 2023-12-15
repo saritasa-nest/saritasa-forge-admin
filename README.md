@@ -451,3 +451,24 @@ optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
 [NetForgeProperty(IsExcludeFromQuery = true)]
 public string Property { get; set; }
 ```
+
+## Formatting property as HTML
+
+You can configure certain entity properties to display custom HTML content in the data grid. To configure a property using custom HTML, add the HTML tag and the property name inside the tag.
+
+### Using Fluent API
+
+```csharp
+optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
+{
+    entityOptionsBuilder.ConfigureProperty(user => user.Id,
+        propertyBuilder => propertyBuilder.SetHtmlTemplate("<i>Id</i>"));
+});
+```
+
+### Using Attribute
+
+```csharp
+[NetForgeProperty(HtmlTemplate = "<i>Id</i>")]
+public string Property { get; set; }
+```
