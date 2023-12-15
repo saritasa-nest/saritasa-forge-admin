@@ -94,7 +94,7 @@ public class AdminOptionsBuilder
     {
         var entityOptionsBuilder = new EntityOptionsBuilder<TEntity>();
         entityOptionsBuilderAction.Invoke(entityOptionsBuilder);
-        AddOrUpdateEntityOption(entityOptionsBuilder);
+        AddOrUpdateEntityOptions(entityOptionsBuilder);
         return this;
     }
 
@@ -108,24 +108,24 @@ public class AdminOptionsBuilder
     {
         var entityOptionsBuilder = new EntityOptionsBuilder<TEntity>();
         entityConfiguration.Configure(entityOptionsBuilder);
-        AddOrUpdateEntityOption(entityOptionsBuilder);
+        AddOrUpdateEntityOptions(entityOptionsBuilder);
         return this;
     }
 
-    private void AddOrUpdateEntityOption<TEntity>(EntityOptionsBuilder<TEntity> entityOptionsBuilder) where TEntity : class
+    private void AddOrUpdateEntityOptions<TEntity>(EntityOptionsBuilder<TEntity> entityOptionsBuilder) where TEntity : class
     {
         var optionType = typeof(TEntity);
         var existingOption = options.EntityOptionsList.FirstOrDefault(o => o.EntityType == optionType);
         var newOption = entityOptionsBuilder.Create();
         if (existingOption != null)
         {
-            UpdateProperties<TEntity>(existingOption, newOption);
+            UpdateProperties(existingOption, newOption);
             options.EntityOptionsList.Remove(existingOption);
         }
         options.EntityOptionsList.Add(newOption);
     }
 
-    private static void UpdateProperties<TEntity>(EntityOptions source, EntityOptions destination) where TEntity : class
+    private static void UpdateProperties(EntityOptions source, EntityOptions destination)
     {
         var type = source.GetType();
         var properties = type.GetProperties();
