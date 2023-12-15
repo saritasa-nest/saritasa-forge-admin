@@ -267,6 +267,11 @@ public static class EntityMetadataExtensions
         {
             property.EmptyValueDisplay = netForgePropertyAttribute.EmptyValueDisplay;
         }
+
+        if (!string.IsNullOrEmpty(netForgePropertyAttribute.HtmlTemplate))
+        {
+            property.HtmlTemplate = netForgePropertyAttribute.HtmlTemplate;
+        }
     }
 
     private static void SetGroupForEntity(string groupName, EntityMetadata entityMetadata, AdminOptions adminOptions)
