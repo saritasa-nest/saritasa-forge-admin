@@ -30,6 +30,12 @@ public class EfCoreDataService : IOrmDataService
     /// <inheritdoc/>
     public IQueryable<object> GetQuery(Type clrType)
     {
+        var dbContext = GetDbContextThatContainsEntity(clrType);
+        return dbContext.Set(clrType).OfType<object>();
+    }
+
+    private DbContext GetDbContextThatContainsEntity(Type clrType)
+    {
         foreach (var dbContextType in efCoreOptions.DbContexts)
         {
             var dbContextService = serviceProvider.GetService(dbContextType);
@@ -40,7 +46,12 @@ public class EfCoreDataService : IOrmDataService
             }
 
             var dbContext = (DbContext)dbContextService;
-            return dbContext.Set(clrType).OfType<object>();
+            var entityType = dbContext.Model.FindEntityType(clrType);
+
+            if (entityType is not null)
+            {
+                return dbContext;
+            }
         }
 
         throw new ArgumentException("Database entity with given type was not found", nameof(clrType));
@@ -268,5 +279,14 @@ public class EfCoreDataService : IOrmDataService
         }
 
         return propertyExpression;
+    }
+
+    /// <inheritdoc />
+    public async Task AddAsync(object entity, Type entityType, CancellationToken cancellationToken)
+    {
+        var dbContext = GetDbContextThatContainsEntity(entityType);
+
+        dbContext.Add(entity);
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

@@ -51,7 +51,7 @@ public class EntityService : IEntityService
     {
         var metadata = adminMetadataService
             .GetMetadata()
-            .FirstOrDefault(entityMetadata => entityMetadata.StringId.Equals(stringId));
+            .FirstOrDefault(entityMetadata => entityMetadata.StringId.Equals(stringId, StringComparison.OrdinalIgnoreCase));
 
         if (metadata is null)
         {
@@ -243,5 +243,11 @@ public class EntityService : IEntityService
         }
 
         return query;
+    }
+
+    /// <inheritdoc />
+    public async Task CreateEntityAsync(object entity, Type entityType, CancellationToken cancellationToken)
+    {
+        await dataService.AddAsync(entity, entityType, cancellationToken);
     }
 }
