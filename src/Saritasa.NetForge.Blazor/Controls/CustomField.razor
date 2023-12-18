@@ -1,0 +1,30 @@
+﻿@if (PropertyType == typeof(bool) || PropertyType == typeof(bool?))
+{
+    <MudCheckBox T="bool"
+                 Label="@PropertyName"
+                 CheckedChanged="value => HandleInputChange(value!, PropertyName)">
+    </MudCheckBox>
+}
+else if (PropertyType.IsEnum)
+{
+    <MudSelect T="string"
+               Label="@PropertyName"
+               Class="create-entity__input"
+               Variant="Variant.Outlined"
+               TextChanged="value => HandleInputChange(value, PropertyName)">
+        @foreach (var enumValue in Enum.GetNames(PropertyType))
+        {
+            <MudSelectItem Value="enumValue" />
+        }
+    </MudSelect>
+}
+else
+{
+    <MudTextField T="string"
+                  Label="@PropertyName"
+                  Class="create-entity__input"
+                  Variant="Variant.Outlined"
+                  InputType="GetInputType(PropertyType)"
+                  TextChanged="value => HandleInputChange(value, PropertyName)">
+    </MudTextField>
+}
