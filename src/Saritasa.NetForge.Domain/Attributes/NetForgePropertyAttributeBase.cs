@@ -32,6 +32,6 @@ public abstract class NetForgePropertyAttributeBase : Attribute
     /// <inheritdoc cref="PropertyMetadataBase.EmptyValueDisplay"/>
     public string EmptyValueDisplay { get; set; } = string.Empty;
 
-    /// <inheritdoc cref="PropertyMetadataBase.HtmlTemplate"/>
-    public string HtmlTemplate { get; set; } = string.Empty;
+    /// <inheritdoc cref="PropertyMetadataBase.DisplayAsHtml"/>
+    public bool DisplayAsHtml { get; set; }
 }

@@ -10,7 +10,7 @@ public class Address
     /// <summary>
     /// The unique identifier for the address.
     /// </summary>
-    [NetForgeProperty(HtmlTemplate = "<i>Id</i>")]
+    [NetForgeProperty(DisplayAsHtml = true)]
     public int Id { get; set; }
 
     /// <summary>

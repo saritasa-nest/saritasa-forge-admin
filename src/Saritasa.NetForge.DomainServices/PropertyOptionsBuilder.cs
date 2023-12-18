@@ -120,9 +120,9 @@ public class PropertyOptionsBuilder
     /// <summary>
     /// Sets the value to display when value of property is empty.
     /// </summary>
-    public PropertyOptionsBuilder SetHtmlTemplate(string htmlTemplate)
+    public PropertyOptionsBuilder SetDisplayAsHtml(bool displayAsHtml)
     {
-        options.HtmlTemplate = htmlTemplate;
+        options.DisplayAsHtml = displayAsHtml;
         return this;
     }
 }

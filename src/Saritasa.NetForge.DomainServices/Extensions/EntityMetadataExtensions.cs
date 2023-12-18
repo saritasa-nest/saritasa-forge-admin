@@ -112,9 +112,9 @@ public static class EntityMetadataExtensions
             property.EmptyValueDisplay = propertyOptions.EmptyValueDisplay;
         }
 
-        if (!string.IsNullOrEmpty(propertyOptions.HtmlTemplate))
+        if (propertyOptions.DisplayAsHtml)
         {
-            property.HtmlTemplate = propertyOptions.HtmlTemplate;
+            property.DisplayAsHtml = propertyOptions.DisplayAsHtml;
         }
     }
 
@@ -268,9 +268,9 @@ public static class EntityMetadataExtensions
             property.EmptyValueDisplay = netForgePropertyAttribute.EmptyValueDisplay;
         }
 
-        if (!string.IsNullOrEmpty(netForgePropertyAttribute.HtmlTemplate))
+        if (netForgePropertyAttribute.DisplayAsHtml)
         {
-            property.HtmlTemplate = netForgePropertyAttribute.HtmlTemplate;
+            property.DisplayAsHtml = netForgePropertyAttribute.DisplayAsHtml;
         }
     }
 

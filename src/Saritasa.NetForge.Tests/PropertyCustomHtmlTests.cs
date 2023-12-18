@@ -18,20 +18,19 @@ public class PropertyCustomHtmlTests
     {
         // Arrange
         var adminOptionsBuilder = new AdminOptionsBuilder();
-        const string mockCustomHtml = "<i>Id</i>";
 
         // Act
         adminOptionsBuilder.ConfigureEntity<User>(builder =>
         {
-            builder.ConfigureProperty(user => user.Id, propBuilder => propBuilder.SetHtmlTemplate(mockCustomHtml));
+            builder.ConfigureProperty(user => user.FirstName, propBuilder => propBuilder.SetDisplayAsHtml(true));
         });
 
         // Assert
         var adminOptions = adminOptionsBuilder.Create();
         var userEntity = adminOptions.EntityOptionsList.FirstOrDefault(x => x.EntityType == typeof(User));
-        var userIdCustomHtml = userEntity?.PropertyOptions.FirstOrDefault(x => x.PropertyName == "Id")?.HtmlTemplate;
-        Assert.NotNull(userIdCustomHtml);
-        Assert.Equal(mockCustomHtml, userIdCustomHtml);
+        var userFirstNameAllowedHtml = userEntity?.PropertyOptions.FirstOrDefault(x => x.PropertyName == "FirstName")?.DisplayAsHtml;
+
+        Assert.True(userFirstNameAllowedHtml);
     }
 
     /// <summary>
@@ -47,6 +46,6 @@ public class PropertyCustomHtmlTests
 
         // Assert
         Assert.NotNull(attribute);
-        Assert.Equal("<i>Id</i>", attribute.HtmlTemplate);
+        Assert.True(attribute.DisplayAsHtml);
     }
 }

@@ -131,7 +131,7 @@ public class EntityDetailsViewModel : BaseViewModel
     /// <param name="source">Source object.</param>
     /// <param name="property">Property metadata.</param>
     /// <returns>Property value.</returns>
-    public object? GetPropertyValue(object source, PropertyMetadataDto property)
+    public object GetPropertyValue(object source, PropertyMetadataDto property)
     {
         var propertyInfo = source.GetType().GetProperty(property.Name);
         var value = propertyInfo?.GetValue(source);

@@ -69,7 +69,7 @@ public abstract class PropertyMetadataBase
     public string EmptyValueDisplay { get; set; } = string.Empty;
 
     /// <summary>
-    /// Html template of property in case user want custom HTML content.
+    /// Whether the property is rendered as HTML.
     /// </summary>
-    public string HtmlTemplate { get; set; } = string.Empty;
+    public bool DisplayAsHtml { get; set; }
 }
