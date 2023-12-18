@@ -454,7 +454,7 @@ public string Property { get; set; }
 
 ## Formatting property as HTML
 
-You can configure certain entity properties to display custom HTML content in the data grid. To configure a property using custom HTML, add the HTML tag and the property name inside the tag.
+You can configure certain entity properties to rendered as custom HTML content in the data grid.
 
 ### Using Fluent API
 
@@ -462,13 +462,13 @@ You can configure certain entity properties to display custom HTML content in th
 optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
 {
     entityOptionsBuilder.ConfigureProperty(user => user.Id,
-        propertyBuilder => propertyBuilder.SetHtmlTemplate("<i>Id</i>"));
+        propertyBuilder => propertyBuilder.SetDisplayAsHtml(true));
 });
 ```
 
 ### Using Attribute
 
 ```csharp
-[NetForgeProperty(HtmlTemplate = "<i>Id</i>")]
+[NetForgeProperty(DisplayAsHtml = true)]
 public string Property { get; set; }
 ```
