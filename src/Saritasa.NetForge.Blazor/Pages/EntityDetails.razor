@@ -77,10 +77,10 @@
 
                             <CellTemplate Context="cell">
                                 @{
-                                    var propertyValue = ViewModel.GetPropertyValue(cell.Item, property);
+                                    var propertyValue = ViewModel.GetPropertyValue(cell.Item, property).ToString();
                                     if (property.DisplayAsHtml)
                                     {
-                                        @((MarkupString)propertyValue)
+                                        @((MarkupString)propertyValue!)
                                     }
                                     else
                                     {
