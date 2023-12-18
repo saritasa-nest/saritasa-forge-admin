@@ -1,4 +1,6 @@
-﻿namespace Saritasa.NetForge.Tests.Domain.Models;
+﻿using Saritasa.NetForge.Domain.Attributes;
+
+namespace Saritasa.NetForge.Tests.Domain.Models;
 
 /// <summary>
 /// Represents an address entity.
@@ -8,6 +10,7 @@ public class Address
     /// <summary>
     /// The unique identifier for the address.
     /// </summary>
+    [NetForgeProperty(HtmlTemplate = "<i>Id</i>")]
     public int Id { get; set; }
 
     /// <summary>
