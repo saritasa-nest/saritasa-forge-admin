@@ -13,6 +13,7 @@ public class UserAdminConfiguration : IEntityAdminConfiguration<User>
     public void Configure(EntityOptionsBuilder<User> entityOptionsBuilder)
     {
         entityOptionsBuilder.SetGroup("Identity")
+            .SetDescription("This is a description")
             .AddCalculatedProperties(user => user.FullName, user => user.Age)
             .ConfigureProperty(user => user.FullName, builder => builder.SetOrder(1))
             .ConfigureProperty(user => user.ConcurrencyStamp, builder => builder.SetIsHidden(true))

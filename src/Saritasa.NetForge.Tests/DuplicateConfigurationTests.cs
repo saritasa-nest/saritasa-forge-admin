@@ -18,22 +18,41 @@ public class DuplicateEntityOptionsConfigurationTests
     {
         // Arrange
         var adminOptionsBuilder = new AdminOptionsBuilder();
-        const string mockDescription = "This is a description";
 
         // Act
-        adminOptionsBuilder.ConfigureEntity<User>(builder =>
+        adminOptionsBuilder.ConfigureEntity(new UserAdminConfiguration())
+        .ConfigureEntity<User>(builder =>
+        {
+            builder.SetIsHidden(true);
+        });
+
+        // Assert
+        var adminOptions = adminOptionsBuilder.Create();
+        var entityOptionsCount = adminOptions.EntityOptionsList.Count;
+        Assert.Equal(1, entityOptionsCount);
+    }
+
+    /// <summary>
+    /// Verify that configure entity with both fluent API and configuration class will take the second configuration values.
+    /// </summary>
+    [Fact]
+    public void ConfigureEntity_WithFluentApiAndConfiguration_ShouldCreateOverrideValue()
+    {
+        // Arrange
+        var adminOptionsBuilder = new AdminOptionsBuilder();
+        const string mockDescription = "This is an override description";
+
+        // Act
+        adminOptionsBuilder.ConfigureEntity(new UserAdminConfiguration())
+        .ConfigureEntity<User>(builder =>
         {
             builder.SetDescription(mockDescription);
-        }).ConfigureEntity(new UserAdminConfiguration());
+        });
 
         // Assert
         var adminOptions = adminOptionsBuilder.Create();
         var userDescription = adminOptions.EntityOptionsList.FirstOrDefault(x => x.EntityType == typeof(User))
             ?.Description;
         Assert.Equal(mockDescription, userDescription);
-
-        // Ensure that only one instance of entity options is created
-        var entityOptionsCount = adminOptions.EntityOptionsList.Count;
-        Assert.Equal(1, entityOptionsCount);
     }
 }
