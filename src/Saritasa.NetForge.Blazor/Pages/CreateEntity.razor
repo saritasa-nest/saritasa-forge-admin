@@ -19,10 +19,7 @@
 
                 foreach (var property in properties)
                 {
-                    var propertyType = ViewModel.Model.ClrType?.GetProperty(property.Name)?.PropertyType;
-
-                    <CustomField PropertyName="@property.Name"
-                                 PropertyType="@propertyType"
+                    <CustomField Property="@property"
                                  EntityModel="@ViewModel.EntityModel">
                     </CustomField>
                 }
