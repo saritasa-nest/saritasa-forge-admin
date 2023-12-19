@@ -1,4 +1,5 @@
-﻿using Saritasa.NetForge.Demo.Constants;
+﻿using System.ComponentModel;
+using Saritasa.NetForge.Demo.Constants;
 using Saritasa.NetForge.Demo.Net7.Models;
 using Saritasa.NetForge.Domain.Attributes;
 
@@ -34,6 +35,7 @@ public class Product
     /// <summary>
     /// The highest price on the product by all the time.
     /// </summary>
+    [NetForgeProperty(Description = "Maximum price that the product had.")]
     public decimal? MaxPrice { get; set; }
 
     /// <summary>
@@ -79,6 +81,7 @@ public class Product
     /// <summary>
     /// Whether the product still available.
     /// </summary>
+    [NetForgeProperty(Description = "The product still in sale.")]
     public bool IsAvailable { get; set; }
     
     /// <summary>
@@ -131,5 +134,6 @@ public class Product
     /// <summary>
     /// The category of the product.
     /// </summary>
+    [Description("Product category.")]
     public Category Category { get; set; }
 }
