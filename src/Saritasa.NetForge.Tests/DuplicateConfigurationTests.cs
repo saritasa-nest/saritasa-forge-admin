@@ -14,10 +14,12 @@ public class DuplicateEntityOptionsConfigurationTests
     /// Verify that configure entity with both fluent API and configuration class only create 1 instance of the entity options.
     /// </summary>
     [Fact]
-    public void ConfigureEntity_WithFluentApiAndConfiguration_ShouldNotCreateDuplicateOptions()
+    public void ConfigureEntity_WithFluentApiAndConfigurationClass_ShouldNotCreateDuplicateOptions()
     {
         // Arrange
         var adminOptionsBuilder = new AdminOptionsBuilder();
+        const int expectedOptionsCount = 1;
+        var adminOptions = adminOptionsBuilder.Create();
 
         // Act
         adminOptionsBuilder.ConfigureEntity(new UserAdminConfiguration())
@@ -27,20 +29,20 @@ public class DuplicateEntityOptionsConfigurationTests
         });
 
         // Assert
-        var adminOptions = adminOptionsBuilder.Create();
         var entityOptionsCount = adminOptions.EntityOptionsList.Count;
-        Assert.Equal(1, entityOptionsCount);
+        Assert.Equal(expectedOptionsCount, entityOptionsCount);
     }
 
     /// <summary>
     /// Verify that configure entity with both fluent API and configuration class will take the second configuration values.
     /// </summary>
     [Fact]
-    public void ConfigureEntity_WithFluentApiAndConfiguration_ShouldCreateOverrideValue()
+    public void ConfigureEntity_WithFluentApiAndConfigurationClass_ShouldCreateOverrideValue()
     {
         // Arrange
         var adminOptionsBuilder = new AdminOptionsBuilder();
         const string mockDescription = "This is an override description";
+        var adminOptions = adminOptionsBuilder.Create();
 
         // Act
         adminOptionsBuilder.ConfigureEntity(new UserAdminConfiguration())
@@ -50,7 +52,6 @@ public class DuplicateEntityOptionsConfigurationTests
         });
 
         // Assert
-        var adminOptions = adminOptionsBuilder.Create();
         var userDescription = adminOptions.EntityOptionsList.FirstOrDefault(x => x.EntityType == typeof(User))
             ?.Description;
         Assert.Equal(mockDescription, userDescription);
