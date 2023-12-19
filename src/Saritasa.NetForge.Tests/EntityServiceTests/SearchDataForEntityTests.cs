@@ -198,4 +198,24 @@ public class SearchDataForEntityTests : IDisposable
         // Assert
         Assert.Equal(expectedDataCount, searchedData.Metadata.TotalCount);
     }
+
+    /// <summary>
+    /// Test for <seealso cref="EntityService.SearchDataForEntityAsync"/>
+    /// using <see cref="SearchType.ExactMatchCaseInsensitive"/>.
+    /// </summary>
+    [Fact]
+    public async Task SearchDataForEntityAsync_WithoutSearch_ShouldFindAll()
+    {
+        // Arrange
+        await InitializeTestServicesAsync(SearchType.None, string.Empty);
+        var expectedDataCount = await TestDbContext.Addresses.CountAsync();
+
+        // Act
+        var searchedData =
+            await entityService.SearchDataForEntityAsync(addressEntity.ClrType, addressEntity.Properties, searchOptions,
+                searchFunction: null, customQueryFunction: null);
+
+        // Assert
+        Assert.Equal(expectedDataCount, searchedData.Metadata.TotalCount);
+    }
 }
