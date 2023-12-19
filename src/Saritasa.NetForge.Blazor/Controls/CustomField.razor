@@ -11,7 +11,6 @@ else if (PropertyType.IsEnum)
 {
     <MudSelect T="string"
                Label="@Property.Name"
-               Class="create-entity__input"
                Variant="Variant.Outlined"
                TextChanged="value => HandleInputChange(value, Property.Name)"
                HelperText="@Property.Description">
@@ -25,7 +24,6 @@ else
 {
     <MudTextField T="string"
                   Label="@Property.Name"
-                  Class="create-entity__input"
                   Variant="Variant.Outlined"
                   InputType="GetInputType(PropertyType)"
                   TextChanged="value => HandleInputChange(value, Property.Name)"

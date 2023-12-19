@@ -1,7 +1,3 @@
-﻿::deep .create-entity__input {
-    max-width: 40%;
-}
-
-::deep .mud-input-label {
+﻿::deep .mud-input-label {
     font-size: 1.2rem !important;
 }
