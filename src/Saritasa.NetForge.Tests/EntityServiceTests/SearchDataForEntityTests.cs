@@ -12,19 +12,19 @@ using Saritasa.NetForge.UseCases.Metadata.Services;
 using Saritasa.NetForge.UseCases.Services;
 using Xunit;
 
-namespace Saritasa.NetForge.Tests;
+namespace Saritasa.NetForge.Tests.EntityServiceTests;
 
 /// <summary>
 /// Create entity tests.
 /// </summary>
-public class EntitySearchTests : IDisposable
+public class SearchDataForEntityTests : IDisposable
 {
     private TestDbContext TestDbContext { get; set; }
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public EntitySearchTests()
+    public SearchDataForEntityTests()
     {
         var dbOptions = new DbContextOptionsBuilder<TestDbContext>()
             .UseInMemoryDatabase("NetForgeTest")
@@ -105,7 +105,7 @@ public class EntitySearchTests : IDisposable
     /// Create valid entity test.
     /// </summary>
     [Fact]
-    public async Task SearchDataForEntityAsync_ValidSearch_ShouldFind3()
+    public async Task SearchDataForEntityAsync_ContainsCaseInsensitiveSearch_ShouldFind3()
     {
         // Arrange
         var automapper = AutomapperHelper.CreateAutomapper();
@@ -128,10 +128,51 @@ public class EntitySearchTests : IDisposable
             SearchString = "ain"
         };
 
-        const string addressesEntity = "Addresses";
-        var addressEntity = await entityService.GetEntityByIdAsync(addressesEntity, CancellationToken.None);
+        const string addressEntityName = "Addresses";
+        var addressEntity = await entityService.GetEntityByIdAsync(addressEntityName, CancellationToken.None);
 
         const int expectedDataCount = 3;
+
+        // Act
+        var searchedData =
+            await entityService.SearchDataForEntityAsync(addressEntity.ClrType, addressEntity.Properties, searchOptions,
+                searchFunction: null, customQueryFunction: null);
+
+        // Assert
+        Assert.Equal(expectedDataCount, searchedData.Metadata.TotalCount);
+    }
+
+    /// <summary>
+    /// Create valid entity test.
+    /// </summary>
+    [Fact]
+    public async Task SearchDataForEntityAsync_StartsWithCaseSensitiveSearch_ShouldFind2()
+    {
+        // Arrange
+        var automapper = AutomapperHelper.CreateAutomapper();
+
+        var efCoreMetadataService = TestDbContext.CreateEfCoreMetadataService();
+        var adminOptions = CreateAdminOptionsWithSearchType(SearchType.StartsWithCaseSensitive);
+        var memoryCache = MemoryCacheHelper.CreateMemoryCache();
+        var adminMetadataService =
+            new AdminMetadataService(efCoreMetadataService, adminOptions, memoryCache);
+
+        var efCoreDataService = TestDbContext.CreateEfCoreDataService();
+
+        var serviceProvider = new Mock<IServiceProvider>();
+
+        var entityService =
+            new EntityService(automapper, adminMetadataService, efCoreDataService, serviceProvider.Object);
+
+        var searchOptions = new SearchOptions
+        {
+            SearchString = "Second"
+        };
+
+        const string addressEntityName = "Addresses";
+        var addressEntity = await entityService.GetEntityByIdAsync(addressEntityName, CancellationToken.None);
+
+        const int expectedDataCount = 2;
 
         // Act
         var searchedData =
