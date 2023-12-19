@@ -102,7 +102,8 @@ public class SearchDataForEntityTests : IDisposable
     }
 
     /// <summary>
-    /// Create valid entity test.
+    /// Test for <seealso cref="EntityService.SearchDataForEntityAsync"/>
+    /// using <see cref="SearchType.ContainsCaseInsensitive"/>.
     /// </summary>
     [Fact]
     public async Task SearchDataForEntityAsync_ContainsCaseInsensitiveSearch_ShouldFind3()
@@ -143,7 +144,8 @@ public class SearchDataForEntityTests : IDisposable
     }
 
     /// <summary>
-    /// Create valid entity test.
+    /// Test for <seealso cref="EntityService.SearchDataForEntityAsync"/>
+    /// using <see cref="SearchType.StartsWithCaseSensitive"/>.
     /// </summary>
     [Fact]
     public async Task SearchDataForEntityAsync_StartsWithCaseSensitiveSearch_ShouldFind2()
