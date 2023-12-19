@@ -8,6 +8,7 @@ using Saritasa.NetForge.Tests.Domain.Models;
 using Saritasa.NetForge.Tests.Utilities.Extensions;
 using Saritasa.NetForge.Tests.Utilities.Helpers;
 using Saritasa.NetForge.UseCases.Common;
+using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.UseCases.Metadata.Services;
 using Saritasa.NetForge.UseCases.Services;
 using Xunit;
@@ -93,6 +94,38 @@ public class SearchDataForEntityTests : IDisposable
         }
     }
 
+    private EntityService entityService = null!;
+
+    private SearchOptions searchOptions = null!;
+
+    private GetEntityByIdDto addressEntity = null!;
+
+    private async Task InitializeTestServicesAsync(SearchType searchType, string searchString)
+    {
+        var automapper = AutomapperHelper.CreateAutomapper();
+
+        var efCoreMetadataService = TestDbContext.CreateEfCoreMetadataService();
+        var adminOptions = CreateAdminOptionsWithSearchType(searchType);
+        var memoryCache = MemoryCacheHelper.CreateMemoryCache();
+        var adminMetadataService =
+            new AdminMetadataService(efCoreMetadataService, adminOptions, memoryCache);
+
+        var efCoreDataService = TestDbContext.CreateEfCoreDataService();
+
+        var serviceProvider = new Mock<IServiceProvider>();
+
+        entityService =
+            new EntityService(automapper, adminMetadataService, efCoreDataService, serviceProvider.Object);
+
+        searchOptions = new SearchOptions
+        {
+            SearchString = searchString
+        };
+
+        const string addressEntityName = "Addresses";
+        addressEntity = await entityService.GetEntityByIdAsync(addressEntityName, CancellationToken.None);
+    }
+
     private static AdminOptions CreateAdminOptionsWithSearchType(SearchType searchType)
     {
         var adminOptionsBuilder = new AdminOptionsBuilder();
@@ -114,29 +147,7 @@ public class SearchDataForEntityTests : IDisposable
     public async Task SearchDataForEntityAsync_ContainsCaseInsensitiveSearch_ShouldFind3()
     {
         // Arrange
-        var automapper = AutomapperHelper.CreateAutomapper();
-
-        var efCoreMetadataService = TestDbContext.CreateEfCoreMetadataService();
-        var adminOptions = CreateAdminOptionsWithSearchType(SearchType.ContainsCaseInsensitive);
-        var memoryCache = MemoryCacheHelper.CreateMemoryCache();
-        var adminMetadataService =
-            new AdminMetadataService(efCoreMetadataService, adminOptions, memoryCache);
-
-        var efCoreDataService = TestDbContext.CreateEfCoreDataService();
-
-        var serviceProvider = new Mock<IServiceProvider>();
-
-        var entityService =
-            new EntityService(automapper, adminMetadataService, efCoreDataService, serviceProvider.Object);
-
-        var searchOptions = new SearchOptions
-        {
-            SearchString = "ain"
-        };
-
-        const string addressEntityName = "Addresses";
-        var addressEntity = await entityService.GetEntityByIdAsync(addressEntityName, CancellationToken.None);
-
+        await InitializeTestServicesAsync(SearchType.ContainsCaseInsensitive, "ain");
         const int expectedDataCount = 3;
 
         // Act
@@ -156,29 +167,7 @@ public class SearchDataForEntityTests : IDisposable
     public async Task SearchDataForEntityAsync_StartsWithCaseSensitiveSearch_ShouldFind2()
     {
         // Arrange
-        var automapper = AutomapperHelper.CreateAutomapper();
-
-        var efCoreMetadataService = TestDbContext.CreateEfCoreMetadataService();
-        var adminOptions = CreateAdminOptionsWithSearchType(SearchType.StartsWithCaseSensitive);
-        var memoryCache = MemoryCacheHelper.CreateMemoryCache();
-        var adminMetadataService =
-            new AdminMetadataService(efCoreMetadataService, adminOptions, memoryCache);
-
-        var efCoreDataService = TestDbContext.CreateEfCoreDataService();
-
-        var serviceProvider = new Mock<IServiceProvider>();
-
-        var entityService =
-            new EntityService(automapper, adminMetadataService, efCoreDataService, serviceProvider.Object);
-
-        var searchOptions = new SearchOptions
-        {
-            SearchString = "Second"
-        };
-
-        const string addressEntityName = "Addresses";
-        var addressEntity = await entityService.GetEntityByIdAsync(addressEntityName, CancellationToken.None);
-
+        await InitializeTestServicesAsync(SearchType.StartsWithCaseSensitive, "Second");
         const int expectedDataCount = 2;
 
         // Act
@@ -198,29 +187,7 @@ public class SearchDataForEntityTests : IDisposable
     public async Task SearchDataForEntityAsync_ExactMatchCaseInsensitiveSearch_ShouldFind1()
     {
         // Arrange
-        var automapper = AutomapperHelper.CreateAutomapper();
-
-        var efCoreMetadataService = TestDbContext.CreateEfCoreMetadataService();
-        var adminOptions = CreateAdminOptionsWithSearchType(SearchType.ExactMatchCaseInsensitive);
-        var memoryCache = MemoryCacheHelper.CreateMemoryCache();
-        var adminMetadataService =
-            new AdminMetadataService(efCoreMetadataService, adminOptions, memoryCache);
-
-        var efCoreDataService = TestDbContext.CreateEfCoreDataService();
-
-        var serviceProvider = new Mock<IServiceProvider>();
-
-        var entityService =
-            new EntityService(automapper, adminMetadataService, efCoreDataService, serviceProvider.Object);
-
-        var searchOptions = new SearchOptions
-        {
-            SearchString = "Central"
-        };
-
-        const string addressEntityName = "Addresses";
-        var addressEntity = await entityService.GetEntityByIdAsync(addressEntityName, CancellationToken.None);
-
+        await InitializeTestServicesAsync(SearchType.ExactMatchCaseInsensitive, "Central");
         const int expectedDataCount = 1;
 
         // Act
