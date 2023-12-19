@@ -14,7 +14,7 @@ public class DuplicateEntityOptionsConfigurationTests
     /// Verify that configure entity with both fluent API and configuration class only create 1 instance of the entity options.
     /// </summary>
     [Fact]
-    public void ConfigureEntity_WithFluentApiAndConfigurationClass_ShouldNotCreateDuplicateOptions()
+    public void ConfigureEntity_WithBothFluentApiAndConfigurationClass_ShouldNotCreateDuplicateOptions()
     {
         // Arrange
         var adminOptionsBuilder = new AdminOptionsBuilder();
@@ -37,7 +37,7 @@ public class DuplicateEntityOptionsConfigurationTests
     /// Verify that configure entity with both fluent API and configuration class will take the second configuration values.
     /// </summary>
     [Fact]
-    public void ConfigureEntity_WithFluentApiAndConfigurationClass_ShouldCreateOverrideValue()
+    public void ConfigureEntity_WithBothFluentApiAndConfigurationClass_ShouldCreateOverrideValue()
     {
         // Arrange
         var adminOptionsBuilder = new AdminOptionsBuilder();
