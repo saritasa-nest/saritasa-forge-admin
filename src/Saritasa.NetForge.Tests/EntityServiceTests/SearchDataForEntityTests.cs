@@ -58,6 +58,11 @@ public class SearchDataForEntityTests : IDisposable
             Id = 5,
             Street = "Central"
         });
+        TestDbContext.Addresses.Add(new Address
+        {
+            Id = 6,
+            Street = "central street"
+        });
         TestDbContext.SaveChanges();
     }
 
@@ -175,6 +180,48 @@ public class SearchDataForEntityTests : IDisposable
         var addressEntity = await entityService.GetEntityByIdAsync(addressEntityName, CancellationToken.None);
 
         const int expectedDataCount = 2;
+
+        // Act
+        var searchedData =
+            await entityService.SearchDataForEntityAsync(addressEntity.ClrType, addressEntity.Properties, searchOptions,
+                searchFunction: null, customQueryFunction: null);
+
+        // Assert
+        Assert.Equal(expectedDataCount, searchedData.Metadata.TotalCount);
+    }
+
+    /// <summary>
+    /// Test for <seealso cref="EntityService.SearchDataForEntityAsync"/>
+    /// using <see cref="SearchType.ExactMatchCaseInsensitive"/>.
+    /// </summary>
+    [Fact]
+    public async Task SearchDataForEntityAsync_ExactMatchCaseInsensitiveSearch_ShouldFind1()
+    {
+        // Arrange
+        var automapper = AutomapperHelper.CreateAutomapper();
+
+        var efCoreMetadataService = TestDbContext.CreateEfCoreMetadataService();
+        var adminOptions = CreateAdminOptionsWithSearchType(SearchType.ExactMatchCaseInsensitive);
+        var memoryCache = MemoryCacheHelper.CreateMemoryCache();
+        var adminMetadataService =
+            new AdminMetadataService(efCoreMetadataService, adminOptions, memoryCache);
+
+        var efCoreDataService = TestDbContext.CreateEfCoreDataService();
+
+        var serviceProvider = new Mock<IServiceProvider>();
+
+        var entityService =
+            new EntityService(automapper, adminMetadataService, efCoreDataService, serviceProvider.Object);
+
+        var searchOptions = new SearchOptions
+        {
+            SearchString = "Central"
+        };
+
+        const string addressEntityName = "Addresses";
+        var addressEntity = await entityService.GetEntityByIdAsync(addressEntityName, CancellationToken.None);
+
+        const int expectedDataCount = 1;
 
         // Act
         var searchedData =
