@@ -1,15 +1,13 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.EntityFrameworkCore;
 using Moq;
 using Saritasa.NetForge.Domain.Entities.Options;
-using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
-using Saritasa.NetForge.Infrastructure.EfCore;
-using Saritasa.NetForge.Infrastructure.EfCore.Services;
+using Saritasa.NetForge.Domain.Enums;
+using Saritasa.NetForge.DomainServices;
 using Saritasa.NetForge.Tests.Domain;
 using Saritasa.NetForge.Tests.Domain.Models;
+using Saritasa.NetForge.Tests.Utilities.Extensions;
+using Saritasa.NetForge.Tests.Utilities.Helpers;
 using Saritasa.NetForge.UseCases.Common;
-using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.UseCases.Metadata.Services;
 using Saritasa.NetForge.UseCases.Services;
 using Xunit;
@@ -21,7 +19,7 @@ namespace Saritasa.NetForge.Tests;
 /// </summary>
 public class EntitySearchTests : IDisposable
 {
-    private TestDbContext DbContext { get; set; }
+    private TestDbContext TestDbContext { get; set; }
 
     /// <summary>
     /// Constructor.
@@ -32,35 +30,35 @@ public class EntitySearchTests : IDisposable
             .UseInMemoryDatabase("NetForgeTest")
             .Options;
 
-        DbContext = new TestDbContext(dbOptions);
-        DbContext.Database.EnsureCreated();
+        TestDbContext = new TestDbContext(dbOptions);
+        TestDbContext.Database.EnsureCreated();
 
-        DbContext.Addresses.Add(new Address
+        TestDbContext.Addresses.Add(new Address
         {
             Id = 1,
             Street = "Main St."
         });
-        DbContext.Addresses.Add(new Address
+        TestDbContext.Addresses.Add(new Address
         {
             Id = 2,
             Street = "Main Square St."
         });
-        DbContext.Addresses.Add(new Address
+        TestDbContext.Addresses.Add(new Address
         {
             Id = 3,
             Street = "Second Square St."
         });
-        DbContext.Addresses.Add(new Address
+        TestDbContext.Addresses.Add(new Address
         {
             Id = 4,
             Street = "Second main St."
         });
-        DbContext.Addresses.Add(new Address
+        TestDbContext.Addresses.Add(new Address
         {
             Id = 5,
             Street = "Central"
         });
-        DbContext.SaveChanges();
+        TestDbContext.SaveChanges();
     }
 
     private bool disposedValue;
@@ -82,27 +80,25 @@ public class EntitySearchTests : IDisposable
         {
             if (disposing)
             {
-                DbContext.Database.EnsureDeleted();
-                DbContext.Dispose();
+                TestDbContext.Database.EnsureDeleted();
+                TestDbContext.Dispose();
             }
 
             disposedValue = true;
         }
     }
 
-    private static EfCoreDataService CreateEfCoreDataService(TestDbContext testDbContext)
+    private static AdminOptions CreateAdminOptionsWithSearchType(SearchType searchType)
     {
-        var efCoreOptions = new EfCoreOptions();
-        var shopDbContextType = typeof(TestDbContext);
-        efCoreOptions.DbContexts.Add(shopDbContextType);
-
-        var serviceProvider = new Mock<IServiceProvider>();
-
-        serviceProvider
-            .Setup(provider => provider.GetService(shopDbContextType))
-            .Returns(testDbContext);
-
-        return new EfCoreDataService(efCoreOptions, serviceProvider.Object);
+        var adminOptionsBuilder = new AdminOptionsBuilder();
+        adminOptionsBuilder.ConfigureEntity<Address>(entityOptionsBuilder =>
+        {
+            entityOptionsBuilder.ConfigureProperty(address => address.Street, propertyBuilder =>
+            {
+                propertyBuilder.SetSearchType(searchType);
+            });
+        });
+        return adminOptionsBuilder.Create();
     }
 
     /// <summary>
@@ -112,31 +108,34 @@ public class EntitySearchTests : IDisposable
     public async Task SearchDataForEntityAsync_ValidSearch_ShouldFind3()
     {
         // Arrange
-        var automapper = new Mock<IMapper>();
+        var automapper = AutomapperHelper.CreateAutomapper();
 
-        var ormMetadataService = new Mock<IOrmMetadataService>();
-        var adminOptions = new AdminOptions();
-        var memoryCache = new Mock<IMemoryCache>();
-        var adminMetadataService = new AdminMetadataService(ormMetadataService.Object, adminOptions, memoryCache.Object);
+        var efCoreMetadataService = TestDbContext.CreateEfCoreMetadataService();
+        var adminOptions = CreateAdminOptionsWithSearchType(SearchType.ContainsCaseInsensitive);
+        var memoryCache = MemoryCacheHelper.CreateMemoryCache();
+        var adminMetadataService =
+            new AdminMetadataService(efCoreMetadataService, adminOptions, memoryCache);
 
-        var efCoreDataService = CreateEfCoreDataService(DbContext);
+        var efCoreDataService = TestDbContext.CreateEfCoreDataService();
+
         var serviceProvider = new Mock<IServiceProvider>();
 
-        var entityService = new EntityService(
-            automapper.Object, adminMetadataService, efCoreDataService, serviceProvider.Object);
-
-        var entityType = typeof(Address);
+        var entityService =
+            new EntityService(automapper, adminMetadataService, efCoreDataService, serviceProvider.Object);
 
         var searchOptions = new SearchOptions
         {
             SearchString = "ain"
         };
 
+        const string addressesEntity = "Addresses";
+        var addressEntity = await entityService.GetEntityByIdAsync(addressesEntity, CancellationToken.None);
+
         const int expectedDataCount = 3;
 
         // Act
         var searchedData =
-            await entityService.SearchDataForEntityAsync(entityType, new List<PropertyMetadataDto>(), searchOptions,
+            await entityService.SearchDataForEntityAsync(addressEntity.ClrType, addressEntity.Properties, searchOptions,
                 searchFunction: null, customQueryFunction: null);
 
         // Assert
