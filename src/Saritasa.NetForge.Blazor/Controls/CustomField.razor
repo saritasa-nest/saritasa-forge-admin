@@ -3,7 +3,9 @@
     <MudCheckBox T="bool"
                  Label="@Property.Name"
                  CheckedChanged="value => HandleInputChange(value!, Property.Name)">
+        <MudText class="mud-input-helper-text ml-3">@Property.Description</MudText>
     </MudCheckBox>
+    
 }
 else if (PropertyType.IsEnum)
 {
@@ -11,7 +13,8 @@ else if (PropertyType.IsEnum)
                Label="@Property.Name"
                Class="create-entity__input"
                Variant="Variant.Outlined"
-               TextChanged="value => HandleInputChange(value, Property.Name)">
+               TextChanged="value => HandleInputChange(value, Property.Name)"
+               HelperText="@Property.Description">
         @foreach (var enumValue in Enum.GetNames(PropertyType))
         {
             <MudSelectItem Value="enumValue" />
@@ -25,6 +28,7 @@ else
                   Class="create-entity__input"
                   Variant="Variant.Outlined"
                   InputType="GetInputType(PropertyType)"
-                  TextChanged="value => HandleInputChange(value, Property.Name)">
+                  TextChanged="value => HandleInputChange(value, Property.Name)"
+                  HelperText="@Property.Description">
     </MudTextField>
 }
