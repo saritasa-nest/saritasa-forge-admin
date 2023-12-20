@@ -3,6 +3,7 @@ using Moq;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.DomainServices;
+using Saritasa.NetForge.Infrastructure.EfCore.Services;
 using Saritasa.NetForge.Tests.Domain;
 using Saritasa.NetForge.Tests.Domain.Models;
 using Saritasa.NetForge.Tests.Utilities.Extensions;
@@ -70,6 +71,22 @@ public class SearchDataForEntityTests : IDisposable
             Street = "central street",
             City = "New York"
         });
+        TestDbContext.Addresses.Add(new Address
+        {
+            Id = 7
+        });
+        TestDbContext.Addresses.Add(new Address
+        {
+            Id = 8
+        });
+        TestDbContext.Addresses.Add(new Address
+        {
+            Id = 9
+        });
+        TestDbContext.Addresses.Add(new Address
+        {
+            Id = 10
+        });
         TestDbContext.SaveChanges();
     }
 
@@ -106,6 +123,8 @@ public class SearchDataForEntityTests : IDisposable
 
     private GetEntityByIdDto addressEntity = null!;
 
+    private EfCoreDataService efCoreDataService = null!;
+
     private async Task InitializeTestServicesAsync(SearchType searchType, string searchString)
     {
         var automapper = AutomapperHelper.CreateAutomapper();
@@ -116,7 +135,7 @@ public class SearchDataForEntityTests : IDisposable
         var adminMetadataService =
             new AdminMetadataService(efCoreMetadataService, adminOptions, memoryCache);
 
-        var efCoreDataService = TestDbContext.CreateEfCoreDataService();
+        efCoreDataService = TestDbContext.CreateEfCoreDataService();
 
         var serviceProvider = new Mock<IServiceProvider>();
 
@@ -148,6 +167,34 @@ public class SearchDataForEntityTests : IDisposable
             });
         });
         return adminOptionsBuilder.Create();
+    }
+
+    /// <summary>
+    /// Test for <seealso cref="EntityService.SearchDataForEntityAsync"/>
+    /// using <see cref="SearchType.ContainsCaseInsensitive"/>.
+    /// </summary>
+    [Fact]
+    public async Task Search_ContainsCaseInsensitive_ShouldFind3()
+    {
+        // Arrange
+        await InitializeTestServicesAsync(SearchType.ContainsCaseInsensitive, "ain");
+
+        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        {
+            (nameof(Address.Street), SearchType.ContainsCaseInsensitive)
+        };
+
+        const int expectedDataCount = 3;
+
+        // Act
+        var searchedData =
+            efCoreDataService.Search(
+                TestDbContext.Addresses, searchOptions.SearchString, addressEntity.ClrType, propertiesWithSearchTypes);
+
+        // Assert
+
+        var actualDataCount = await searchedData.CountAsync();
+        Assert.Equal(expectedDataCount, actualDataCount);
     }
 
     /// <summary>
@@ -200,6 +247,26 @@ public class SearchDataForEntityTests : IDisposable
         // Arrange
         await InitializeTestServicesAsync(SearchType.ExactMatchCaseInsensitive, "Central");
         const int expectedDataCount = 1;
+
+        // Act
+        var searchedData =
+            await entityService.SearchDataForEntityAsync(addressEntity.ClrType, addressEntity.Properties, searchOptions,
+                searchFunction: null, customQueryFunction: null);
+
+        // Assert
+        Assert.Equal(expectedDataCount, searchedData.Metadata.TotalCount);
+    }
+
+    /// <summary>
+    /// Test for <seealso cref="EntityService.SearchDataForEntityAsync"/>
+    /// using <see cref="SearchType.ExactMatchCaseInsensitive"/> to search values that contain <see langword="null"/>.
+    /// </summary>
+    [Fact]
+    public async Task SearchDataForEntityAsync_ExactMatchCaseInsensitiveNullSearch_ShouldFind4()
+    {
+        // Arrange
+        await InitializeTestServicesAsync(SearchType.ExactMatchCaseInsensitive, "None");
+        const int expectedDataCount = 4;
 
         // Act
         var searchedData =
