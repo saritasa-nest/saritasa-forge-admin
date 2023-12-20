@@ -11,14 +11,14 @@ namespace Saritasa.NetForge.Tests.EntityServiceTests;
 /// <summary>
 /// Create entity tests.
 /// </summary>
-public class SearchDataForEntityTests : IDisposable
+public class SearchTests : IDisposable
 {
     private TestDbContext TestDbContext { get; set; }
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public SearchDataForEntityTests()
+    public SearchTests()
     {
         TestDbContext = EfCoreHelper.CreateTestDbContext();
 
