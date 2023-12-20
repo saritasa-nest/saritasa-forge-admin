@@ -53,4 +53,10 @@ public record PropertyMetadataDto
 
     /// <inheritdoc cref="PropertyMetadataBase.EmptyValueDisplay"/>
     public string EmptyValueDisplay { get; set; } = string.Empty;
+
+    /// <inheritdoc cref="PropertyMetadataBase.IsHidden"/>
+    public bool IsHidden { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadataBase.DisplayAsHtml"/>
+    public bool DisplayAsHtml { get; set; }
 }

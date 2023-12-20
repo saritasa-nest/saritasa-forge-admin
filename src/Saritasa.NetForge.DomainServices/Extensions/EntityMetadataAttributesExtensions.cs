@@ -113,6 +113,11 @@ public static class EntityMetadataAttributesExtensions
             property.IsHidden = netForgePropertyAttribute.IsHidden;
         }
 
+        if (netForgePropertyAttribute.IsExcludedFromQuery)
+        {
+            property.IsExcludedFromQuery = netForgePropertyAttribute.IsExcludedFromQuery;
+        }
+
         if (netForgePropertyAttribute.Order >= 0)
         {
             property.Order = netForgePropertyAttribute.Order;
@@ -155,6 +160,11 @@ public static class EntityMetadataAttributesExtensions
         if (!string.IsNullOrEmpty(netForgePropertyAttribute.EmptyValueDisplay))
         {
             property.EmptyValueDisplay = netForgePropertyAttribute.EmptyValueDisplay;
+        }
+
+        if (netForgePropertyAttribute.DisplayAsHtml)
+        {
+            property.DisplayAsHtml = netForgePropertyAttribute.DisplayAsHtml;
         }
     }
 }

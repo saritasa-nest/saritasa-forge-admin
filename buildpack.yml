@@ -1,2 +1,2 @@
-dotnet-build:                                                                                                                                                 
-  project-path: "demo/Saritasa.NetForge.Demo.Net7"
+dotnet-build:
+  project-path: "demo/Saritasa.NetForge.Demo"

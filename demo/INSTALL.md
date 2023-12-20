@@ -6,6 +6,6 @@
 
 ## Project initialization
 
-1. Copy `demo\Saritasa.NetForge.Demo.Net7\appsettings.json.template` file to `demo\Saritasa.NetForge.Demo.Net7\appsettings.Development.json`
+1. Copy `demo\Saritasa.NetForge.Demo\appsettings.json.template` file to `demo\Saritasa.NetForge.Demo\appsettings.Development.json`
 
 2. Update the `ConnectionStrings:AppDatabase` setting in that file to target your local development server/database

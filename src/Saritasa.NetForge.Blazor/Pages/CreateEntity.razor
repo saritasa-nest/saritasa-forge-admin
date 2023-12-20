@@ -1,0 +1,46 @@
+﻿@using Saritasa.NetForge.Blazor.Controls
+@using Saritasa.NetForge.Blazor.Extensions
+
+@inherits MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.CreateEntity.CreateEntityViewModel>
+
+@if (ViewModel.IsEntityExists)
+{
+    <MudBreadcrumbs Items="breadcrumbItems"></MudBreadcrumbs>
+
+    var title = $"Create {ViewModel.Model.DisplayName.ToMeaningfulName()}";
+    <PageTitle>@title</PageTitle>
+    <MudText Class="pb-4" Typo="Typo.h4">@title</MudText>
+
+    <MudGrid Justify="Justify.Center">
+        <MudItem xs="6">
+            <EditForm Model="ViewModel.EntityModel" OnValidSubmit="ViewModel.CreateEntityAsync">
+                <div class="d-flex flex-column flex-grow-1 gap-4">
+                    @{
+                        var properties = ViewModel.Model.Properties
+                            .Where(property => property is { IsNavigation: false, IsCalculatedProperty: false });
+
+                        foreach (var property in properties)
+                        {
+                            <CustomField Property="@property"
+                                         EntityModel="@ViewModel.EntityModel">
+                            </CustomField>
+                        }
+                    }
+
+                    <div class="d-flex flex-row gap-4 pt-4">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Success" ButtonType="ButtonType.Submit">
+                            Save
+                        </MudButton>
+                        <MudButton Variant="Variant.Outlined" OnClick="NavigateToEntityDetails">
+                            Cancel
+                        </MudButton>
+                    </div>
+                </div>
+            </EditForm>
+        </MudItem>
+    </MudGrid>
+}
+else
+{
+    <NotFound />
+}

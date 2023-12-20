@@ -10,20 +10,33 @@
     <PageTitle>@ViewModel.Model.PluralName</PageTitle>
     <MudBreadcrumbs Items="breadcrumbItems"></MudBreadcrumbs>
     <MudGrid>
-        <MudItem xs="6">
+        <MudItem xs="12">
             <MudText Typo="Typo.h4">@ViewModel.Model.PluralName</MudText>
             <MudText Typo="Typo.body1">@ViewModel.Model.Description</MudText>
-
-            @if (ViewModel.Model.Properties.Any(property => property.SearchType != SearchType.None)
-                 || ViewModel.Model.SearchFunction is not null)
-            {
-                const int debounceInterval = 250;
-
-                <MudTextField T="string" @bind-Value="ViewModel.SearchString" Placeholder="Search" Immediate="true"
-                              Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                              DebounceInterval="debounceInterval" OnDebounceIntervalElapsed="ViewModel.Search"/>
-            }
         </MudItem>
+
+        <MudItem xs="12">
+            <MudButton Variant="Variant.Outlined" OnClick="@NavigateToCreation">
+                    Add @ViewModel.Model.DisplayName.ToMeaningfulName()
+            </MudButton>
+        </MudItem>
+
+        @if (ViewModel.Model.Properties.Any(property => property.SearchType != SearchType.None)
+             || ViewModel.Model.SearchFunction is not null)
+        {
+            const int debounceInterval = 250;
+            <MudItem xs="6">
+                <MudTextField T="string"
+                              @bind-Value="ViewModel.SearchString"
+                              Placeholder="Search"
+                              Immediate="true"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              IconSize="Size.Medium"
+                              DebounceInterval="debounceInterval"
+                              OnDebounceIntervalElapsed="ViewModel.Search" />
+            </MudItem>
+        }
 
         <MudItem xs="12">
             <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true"
@@ -31,6 +44,10 @@
                 <Columns>
                     @foreach (var property in ViewModel.Model.Properties)
                     {
+                        if (property.IsHidden)
+                        {
+                            continue;
+                        }
                         <TemplateColumn Title="@property.Name" Sortable="property.IsSortable">
                             <HeaderTemplate>
                                 @{
@@ -59,7 +76,17 @@
                             </HeaderTemplate>
 
                             <CellTemplate Context="cell">
-                                @ViewModel.GetPropertyValue(cell.Item, property)
+                                @{
+                                    var propertyValue = ViewModel.GetPropertyValue(cell.Item, property).ToString();
+                                    if (property.DisplayAsHtml)
+                                    {
+                                        @((MarkupString)propertyValue!)
+                                    }
+                                    else
+                                    {
+                                        @propertyValue
+                                    }
+                                }
                             </CellTemplate>
                         </TemplateColumn>
                     }

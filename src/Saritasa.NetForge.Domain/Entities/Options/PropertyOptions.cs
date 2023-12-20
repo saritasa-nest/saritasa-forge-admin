@@ -14,6 +14,9 @@ public class PropertyOptions
     /// <inheritdoc cref="PropertyMetadataBase.IsHidden"/>
     public bool IsHidden { get; set; }
 
+    /// <inheritdoc cref="PropertyMetadataBase.IsExcludedFromQuery"/>
+    public bool IsExcludedFromQuery { get; set; }
+
     /// <inheritdoc cref="PropertyMetadataBase.DisplayName"/>
     public string? DisplayName { get; set; }
 
@@ -37,4 +40,7 @@ public class PropertyOptions
 
     /// <inheritdoc cref="PropertyMetadataBase.EmptyValueDisplay"/>
     public string EmptyValueDisplay { get; set; } = string.Empty;
+
+    /// <inheritdoc cref="PropertyMetadataBase.DisplayAsHtml"/>
+    public bool DisplayAsHtml { get; set; }
 }

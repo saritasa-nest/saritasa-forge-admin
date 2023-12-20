@@ -69,18 +69,16 @@ appBuilder.Services.AddNetForge(optionsBuilder =>
 });
 ```
 
-Alternatively, you can use a custom function to perform checks. Access the required service through the `serviceProvider` parameter:
+Alternatively, you can use a custom function to perform checks. Access the required service through the `serviceProvider` parameter. Example:
 
 ```csharp
 appBuilder.Services.AddNetForge(optionsBuilder =>
 {
-    optionsBuilder.ConfigureAuth(async (serviceProvider) =>
+    optionsBuilder.ConfigureAuth(serviceProvider =>
     {
-        // Implement your custom checking logic here
-        // You can retrieve the needed service like this:
-        // var service = serviceProvider.GetRequiredService<SomeService>();
-
-        return true; // Return true if the access is granted, otherwise return false
+        // Allow all authenticated users to see the Admin Panel.
+        var httpContext = serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
+        return Task.FromResult(httpContext?.User.Identity?.IsAuthenticated ?? false);
     });
     ...
 });
@@ -432,3 +430,45 @@ You can configure your query for specific entity.
 ```
 
 You can use `ServiceProvider` to access your services.
+
+## Exclude property from query
+
+You can explicitly control whether a property should be excluded from the data query.
+
+### Using Fluent API
+
+```csharp
+optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
+{
+    entityOptionsBuilder.ConfigureProperty(user => user.DateOfBirth,
+        propertyBuilder => propertyBuilder.SetIsExcludeFromQuery(true));
+});
+```
+
+### Using Attribute
+
+```csharp
+[NetForgeProperty(IsExcludeFromQuery = true)]
+public string Property { get; set; }
+```
+
+## Formatting property as HTML
+
+You can configure certain entity properties to be rendered as HTML content in the data grid.
+
+### Using Fluent API
+
+```csharp
+optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
+{
+    entityOptionsBuilder.ConfigureProperty(user => user.Id,
+        propertyBuilder => propertyBuilder.SetDisplayAsHtml(true));
+});
+```
+
+### Using Attribute
+
+```csharp
+[NetForgeProperty(DisplayAsHtml = true)]
+public string Property { get; set; }
+```

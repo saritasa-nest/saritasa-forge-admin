@@ -39,6 +39,11 @@ public abstract class PropertyMetadataBase
     public bool IsHidden { get; set; }
 
     /// <summary>
+    /// Whether the property is excluded from the query.
+    /// </summary>
+    public bool IsExcludedFromQuery { get; set; }
+
+    /// <summary>
     /// Display format of the property value.
     /// </summary>
     public string? DisplayFormat { get; set; }
@@ -62,4 +67,9 @@ public abstract class PropertyMetadataBase
     /// Display this value when the value of property is empty.
     /// </summary>
     public string EmptyValueDisplay { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Whether the property is rendered as HTML.
+    /// </summary>
+    public bool DisplayAsHtml { get; set; }
 }
