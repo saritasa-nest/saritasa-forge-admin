@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.Blazor.Controls;
 
@@ -13,14 +14,7 @@ public partial class CustomField
     /// </summary>
     [Parameter]
     [EditorRequired]
-    public string PropertyName { get; init; } = null!;
-
-    /// <summary>
-    /// Property type.
-    /// </summary>
-    [Parameter]
-    [EditorRequired]
-    public Type PropertyType { get; init; } = null!;
+    public PropertyMetadataDto Property { get; init; } = null!;
 
     /// <summary>
     /// Entity model that contains property value for this field.
@@ -28,6 +22,21 @@ public partial class CustomField
     [Parameter]
     [EditorRequired]
     public object EntityModel { get; init; } = null!;
+
+    /// <summary>
+    /// Property type.
+    /// </summary>
+    public Type PropertyType { get; set; } = null!;
+
+    /// <summary>
+    /// Sets <see cref="PropertyType"/> after all parameters set.
+    /// </summary>
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        PropertyType = EntityModel.GetType().GetProperty(Property.Name)!.PropertyType;
+    }
 
     private IReadOnlyDictionary<List<Type>, InputType> TypeMappingDictionary { get; init; }
         = new Dictionary<List<Type>, InputType>
@@ -96,23 +105,23 @@ public partial class CustomField
             return;
         }
 
-        var propertyType = Nullable.GetUnderlyingType(PropertyType) ?? PropertyType;
+        var actualPropertyType = Nullable.GetUnderlyingType(PropertyType) ?? PropertyType;
         object convertedValue;
-        if (propertyType == typeof(DateTimeOffset))
+        if (actualPropertyType == typeof(DateTimeOffset))
         {
             convertedValue = DateTimeOffset.Parse(stringValue);
         }
-        else if (propertyType == typeof(DateOnly))
+        else if (actualPropertyType == typeof(DateOnly))
         {
             convertedValue = DateOnly.Parse(stringValue);
         }
-        else if (propertyType.IsEnum)
+        else if (actualPropertyType.IsEnum)
         {
-            convertedValue = Enum.Parse(propertyType, stringValue);
+            convertedValue = Enum.Parse(actualPropertyType, stringValue);
         }
         else
         {
-            convertedValue = Convert.ChangeType(value, propertyType);
+            convertedValue = Convert.ChangeType(value, actualPropertyType);
         }
 
         property.SetValue(EntityModel, convertedValue);
