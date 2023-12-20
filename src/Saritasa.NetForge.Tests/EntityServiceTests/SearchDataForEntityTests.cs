@@ -4,8 +4,6 @@ using Saritasa.NetForge.Infrastructure.EfCore.Services;
 using Saritasa.NetForge.Tests.Domain;
 using Saritasa.NetForge.Tests.Domain.Models;
 using Saritasa.NetForge.Tests.Helpers;
-using Saritasa.NetForge.UseCases.Common;
-using Saritasa.NetForge.UseCases.Services;
 using Xunit;
 
 namespace Saritasa.NetForge.Tests.EntityServiceTests;
@@ -31,39 +29,47 @@ public class SearchDataForEntityTests : IDisposable
 
         TestDbContext.Addresses.Add(new Address
         {
-            Id = 1,
             Street = "Main St.",
             City = "New York"
         });
         TestDbContext.Addresses.Add(new Address
         {
-            Id = 2,
             Street = "Main Square St.",
             City = "London"
         });
         TestDbContext.Addresses.Add(new Address
         {
-            Id = 3,
             Street = "Second Square St.",
             City = "London"
         });
         TestDbContext.Addresses.Add(new Address
         {
-            Id = 4,
             Street = "Second main St.",
             City = "New York"
         });
         TestDbContext.Addresses.Add(new Address
         {
-            Id = 5,
             Street = "Central",
             City = "London"
         });
         TestDbContext.Addresses.Add(new Address
         {
-            Id = 6,
             Street = "central street",
             City = "New York"
+        });
+
+        TestDbContext.Products.Add(new Product
+        {
+            Supplier = new Supplier()
+        });
+        TestDbContext.Products.Add(new Product
+        {
+            WeightInGrams = 111,
+            Supplier = new Supplier
+            {
+                Name = "Supplier",
+                City = "London"
+            }
         });
         TestDbContext.SaveChanges();
     }
@@ -187,23 +193,23 @@ public class SearchDataForEntityTests : IDisposable
     /// using <see cref="SearchType.ExactMatchCaseInsensitive"/> to search values that contain <see langword="null"/>.
     /// </summary>
     [Fact]
-    public async Task Search_ExactMatchCaseInsensitiveWhenSearchStringIsNone_ShouldFind2()
+    public async Task Search_ExactMatchCaseInsensitive_WithNoneSearchString_ShouldFind1()
     {
         // Arrange
         var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
 
         const string searchString = "None";
-        var entityType = typeof(Address);
+        var entityType = typeof(Product);
         var propertiesWithSearchTypes = new List<(string, SearchType)>
         {
-            (nameof(Address.Street), SearchType.ExactMatchCaseInsensitive)
+            (nameof(Product.WeightInGrams), SearchType.ExactMatchCaseInsensitive)
         };
 
-        const int expectedCount = 2;
+        const int expectedCount = 1;
 
         // Act
         var searchedData =
-            efCoreDataService.Search(TestDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            efCoreDataService.Search(TestDbContext.Products, searchString, entityType, propertiesWithSearchTypes);
 
         // Assert
 
@@ -221,7 +227,7 @@ public class SearchDataForEntityTests : IDisposable
         // Arrange
         var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
 
-        const string searchString = "None";
+        var searchString = string.Empty;
         var entityType = typeof(Address);
         var propertiesWithSearchTypes = new List<(string, SearchType)>
         {
