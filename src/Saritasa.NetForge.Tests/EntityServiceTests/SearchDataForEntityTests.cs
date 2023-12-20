@@ -37,32 +37,38 @@ public class SearchDataForEntityTests : IDisposable
         TestDbContext.Addresses.Add(new Address
         {
             Id = 1,
-            Street = "Main St."
+            Street = "Main St.",
+            City = "New York"
         });
         TestDbContext.Addresses.Add(new Address
         {
             Id = 2,
-            Street = "Main Square St."
+            Street = "Main Square St.",
+            City = "London"
         });
         TestDbContext.Addresses.Add(new Address
         {
             Id = 3,
-            Street = "Second Square St."
+            Street = "Second Square St.",
+            City = "London"
         });
         TestDbContext.Addresses.Add(new Address
         {
             Id = 4,
-            Street = "Second main St."
+            Street = "Second main St.",
+            City = "New York"
         });
         TestDbContext.Addresses.Add(new Address
         {
             Id = 5,
-            Street = "Central"
+            Street = "Central",
+            City = "London"
         });
         TestDbContext.Addresses.Add(new Address
         {
             Id = 6,
-            Street = "central street"
+            Street = "central street",
+            City = "New York"
         });
         TestDbContext.SaveChanges();
     }
@@ -132,6 +138,11 @@ public class SearchDataForEntityTests : IDisposable
         adminOptionsBuilder.ConfigureEntity<Address>(entityOptionsBuilder =>
         {
             entityOptionsBuilder.ConfigureProperty(address => address.Street, propertyBuilder =>
+            {
+                propertyBuilder.SetSearchType(searchType);
+            });
+
+            entityOptionsBuilder.ConfigureProperty(address => address.City, propertyBuilder =>
             {
                 propertyBuilder.SetSearchType(searchType);
             });
@@ -209,6 +220,26 @@ public class SearchDataForEntityTests : IDisposable
         // Arrange
         await InitializeTestServicesAsync(SearchType.None, string.Empty);
         var expectedDataCount = await TestDbContext.Addresses.CountAsync();
+
+        // Act
+        var searchedData =
+            await entityService.SearchDataForEntityAsync(addressEntity.ClrType, addressEntity.Properties, searchOptions,
+                searchFunction: null, customQueryFunction: null);
+
+        // Assert
+        Assert.Equal(expectedDataCount, searchedData.Metadata.TotalCount);
+    }
+
+    /// <summary>
+    /// Test for <seealso cref="EntityService.SearchDataForEntityAsync"/>
+    /// when <see cref="SearchOptions.SearchString"/> contains multiple words.
+    /// </summary>
+    [Fact]
+    public async Task SearchDataForEntityAsync_MultipleSearchWords_ShouldFind2()
+    {
+        // Arrange
+        await InitializeTestServicesAsync(SearchType.ContainsCaseInsensitive, "sq lond");
+        const int expectedDataCount = 2;
 
         // Act
         var searchedData =
