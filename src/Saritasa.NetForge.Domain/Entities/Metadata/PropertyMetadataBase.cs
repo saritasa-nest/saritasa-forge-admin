@@ -67,4 +67,9 @@ public abstract class PropertyMetadataBase
     /// Display this value when the value of property is empty.
     /// </summary>
     public string EmptyValueDisplay { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Whether the property is rendered as HTML.
+    /// </summary>
+    public bool DisplayAsHtml { get; set; }
 }

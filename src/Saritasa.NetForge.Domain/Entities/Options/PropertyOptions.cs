@@ -40,4 +40,7 @@ public class PropertyOptions
 
     /// <inheritdoc cref="PropertyMetadataBase.EmptyValueDisplay"/>
     public string EmptyValueDisplay { get; set; } = string.Empty;
+
+    /// <inheritdoc cref="PropertyMetadataBase.DisplayAsHtml"/>
+    public bool DisplayAsHtml { get; set; }
 }

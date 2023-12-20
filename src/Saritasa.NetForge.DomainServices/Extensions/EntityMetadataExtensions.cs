@@ -111,6 +111,11 @@ public static class EntityMetadataExtensions
         {
             property.EmptyValueDisplay = propertyOptions.EmptyValueDisplay;
         }
+
+        if (propertyOptions.DisplayAsHtml)
+        {
+            property.DisplayAsHtml = propertyOptions.DisplayAsHtml;
+        }
     }
 
     /// <summary>
@@ -261,6 +266,11 @@ public static class EntityMetadataExtensions
         if (!string.IsNullOrEmpty(netForgePropertyAttribute.EmptyValueDisplay))
         {
             property.EmptyValueDisplay = netForgePropertyAttribute.EmptyValueDisplay;
+        }
+
+        if (netForgePropertyAttribute.DisplayAsHtml)
+        {
+            property.DisplayAsHtml = netForgePropertyAttribute.DisplayAsHtml;
         }
     }
 
