@@ -218,8 +218,7 @@ public class SearchDataForEntityTests : IDisposable
     }
 
     /// <summary>
-    /// Test for <seealso cref="EfCoreDataService.Search"/>
-    /// using <see cref="SearchType.ExactMatchCaseInsensitive"/> to search values that contain <see langword="null"/>.
+    /// Test for <seealso cref="EfCoreDataService.Search"/> when <see cref="SearchType.None"/>.
     /// </summary>
     [Fact]
     public async Task Search_WithoutSearch_ShouldFindAll()
@@ -227,7 +226,7 @@ public class SearchDataForEntityTests : IDisposable
         // Arrange
         var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
 
-        var searchString = string.Empty;
+        var searchString = "SearchString";
         var entityType = typeof(Address);
         var propertiesWithSearchTypes = new List<(string, SearchType)>
         {
