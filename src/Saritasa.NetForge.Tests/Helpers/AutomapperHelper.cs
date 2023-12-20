@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Saritasa.NetForge.Blazor.Infrastructure.DependencyInjection;
 
-namespace Saritasa.NetForge.Tests.Utilities.Helpers;
+namespace Saritasa.NetForge.Tests.Helpers;
 
 /// <summary>
 /// Automapper helper.

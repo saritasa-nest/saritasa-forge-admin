@@ -1,16 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Moq;
-using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.Enums;
-using Saritasa.NetForge.DomainServices;
 using Saritasa.NetForge.Infrastructure.EfCore.Services;
 using Saritasa.NetForge.Tests.Domain;
 using Saritasa.NetForge.Tests.Domain.Models;
-using Saritasa.NetForge.Tests.Utilities.Extensions;
-using Saritasa.NetForge.Tests.Utilities.Helpers;
+using Saritasa.NetForge.Tests.Helpers;
 using Saritasa.NetForge.UseCases.Common;
-using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
-using Saritasa.NetForge.UseCases.Metadata.Services;
 using Saritasa.NetForge.UseCases.Services;
 using Xunit;
 
@@ -71,22 +65,6 @@ public class SearchDataForEntityTests : IDisposable
             Street = "central street",
             City = "New York"
         });
-        TestDbContext.Addresses.Add(new Address
-        {
-            Id = 7
-        });
-        TestDbContext.Addresses.Add(new Address
-        {
-            Id = 8
-        });
-        TestDbContext.Addresses.Add(new Address
-        {
-            Id = 9
-        });
-        TestDbContext.Addresses.Add(new Address
-        {
-            Id = 10
-        });
         TestDbContext.SaveChanges();
     }
 
@@ -117,104 +95,62 @@ public class SearchDataForEntityTests : IDisposable
         }
     }
 
-    private EntityService entityService = null!;
-
-    private SearchOptions searchOptions = null!;
-
-    private GetEntityByIdDto addressEntity = null!;
-
-    private EfCoreDataService efCoreDataService = null!;
-
-    private async Task InitializeTestServicesAsync(SearchType searchType, string searchString)
-    {
-        var automapper = AutomapperHelper.CreateAutomapper();
-
-        var efCoreMetadataService = TestDbContext.CreateEfCoreMetadataService();
-        var adminOptions = CreateAdminOptionsWithSearchType(searchType);
-        var memoryCache = MemoryCacheHelper.CreateMemoryCache();
-        var adminMetadataService =
-            new AdminMetadataService(efCoreMetadataService, adminOptions, memoryCache);
-
-        efCoreDataService = TestDbContext.CreateEfCoreDataService();
-
-        var serviceProvider = new Mock<IServiceProvider>();
-
-        entityService =
-            new EntityService(automapper, adminMetadataService, efCoreDataService, serviceProvider.Object);
-
-        searchOptions = new SearchOptions
-        {
-            SearchString = searchString
-        };
-
-        const string addressEntityName = "Addresses";
-        addressEntity = await entityService.GetEntityByIdAsync(addressEntityName, CancellationToken.None);
-    }
-
-    private static AdminOptions CreateAdminOptionsWithSearchType(SearchType searchType)
-    {
-        var adminOptionsBuilder = new AdminOptionsBuilder();
-        adminOptionsBuilder.ConfigureEntity<Address>(entityOptionsBuilder =>
-        {
-            entityOptionsBuilder.ConfigureProperty(address => address.Street, propertyBuilder =>
-            {
-                propertyBuilder.SetSearchType(searchType);
-            });
-
-            entityOptionsBuilder.ConfigureProperty(address => address.City, propertyBuilder =>
-            {
-                propertyBuilder.SetSearchType(searchType);
-            });
-        });
-        return adminOptionsBuilder.Create();
-    }
-
     /// <summary>
-    /// Test for <seealso cref="EntityService.SearchDataForEntityAsync"/>
+    /// Test for <seealso cref="EfCoreDataService.Search"/>
     /// using <see cref="SearchType.ContainsCaseInsensitive"/>.
     /// </summary>
     [Fact]
     public async Task Search_ContainsCaseInsensitive_ShouldFind3()
     {
         // Arrange
-        await InitializeTestServicesAsync(SearchType.ContainsCaseInsensitive, "ain");
+        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
 
+        const string searchString = "ain";
+        var entityType = typeof(Address);
         var propertiesWithSearchTypes = new List<(string, SearchType)>
         {
             (nameof(Address.Street), SearchType.ContainsCaseInsensitive)
         };
 
-        const int expectedDataCount = 3;
+        const int expectedCount = 3;
 
         // Act
         var searchedData =
-            efCoreDataService.Search(
-                TestDbContext.Addresses, searchOptions.SearchString, addressEntity.ClrType, propertiesWithSearchTypes);
+            efCoreDataService.Search(TestDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
 
         // Assert
 
-        var actualDataCount = await searchedData.CountAsync();
-        Assert.Equal(expectedDataCount, actualDataCount);
+        var actualCount = await searchedData.CountAsync();
+        Assert.Equal(expectedCount, actualCount);
     }
 
     /// <summary>
-    /// Test for <seealso cref="EntityService.SearchDataForEntityAsync"/>
+    /// Test for <seealso cref="EfCoreDataService.Search"/>
     /// using <see cref="SearchType.ContainsCaseInsensitive"/>.
     /// </summary>
     [Fact]
-    public async Task SearchDataForEntityAsync_ContainsCaseInsensitiveSearch_ShouldFind3()
+    public async Task Search_StartsWithCaseSensitive_ShouldFind2()
     {
         // Arrange
-        await InitializeTestServicesAsync(SearchType.ContainsCaseInsensitive, "ain");
-        const int expectedDataCount = 3;
+        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
+
+        const string searchString = "Second";
+        var entityType = typeof(Address);
+        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        {
+            (nameof(Address.Street), SearchType.StartsWithCaseSensitive)
+        };
+
+        const int expectedCount = 2;
 
         // Act
         var searchedData =
-            await entityService.SearchDataForEntityAsync(addressEntity.ClrType, addressEntity.Properties, searchOptions,
-                searchFunction: null, customQueryFunction: null);
+            efCoreDataService.Search(TestDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
 
         // Assert
-        Assert.Equal(expectedDataCount, searchedData.Metadata.TotalCount);
+
+        var actualCount = await searchedData.CountAsync();
+        Assert.Equal(expectedCount, actualCount);
     }
 
     /// <summary>

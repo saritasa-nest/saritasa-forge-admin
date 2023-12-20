@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Moq;
 
-namespace Saritasa.NetForge.Tests.Utilities.Helpers;
+namespace Saritasa.NetForge.Tests.Helpers;
 
 /// <summary>
 /// <see cref="IMemoryCache"/> helper.
