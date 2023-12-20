@@ -2,6 +2,7 @@
 using Moq;
 using Saritasa.NetForge.Infrastructure.EfCore;
 using Saritasa.NetForge.Infrastructure.EfCore.Services;
+using Saritasa.NetForge.Tests.Domain;
 
 namespace Saritasa.NetForge.Tests.Helpers;
 
@@ -10,6 +11,21 @@ namespace Saritasa.NetForge.Tests.Helpers;
 /// </summary>
 internal static class EfCoreHelper
 {
+    /// <summary>
+    /// Creates <see cref="TestDbContext"/>.
+    /// </summary>
+    internal static TestDbContext CreateTestDbContext()
+    {
+        var dbOptions = new DbContextOptionsBuilder<TestDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+
+        var testDbContext = new TestDbContext(dbOptions);
+        testDbContext.Database.EnsureCreated();
+
+        return testDbContext;
+    }
+
     /// <summary>
     /// Creates <see cref="EfCoreDataService"/>.
     /// </summary>

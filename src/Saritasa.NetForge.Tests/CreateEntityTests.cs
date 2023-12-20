@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Saritasa.NetForge.Tests.Domain;
+﻿using Saritasa.NetForge.Tests.Domain;
 using Saritasa.NetForge.Tests.Helpers;
 using Xunit;
 using ContactInfo = Saritasa.NetForge.Tests.Domain.Models.ContactInfo;
@@ -11,35 +10,30 @@ namespace Saritasa.NetForge.Tests;
 /// </summary>
 public class CreateEntityTests : IDisposable
 {
-    private TestDbContext DbContext { get; set; }
+    private TestDbContext TestDbContext { get; set; }
 
     /// <summary>
     /// Constructor.
     /// </summary>
     public CreateEntityTests()
     {
-        var dbOptions = new DbContextOptionsBuilder<TestDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
+        TestDbContext = EfCoreHelper.CreateTestDbContext();
 
-        DbContext = new TestDbContext(dbOptions);
-        DbContext.Database.EnsureCreated();
-
-        DbContext.ContactInfos.Add(new ContactInfo
+        TestDbContext.ContactInfos.Add(new ContactInfo
         {
             Id = 1,
             Email = "Test1@test.test",
             FullName = "Test Contact1",
             PhoneNumber = "12223334455"
         });
-        DbContext.ContactInfos.Add(new ContactInfo
+        TestDbContext.ContactInfos.Add(new ContactInfo
         {
             Id = 2,
             Email = "Test2@test.test",
             FullName = "Test Contact2",
             PhoneNumber = "22223334455"
         });
-        DbContext.SaveChanges();
+        TestDbContext.SaveChanges();
     }
 
     private bool disposedValue;
@@ -61,7 +55,7 @@ public class CreateEntityTests : IDisposable
         {
             if (disposing)
             {
-                DbContext.Dispose();
+                TestDbContext.Dispose();
             }
 
             disposedValue = true;
@@ -75,7 +69,7 @@ public class CreateEntityTests : IDisposable
     public async Task CreateEntity_ValidEntity_Success()
     {
         // Arrange
-        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(DbContext);
+        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
 
         var contactInfoType = typeof(ContactInfo);
         var contactInfo = new ContactInfo
@@ -90,7 +84,7 @@ public class CreateEntityTests : IDisposable
         await efCoreDataService.AddAsync(contactInfo, contactInfoType, CancellationToken.None);
 
         // Assert
-        Assert.Contains(contactInfo, DbContext.ContactInfos);
+        Assert.Contains(contactInfo, TestDbContext.ContactInfos);
     }
 
     /// <summary>
@@ -100,7 +94,7 @@ public class CreateEntityTests : IDisposable
     public async Task CreateEntity_AlreadyExistingEntity_Error()
     {
         // Arrange
-        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(DbContext);
+        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
 
         var contactInfoType = typeof(ContactInfo);
         var contactInfo = new ContactInfo

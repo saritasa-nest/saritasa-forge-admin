@@ -20,12 +20,7 @@ public class SearchDataForEntityTests : IDisposable
     /// </summary>
     public SearchDataForEntityTests()
     {
-        var dbOptions = new DbContextOptionsBuilder<TestDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
-
-        TestDbContext = new TestDbContext(dbOptions);
-        TestDbContext.Database.EnsureCreated();
+        TestDbContext = EfCoreHelper.CreateTestDbContext();
 
         TestDbContext.Addresses.Add(new Address
         {
