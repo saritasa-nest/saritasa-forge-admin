@@ -8,121 +8,15 @@ using Saritasa.NetForge.Domain.Enums;
 namespace Saritasa.NetForge.DomainServices.Extensions;
 
 /// <summary>
-/// Provides extension methods to apply entity-specific options and attributes to <see cref="EntityMetadata"/>.
+/// Provides extension methods to apply attributes to <see cref="EntityMetadata"/>.
 /// </summary>
-public static class EntityMetadataExtensions
+public static class EntityMetadataAttributesExtensions
 {
-    /// <summary>
-    /// Applies entity-specific options to the given <see cref="EntityMetadata"/> using the provided options.
-    /// </summary>
-    /// <param name="entityMetadata">The metadata of the entity to which options are applied.</param>
-    /// <param name="entityOptions">Options to apply for the entity metadata.</param>
-    /// <param name="adminOptions">Options to apply for the entity metadata.</param>
-    public static void ApplyOptions(this EntityMetadata entityMetadata, EntityOptions entityOptions, AdminOptions adminOptions)
-    {
-        if (!string.IsNullOrEmpty(entityOptions.Description))
-        {
-            entityMetadata.Description = entityOptions.Description;
-        }
-
-        if (!string.IsNullOrEmpty(entityOptions.DisplayName))
-        {
-            entityMetadata.DisplayName = entityOptions.DisplayName;
-        }
-
-        if (!string.IsNullOrEmpty(entityOptions.PluralName))
-        {
-            entityMetadata.PluralName = entityOptions.PluralName;
-        }
-
-        if (entityOptions.IsHidden)
-        {
-            entityMetadata.IsHidden = entityOptions.IsHidden;
-        }
-
-        if (entityOptions.SearchFunction is not null)
-        {
-            entityMetadata.SearchFunction = entityOptions.SearchFunction;
-        }
-
-        if (entityOptions.CustomQueryFunction is not null)
-        {
-            entityMetadata.CustomQueryFunction = entityOptions.CustomQueryFunction;
-        }
-
-        entityMetadata.Navigations = entityMetadata.Navigations
-            .Where(navigation => entityOptions.IncludedNavigations.Contains(navigation.Name))
-            .ToList();
-
-        entityMetadata.Navigations.ForEach(navigation => navigation.IsIncluded = true);
-
-        foreach (var option in entityOptions.PropertyOptions)
-        {
-            var property = entityMetadata.Properties
-                .FirstOrDefault(property => property.Name == option.PropertyName);
-
-            if (property is not null)
-            {
-                property.ApplyPropertyOptions(option);
-                continue;
-            }
-
-            var navigation = entityMetadata.Navigations
-                .FirstOrDefault(navigation => navigation.Name == option.PropertyName);
-
-            navigation?.ApplyPropertyOptions(option);
-        }
-
-        SetGroupForEntity(entityOptions.GroupName, entityMetadata, adminOptions);
-    }
-
-    private static void ApplyPropertyOptions(
-        this PropertyMetadataBase property, PropertyOptions propertyOptions)
-    {
-        property.IsHidden = propertyOptions.IsHidden;
-        property.IsExcludedFromQuery = propertyOptions.IsExcludedFromQuery;
-
-        if (!string.IsNullOrEmpty(propertyOptions.DisplayName))
-        {
-            property.DisplayName = propertyOptions.DisplayName;
-        }
-
-        if (!string.IsNullOrEmpty(propertyOptions.Description))
-        {
-            property.Description = propertyOptions.Description;
-        }
-
-        if (propertyOptions.Order.HasValue)
-        {
-            property.Order = propertyOptions.Order.Value;
-        }
-
-        property.DisplayFormat = propertyOptions.DisplayFormat ?? property.DisplayFormat;
-        property.FormatProvider = propertyOptions.FormatProvider ?? property.FormatProvider;
-
-        property.SearchType = propertyOptions.SearchType;
-
-        if (propertyOptions.IsSortable)
-        {
-            property.IsSortable = propertyOptions.IsSortable;
-        }
-
-        if (!string.IsNullOrEmpty(propertyOptions.EmptyValueDisplay))
-        {
-            property.EmptyValueDisplay = propertyOptions.EmptyValueDisplay;
-        }
-
-        if (propertyOptions.DisplayAsHtml)
-        {
-            property.DisplayAsHtml = propertyOptions.DisplayAsHtml;
-        }
-    }
-
     /// <summary>
     /// Applies entity-specific attributes to the given <see cref="EntityMetadata"/>.
     /// </summary>
     /// <param name="entityMetadata">The metadata of the entity to which attributes are applied.</param>
-    /// <param name="adminOptions">Options to apply for the entity metadata.</param>
+    /// <param name="adminOptions">Admin panel options.</param>
     public static void ApplyEntityAttributes(this EntityMetadata entityMetadata, AdminOptions adminOptions)
     {
         foreach (var property in entityMetadata.Properties)
@@ -177,7 +71,7 @@ public static class EntityMetadataExtensions
             entityMetadata.IsHidden = netForgeEntityAttribute.IsHidden;
         }
 
-        SetGroupForEntity(netForgeEntityAttribute.GroupName, entityMetadata, adminOptions);
+        entityMetadata.AssignGroupToEntity(netForgeEntityAttribute.GroupName, adminOptions);
     }
 
     private static void ApplyPropertyAttributes(this PropertyMetadataBase property)
@@ -271,19 +165,6 @@ public static class EntityMetadataExtensions
         if (netForgePropertyAttribute.DisplayAsHtml)
         {
             property.DisplayAsHtml = netForgePropertyAttribute.DisplayAsHtml;
-        }
-    }
-
-    private static void SetGroupForEntity(string groupName, EntityMetadata entityMetadata, AdminOptions adminOptions)
-    {
-        if (!string.IsNullOrEmpty(groupName))
-        {
-            var entityGroup =
-                adminOptions.EntityGroupsList.FirstOrDefault(group => group.Name == groupName);
-            if (entityGroup != null)
-            {
-                entityMetadata.Group = entityGroup;
-            }
         }
     }
 }
