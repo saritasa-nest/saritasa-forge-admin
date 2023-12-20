@@ -454,7 +454,7 @@ public string Property { get; set; }
 
 ## Formatting property as HTML
 
-You can configure certain entity properties to rendered as custom HTML content in the data grid.
+You can configure certain entity properties to be rendered as HTML content in the data grid.
 
 ### Using Fluent API
 

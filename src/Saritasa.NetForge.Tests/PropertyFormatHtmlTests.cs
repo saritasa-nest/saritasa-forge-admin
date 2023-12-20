@@ -5,9 +5,9 @@ using Xunit;
 namespace Saritasa.NetForge.Tests;
 
 /// <summary>
-/// Custom HTML for entity properties tests.
+/// HTML format for entity properties tests.
 /// </summary>
-public class PropertyCustomHtmlTests
+public class PropertyFormatHtmlTests
 {
     /// <summary>
     /// Configure entity property through fluent API test.
