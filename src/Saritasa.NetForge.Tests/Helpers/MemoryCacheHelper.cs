@@ -11,7 +11,6 @@ internal static class MemoryCacheHelper
     /// <summary>
     /// Creates <see cref="IMemoryCache"/>.
     /// </summary>
-    /// <returns></returns>
     internal static IMemoryCache CreateMemoryCache()
     {
         var memoryCache = new Mock<IMemoryCache>();
