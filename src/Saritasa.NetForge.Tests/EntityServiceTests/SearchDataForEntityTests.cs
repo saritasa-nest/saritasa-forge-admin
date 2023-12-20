@@ -126,7 +126,7 @@ public class SearchDataForEntityTests : IDisposable
 
     /// <summary>
     /// Test for <seealso cref="EfCoreDataService.Search"/>
-    /// using <see cref="SearchType.ContainsCaseInsensitive"/>.
+    /// using <see cref="SearchType.StartsWithCaseSensitive"/>.
     /// </summary>
     [Fact]
     public async Task Search_StartsWithCaseSensitive_ShouldFind2()
@@ -154,122 +154,146 @@ public class SearchDataForEntityTests : IDisposable
     }
 
     /// <summary>
-    /// Test for <seealso cref="EntityService.SearchDataForEntityAsync"/>
-    /// using <see cref="SearchType.StartsWithCaseSensitive"/>.
-    /// </summary>
-    [Fact]
-    public async Task SearchDataForEntityAsync_StartsWithCaseSensitiveSearch_ShouldFind2()
-    {
-        // Arrange
-        await InitializeTestServicesAsync(SearchType.StartsWithCaseSensitive, "Second");
-        const int expectedDataCount = 2;
-
-        // Act
-        var searchedData =
-            await entityService.SearchDataForEntityAsync(addressEntity.ClrType, addressEntity.Properties, searchOptions,
-                searchFunction: null, customQueryFunction: null);
-
-        // Assert
-        Assert.Equal(expectedDataCount, searchedData.Metadata.TotalCount);
-    }
-
-    /// <summary>
-    /// Test for <seealso cref="EntityService.SearchDataForEntityAsync"/>
+    /// Test for <seealso cref="EfCoreDataService.Search"/>
     /// using <see cref="SearchType.ExactMatchCaseInsensitive"/>.
     /// </summary>
     [Fact]
-    public async Task SearchDataForEntityAsync_ExactMatchCaseInsensitiveSearch_ShouldFind1()
+    public async Task Search_ExactMatchCaseInsensitive_ShouldFind1()
     {
         // Arrange
-        await InitializeTestServicesAsync(SearchType.ExactMatchCaseInsensitive, "Central");
-        const int expectedDataCount = 1;
+        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
+
+        const string searchString = "Central";
+        var entityType = typeof(Address);
+        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        {
+            (nameof(Address.Street), SearchType.ExactMatchCaseInsensitive)
+        };
+
+        const int expectedCount = 1;
 
         // Act
         var searchedData =
-            await entityService.SearchDataForEntityAsync(addressEntity.ClrType, addressEntity.Properties, searchOptions,
-                searchFunction: null, customQueryFunction: null);
+            efCoreDataService.Search(TestDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
 
         // Assert
-        Assert.Equal(expectedDataCount, searchedData.Metadata.TotalCount);
+
+        var actualCount = await searchedData.CountAsync();
+        Assert.Equal(expectedCount, actualCount);
     }
 
     /// <summary>
-    /// Test for <seealso cref="EntityService.SearchDataForEntityAsync"/>
+    /// Test for <seealso cref="EfCoreDataService.Search"/>
     /// using <see cref="SearchType.ExactMatchCaseInsensitive"/> to search values that contain <see langword="null"/>.
     /// </summary>
     [Fact]
-    public async Task SearchDataForEntityAsync_ExactMatchCaseInsensitiveNullSearch_ShouldFind4()
+    public async Task Search_ExactMatchCaseInsensitiveWhenSearchStringIsNone_ShouldFind2()
     {
         // Arrange
-        await InitializeTestServicesAsync(SearchType.ExactMatchCaseInsensitive, "None");
-        const int expectedDataCount = 4;
+        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
+
+        const string searchString = "None";
+        var entityType = typeof(Address);
+        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        {
+            (nameof(Address.Street), SearchType.ExactMatchCaseInsensitive)
+        };
+
+        const int expectedCount = 2;
 
         // Act
         var searchedData =
-            await entityService.SearchDataForEntityAsync(addressEntity.ClrType, addressEntity.Properties, searchOptions,
-                searchFunction: null, customQueryFunction: null);
+            efCoreDataService.Search(TestDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
 
         // Assert
-        Assert.Equal(expectedDataCount, searchedData.Metadata.TotalCount);
+
+        var actualCount = await searchedData.CountAsync();
+        Assert.Equal(expectedCount, actualCount);
     }
 
     /// <summary>
-    /// Test for <seealso cref="EntityService.SearchDataForEntityAsync"/>
-    /// using <see cref="SearchType.ExactMatchCaseInsensitive"/>.
+    /// Test for <seealso cref="EfCoreDataService.Search"/>
+    /// using <see cref="SearchType.ExactMatchCaseInsensitive"/> to search values that contain <see langword="null"/>.
     /// </summary>
     [Fact]
-    public async Task SearchDataForEntityAsync_WithoutSearch_ShouldFindAll()
+    public async Task Search_WithoutSearch_ShouldFindAll()
     {
         // Arrange
-        await InitializeTestServicesAsync(SearchType.None, string.Empty);
-        var expectedDataCount = await TestDbContext.Addresses.CountAsync();
+        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
+
+        const string searchString = "None";
+        var entityType = typeof(Address);
+        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        {
+            (nameof(Address.Street), SearchType.None)
+        };
+
+        var expectedCount = await TestDbContext.Addresses.CountAsync();
 
         // Act
         var searchedData =
-            await entityService.SearchDataForEntityAsync(addressEntity.ClrType, addressEntity.Properties, searchOptions,
-                searchFunction: null, customQueryFunction: null);
+            efCoreDataService.Search(TestDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
 
         // Assert
-        Assert.Equal(expectedDataCount, searchedData.Metadata.TotalCount);
+
+        var actualCount = await searchedData.CountAsync();
+        Assert.Equal(expectedCount, actualCount);
     }
 
     /// <summary>
-    /// Test for <seealso cref="EntityService.SearchDataForEntityAsync"/>
-    /// when <see cref="SearchOptions.SearchString"/> contains multiple words.
+    /// Test for <seealso cref="EfCoreDataService.Search"/> when search string contains multiple words.
     /// </summary>
     [Fact]
-    public async Task SearchDataForEntityAsync_MultipleSearchWords_ShouldFind2()
+    public async Task Search_WithMultipleWords_ShouldFind2()
     {
         // Arrange
-        await InitializeTestServicesAsync(SearchType.ContainsCaseInsensitive, "sq lond");
-        const int expectedDataCount = 2;
+        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
+
+        const string searchString = "sq lond";
+        var entityType = typeof(Address);
+        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        {
+            (nameof(Address.Street), SearchType.ContainsCaseInsensitive),
+            (nameof(Address.City), SearchType.ContainsCaseInsensitive)
+        };
+
+        const int expectedCount = 2;
 
         // Act
         var searchedData =
-            await entityService.SearchDataForEntityAsync(addressEntity.ClrType, addressEntity.Properties, searchOptions,
-                searchFunction: null, customQueryFunction: null);
+            efCoreDataService.Search(TestDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
 
         // Assert
-        Assert.Equal(expectedDataCount, searchedData.Metadata.TotalCount);
+
+        var actualCount = await searchedData.CountAsync();
+        Assert.Equal(expectedCount, actualCount);
     }
 
     /// <summary>
-    /// Test for <seealso cref="EntityService.SearchDataForEntityAsync"/>
-    /// when <see cref="SearchOptions.SearchString"/> contains phrase with quotes.
+    /// Test for <seealso cref="EfCoreDataService.Search"/> when search string contains quoted phrase.
     /// </summary>
     [Fact]
-    public async Task SearchDataForEntityAsync_SearchStringWithQuotes_ShouldFind2()
+    public async Task Search_WithQuotedPhrase_ShouldFind2()
     {
         // Arrange
-        await InitializeTestServicesAsync(SearchType.ContainsCaseInsensitive, "\"main St.\"");
-        const int expectedDataCount = 2;
+        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
+
+        const string searchString = "\"main St.\"";
+        var entityType = typeof(Address);
+        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        {
+            (nameof(Address.Street), SearchType.ContainsCaseInsensitive)
+        };
+
+        const int expectedCount = 2;
 
         // Act
         var searchedData =
-            await entityService.SearchDataForEntityAsync(addressEntity.ClrType, addressEntity.Properties, searchOptions,
-                searchFunction: null, customQueryFunction: null);
+            efCoreDataService.Search(TestDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
 
         // Assert
-        Assert.Equal(expectedDataCount, searchedData.Metadata.TotalCount);
+
+        var actualCount = await searchedData.CountAsync();
+        Assert.Equal(expectedCount, actualCount);
     }
 }
