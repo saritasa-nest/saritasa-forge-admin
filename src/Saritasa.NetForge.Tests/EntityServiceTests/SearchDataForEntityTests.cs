@@ -99,7 +99,6 @@ public class SearchDataForEntityTests : IDisposable
         {
             if (disposing)
             {
-                TestDbContext.Database.EnsureDeleted();
                 TestDbContext.Dispose();
             }
 
