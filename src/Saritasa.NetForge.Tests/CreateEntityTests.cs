@@ -19,7 +19,7 @@ public class CreateEntityTests : IDisposable
     public CreateEntityTests()
     {
         var dbOptions = new DbContextOptionsBuilder<TestDbContext>()
-            .UseInMemoryDatabase("NetForgeTest")
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
 
         DbContext = new TestDbContext(dbOptions);

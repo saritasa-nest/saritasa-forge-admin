@@ -21,7 +21,7 @@ public class SearchDataForEntityTests : IDisposable
     public SearchDataForEntityTests()
     {
         var dbOptions = new DbContextOptionsBuilder<TestDbContext>()
-            .UseInMemoryDatabase("NetForgeTest")
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
 
         TestDbContext = new TestDbContext(dbOptions);
@@ -298,7 +298,6 @@ public class SearchDataForEntityTests : IDisposable
             efCoreDataService.Search(TestDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
 
         // Assert
-
         var actualCount = await searchedData.CountAsync();
         Assert.Equal(expectedCount, actualCount);
     }
