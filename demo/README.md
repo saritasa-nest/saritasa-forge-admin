@@ -1,4 +1,4 @@
-# NetForge Demo .NET 7
+# NetForge Demo
 
 This is a demo web project that contains the database context to be used in the NetForge admin panel.
 
