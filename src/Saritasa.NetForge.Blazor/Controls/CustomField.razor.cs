@@ -28,6 +28,9 @@ public partial class CustomField
     /// </summary>
     public Type PropertyType { get; set; } = null!;
 
+    /// <summary>
+    /// Sets <see cref="PropertyType"/> after all parameters set.
+    /// </summary>
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
