@@ -30,32 +30,38 @@ public class SearchDataForEntityTests : IDisposable
         TestDbContext.Addresses.Add(new Address
         {
             Street = "Main St.",
-            City = "New York"
+            City = "New York",
+            Latitude = 100
         });
         TestDbContext.Addresses.Add(new Address
         {
             Street = "Main Square St.",
-            City = "London"
+            City = "London",
+            Latitude = 101
         });
         TestDbContext.Addresses.Add(new Address
         {
             Street = "Second Square St.",
-            City = "London"
+            City = "London",
+            Latitude = 102
         });
         TestDbContext.Addresses.Add(new Address
         {
             Street = "Second main St.",
-            City = "New York"
+            City = "New York",
+            Latitude = 10
         });
         TestDbContext.Addresses.Add(new Address
         {
             Street = "Central",
-            City = "London"
+            City = "London",
+            Latitude = 222
         });
         TestDbContext.Addresses.Add(new Address
         {
             Street = "central street",
-            City = "New York"
+            City = "New York",
+            Latitude = 1
         });
 
         TestDbContext.Products.Add(new Product
@@ -291,6 +297,33 @@ public class SearchDataForEntityTests : IDisposable
         };
 
         const int expectedCount = 2;
+
+        // Act
+        var searchedData =
+            efCoreDataService.Search(TestDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+
+        // Assert
+        var actualCount = await searchedData.CountAsync();
+        Assert.Equal(expectedCount, actualCount);
+    }
+
+    /// <summary>
+    /// Test for <seealso cref="EfCoreDataService.Search"/> when searched property is not <see cref="string"/>.
+    /// </summary>
+    [Fact]
+    public async Task Search_NotStringType_ShouldFind4()
+    {
+        // Arrange
+        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
+
+        const string searchString = "10";
+        var entityType = typeof(Address);
+        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        {
+            (nameof(Address.Latitude), SearchType.ContainsCaseInsensitive)
+        };
+
+        const int expectedCount = 4;
 
         // Act
         var searchedData =
