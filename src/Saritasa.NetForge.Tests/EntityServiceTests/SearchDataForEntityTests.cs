@@ -249,4 +249,24 @@ public class SearchDataForEntityTests : IDisposable
         // Assert
         Assert.Equal(expectedDataCount, searchedData.Metadata.TotalCount);
     }
+
+    /// <summary>
+    /// Test for <seealso cref="EntityService.SearchDataForEntityAsync"/>
+    /// when <see cref="SearchOptions.SearchString"/> contains phrase with quotes.
+    /// </summary>
+    [Fact]
+    public async Task SearchDataForEntityAsync_SearchStringWithQuotes_ShouldFind2()
+    {
+        // Arrange
+        await InitializeTestServicesAsync(SearchType.ContainsCaseInsensitive, "\"main St.\"");
+        const int expectedDataCount = 2;
+
+        // Act
+        var searchedData =
+            await entityService.SearchDataForEntityAsync(addressEntity.ClrType, addressEntity.Properties, searchOptions,
+                searchFunction: null, customQueryFunction: null);
+
+        // Assert
+        Assert.Equal(expectedDataCount, searchedData.Metadata.TotalCount);
+    }
 }
