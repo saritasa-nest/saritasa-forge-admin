@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Moq;
-using Saritasa.NetForge.Infrastructure.EfCore;
-using Saritasa.NetForge.Infrastructure.EfCore.Services;
 using Saritasa.NetForge.Tests.Domain;
+using Saritasa.NetForge.Tests.Helpers;
 using Xunit;
 using ContactInfo = Saritasa.NetForge.Tests.Domain.Models.ContactInfo;
 
@@ -71,21 +69,6 @@ public class CreateEntityTests : IDisposable
         }
     }
 
-    private static EfCoreDataService CreateEfCoreDataService(TestDbContext testDbContext)
-    {
-        var efCoreOptions = new EfCoreOptions();
-        var shopDbContextType = typeof(TestDbContext);
-        efCoreOptions.DbContexts.Add(shopDbContextType);
-
-        var serviceProvider = new Mock<IServiceProvider>();
-
-        serviceProvider
-            .Setup(provider => provider.GetService(shopDbContextType))
-            .Returns(testDbContext);
-
-        return new EfCoreDataService(efCoreOptions, serviceProvider.Object);
-    }
-
     /// <summary>
     /// Create valid entity test.
     /// </summary>
@@ -93,7 +76,7 @@ public class CreateEntityTests : IDisposable
     public async Task CreateEntity_ValidEntity_Success()
     {
         // Arrange
-        var efCoreDataService = CreateEfCoreDataService(DbContext);
+        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(DbContext);
 
         var contactInfoType = typeof(ContactInfo);
         var contactInfo = new ContactInfo
@@ -118,7 +101,7 @@ public class CreateEntityTests : IDisposable
     public async Task CreateEntity_AlreadyExistingEntity_Error()
     {
         // Arrange
-        var efCoreDataService = CreateEfCoreDataService(DbContext);
+        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(DbContext);
 
         var contactInfoType = typeof(ContactInfo);
         var contactInfo = new ContactInfo
