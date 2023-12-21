@@ -11,94 +11,16 @@ namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 /// <summary>
 /// Create entity tests.
 /// </summary>
-public class SearchTests : IDisposable
+public class SearchTests : IClassFixture<TestDatabaseFixture>
 {
-    private TestDbContext TestDbContext { get; set; }
+    private readonly TestDbContext testDbContext;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public SearchTests()
+    public SearchTests(TestDatabaseFixture testDatabaseFixture)
     {
-        TestDbContext = EfCoreHelper.CreateTestDbContext();
-
-        TestDbContext.Addresses.Add(new Address
-        {
-            Street = "Main St.",
-            City = "New York",
-            Latitude = 100
-        });
-        TestDbContext.Addresses.Add(new Address
-        {
-            Street = "Main Square St.",
-            City = "London",
-            Latitude = 101
-        });
-        TestDbContext.Addresses.Add(new Address
-        {
-            Street = "Second Square St.",
-            City = "London",
-            Latitude = 102
-        });
-        TestDbContext.Addresses.Add(new Address
-        {
-            Street = "Second main St.",
-            City = "New York",
-            Latitude = 10
-        });
-        TestDbContext.Addresses.Add(new Address
-        {
-            Street = "Central",
-            City = "London",
-            Latitude = 222
-        });
-        TestDbContext.Addresses.Add(new Address
-        {
-            Street = "central street",
-            City = "New York",
-            Latitude = 1
-        });
-
-        TestDbContext.Products.Add(new Product
-        {
-            Supplier = new Supplier()
-        });
-        TestDbContext.Products.Add(new Product
-        {
-            WeightInGrams = 111,
-            Supplier = new Supplier
-            {
-                Name = "Supplier",
-                City = "London"
-            }
-        });
-        TestDbContext.SaveChanges();
-    }
-
-    private bool disposedValue;
-
-    /// <inheritdoc />
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
-    /// Deletes the database after one test is complete,
-    /// so it gives us the same state of the database for every test.
-    /// </summary>
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!disposedValue)
-        {
-            if (disposing)
-            {
-                TestDbContext.Dispose();
-            }
-
-            disposedValue = true;
-        }
+        testDbContext = testDatabaseFixture.TestDbContext;
     }
 
     /// <summary>
@@ -109,7 +31,7 @@ public class SearchTests : IDisposable
     public async Task Search_ContainsCaseInsensitive_ShouldFind3()
     {
         // Arrange
-        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
+        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(testDbContext);
 
         const string searchString = "ain";
         var entityType = typeof(Address);
@@ -122,7 +44,7 @@ public class SearchTests : IDisposable
 
         // Act
         var searchedData =
-            efCoreDataService.Search(TestDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            efCoreDataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
 
         // Assert
 
@@ -138,7 +60,7 @@ public class SearchTests : IDisposable
     public async Task Search_StartsWithCaseSensitive_ShouldFind2()
     {
         // Arrange
-        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
+        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(testDbContext);
 
         const string searchString = "Second";
         var entityType = typeof(Address);
@@ -151,7 +73,7 @@ public class SearchTests : IDisposable
 
         // Act
         var searchedData =
-            efCoreDataService.Search(TestDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            efCoreDataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
 
         // Assert
 
@@ -167,7 +89,7 @@ public class SearchTests : IDisposable
     public async Task Search_ExactMatchCaseInsensitive_ShouldFind1()
     {
         // Arrange
-        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
+        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(testDbContext);
 
         const string searchString = "Central";
         var entityType = typeof(Address);
@@ -180,7 +102,7 @@ public class SearchTests : IDisposable
 
         // Act
         var searchedData =
-            efCoreDataService.Search(TestDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            efCoreDataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
 
         // Assert
 
@@ -196,7 +118,7 @@ public class SearchTests : IDisposable
     public async Task Search_ExactMatchCaseInsensitive_WithNoneSearchString_ShouldFind1()
     {
         // Arrange
-        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
+        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(testDbContext);
 
         const string searchString = "None";
         var entityType = typeof(Product);
@@ -209,7 +131,7 @@ public class SearchTests : IDisposable
 
         // Act
         var searchedData =
-            efCoreDataService.Search(TestDbContext.Products, searchString, entityType, propertiesWithSearchTypes);
+            efCoreDataService.Search(testDbContext.Products, searchString, entityType, propertiesWithSearchTypes);
 
         // Assert
 
@@ -224,7 +146,7 @@ public class SearchTests : IDisposable
     public async Task Search_WithoutSearch_ShouldFindAll()
     {
         // Arrange
-        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
+        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(testDbContext);
 
         var searchString = "SearchString";
         var entityType = typeof(Address);
@@ -233,11 +155,11 @@ public class SearchTests : IDisposable
             (nameof(Address.Street), SearchType.None)
         };
 
-        var expectedCount = await TestDbContext.Addresses.CountAsync();
+        var expectedCount = await testDbContext.Addresses.CountAsync();
 
         // Act
         var searchedData =
-            efCoreDataService.Search(TestDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            efCoreDataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
 
         // Assert
 
@@ -252,7 +174,7 @@ public class SearchTests : IDisposable
     public async Task Search_WithMultipleWords_ShouldFind2()
     {
         // Arrange
-        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
+        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(testDbContext);
 
         const string searchString = "sq lond";
         var entityType = typeof(Address);
@@ -266,7 +188,7 @@ public class SearchTests : IDisposable
 
         // Act
         var searchedData =
-            efCoreDataService.Search(TestDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            efCoreDataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
 
         // Assert
 
@@ -281,7 +203,7 @@ public class SearchTests : IDisposable
     public async Task Search_WithQuotedPhrase_ShouldFind2()
     {
         // Arrange
-        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
+        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(testDbContext);
 
         const string searchString = "\"main St.\"";
         var entityType = typeof(Address);
@@ -294,7 +216,7 @@ public class SearchTests : IDisposable
 
         // Act
         var searchedData =
-            efCoreDataService.Search(TestDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            efCoreDataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
 
         // Assert
         var actualCount = await searchedData.CountAsync();
@@ -308,7 +230,7 @@ public class SearchTests : IDisposable
     public async Task Search_NotStringType_ShouldFind4()
     {
         // Arrange
-        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
+        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(testDbContext);
 
         const string searchString = "10";
         var entityType = typeof(Address);
@@ -321,7 +243,7 @@ public class SearchTests : IDisposable
 
         // Act
         var searchedData =
-            efCoreDataService.Search(TestDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            efCoreDataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
 
         // Assert
         var actualCount = await searchedData.CountAsync();
