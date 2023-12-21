@@ -6,7 +6,7 @@ using Saritasa.NetForge.Tests.Domain.Models;
 using Saritasa.NetForge.Tests.Helpers;
 using Xunit;
 
-namespace Saritasa.NetForge.Tests.EntityServiceTests;
+namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 
 /// <summary>
 /// Create entity tests.
