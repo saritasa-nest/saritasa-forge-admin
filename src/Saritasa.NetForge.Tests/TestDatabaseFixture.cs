@@ -1,6 +1,14 @@
-﻿using Saritasa.NetForge.Tests.Domain;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Saritasa.NetForge.Blazor.Extensions;
+using Saritasa.NetForge.Blazor.Infrastructure.DependencyInjection;
+using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
+using Saritasa.NetForge.Tests.Domain;
 using Saritasa.NetForge.Tests.Domain.Models;
 using Saritasa.NetForge.Tests.Helpers;
+using Xunit.Microsoft.DependencyInjection;
+using Xunit.Microsoft.DependencyInjection.Abstracts;
 
 namespace Saritasa.NetForge.Tests;
 
@@ -12,7 +20,7 @@ namespace Saritasa.NetForge.Tests;
 /// When we want the same database state for all tests in one class.
 /// For example, when we don't modify any data in the database.
 /// </remarks>
-public class TestDatabaseFixture : IDisposable
+public class TestDatabaseFixture : TestBedFixture
 {
     internal TestDbContext TestDbContext { get; set; }
 
@@ -76,28 +84,36 @@ public class TestDatabaseFixture : IDisposable
         TestDbContext.SaveChanges();
     }
 
-    private bool disposedValue;
-
     /// <inheritdoc />
-    public void Dispose()
+    protected override ValueTask DisposeAsyncCore()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
+        TestDbContext.Dispose();
+
+        return default;
     }
 
-    /// <summary>
-    /// Disposes the database's resources after tests completing.
-    /// </summary>
-    protected virtual void Dispose(bool disposing)
+    /// <inheritdoc />
+    protected override void AddServices(IServiceCollection services, IConfiguration? configuration)
     {
-        if (!disposedValue)
-        {
-            if (disposing)
-            {
-                TestDbContext.Dispose();
-            }
+        AutoMapperModule.Register(services);
 
-            disposedValue = true;
-        }
+        services.AddDbContext<TestDbContext>(options =>
+        {
+            options.UseInMemoryDatabase("NetForgeTest");
+        });
+
+        services.AddNetForge(optionsBuilder =>
+        {
+            optionsBuilder.UseEntityFramework(efOptionsBuilder =>
+            {
+                efOptionsBuilder.UseDbContext<TestDbContext>();
+            });
+        });
+    }
+
+    /// <inheritdoc />
+    protected override IEnumerable<TestAppSettings> GetTestAppSettings()
+    {
+        yield return new() { Filename = "appsettings.json", IsOptional = true };
     }
 }
