@@ -27,6 +27,7 @@ else
                   Variant="Variant.Outlined"
                   InputType="GetInputType(PropertyType)"
                   TextChanged="value => HandleInputChange(value, Property.Name)"
-                  HelperText="@Property.Description">
+                  HelperText="@Property.Description"
+                  @bind-Value="PropertyValue">
     </MudTextField>
 }

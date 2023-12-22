@@ -28,6 +28,8 @@ public partial class CustomField
     /// </summary>
     public Type PropertyType { get; set; } = null!;
 
+    public string PropertyValue { get; set; } = null!;
+
     /// <summary>
     /// Sets <see cref="PropertyType"/> after all parameters set.
     /// </summary>
@@ -36,6 +38,7 @@ public partial class CustomField
         base.OnParametersSet();
 
         PropertyType = EntityModel.GetType().GetProperty(Property.Name)!.PropertyType;
+        PropertyValue = EntityModel.GetType().GetProperty(Property.Name)!.GetValue(EntityModel)!.ToString()!;
     }
 
     private IReadOnlyDictionary<List<Type>, InputType> TypeMappingDictionary { get; init; }

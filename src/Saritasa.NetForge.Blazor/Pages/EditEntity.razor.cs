@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using MudBlazor;
+using Saritasa.NetForge.Blazor.Infrastructure;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
@@ -19,6 +21,9 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
     [Inject]
     private AdminOptions? AdminOptions { get; set; }
 
+    [Inject]
+    private StateContainer StateContainer { get; set; } = null!;
+
     /// <summary>
     /// Entity id.
     /// </summary>
@@ -37,6 +42,8 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
+
+        ViewModel.EntityModel = StateContainer.Value;
 
         var adminPanelEndpoint = AdminOptions!.AdminPanelEndpoint;
         var entityDetailsEndpoint = $"{adminPanelEndpoint}/entities/{StringId}";

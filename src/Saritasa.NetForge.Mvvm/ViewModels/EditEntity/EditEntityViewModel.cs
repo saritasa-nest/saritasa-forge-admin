@@ -40,7 +40,7 @@ public class EditEntityViewModel : BaseViewModel
     /// <summary>
     /// Entity model.
     /// </summary>
-    public object EntityModel { get; private set; } = null!;
+    public object EntityModel { get; set; } = null!;
 
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
@@ -49,7 +49,7 @@ public class EditEntityViewModel : BaseViewModel
         {
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
             Model = mapper.Map<EditEntityModel>(entity);
-            EntityModel = Activator.CreateInstance(Model.ClrType!)!;
+            //EntityModel = Activator.CreateInstance(Model.ClrType!)!;
         }
         catch (NotFoundException)
         {

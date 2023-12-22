@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Saritasa.NetForge.Blazor.Infrastructure;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
+using Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 
 namespace Saritasa.NetForge.Blazor.Pages;
@@ -10,10 +12,13 @@ namespace Saritasa.NetForge.Blazor.Pages;
 /// Entity details.
 /// </summary>
 [Route("/entities/{stringId}")]
-public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
+public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>, IDisposable
 {
     [Inject]
     private INavigationService NavigationService { get; set; } = null!;
+
+    [Inject]
+    private StateContainer StateContainer { get; set; } = null!;
 
     /// <summary>
     /// Entity id.
@@ -44,5 +49,26 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     private void NavigateToCreation()
     {
         NavigationService.NavigateTo<CreateEntityViewModel>(parameters: StringId);
+    }
+
+    //private void NavigateToEditing()
+    //{
+    //    NavigationService.NavigateTo<EditEntityViewModel>(parameters: StringId);
+    //}
+
+    protected override void OnInitialized()
+    {
+        StateContainer.OnStateChange += StateHasChanged;
+    }
+
+    private void NavigateToEditing(DataGridRowClickEventArgs<object> row)
+    {
+        StateContainer.SetValue(row.Item);
+        NavigationService.NavigateTo<EditEntityViewModel>(parameters: StringId);
+    }
+
+    public void Dispose()
+    {
+        StateContainer.OnStateChange -= StateHasChanged;
     }
 }
