@@ -1,0 +1,18 @@
+﻿@using Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
+@using Saritasa.NetForge.Blazor.Controls
+@using Saritasa.NetForge.Blazor.Extensions
+
+@inherits MvvmComponentBase<EditEntityViewModel>
+
+@if (ViewModel.IsEntityExists)
+{
+    <MudBreadcrumbs Items="breadcrumbItems"></MudBreadcrumbs>
+
+    var title = $"Edit {ViewModel.Model.DisplayName.ToMeaningfulName()}";
+    <PageTitle>@title</PageTitle>
+    <MudText Class="pb-4" Typo="Typo.h4">@title</MudText>
+}
+else
+{
+    <NotFound />
+}
