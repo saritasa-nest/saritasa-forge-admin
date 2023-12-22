@@ -3,7 +3,7 @@ using Saritasa.NetForge.Tests.Helpers;
 using Xunit;
 using ContactInfo = Saritasa.NetForge.Tests.Domain.Models.ContactInfo;
 
-namespace Saritasa.NetForge.Tests;
+namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 
 /// <summary>
 /// Create entity tests.
