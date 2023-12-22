@@ -9,7 +9,7 @@ using Saritasa.NetForge.Tests.Domain.Models;
 using Xunit.Microsoft.DependencyInjection;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
 
-namespace Saritasa.NetForge.Tests;
+namespace Saritasa.NetForge.Tests.Utilities;
 
 /// <summary>
 /// Test database fixture.
