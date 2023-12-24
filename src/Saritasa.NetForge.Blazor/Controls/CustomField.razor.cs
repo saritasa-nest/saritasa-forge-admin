@@ -28,7 +28,7 @@ public partial class CustomField
     /// </summary>
     public Type PropertyType { get; set; } = null!;
 
-    public string PropertyValue { get; set; } = null!;
+    public string? PropertyValue { get; set; } = null!;
 
     public DateTime? PropertyDateValue { get; set; } = null!;
 
@@ -40,12 +40,17 @@ public partial class CustomField
         base.OnParametersSet();
 
         PropertyType = EntityModel.GetType().GetProperty(Property.Name)!.PropertyType;
-        PropertyValue = EntityModel.GetType().GetProperty(Property.Name)!.GetValue(EntityModel)!.ToString()!;
+        PropertyValue = EntityModel.GetType().GetProperty(Property.Name)?.GetValue(EntityModel)?.ToString();
 
         var actualPropertyType = Nullable.GetUnderlyingType(PropertyType) ?? PropertyType;
         if (actualPropertyType == typeof(DateTime))
         {
-            PropertyDateValue = DateTime.Parse(PropertyValue);
+            var isDateParsed = DateTime.TryParse(PropertyValue, out var parsedDate);
+
+            if (isDateParsed)
+            {
+                PropertyDateValue = parsedDate;
+            }
         }
     }
 
