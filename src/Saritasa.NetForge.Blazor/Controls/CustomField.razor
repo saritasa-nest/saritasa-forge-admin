@@ -13,7 +13,8 @@ else if (PropertyType.IsEnum)
                Label="@Property.Name"
                Variant="Variant.Outlined"
                TextChanged="value => HandleInputChange(value, Property.Name)"
-               HelperText="@Property.Description">
+               HelperText="@Property.Description"
+               @bind-Value="PropertyValue">
         @foreach (var enumValue in Enum.GetNames(PropertyType))
         {
             <MudSelectItem Value="enumValue" />
