@@ -30,6 +30,8 @@ public partial class CustomField
 
     public string PropertyValue { get; set; } = null!;
 
+    public DateTime? PropertyDateValue { get; set; } = null!;
+
     /// <summary>
     /// Sets <see cref="PropertyType"/> after all parameters set.
     /// </summary>
@@ -39,6 +41,12 @@ public partial class CustomField
 
         PropertyType = EntityModel.GetType().GetProperty(Property.Name)!.PropertyType;
         PropertyValue = EntityModel.GetType().GetProperty(Property.Name)!.GetValue(EntityModel)!.ToString()!;
+
+        var actualPropertyType = Nullable.GetUnderlyingType(PropertyType) ?? PropertyType;
+        if (actualPropertyType == typeof(DateTime))
+        {
+            PropertyDateValue = DateTime.Parse(PropertyValue);
+        }
     }
 
     private IReadOnlyDictionary<List<Type>, InputType> TypeMappingDictionary { get; init; }
