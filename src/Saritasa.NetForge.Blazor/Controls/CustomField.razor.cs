@@ -43,7 +43,9 @@ public partial class CustomField
         PropertyValue = EntityModel.GetType().GetProperty(Property.Name)?.GetValue(EntityModel)?.ToString();
 
         var actualPropertyType = Nullable.GetUnderlyingType(PropertyType) ?? PropertyType;
-        if (actualPropertyType == typeof(DateTime))
+        if (actualPropertyType == typeof(DateTime)
+            || actualPropertyType == typeof(DateTimeOffset)
+            || actualPropertyType == typeof(DateOnly))
         {
             var isDateParsed = DateTime.TryParse(PropertyValue, out var parsedDate);
 

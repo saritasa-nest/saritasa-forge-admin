@@ -21,7 +21,8 @@ else if (PropertyType.IsEnum)
         }
     </MudSelect>
 }
-else if (PropertyType == typeof(DateTime) || PropertyType == typeof(DateTime?))
+else if (PropertyType == typeof(DateTime) || PropertyType == typeof(DateTime?)
+         || PropertyType == typeof(DateTimeOffset) || PropertyType == typeof(DateTimeOffset?))
 {
     <MudTextField T="DateTime?"
                   Label="@Property.Name"
@@ -29,6 +30,18 @@ else if (PropertyType == typeof(DateTime) || PropertyType == typeof(DateTime?))
                   InputType="InputType.DateTimeLocal"
                   TextChanged="value => HandleInputChange(value, Property.Name)"
                   Format="s"
+                  HelperText="@Property.Description"
+                  @bind-Value="PropertyDateValue">
+    </MudTextField>
+}
+else if (PropertyType == typeof(DateOnly) || PropertyType == typeof(DateOnly?))
+{
+    <MudTextField T="DateTime?"
+                  Label="@Property.Name"
+                  Variant="Variant.Outlined"
+                  InputType="InputType.Date"
+                  TextChanged="value => HandleInputChange(value, Property.Name)"
+                  Format="yyyy-MM-dd"
                   HelperText="@Property.Description"
                   @bind-Value="PropertyDateValue">
     </MudTextField>
