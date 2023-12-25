@@ -11,7 +11,7 @@ else if (PropertyType.IsEnum)
     <MudSelect T="string"
                Label="@Property.Name"
                Variant="Variant.Outlined"
-               TextChanged="value => HandleInputChange(value, Property.Name)"
+               TextChanged="HandleInputChange"
                HelperText="@Property.Description"
                @bind-Value="PropertyValue">
         @foreach (var enumValue in Enum.GetNames(PropertyType))
@@ -27,7 +27,7 @@ else if (PropertyType == typeof(DateTime) || PropertyType == typeof(DateTime?)
                   Label="@Property.Name"
                   Variant="Variant.Outlined"
                   InputType="InputType.DateTimeLocal"
-                  TextChanged="value => HandleInputChange(value, Property.Name)"
+                  TextChanged="HandleInputChange"
                   Format="s"
                   HelperText="@Property.Description"
                   @bind-Value="PropertyDateValue">
@@ -39,7 +39,7 @@ else if (PropertyType == typeof(DateOnly) || PropertyType == typeof(DateOnly?))
                   Label="@Property.Name"
                   Variant="Variant.Outlined"
                   InputType="InputType.Date"
-                  TextChanged="value => HandleInputChange(value, Property.Name)"
+                  TextChanged="HandleInputChange"
                   Format="yyyy-MM-dd"
                   HelperText="@Property.Description"
                   @bind-Value="PropertyDateValue">
@@ -51,7 +51,7 @@ else
                   Label="@Property.Name"
                   Variant="Variant.Outlined"
                   InputType="GetInputType(PropertyType)"
-                  TextChanged="value => HandleInputChange(value, Property.Name)"
+                  TextChanged="HandleInputChange"
                   HelperText="@Property.Description"
                   @bind-Value="PropertyValue">
     </MudTextField>

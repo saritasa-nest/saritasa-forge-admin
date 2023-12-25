@@ -43,7 +43,7 @@ public partial class CustomField
         set
         {
             propertyBooleanValue = value;
-            HandleInputChange(propertyBooleanValue, Property.Name);
+            HandleInputChange(propertyBooleanValue);
         }
     }
 
@@ -135,10 +135,9 @@ public partial class CustomField
     /// Handles input changes.
     /// </summary>
     /// <param name="value">Input value.</param>
-    /// <param name="propertyName">Name of property that related to the input.</param>
-    private void HandleInputChange(object? value, string propertyName)
+    private void HandleInputChange(object? value)
     {
-        var property = EntityModel.GetType().GetProperty(propertyName)!;
+        var property = EntityModel.GetType().GetProperty(Property.Name)!;
 
         var stringValue = value?.ToString();
         if (string.IsNullOrEmpty(stringValue))
