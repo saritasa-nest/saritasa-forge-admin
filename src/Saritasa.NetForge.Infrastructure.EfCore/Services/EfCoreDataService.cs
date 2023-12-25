@@ -290,4 +290,15 @@ public class EfCoreDataService : IOrmDataService
         dbContext.Add(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
+
+    /// <inheritdoc />
+    public async Task UpdateAsync(object entity, Type entityType, CancellationToken cancellationToken)
+    {
+        var dbContext = GetDbContextThatContainsEntity(entityType);
+
+        dbContext.Update(entity);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        dbContext.Entry(entity).State = EntityState.Detached;
+    }
 }

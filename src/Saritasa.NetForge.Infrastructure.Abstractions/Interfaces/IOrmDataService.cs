@@ -36,4 +36,12 @@ public interface IOrmDataService
     /// <param name="entityType">Entity type.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     Task AddAsync(object entity, Type entityType, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Updates entity in the database.
+    /// </summary>
+    /// <param name="entity">Entity to update.</param>
+    /// <param name="entityType">Entity type.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    Task UpdateAsync(object entity, Type entityType, CancellationToken cancellationToken);
 }

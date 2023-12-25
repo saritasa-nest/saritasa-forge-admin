@@ -14,7 +14,7 @@
 
     <MudGrid Justify="Justify.Center">
         <MudItem xs="6">
-            <EditForm Model="ViewModel.EntityModel">
+            <EditForm Model="ViewModel.EntityModel" OnValidSubmit="ViewModel.UpdateEntityAsync">
                 <div class="d-flex flex-column flex-grow-1 gap-4">
                     @{
                         var properties = ViewModel.Model.Properties

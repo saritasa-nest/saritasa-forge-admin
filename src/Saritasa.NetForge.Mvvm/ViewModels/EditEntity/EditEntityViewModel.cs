@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Saritasa.NetForge.Mvvm.Navigation;
+using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.Tools.Domain.Exceptions;
 
@@ -17,19 +17,19 @@ public class EditEntityViewModel : BaseViewModel
 
     private readonly IEntityService entityService;
     private readonly IMapper mapper;
-    private readonly INavigationService navigationService;
+    private readonly IOrmDataService dataService;
 
     /// <summary>
     /// Constructor.
     /// </summary>
     public EditEntityViewModel(
-        string stringId, IEntityService entityService, IMapper mapper, INavigationService navigationService)
+        string stringId, IEntityService entityService, IMapper mapper, IOrmDataService dataService)
     {
         Model = new EditEntityModel { StringId = stringId };
 
         this.entityService = entityService;
         this.mapper = mapper;
-        this.navigationService = navigationService;
+        this.dataService = dataService;
     }
 
     /// <summary>
@@ -55,5 +55,13 @@ public class EditEntityViewModel : BaseViewModel
         {
             IsEntityExists = false;
         }
+    }
+
+    /// <summary>
+    /// Updates entity.
+    /// </summary>
+    public async Task UpdateEntityAsync()
+    {
+       await dataService.UpdateAsync(EntityModel, Model.ClrType!, CancellationToken);
     }
 }
