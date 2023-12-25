@@ -32,6 +32,21 @@ public partial class CustomField
 
     public DateTime? PropertyDateValue { get; set; } = null!;
 
+    private bool? propertyBooleanValue;
+
+    /// <summary>
+    /// Property value when <see cref="PropertyType"/> is <see cref="bool"/>.
+    /// </summary>
+    public bool? PropertyBooleanValue
+    {
+        get => propertyBooleanValue;
+        set
+        {
+            propertyBooleanValue = value;
+            HandleInputChange(propertyBooleanValue, Property.Name);
+        }
+    }
+
     /// <summary>
     /// Sets <see cref="PropertyType"/> after all parameters set.
     /// </summary>
@@ -52,6 +67,15 @@ public partial class CustomField
             if (isDateParsed)
             {
                 PropertyDateValue = parsedDate;
+            }
+        }
+        else if (actualPropertyType == typeof(bool))
+        {
+            var isBooleanParsed = bool.TryParse(PropertyValue, out var parsedBoolean);
+
+            if (isBooleanParsed)
+            {
+                PropertyBooleanValue = parsedBoolean;
             }
         }
     }
@@ -112,11 +136,11 @@ public partial class CustomField
     /// </summary>
     /// <param name="value">Input value.</param>
     /// <param name="propertyName">Name of property that related to the input.</param>
-    private void HandleInputChange(object value, string propertyName)
+    private void HandleInputChange(object? value, string propertyName)
     {
         var property = EntityModel.GetType().GetProperty(propertyName)!;
 
-        var stringValue = value.ToString();
+        var stringValue = value?.ToString();
         if (string.IsNullOrEmpty(stringValue))
         {
             property.SetValue(EntityModel, null);

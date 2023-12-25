@@ -1,8 +1,7 @@
 ﻿@if (PropertyType == typeof(bool) || PropertyType == typeof(bool?))
 {
-    <MudCheckBox T="bool"
-                 Label="@Property.Name"
-                 CheckedChanged="value => HandleInputChange(value!, Property.Name)">
+    <MudCheckBox Label="@Property.Name"
+                 @bind-Checked="PropertyBooleanValue">
         <MudText class="mud-input-helper-text ml-3">@Property.Description</MudText>
     </MudCheckBox>
     
