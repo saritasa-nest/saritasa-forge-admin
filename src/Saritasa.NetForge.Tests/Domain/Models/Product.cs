@@ -1,6 +1,4 @@
-﻿using Saritasa.NetForge.Domain.Attributes;
-
-namespace Saritasa.NetForge.Tests.Domain.Models;
+﻿namespace Saritasa.NetForge.Tests.Domain.Models;
 
 /// <summary>
 /// Represents a product entity.
