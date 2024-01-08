@@ -141,4 +141,49 @@ public class GetEntityByIdTests : IDisposable
         // Assert
         Assert.DoesNotContain(entity.Properties, property => property.Name.Equals(hiddenPropertyName));
     }
+
+    /// <summary>
+    /// Test for case when properties don't have ordering.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithoutOrdering_PrimaryKeyShouldBeFirst()
+    {
+        // Arrange
+        const string stringId = "Shops";
+        const string expectedPropertyName = nameof(Shop.Id);
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(stringId, CancellationToken.None);
+
+        // Assert
+        var firstProperty = entity.Properties.First();
+        Assert.Equal(expectedPropertyName, firstProperty.Name);
+    }
+
+    /// <summary>
+    /// Test for case when properties have ordering.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithOrdering_OrderedPropertyShouldBeFirst()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder
+                .ConfigureProperty(shop => shop.TotalSales, optionsBuilder => optionsBuilder.SetOrder(0))
+                .ConfigureProperty(shop => shop.IsOpen, optionsBuilder => optionsBuilder.SetOrder(1))
+                .ConfigureProperty(shop => shop.Name, optionsBuilder => optionsBuilder.SetOrder(2))
+                .ConfigureProperty(shop => shop.OpenedDate, optionsBuilder => optionsBuilder.SetOrder(3))
+                .ConfigureProperty(shop => shop.Id, optionsBuilder => optionsBuilder.SetOrder(4));
+        });
+        const string stringId = "Shops";
+        const string expectedPropertyName = nameof(Shop.TotalSales);
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(stringId, CancellationToken.None);
+
+        // Assert
+        var secondProperty = entity.Properties.First();
+        Assert.Equal(expectedPropertyName, secondProperty.Name);
+    }
 }
