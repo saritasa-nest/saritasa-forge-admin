@@ -41,7 +41,6 @@ public interface IOrmDataService
     /// Updates entity in the database.
     /// </summary>
     /// <param name="entity">Entity to update.</param>
-    /// <param name="entityType">Entity type.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    Task UpdateAsync(object entity, Type entityType, CancellationToken cancellationToken);
+    Task UpdateAsync(object entity, CancellationToken cancellationToken);
 }

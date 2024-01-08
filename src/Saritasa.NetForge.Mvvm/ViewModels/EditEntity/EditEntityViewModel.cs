@@ -62,6 +62,6 @@ public class EditEntityViewModel : BaseViewModel
     /// </summary>
     public async Task UpdateEntityAsync()
     {
-       await dataService.UpdateAsync(EntityModel, Model.ClrType!, CancellationToken);
+       await dataService.UpdateAsync(EntityModel, CancellationToken);
     }
 }

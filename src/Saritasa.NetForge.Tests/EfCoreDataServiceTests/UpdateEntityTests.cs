@@ -78,10 +78,8 @@ public class UpdateEntityTests : IDisposable
         const string newEmail = "Test222@test.test";
         contactInfo.Email = newEmail;
 
-        var contactInfoType = typeof(ContactInfo);
-
         // Act
-        await efCoreDataService.UpdateAsync(contactInfo, contactInfoType, CancellationToken.None);
+        await efCoreDataService.UpdateAsync(contactInfo, CancellationToken.None);
 
         // Assert
         Assert.Contains(TestDbContext.ContactInfos, contact => contact.Email.Equals(newEmail));
