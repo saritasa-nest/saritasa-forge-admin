@@ -1,29 +1,68 @@
-﻿using Saritasa.NetForge.Tests.Domain.Models;
-using Saritasa.NetForge.Tests.Utilities;
+﻿using Moq;
+using Saritasa.NetForge.DomainServices;
+using Saritasa.NetForge.Tests.Domain;
+using Saritasa.NetForge.Tests.Domain.Models;
+using Saritasa.NetForge.Tests.Helpers;
 using Saritasa.NetForge.UseCases.Interfaces;
+using Saritasa.NetForge.UseCases.Metadata.Services;
 using Saritasa.NetForge.UseCases.Services;
 using Saritasa.Tools.Domain.Exceptions;
 using Xunit;
-using Xunit.Abstractions;
-using Xunit.Microsoft.DependencyInjection.Abstracts;
 
 namespace Saritasa.NetForge.Tests.EntityServiceTests;
 
 /// <summary>
 /// Tests for <see cref="EntityService.GetEntityByIdAsync"/>.
 /// </summary>
-[CollectionDefinition(TestConstants.DependencyInjection)]
-public class GetEntityByIdTests : TestBed<TestDatabaseFixture>
+public class GetEntityByIdTests : IDisposable
 {
+    private readonly TestDbContext testDbContext;
     private readonly IEntityService entityService;
+    private readonly AdminOptionsBuilder adminOptionsBuilder;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public GetEntityByIdTests(ITestOutputHelper testOutputHelper, TestDatabaseFixture testDatabaseFixture)
-        : base(testOutputHelper, testDatabaseFixture)
+    public GetEntityByIdTests()
     {
-        entityService = testDatabaseFixture.GetService<IEntityService>(testOutputHelper)!;
+        testDbContext = EfCoreHelper.CreateTestDbContext();
+        adminOptionsBuilder = new AdminOptionsBuilder();
+        var adminMetadataService = new AdminMetadataService(
+            EfCoreHelper.CreateEfCoreMetadataService(testDbContext),
+            adminOptionsBuilder.Create(),
+            MemoryCacheHelper.CreateMemoryCache());
+
+        entityService = new EntityService(
+            AutomapperHelper.CreateAutomapper(),
+            adminMetadataService,
+            EfCoreHelper.CreateEfCoreDataService(testDbContext),
+            new Mock<IServiceProvider>().Object);
+    }
+
+    private bool disposedValue;
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Deletes the database after one test is complete,
+    /// so it gives us the same state of the database for every test.
+    /// </summary>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                testDbContext.Dispose();
+            }
+
+            disposedValue = true;
+        }
     }
 
     /// <summary>
@@ -59,18 +98,37 @@ public class GetEntityByIdTests : TestBed<TestDatabaseFixture>
     }
 
     /// <summary>
-    /// Test for case when string id is invalid.
+    /// Test for case when navigation included to entity.
     /// </summary>
     [Fact]
     public async Task GetEntityByIdAsync_WithNavigations_ShouldBeNotNull()
     {
         // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.IncludeNavigations(entity => entity.Address);
+        });
+
         const string stringId = "Shops";
+        const string navigationPropertyName = nameof(Shop.Address);
 
         // Act
         var entity = await entityService.GetEntityByIdAsync(stringId, CancellationToken.None);
 
         // Assert
-        Assert.NotNull(entity);
+        Assert.Contains(entity.Properties, property => property.Name.Equals(navigationPropertyName));
+    }
+        const string stringId = "Shops";
+
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.IncludeNavigations(entity => entity.Address);
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(stringId, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(entity.Properties, property => property.Name.Equals("Address"));
     }
 }
