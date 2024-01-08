@@ -118,17 +118,27 @@ public class GetEntityByIdTests : IDisposable
         // Assert
         Assert.Contains(entity.Properties, property => property.Name.Equals(navigationPropertyName));
     }
-        const string stringId = "Shops";
 
+    /// <summary>
+    /// Test for case when property excluded from query.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithExcludedFromQueryProperty_ShouldNotContainExcludedProperty()
+    {
+        // Arrange
         adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
         {
-            builder.IncludeNavigations(entity => entity.Address);
+            builder
+                .ConfigureProperty(shop => shop.IsOpen, optionsBuilder => optionsBuilder.SetIsExcludedFromQuery(true));
         });
+
+        const string stringId = "Shops";
+        const string hiddenPropertyName = nameof(Shop.IsOpen);
 
         // Act
         var entity = await entityService.GetEntityByIdAsync(stringId, CancellationToken.None);
 
         // Assert
-        Assert.Contains(entity.Properties, property => property.Name.Equals("Address"));
+        Assert.DoesNotContain(entity.Properties, property => property.Name.Equals(hiddenPropertyName));
     }
 }
