@@ -11,12 +11,12 @@ public class StateContainer
     /// <summary>
     /// Value.
     /// </summary>
-    public object Value { get; set; }
+    public object? Value { get; set; }
 
     /// <summary>
     /// On state change.
     /// </summary>
-    public event Action OnStateChange;
+    public event Action? OnStateChange;
 
     /// <summary>
     /// Set value.
@@ -29,6 +29,6 @@ public class StateContainer
 
     private void NotifyStateChanged()
     {
-        OnStateChange.Invoke();
+        OnStateChange?.Invoke();
     }
 }
