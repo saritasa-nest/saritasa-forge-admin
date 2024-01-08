@@ -28,8 +28,14 @@ public partial class CustomField
     /// </summary>
     public Type PropertyType { get; set; } = null!;
 
+    /// <summary>
+    /// Property value.
+    /// </summary>
     public string? PropertyValue { get; set; } = null!;
 
+    /// <summary>
+    /// Property date value.
+    /// </summary>
     public DateTime? PropertyDateValue { get; set; } = null!;
 
     private bool? propertyBooleanValue;
