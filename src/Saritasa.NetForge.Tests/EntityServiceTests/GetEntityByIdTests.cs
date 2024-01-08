@@ -58,19 +58,19 @@ public class GetEntityByIdTests : TestBed<TestDatabaseFixture>
         await Assert.ThrowsAsync<NotFoundException>(getEntityByIdCall);
     }
 
-    ///// <summary>
-    ///// Test for case when string id is invalid.
-    ///// </summary>
-    //[Fact]
-    //public async Task GetEntityByIdAsync_InvalidStringId_ShouldBeNotNull()
-    //{
-    //    // Arrange
-    //    const string stringId = "Addresses";
+    /// <summary>
+    /// Test for case when string id is invalid.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithNavigations_ShouldBeNotNull()
+    {
+        // Arrange
+        const string stringId = "Shops";
 
-    //    // Act
-    //    var entity = await entityService.GetEntityByIdAsync(stringId, CancellationToken.None);
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(stringId, CancellationToken.None);
 
-    //    // Assert
-    //    Assert.NotNull(entity.Properties.FirstOrDefault(property => property.Name.Equals(nameof(Address.Street))));
-    //}
+        // Assert
+        Assert.NotNull(entity);
+    }
 }
