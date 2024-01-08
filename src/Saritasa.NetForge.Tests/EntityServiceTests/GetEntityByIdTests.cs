@@ -186,4 +186,28 @@ public class GetEntityByIdTests : IDisposable
         var secondProperty = entity.Properties.First();
         Assert.Equal(expectedPropertyName, secondProperty.Name);
     }
+
+    /// <summary>
+    /// Test for case when property has set display name.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithPropertyDisplayName_DisplayNameShouldChange()
+    {
+        // Arrange
+        const string displayName = "Sales";
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder
+                .ConfigureProperty(shop => shop.TotalSales, optionsBuilder => optionsBuilder.SetDisplayName(displayName));
+        });
+        const string stringId = "Shops";
+        const string propertyName = nameof(Shop.TotalSales);
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(stringId, CancellationToken.None);
+
+        // Assert
+        var secondProperty = entity.Properties.First(property => property.Name.Equals(propertyName));
+        Assert.Equal(displayName, secondProperty.DisplayName);
+    }
 }
