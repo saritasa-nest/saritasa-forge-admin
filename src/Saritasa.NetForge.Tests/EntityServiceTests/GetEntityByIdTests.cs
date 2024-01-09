@@ -183,8 +183,8 @@ public class GetEntityByIdTests : IDisposable
         var entity = await entityService.GetEntityByIdAsync(stringId, CancellationToken.None);
 
         // Assert
-        var secondProperty = entity.Properties.First();
-        Assert.Equal(expectedPropertyName, secondProperty.Name);
+        var firstProperty = entity.Properties.First();
+        Assert.Equal(expectedPropertyName, firstProperty.Name);
     }
 
     /// <summary>
@@ -232,7 +232,7 @@ public class GetEntityByIdTests : IDisposable
         var entity = await entityService.GetEntityByIdAsync(stringId, CancellationToken.None);
 
         // Assert
-        var secondProperty = entity.Properties.First(property => property.Name.Equals(propertyName));
-        Assert.Equal(description, secondProperty.Description);
+        var firstProperty = entity.Properties.First(property => property.Name.Equals(propertyName));
+        Assert.Equal(description, firstProperty.Description);
     }
 }
