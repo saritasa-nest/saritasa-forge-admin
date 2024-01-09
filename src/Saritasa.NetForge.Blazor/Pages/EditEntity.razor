@@ -1,5 +1,6 @@
 ﻿@using Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 @using Saritasa.NetForge.Blazor.Controls
+@using Saritasa.NetForge.Blazor.Controls.CustomFields
 @using Saritasa.NetForge.Blazor.Extensions
 
 @inherits MvvmComponentBase<EditEntityViewModel>
@@ -22,9 +23,34 @@
 
                         foreach (var property in properties)
                         {
-                            <CustomField Property="@property"
-                                         EntityModel="@ViewModel.EntityModel">
-                            </CustomField>
+                            Type? componentType = null;
+
+                            if (property.ClrType == typeof(int) || property.ClrType == typeof(int?)
+                                                                || property.ClrType == typeof(decimal))
+                            {
+                                // componentType =
+                                //     Type.GetType($"Saritasa.NetForge.Blazor.Controls.CustomFields.{nameof(NumberField<int>)}");
+
+                                var numericType = typeof(NumberField<>);
+                                var genericNumericType = numericType.MakeGenericType(property.ClrType);
+
+                                componentType = genericNumericType;
+                            }
+
+                            if (componentType is not null)
+                            {
+                                var parameters = new Dictionary<string, object>
+                                {
+                                    { "Property", property },
+                                    { "EntityModel", ViewModel.EntityModel }
+                                };
+
+                                <DynamicComponent Type="componentType" Parameters="parameters"></DynamicComponent>
+                            }
+
+                            // <CustomField Property="@property"
+                            //              EntityModel="@ViewModel.EntityModel">
+                            // </CustomField>
                         }
                     }
 

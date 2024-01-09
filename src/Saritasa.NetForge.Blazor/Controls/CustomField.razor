@@ -28,17 +28,9 @@ else if (PropertyType == typeof(DateTime) || PropertyType == typeof(DateTime?)
 {
     <DateField Property="Property" EntityModel="EntityModel" />
 }
-else if (PropertyType == typeof(DateOnly) || PropertyType == typeof(DateOnly?))
+else if (GetInputType(PropertyType) == InputType.Number)
 {
-    <MudTextField T="DateTime?"
-                  Label="@Property.Name"
-                  Variant="Variant.Outlined"
-                  InputType="InputType.Date"
-                  TextChanged="HandleInputChange"
-                  Format="yyyy-MM-dd"
-                  HelperText="@Property.Description"
-                  @bind-Value="PropertyDateValue">
-    </MudTextField>
+    <NumberField T="int" Property="Property" EntityModel="EntityModel" />
 }
 else
 {
