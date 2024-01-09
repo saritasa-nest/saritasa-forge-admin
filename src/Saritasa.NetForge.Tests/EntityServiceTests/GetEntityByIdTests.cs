@@ -207,8 +207,8 @@ public class GetEntityByIdTests : IDisposable
         var entity = await entityService.GetEntityByIdAsync(stringId, CancellationToken.None);
 
         // Assert
-        var secondProperty = entity.Properties.First(property => property.Name.Equals(propertyName));
-        Assert.Equal(displayName, secondProperty.DisplayName);
+        var firstProperty = entity.Properties.First(property => property.Name.Equals(propertyName));
+        Assert.Equal(displayName, firstProperty.DisplayName);
     }
 
     /// <summary>
