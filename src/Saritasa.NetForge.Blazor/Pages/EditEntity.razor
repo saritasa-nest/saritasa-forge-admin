@@ -27,7 +27,7 @@
 
                             Type? componentType = null;
 
-                            if (propertyType == typeof(int) || propertyType == typeof(decimal))
+                            if (GetInputType(propertyType) == InputType.Number)
                             {
                                 var numberField = typeof(NumberField<>);
                                 componentType = numberField.MakeGenericType(propertyType);
@@ -35,7 +35,12 @@
 
                             if (componentType is not null)
                             {
-                                parameters["Property"] = property;
+                                var parameters = new Dictionary<string, object>
+                                {
+                                    { "Property", property },
+                                    { "EntityModel", ViewModel.EntityModel }
+                                };
+
                                 <DynamicComponent Type="componentType" Parameters="parameters" />
                             }
                         }

@@ -22,28 +22,12 @@ public partial class NumberField<T>
     [EditorRequired]
     public object EntityModel { get; init; } = null!;
 
-    private T? propertyValue;
-
     /// <summary>
-    /// Property date value.
+    /// Property value.
     /// </summary>
     public T? PropertyValue
     {
-        get => propertyValue;
-        set
-        {
-            propertyValue = value;
-            EntityModel.GetType().GetProperty(Property.Name)?.SetValue(EntityModel, value);
-        }
-    }
-
-    /// <summary>
-    /// Sets <see cref="PropertyType"/> after all parameters set.
-    /// </summary>
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-
-        propertyValue = (T?)EntityModel.GetType().GetProperty(Property.Name)?.GetValue(EntityModel);
+        get => (T?)EntityModel.GetType().GetProperty(Property.Name)?.GetValue(EntityModel);
+        set => EntityModel.GetType().GetProperty(Property.Name)?.SetValue(EntityModel, value);
     }
 }

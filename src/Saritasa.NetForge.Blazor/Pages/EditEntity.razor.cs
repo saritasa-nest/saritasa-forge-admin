@@ -32,8 +32,6 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
 
     private readonly List<BreadcrumbItem> breadcrumbItems = new();
 
-    private IDictionary<string, object> parameters;
-
     /// <inheritdoc/>
     protected override EditEntityViewModel CreateViewModel()
     {
@@ -48,12 +46,6 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
         if (StateContainer.Value is not null)
         {
             ViewModel.EntityModel = StateContainer.Value;
-
-            parameters = new Dictionary<string, object>
-            {
-                { "Property", string.Empty },
-                { "EntityModel", ViewModel.EntityModel }
-            };
         }
 
         var adminPanelEndpoint = AdminOptions!.AdminPanelEndpoint;
