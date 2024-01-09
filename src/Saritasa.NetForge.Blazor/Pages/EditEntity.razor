@@ -23,9 +23,9 @@
 
                         foreach (var property in properties)
                         {
-                            var propertyType = property.ClrType;
+                            var propertyType = property.ClrType!;
 
-                            Type? componentType = null;
+                            Type componentType;
 
                             if (GetInputType(propertyType) == InputType.Number)
                             {
@@ -37,17 +37,18 @@
                             {
                                 componentType = typeof(DateField);
                             }
-
-                            if (componentType is not null)
+                            else
                             {
-                                var parameters = new Dictionary<string, object>
-                                {
-                                    { "Property", property },
-                                    { "EntityModel", ViewModel.EntityModel }
-                                };
-
-                                <DynamicComponent Type="componentType" Parameters="parameters" />
+                                componentType = typeof(TextField);
                             }
+
+                            var parameters = new Dictionary<string, object>
+                            {
+                                { "Property", property },
+                                { "EntityModel", ViewModel.EntityModel }
+                            };
+
+                            <DynamicComponent Type="componentType" Parameters="parameters" />
                         }
                     }
 
