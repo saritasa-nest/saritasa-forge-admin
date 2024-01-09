@@ -23,34 +23,21 @@
 
                         foreach (var property in properties)
                         {
+                            var propertyType = property.ClrType;
+
                             Type? componentType = null;
 
-                            if (property.ClrType == typeof(int) || property.ClrType == typeof(int?)
-                                                                || property.ClrType == typeof(decimal))
+                            if (propertyType == typeof(int) || propertyType == typeof(decimal))
                             {
-                                // componentType =
-                                //     Type.GetType($"Saritasa.NetForge.Blazor.Controls.CustomFields.{nameof(NumberField<int>)}");
-
-                                var numericType = typeof(NumberField<>);
-                                var genericNumericType = numericType.MakeGenericType(property.ClrType);
-
-                                componentType = genericNumericType;
+                                var numberField = typeof(NumberField<>);
+                                componentType = numberField.MakeGenericType(propertyType);
                             }
 
                             if (componentType is not null)
                             {
-                                var parameters = new Dictionary<string, object>
-                                {
-                                    { "Property", property },
-                                    { "EntityModel", ViewModel.EntityModel }
-                                };
-
-                                <DynamicComponent Type="componentType" Parameters="parameters"></DynamicComponent>
+                                parameters["Property"] = property;
+                                <DynamicComponent Type="componentType" Parameters="parameters" />
                             }
-
-                            // <CustomField Property="@property"
-                            //              EntityModel="@ViewModel.EntityModel">
-                            // </CustomField>
                         }
                     }
 

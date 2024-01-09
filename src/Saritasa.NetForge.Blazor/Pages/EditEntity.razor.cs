@@ -32,6 +32,8 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
 
     private readonly List<BreadcrumbItem> breadcrumbItems = new();
 
+    private IDictionary<string, object> parameters;
+
     /// <inheritdoc/>
     protected override EditEntityViewModel CreateViewModel()
     {
@@ -43,7 +45,16 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
     {
         base.OnParametersSet();
 
-        ViewModel.EntityModel = StateContainer.Value;
+        if (StateContainer.Value is not null)
+        {
+            ViewModel.EntityModel = StateContainer.Value;
+
+            parameters = new Dictionary<string, object>
+            {
+                { "Property", string.Empty },
+                { "EntityModel", ViewModel.EntityModel }
+            };
+        }
 
         var adminPanelEndpoint = AdminOptions!.AdminPanelEndpoint;
         var entityDetailsEndpoint = $"{adminPanelEndpoint}/entities/{StringId}";
@@ -57,5 +68,51 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
     private void NavigateToEntityDetails()
     {
         NavigationService.NavigateTo<EntityDetailsViewModel>(parameters: StringId);
+    }
+
+    private IReadOnlyDictionary<List<Type>, InputType> TypeMappingDictionary { get; init; }
+        = new Dictionary<List<Type>, InputType>
+        {
+            {
+                [typeof(string)], InputType.Text
+            },
+            {
+                [
+                    typeof(short), typeof(short?),
+                    typeof(ushort), typeof(ushort?),
+                    typeof(int), typeof(int?),
+                    typeof(uint), typeof(uint?),
+                    typeof(long), typeof(long?),
+                    typeof(ulong), typeof(ulong?),
+                    typeof(float), typeof(float?),
+                    typeof(double), typeof(double?),
+                    typeof(decimal), typeof(decimal?)
+                ], InputType.Number
+            },
+            {
+                [
+                    typeof(DateTime), typeof(DateTime?),
+                    typeof(DateTimeOffset), typeof(DateTimeOffset?)
+                ], InputType.DateTimeLocal
+            },
+            {
+                [typeof(DateOnly), typeof(DateOnly?)], InputType.Date
+            }
+        };
+
+    /// <summary>
+    /// Gets <see cref="InputType"/> depending on <paramref name="propertyType"/>.
+    /// </summary>
+    private InputType GetInputType(Type propertyType)
+    {
+        foreach (var (types, inputType) in TypeMappingDictionary)
+        {
+            if (types.Contains(propertyType))
+            {
+                return inputType;
+            }
+        }
+
+        return InputType.Text;
     }
 }
