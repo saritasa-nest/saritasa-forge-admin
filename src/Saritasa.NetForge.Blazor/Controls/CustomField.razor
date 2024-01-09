@@ -1,4 +1,6 @@
-﻿@if (PropertyType == typeof(bool) || PropertyType == typeof(bool?))
+﻿@using Saritasa.NetForge.Blazor.Controls.CustomFields
+
+@if (PropertyType == typeof(bool) || PropertyType == typeof(bool?))
 {
     <MudCheckBox Label="@Property.Name"
                  @bind-Checked="PropertyBooleanValue">
@@ -21,17 +23,10 @@ else if (PropertyType.IsEnum)
     </MudSelect>
 }
 else if (PropertyType == typeof(DateTime) || PropertyType == typeof(DateTime?)
-         || PropertyType == typeof(DateTimeOffset) || PropertyType == typeof(DateTimeOffset?))
+         || PropertyType == typeof(DateTimeOffset) || PropertyType == typeof(DateTimeOffset?)
+         || PropertyType == typeof(DateOnly) || PropertyType == typeof(DateOnly?))
 {
-    <MudTextField T="DateTime?"
-                  Label="@Property.Name"
-                  Variant="Variant.Outlined"
-                  InputType="InputType.DateTimeLocal"
-                  TextChanged="HandleInputChange"
-                  Format="s"
-                  HelperText="@Property.Description"
-                  @bind-Value="PropertyDateValue">
-    </MudTextField>
+    <DateField Property="Property" EntityModel="EntityModel" />
 }
 else if (PropertyType == typeof(DateOnly) || PropertyType == typeof(DateOnly?))
 {
