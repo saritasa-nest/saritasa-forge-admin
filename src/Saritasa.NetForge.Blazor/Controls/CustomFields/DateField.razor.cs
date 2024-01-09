@@ -23,30 +23,27 @@ public partial class DateField
     public object EntityModel { get; init; } = null!;
 
     /// <summary>
-    /// Property type.
-    /// </summary>
-    public Type PropertyType { get; set; } = null!;
-
-    /// <summary>
     /// Property date value.
     /// </summary>
-    public DateTime? PropertyValue { get; set; }
-
-    /// <summary>
-    /// Sets <see cref="PropertyType"/> after all parameters set.
-    /// </summary>
-    protected override void OnParametersSet()
+    public DateTime? PropertyValue
     {
-        base.OnParametersSet();
-
-        PropertyType = EntityModel.GetType().GetProperty(Property.Name)!.PropertyType;
-        var propertyValue = EntityModel.GetType().GetProperty(Property.Name)?.GetValue(EntityModel)?.ToString();
-
-        var isDateParsed = DateTime.TryParse(propertyValue, out var parsedDate);
-
-        if (isDateParsed)
+        get
         {
-            PropertyValue = parsedDate;
+            var propertyValue = EntityModel.GetType().GetProperty(Property.Name)?.GetValue(EntityModel)?.ToString();
+
+            var isDateParsed = DateTime.TryParse(propertyValue, out var parsedDate);
+
+            if (isDateParsed)
+            {
+                return parsedDate;
+            }
+
+            return null;
+        }
+
+        set
+        {
+            SetPropertyValue(value);
         }
     }
 
@@ -54,29 +51,28 @@ public partial class DateField
     /// Handles input changes.
     /// </summary>
     /// <param name="value">Input value.</param>
-    private void HandleInputChange(object? value)
+    private void SetPropertyValue(DateTime? value)
     {
         var property = EntityModel.GetType().GetProperty(Property.Name)!;
 
-        var stringValue = value?.ToString();
-        if (string.IsNullOrEmpty(stringValue))
+        if (!value.HasValue)
         {
             property.SetValue(EntityModel, null);
             return;
         }
 
-        var actualPropertyType = Nullable.GetUnderlyingType(PropertyType) ?? PropertyType;
+        var actualPropertyType = Nullable.GetUnderlyingType(Property.ClrType!) ?? Property.ClrType;
         if (actualPropertyType == typeof(DateTimeOffset))
         {
-            property.SetValue(EntityModel, DateTimeOffset.Parse(stringValue));
+            property.SetValue(EntityModel, new DateTimeOffset(value.Value));
         }
         else if (actualPropertyType == typeof(DateOnly))
         {
-            property.SetValue(EntityModel, DateOnly.Parse(stringValue));
+            property.SetValue(EntityModel, DateOnly.FromDateTime(value.Value));
         }
         else
         {
-            property.SetValue(EntityModel, DateTime.Parse(stringValue));
+            property.SetValue(EntityModel, value);
         }
     }
 }

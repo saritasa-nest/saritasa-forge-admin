@@ -32,6 +32,11 @@
                                 var numberField = typeof(NumberField<>);
                                 componentType = numberField.MakeGenericType(propertyType);
                             }
+                            else if (GetInputType(propertyType) == InputType.DateTimeLocal
+                                     || GetInputType(propertyType) == InputType.Date)
+                            {
+                                componentType = typeof(DateField);
+                            }
 
                             if (componentType is not null)
                             {

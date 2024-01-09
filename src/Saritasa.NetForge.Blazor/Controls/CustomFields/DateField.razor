@@ -1,22 +1,23 @@
-﻿@if (PropertyType == typeof(DateTime) || PropertyType == typeof(DateTime?)
-     || PropertyType == typeof(DateTimeOffset) || PropertyType == typeof(DateTimeOffset?))
-{
-    <MudTextField T="DateTime?"
-                  Label="@Property.Name"
-                  Variant="Variant.Outlined"
-                  InputType="InputType.DateTimeLocal"
-                  TextChanged="HandleInputChange"
-                  Format="s"
-                  HelperText="@Property.Description"
-                  @bind-Value="PropertyValue">
-    </MudTextField>
-}
-else if (PropertyType == typeof(DateOnly) || PropertyType == typeof(DateOnly?))
-{
-    <MudDatePicker Label="@Property.Name"
-                   Variant="Variant.Outlined"
-                   Editable="true"
-                   TextChanged="HandleInputChange"
-                   HelperText="@Property.Description"
-                   @bind-Date="PropertyValue" />
+﻿@{
+    var propertyType = Property.ClrType;
+
+    if (propertyType == typeof(DateTime) || propertyType == typeof(DateTime?)
+         || propertyType == typeof(DateTimeOffset) || propertyType == typeof(DateTimeOffset?))
+    {
+        <MudTextField Label="@Property.Name"
+                      Variant="Variant.Outlined"
+                      InputType="InputType.DateTimeLocal"
+                      Format="s"
+                      HelperText="@Property.Description"
+                      @bind-Value="PropertyValue">
+        </MudTextField>
+    }
+    else if (propertyType == typeof(DateOnly) || propertyType == typeof(DateOnly?))
+    {
+        <MudDatePicker Label="@Property.Name"
+                       Variant="Variant.Outlined"
+                       Editable="true"
+                       HelperText="@Property.Description"
+                       @bind-Date="PropertyValue" />
+    }
 }
