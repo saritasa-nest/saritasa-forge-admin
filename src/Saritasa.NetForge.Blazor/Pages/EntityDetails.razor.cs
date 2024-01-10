@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Text;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Saritasa.NetForge.Blazor.Infrastructure;
 using Saritasa.NetForge.Mvvm.Navigation;
@@ -17,8 +18,8 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>, 
     [Inject]
     private INavigationService NavigationService { get; set; } = null!;
 
-    [Inject]
-    private StateContainer StateContainer { get; set; } = null!;
+    //[Inject]
+    //private StateContainer StateContainer { get; set; } = null!;
 
     /// <summary>
     /// Entity id.
@@ -56,19 +57,27 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>, 
     //    NavigationService.NavigateTo<EditEntityViewModel>(parameters: StringId);
     //}
 
-    protected override void OnInitialized()
-    {
-        StateContainer.OnStateChange += StateHasChanged;
-    }
+    //protected override void OnInitialized()
+    //{
+    //    StateContainer.OnStateChange += StateHasChanged;
+    //}
 
     private void NavigateToEditing(DataGridRowClickEventArgs<object> row)
     {
-        StateContainer.SetValue(row.Item);
-        NavigationService.NavigateTo<EditEntityViewModel>(parameters: StringId);
+        //StateContainer.SetValue(row.Item);
+
+        var primaryKeys = new StringBuilder();
+
+        foreach (var primaryKey in ViewModel.Model.Properties.Where(property => property.IsPrimaryKey))
+        {
+            primaryKeys.Append(ViewModel.GetPropertyValue(row.Item, primaryKey));
+        }
+
+        NavigationService.NavigateTo<EditEntityViewModel>(parameters: [StringId, primaryKeys.ToString()]);
     }
 
-    public void Dispose()
-    {
-        StateContainer.OnStateChange -= StateHasChanged;
-    }
+    //public void Dispose()
+    //{
+    //    StateContainer.OnStateChange -= StateHasChanged;
+    //}
 }

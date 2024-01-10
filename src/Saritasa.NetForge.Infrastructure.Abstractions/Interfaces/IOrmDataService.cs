@@ -15,6 +15,8 @@ public interface IOrmDataService
     /// <returns>Entity data.</returns>
     IQueryable<object> GetQuery(Type clrType);
 
+    Task<object> GetInstanceAsync(object primaryKey, Type entityType);
+
     /// <summary>
     /// Performs search.
     /// </summary>

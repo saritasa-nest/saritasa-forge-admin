@@ -13,7 +13,9 @@ public class EditEntityViewModel : BaseViewModel
     /// <summary>
     /// Entity details model.
     /// </summary>
-    public EditEntityModel Model { get; private set; }
+    public EditEntityModel Model { get; set; }
+
+    public string InstanceId { get; set; }
 
     private readonly IEntityService entityService;
     private readonly IMapper mapper;
@@ -23,9 +25,10 @@ public class EditEntityViewModel : BaseViewModel
     /// Constructor.
     /// </summary>
     public EditEntityViewModel(
-        string stringId, IEntityService entityService, IMapper mapper, IOrmDataService dataService)
+        string stringId, string instanceId, IEntityService entityService, IMapper mapper, IOrmDataService dataService)
     {
         Model = new EditEntityModel { StringId = stringId };
+        InstanceId = instanceId;
 
         this.entityService = entityService;
         this.mapper = mapper;
@@ -49,6 +52,8 @@ public class EditEntityViewModel : BaseViewModel
         {
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
             Model = mapper.Map<EditEntityModel>(entity);
+            EntityModel = await dataService.GetInstanceAsync(InstanceId, Model.ClrType!);
+
             //EntityModel = Activator.CreateInstance(Model.ClrType!)!;
         }
         catch (NotFoundException)

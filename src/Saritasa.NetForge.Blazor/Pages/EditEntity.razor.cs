@@ -1,17 +1,20 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Saritasa.NetForge.Blazor.Infrastructure;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
+using Saritasa.NetForge.UseCases.Interfaces;
 
 namespace Saritasa.NetForge.Blazor.Pages;
 
 /// <summary>
 /// Edit entity page.
 /// </summary>
-[Route("/entities/{stringId}/edit")]
+[Route("/entities/{stringId}/{instanceId}")]
 public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
 {
     [Inject]
@@ -20,8 +23,17 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
     [Inject]
     private AdminOptions? AdminOptions { get; set; }
 
+    //[Inject]
+    //private StateContainer StateContainer { get; set; } = null!;
+
     [Inject]
-    private StateContainer StateContainer { get; set; } = null!;
+    private IOrmDataService DataService { get; set; } = null!;
+
+    [Inject]
+    private IEntityService EntityService { get; set; } = null!;
+
+    [Inject]
+    private IMapper mapper { get; set; } = null!;
 
     /// <summary>
     /// Entity id.
@@ -29,23 +41,32 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
     [Parameter]
     public string StringId { get; init; } = null!;
 
+    /// <summary>
+    /// Entity instance id.
+    /// </summary>
+    [Parameter]
+    public string InstanceId { get; init; } = null!;
+
     private readonly List<BreadcrumbItem> breadcrumbItems = new();
 
     /// <inheritdoc/>
     protected override EditEntityViewModel CreateViewModel()
     {
-        return ViewModelFactory.Create<EditEntityViewModel>(StringId);
+        return ViewModelFactory.Create<EditEntityViewModel>(StringId, InstanceId);
     }
 
     /// <inheritdoc />
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        base.OnParametersSet();
+        await base.OnParametersSetAsync();
 
-        if (StateContainer.Value is not null)
-        {
-            ViewModel.EntityModel = StateContainer.Value;
-        }
+        //if (StateContainer.Value is not null)
+        //{
+        //    ViewModel.EntityModel = StateContainer.Value;
+        //}
+
+        //var entity = await EntityService.GetEntityByIdAsync(StringId, CancellationToken);
+        //ViewModel.EntityModel = await DataService.GetInstanceAsync(InstanceId, entity.ClrType!);
 
         var adminPanelEndpoint = AdminOptions!.AdminPanelEndpoint;
         var entityDetailsEndpoint = $"{adminPanelEndpoint}/entities/{StringId}";

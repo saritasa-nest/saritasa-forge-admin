@@ -1,7 +1,9 @@
 ﻿using System.Linq.Expressions;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.VisualBasic;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
@@ -33,6 +35,45 @@ public class EfCoreDataService : IOrmDataService
     {
         var dbContext = GetDbContextThatContainsEntity(clrType);
         return dbContext.Set(clrType).OfType<object>();
+    }
+
+    public async Task<object> GetInstanceAsync(object primaryKey, Type entityType)
+    {
+        var dbContext = GetDbContextThatContainsEntity(entityType);
+        var type = dbContext.Model.FindEntityType(entityType);
+        var key = type.FindPrimaryKey();
+        var schema = type.GetSchema();
+        var tableName = type.GetTableName();
+        var storeObjectIdentifier = StoreObjectIdentifier.Table(tableName, schema);
+        IList<string> primaryKeyColumns = key.Properties
+            .Select(x => x.GetColumnName(storeObjectIdentifier))
+            .ToList();
+
+        var primaryKeyNames = key.Properties.Select(property => property.Name);
+
+        var keys = type.GetKeys();
+
+        var query = GetQuery(entityType);
+
+        // entity => entity
+        var entity = Expression.Parameter(typeof(object), Entity);
+
+        // entity => (entityType)entity
+        var convertedEntity = Expression.Convert(entity, entityType);
+
+        // entity => ((entityType)entity).propertyName
+        var propertyExpression = Expression.Property(convertedEntity, primaryKeyNames.First());
+
+        var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
+        var entryConstant = Expression.Constant(primaryKey);
+
+        // entity => ((entityType)entity).propertyName.StartsWith(searchConstant)
+        var equalsCall = Expression.Call(
+            property, typeof(string).GetMethod(nameof(string.Equals), new[] { typeof(object) })!, entryConstant);
+
+        var lambda = Expression.Lambda<Func<object, bool>>(equalsCall, entity);
+
+        return await query.FirstAsync(lambda, CancellationToken.None);
     }
 
     private DbContext GetDbContextThatContainsEntity(Type clrType)
