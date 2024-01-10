@@ -1,6 +1,7 @@
 ﻿@using Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 @using Saritasa.NetForge.Blazor.Controls
 @using Saritasa.NetForge.Blazor.Extensions
+@using Saritasa.NetForge.Blazor.Infrastructure.Helpers
 
 @inherits MvvmComponentBase<EditEntityViewModel>
 
@@ -22,8 +23,7 @@
 
                         foreach (var property in properties)
                         {
-                            var componentType = GetComponentType(property.ClrType!);
-
+                            var componentType = CustomFieldHelper.GetComponentType(property.ClrType!);
                             var parameters = new Dictionary<string, object>
                             {
                                 { "Property", property },
