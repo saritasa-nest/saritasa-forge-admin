@@ -19,6 +19,9 @@ namespace Saritasa.NetForge.Tests.EntityServiceTests;
 /// </summary>
 public class GetEntityByIdTests : IDisposable
 {
+    private const string ContactInfoId = "ContactInfoes";
+    private const string ShopId = "Shops";
+
     private readonly TestDbContext testDbContext;
     private readonly IEntityService entityService;
     private readonly AdminOptionsBuilder adminOptionsBuilder;
@@ -67,9 +70,6 @@ public class GetEntityByIdTests : IDisposable
             disposedValue = true;
         }
     }
-
-    private const string ContactInfoId = "ContactInfoes";
-    private const string ShopId = "Shops";
 
     /// <summary>
     /// Test for case when string id is valid.
@@ -330,5 +330,37 @@ public class GetEntityByIdTests : IDisposable
         // Assert
         var firstProperty = entity.Properties.First(property => property.Name.Equals(propertyName));
         Assert.Equal(ShopConstants.NameDescription, firstProperty.Description);
+    }
+
+    /// <summary>
+    /// Test for case when property is hidden via Fluent API.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithHiddenPropertyViaFluentApi_PropertyShouldBeHidden()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.ConfigureProperty(shop => shop.IsOpen, optionsBuilder => optionsBuilder.SetIsHidden(true));
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(ShopId, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(entity.Properties, property => property.IsHidden);
+    }
+
+    /// <summary>
+    /// Test for case when property is hidden via <see cref="NetForgePropertyAttribute"/>.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithHiddenPropertyViaAttribute_PropertyShouldBeHidden()
+    {
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(ShopId, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(entity.Properties, property => property.IsHidden);
     }
 }

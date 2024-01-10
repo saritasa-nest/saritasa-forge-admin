@@ -44,7 +44,7 @@ public class Shop
     /// <summary>
     /// The shop is currently open for business.
     /// </summary>
-    [NetForgeProperty(IsExcludedFromQuery = true)]
+    [NetForgeProperty(IsExcludedFromQuery = true, IsHidden = true)]
     public bool IsOpen { get; set; }
 
     /// <summary>
