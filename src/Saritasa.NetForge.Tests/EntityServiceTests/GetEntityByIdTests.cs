@@ -19,8 +19,8 @@ namespace Saritasa.NetForge.Tests.EntityServiceTests;
 /// </summary>
 public class GetEntityByIdTests : IDisposable
 {
-    private const string ContactInfoId = "ContactInfoes";
-    private const string ShopId = "Shops";
+    private const string AttributeTestEntity = "Addresses";
+    private const string FluentApiTestEntity = "Shops";
 
     private readonly TestDbContext testDbContext;
     private readonly IEntityService entityService;
@@ -78,7 +78,7 @@ public class GetEntityByIdTests : IDisposable
     public async Task GetEntityByIdAsync_ValidStringId_ShouldBeNotNull()
     {
         // Act
-        var entity = await entityService.GetEntityByIdAsync(ContactInfoId, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntity, CancellationToken.None);
 
         // Assert
         Assert.NotNull(entity);
@@ -91,7 +91,7 @@ public class GetEntityByIdTests : IDisposable
     public async Task GetEntityByIdAsync_InvalidStringId_ShouldThrowNotFoundException()
     {
         // Arrange
-        const string invalidStringId = "ContactInfoes2";
+        const string invalidStringId = "Addresses2";
 
         // Act
         var getEntityByIdCall = () => entityService.GetEntityByIdAsync(invalidStringId, CancellationToken.None);
@@ -115,7 +115,7 @@ public class GetEntityByIdTests : IDisposable
         const string navigationPropertyName = nameof(Shop.Address);
 
         // Act
-        var entity = await entityService.GetEntityByIdAsync(ShopId, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntity, CancellationToken.None);
 
         // Assert
         Assert.Contains(entity.Properties, property => property.Name.Equals(navigationPropertyName));
@@ -137,7 +137,7 @@ public class GetEntityByIdTests : IDisposable
         const string excludedPropertyName = nameof(Shop.IsOpen);
 
         // Act
-        var entity = await entityService.GetEntityByIdAsync(ShopId, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntity, CancellationToken.None);
 
         // Assert
         Assert.DoesNotContain(entity.Properties, property => property.Name.Equals(excludedPropertyName));
@@ -150,186 +150,13 @@ public class GetEntityByIdTests : IDisposable
     public async Task GetEntityByIdAsync_WithExcludedFromQueryPropertyViaAttribute_ShouldNotContainExcludedProperty()
     {
         // Arrange
-        const string excludedPropertyName = nameof(Shop.IsOpen);
+        const string excludedPropertyName = nameof(Address.PostalCode);
 
         // Act
-        var entity = await entityService.GetEntityByIdAsync(ShopId, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntity, CancellationToken.None);
 
         // Assert
         Assert.DoesNotContain(entity.Properties, property => property.Name.Equals(excludedPropertyName));
-    }
-
-    /// <summary>
-    /// Test for case when properties don't have ordering.
-    /// </summary>
-    [Fact]
-    public async Task GetEntityByIdAsync_WithoutOrdering_PrimaryKeyShouldBeFirst()
-    {
-        // Arrange
-        const string expectedPropertyName = nameof(ContactInfo.Id);
-
-        // Act
-        var entity = await entityService.GetEntityByIdAsync(ContactInfoId, CancellationToken.None);
-
-        // Assert
-        var firstProperty = entity.Properties.First();
-        Assert.Equal(expectedPropertyName, firstProperty.Name);
-    }
-
-    /// <summary>
-    /// Test for case when properties have ordering via Fluent API.
-    /// </summary>
-    [Fact]
-    public async Task GetEntityByIdAsync_WithOrderingViaFluentApi_OrderedPropertyShouldBeFirst()
-    {
-        // Arrange
-        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
-        {
-            builder
-                .ConfigureProperty(shop => shop.TotalSales, optionsBuilder => optionsBuilder.SetOrder(0))
-                .ConfigureProperty(shop => shop.IsOpen, optionsBuilder => optionsBuilder.SetOrder(1))
-                .ConfigureProperty(shop => shop.Name, optionsBuilder => optionsBuilder.SetOrder(2))
-                .ConfigureProperty(shop => shop.OpenedDate, optionsBuilder => optionsBuilder.SetOrder(3))
-                .ConfigureProperty(shop => shop.Id, optionsBuilder => optionsBuilder.SetOrder(4));
-        });
-        const string expectedPropertyName = nameof(Shop.TotalSales);
-
-        // Act
-        var entity = await entityService.GetEntityByIdAsync(ShopId, CancellationToken.None);
-
-        // Assert
-        var firstProperty = entity.Properties.First();
-        Assert.Equal(expectedPropertyName, firstProperty.Name);
-    }
-
-    /// <summary>
-    /// Test for case when properties have ordering via <see cref="NetForgePropertyAttribute"/>.
-    /// </summary>
-    [Fact]
-    public async Task GetEntityByIdAsync_WithOrderingViaAttribute_OrderedPropertyShouldBeFirst()
-    {
-        // Arrange
-        const string expectedPropertyName = nameof(Shop.TotalSales);
-
-        // Act
-        var entity = await entityService.GetEntityByIdAsync(ShopId, CancellationToken.None);
-
-        // Assert
-        var firstProperty = entity.Properties.First();
-        Assert.Equal(expectedPropertyName, firstProperty.Name);
-    }
-
-    /// <summary>
-    /// Test for case when property has set display name via Fluent API.
-    /// </summary>
-    [Fact]
-    public async Task GetEntityByIdAsync_WithPropertyDisplayNameViaFluentApi_DisplayNameShouldChange()
-    {
-        // Arrange
-        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
-        {
-            builder.ConfigureProperty(shop => shop.TotalSales,
-                    optionsBuilder => optionsBuilder.SetDisplayName(ShopConstants.TotalSalesDisplayName));
-        });
-        const string propertyName = nameof(Shop.TotalSales);
-
-        // Act
-        var entity = await entityService.GetEntityByIdAsync(ShopId, CancellationToken.None);
-
-        // Assert
-        var firstProperty = entity.Properties.First(property => property.Name.Equals(propertyName));
-        Assert.Equal(ShopConstants.TotalSalesDisplayName, firstProperty.DisplayName);
-    }
-
-    /// <summary>
-    /// Test for case when property has set display name via <see cref="NetForgePropertyAttribute"/>.
-    /// </summary>
-    [Fact]
-    public async Task GetEntityByIdAsync_WithPropertyDisplayNameViaAttribute_DisplayNameShouldChange()
-    {
-        // Arrange
-        const string propertyName = nameof(Shop.TotalSales);
-
-        // Act
-        var entity = await entityService.GetEntityByIdAsync(ShopId, CancellationToken.None);
-
-        // Assert
-        var firstProperty = entity.Properties.First(property => property.Name.Equals(propertyName));
-        Assert.Equal(ShopConstants.TotalSalesDisplayName, firstProperty.DisplayName);
-    }
-
-    /// <summary>
-    /// Test for case when property has set display name via <see cref="DisplayNameAttribute"/>.
-    /// </summary>
-    [Fact]
-    public async Task GetEntityByIdAsync_WithPropertyDisplayNameViaBuiltInAttribute_DisplayNameShouldChange()
-    {
-        // Arrange
-        const string propertyName = nameof(Shop.Name);
-
-        // Act
-        var entity = await entityService.GetEntityByIdAsync(ShopId, CancellationToken.None);
-
-        // Assert
-        var firstProperty = entity.Properties.First(property => property.Name.Equals(propertyName));
-        Assert.Equal(ShopConstants.NameDisplayName, firstProperty.DisplayName);
-    }
-
-    /// <summary>
-    /// Test for case when property has set description via Fluent API.
-    /// </summary>
-    [Fact]
-    public async Task GetEntityByIdAsync_WithPropertyDescriptionViaFluentApi_DescriptionShouldChange()
-    {
-        // Arrange
-        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
-        {
-            builder.ConfigureProperty(
-                shop => shop.TotalSales,
-                optionsBuilder => optionsBuilder.SetDescription(ShopConstants.TotalSalesDescription));
-        });
-        const string propertyName = nameof(Shop.TotalSales);
-
-        // Act
-        var entity = await entityService.GetEntityByIdAsync(ShopId, CancellationToken.None);
-
-        // Assert
-        var firstProperty = entity.Properties.First(property => property.Name.Equals(propertyName));
-        Assert.Equal(ShopConstants.TotalSalesDescription, firstProperty.Description);
-    }
-
-    /// <summary>
-    /// Test for case when property has set description via <see cref="NetForgePropertyAttribute"/>.
-    /// </summary>
-    [Fact]
-    public async Task GetEntityByIdAsync_WithPropertyDescriptionViaAttribute_DescriptionShouldChange()
-    {
-        // Arrange
-        const string propertyName = nameof(Shop.TotalSales);
-
-        // Act
-        var entity = await entityService.GetEntityByIdAsync(ShopId, CancellationToken.None);
-
-        // Assert
-        var firstProperty = entity.Properties.First(property => property.Name.Equals(propertyName));
-        Assert.Equal(ShopConstants.TotalSalesDescription, firstProperty.Description);
-    }
-
-    /// <summary>
-    /// Test for case when property has set description via <see cref="DescriptionAttribute"/>.
-    /// </summary>
-    [Fact]
-    public async Task GetEntityByIdAsync_WithPropertyDescriptionViaBuiltInAttribute_DescriptionShouldChange()
-    {
-        // Arrange
-        const string propertyName = nameof(Shop.Name);
-
-        // Act
-        var entity = await entityService.GetEntityByIdAsync(ShopId, CancellationToken.None);
-
-        // Assert
-        var firstProperty = entity.Properties.First(property => property.Name.Equals(propertyName));
-        Assert.Equal(ShopConstants.NameDescription, firstProperty.Description);
     }
 
     /// <summary>
@@ -345,7 +172,7 @@ public class GetEntityByIdTests : IDisposable
         });
 
         // Act
-        var entity = await entityService.GetEntityByIdAsync(ShopId, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntity, CancellationToken.None);
 
         // Assert
         Assert.Contains(entity.Properties, property => property.IsHidden);
@@ -358,9 +185,164 @@ public class GetEntityByIdTests : IDisposable
     public async Task GetEntityByIdAsync_WithHiddenPropertyViaAttribute_PropertyShouldBeHidden()
     {
         // Act
-        var entity = await entityService.GetEntityByIdAsync(ShopId, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntity, CancellationToken.None);
 
         // Assert
         Assert.Contains(entity.Properties, property => property.IsHidden);
+    }
+
+    /// <summary>
+    /// Test for case when properties don't have ordering.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithoutOrdering_PrimaryKeyShouldBeFirst()
+    {
+        // Arrange
+        const string expectedPropertyName = nameof(Shop.Id);
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntity, CancellationToken.None);
+
+        // Assert
+        Assert.Equal(expectedPropertyName, entity.Properties.First().Name);
+    }
+
+    /// <summary>
+    /// Test for case when properties have ordering via Fluent API.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithOrderingViaFluentApi_OrderedPropertyShouldBeFirst()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder
+                .ConfigureProperty(shop => shop.TotalSales, optionsBuilder => optionsBuilder.SetOrder(0))
+                .ConfigureProperty(shop => shop.Id, optionsBuilder => optionsBuilder.SetOrder(1));
+        });
+        const string expectedPropertyName = nameof(Shop.TotalSales);
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntity, CancellationToken.None);
+
+        // Assert
+        Assert.Equal(expectedPropertyName, entity.Properties.First().Name);
+    }
+
+    /// <summary>
+    /// Test for case when properties have ordering via <see cref="NetForgePropertyAttribute"/>.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithOrderingViaAttribute_OrderedPropertyShouldBeFirst()
+    {
+        // Arrange
+        const string expectedPropertyName = nameof(Address.Latitude);
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntity, CancellationToken.None);
+
+        // Assert
+        Assert.Equal(expectedPropertyName, entity.Properties.First().Name);
+    }
+
+    /// <summary>
+    /// Test for case when property has set display name via Fluent API.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithPropertyDisplayNameViaFluentApi_DisplayNameShouldChange()
+    {
+        // Arrange
+        const string displayName = "Sales";
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.ConfigureProperty(shop => shop.TotalSales,
+                    optionsBuilder => optionsBuilder.SetDisplayName(displayName));
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntity, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(
+            entity.Properties, property => property.DisplayName.Equals(displayName));
+    }
+
+    /// <summary>
+    /// Test for case when property has set display name via <see cref="NetForgePropertyAttribute"/>.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithPropertyDisplayNameViaAttribute_DisplayNameShouldChange()
+    {
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntity, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(
+            entity.Properties, property => property.DisplayName.Equals(AddressConstants.LatitudeDisplayName));
+    }
+
+    /// <summary>
+    /// Test for case when property has set display name via <see cref="DisplayNameAttribute"/>.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithPropertyDisplayNameViaBuiltInAttribute_DisplayNameShouldChange()
+    {
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntity, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(
+            entity.Properties, property => property.DisplayName.Equals(AddressConstants.StreetDisplayName));
+    }
+
+    /// <summary>
+    /// Test for case when property has set description via Fluent API.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithPropertyDescriptionViaFluentApi_DescriptionShouldChange()
+    {
+        // Arrange
+        const string description = "Information about total sales that was made by shop.";
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.ConfigureProperty(
+                shop => shop.TotalSales,
+                optionsBuilder => optionsBuilder.SetDescription(description));
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntity, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(
+            entity.Properties, property => property.Description.Equals(description));
+    }
+
+    /// <summary>
+    /// Test for case when property has set description via <see cref="NetForgePropertyAttribute"/>.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithPropertyDescriptionViaAttribute_DescriptionShouldChange()
+    {
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntity, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(
+            entity.Properties, property => property.Description.Equals(AddressConstants.LatitudeDescription));
+    }
+
+    /// <summary>
+    /// Test for case when property has set description via <see cref="DescriptionAttribute"/>.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithPropertyDescriptionViaBuiltInAttribute_DescriptionShouldChange()
+    {
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntity, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(
+            entity.Properties, property => property.Description.Equals(AddressConstants.StreetDescription));
     }
 }
