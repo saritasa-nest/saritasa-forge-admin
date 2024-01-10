@@ -87,6 +87,9 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
                     typeof(DateTimeOffset), typeof(DateTimeOffset?),
                     typeof(DateOnly), typeof(DateOnly?)
                 ], typeof(DateField)
+            },
+            {
+                [typeof(bool), typeof(bool?)], typeof(BoolField)
             }
         };
 
