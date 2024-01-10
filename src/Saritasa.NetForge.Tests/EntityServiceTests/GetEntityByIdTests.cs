@@ -19,8 +19,8 @@ namespace Saritasa.NetForge.Tests.EntityServiceTests;
 /// </summary>
 public class GetEntityByIdTests : IDisposable
 {
-    private const string AttributeTestEntity = "Addresses";
-    private const string FluentApiTestEntity = "Shops";
+    private const string AttributeTestEntityId = "Addresses";
+    private const string FluentApiTestEntityId = "Shops";
 
     private readonly TestDbContext testDbContext;
     private readonly IEntityService entityService;
@@ -78,7 +78,7 @@ public class GetEntityByIdTests : IDisposable
     public async Task GetEntityByIdAsync_ValidStringId_ShouldBeNotNull()
     {
         // Act
-        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntity, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntityId, CancellationToken.None);
 
         // Assert
         Assert.NotNull(entity);
@@ -115,7 +115,7 @@ public class GetEntityByIdTests : IDisposable
         const string navigationPropertyName = nameof(Shop.Address);
 
         // Act
-        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntity, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
 
         // Assert
         Assert.Contains(entity.Properties, property => property.Name.Equals(navigationPropertyName));
@@ -137,7 +137,7 @@ public class GetEntityByIdTests : IDisposable
         const string excludedPropertyName = nameof(Shop.IsOpen);
 
         // Act
-        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntity, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
 
         // Assert
         Assert.DoesNotContain(entity.Properties, property => property.Name.Equals(excludedPropertyName));
@@ -153,7 +153,7 @@ public class GetEntityByIdTests : IDisposable
         const string excludedPropertyName = nameof(Address.PostalCode);
 
         // Act
-        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntity, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntityId, CancellationToken.None);
 
         // Assert
         Assert.DoesNotContain(entity.Properties, property => property.Name.Equals(excludedPropertyName));
@@ -172,7 +172,7 @@ public class GetEntityByIdTests : IDisposable
         });
 
         // Act
-        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntity, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
 
         // Assert
         Assert.Contains(entity.Properties, property => property.IsHidden);
@@ -185,7 +185,7 @@ public class GetEntityByIdTests : IDisposable
     public async Task GetEntityByIdAsync_WithHiddenPropertyViaAttribute_PropertyShouldBeHidden()
     {
         // Act
-        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntity, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntityId, CancellationToken.None);
 
         // Assert
         Assert.Contains(entity.Properties, property => property.IsHidden);
@@ -201,7 +201,7 @@ public class GetEntityByIdTests : IDisposable
         const string expectedPropertyName = nameof(Shop.Id);
 
         // Act
-        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntity, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
 
         // Assert
         Assert.Equal(expectedPropertyName, entity.Properties.First().Name);
@@ -223,7 +223,7 @@ public class GetEntityByIdTests : IDisposable
         const string expectedPropertyName = nameof(Shop.TotalSales);
 
         // Act
-        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntity, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
 
         // Assert
         Assert.Equal(expectedPropertyName, entity.Properties.First().Name);
@@ -239,7 +239,7 @@ public class GetEntityByIdTests : IDisposable
         const string expectedPropertyName = nameof(Address.Latitude);
 
         // Act
-        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntity, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntityId, CancellationToken.None);
 
         // Assert
         Assert.Equal(expectedPropertyName, entity.Properties.First().Name);
@@ -260,7 +260,7 @@ public class GetEntityByIdTests : IDisposable
         });
 
         // Act
-        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntity, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
 
         // Assert
         Assert.Contains(
@@ -274,7 +274,7 @@ public class GetEntityByIdTests : IDisposable
     public async Task GetEntityByIdAsync_WithPropertyDisplayNameViaAttribute_DisplayNameShouldChange()
     {
         // Act
-        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntity, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntityId, CancellationToken.None);
 
         // Assert
         Assert.Contains(
@@ -288,7 +288,7 @@ public class GetEntityByIdTests : IDisposable
     public async Task GetEntityByIdAsync_WithPropertyDisplayNameViaBuiltInAttribute_DisplayNameShouldChange()
     {
         // Act
-        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntity, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntityId, CancellationToken.None);
 
         // Assert
         Assert.Contains(
@@ -311,7 +311,7 @@ public class GetEntityByIdTests : IDisposable
         });
 
         // Act
-        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntity, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
 
         // Assert
         Assert.Contains(
@@ -325,7 +325,7 @@ public class GetEntityByIdTests : IDisposable
     public async Task GetEntityByIdAsync_WithPropertyDescriptionViaAttribute_DescriptionShouldChange()
     {
         // Act
-        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntity, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntityId, CancellationToken.None);
 
         // Assert
         Assert.Contains(
@@ -339,7 +339,7 @@ public class GetEntityByIdTests : IDisposable
     public async Task GetEntityByIdAsync_WithPropertyDescriptionViaBuiltInAttribute_DescriptionShouldChange()
     {
         // Act
-        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntity, CancellationToken.None);
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntityId, CancellationToken.None);
 
         // Assert
         Assert.Contains(
