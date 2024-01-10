@@ -1,6 +1,5 @@
 ﻿@using Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 @using Saritasa.NetForge.Blazor.Controls
-@using Saritasa.NetForge.Blazor.Controls.CustomFields
 @using Saritasa.NetForge.Blazor.Extensions
 
 @inherits MvvmComponentBase<EditEntityViewModel>
@@ -23,24 +22,7 @@
 
                         foreach (var property in properties)
                         {
-                            var propertyType = property.ClrType!;
-
-                            Type componentType;
-
-                            if (GetInputType(propertyType) == InputType.Number)
-                            {
-                                var numberField = typeof(NumberField<>);
-                                componentType = numberField.MakeGenericType(propertyType);
-                            }
-                            else if (GetInputType(propertyType) == InputType.DateTimeLocal
-                                     || GetInputType(propertyType) == InputType.Date)
-                            {
-                                componentType = typeof(DateField);
-                            }
-                            else
-                            {
-                                componentType = typeof(TextField);
-                            }
+                            var componentType = GetComponentType(property.ClrType!);
 
                             var parameters = new Dictionary<string, object>
                             {

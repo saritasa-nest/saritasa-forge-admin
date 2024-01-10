@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using MudBlazor;
+using Saritasa.NetForge.Blazor.Controls.CustomFields;
 using Saritasa.NetForge.Blazor.Infrastructure;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Mvvm.Navigation;
@@ -62,11 +62,11 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
         NavigationService.NavigateTo<EntityDetailsViewModel>(parameters: StringId);
     }
 
-    private IReadOnlyDictionary<List<Type>, InputType> TypeMappingDictionary { get; init; }
-        = new Dictionary<List<Type>, InputType>
+    private IReadOnlyDictionary<List<Type>, Type> TypeMappingDictionary { get; }
+        = new Dictionary<List<Type>, Type>
         {
             {
-                [typeof(string)], InputType.Text
+                [typeof(string)], typeof(TextField)
             },
             {
                 [
@@ -79,32 +79,30 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
                     typeof(float), typeof(float?),
                     typeof(double), typeof(double?),
                     typeof(decimal), typeof(decimal?)
-                ], InputType.Number
+                ], typeof(NumberField<>)
             },
             {
                 [
                     typeof(DateTime), typeof(DateTime?),
-                    typeof(DateTimeOffset), typeof(DateTimeOffset?)
-                ], InputType.DateTimeLocal
-            },
-            {
-                [typeof(DateOnly), typeof(DateOnly?)], InputType.Date
+                    typeof(DateTimeOffset), typeof(DateTimeOffset?),
+                    typeof(DateOnly), typeof(DateOnly?)
+                ], typeof(DateField)
             }
         };
 
     /// <summary>
-    /// Gets <see cref="InputType"/> depending on <paramref name="propertyType"/>.
+    /// Gets custom field <see cref="Type"/> depending on <paramref name="propertyType"/>.
     /// </summary>
-    private InputType GetInputType(Type propertyType)
+    private Type GetComponentType(Type propertyType)
     {
         foreach (var (types, inputType) in TypeMappingDictionary)
         {
             if (types.Contains(propertyType))
             {
-                return inputType;
+                return inputType.IsGenericType ? inputType.MakeGenericType(propertyType) : inputType;
             }
         }
 
-        return InputType.Text;
+        return typeof(TextField);
     }
 }
