@@ -1,0 +1,10 @@
+﻿<MudSelect T="string"
+           Label="@Property.Name"
+           Variant="Variant.Outlined"
+           HelperText="@Property.Description"
+           @bind-Value="PropertyValue">
+    @foreach (var enumValue in Enum.GetNames(Property.ClrType!))
+    {
+        <MudSelectItem Value="enumValue" />
+    }
+</MudSelect>

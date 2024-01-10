@@ -103,6 +103,6 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
             }
         }
 
-        return typeof(TextField);
+        return propertyType.IsEnum ? typeof(EnumField) : typeof(TextField);
     }
 }
