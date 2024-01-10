@@ -1,4 +1,8 @@
-﻿namespace Saritasa.NetForge.Tests.Domain.Models;
+﻿using System.ComponentModel;
+using Saritasa.NetForge.Domain.Attributes;
+using Saritasa.NetForge.Tests.Utilities;
+
+namespace Saritasa.NetForge.Tests.Domain.Models;
 
 /// <summary>
 /// Represents a shop entity.
@@ -8,11 +12,14 @@ public class Shop
     /// <summary>
     /// Unique identifier for the shop.
     /// </summary>
+    [NetForgeProperty(Order = 1)]
     public int Id { get; set; }
 
     /// <summary>
     /// The name of the shop.
     /// </summary>
+    [DisplayName(ShopConstants.NameDisplayName)]
+    [Description(ShopConstants.NameDescription)]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
@@ -28,11 +35,16 @@ public class Shop
     /// <summary>
     /// The total sales amount for the shop.
     /// </summary>
+    [NetForgeProperty(
+        Order = 0,
+        DisplayName = ShopConstants.TotalSalesDisplayName,
+        Description = ShopConstants.TotalSalesDescription)]
     public decimal TotalSales { get; set; }
 
     /// <summary>
     /// The shop is currently open for business.
     /// </summary>
+    [NetForgeProperty(IsExcludedFromQuery = true)]
     public bool IsOpen { get; set; }
 
     /// <summary>
