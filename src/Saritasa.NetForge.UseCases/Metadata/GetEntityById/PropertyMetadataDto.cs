@@ -59,4 +59,10 @@ public record PropertyMetadataDto
 
     /// <inheritdoc cref="PropertyMetadataBase.DisplayAsHtml"/>
     public bool DisplayAsHtml { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.IsValueGeneratedOnAdd"/>
+    public bool IsValueGeneratedOnAdd { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.IsValueGeneratedOnUpdate"/>
+    public bool IsValueGeneratedOnUpdate { get; set; }
 }
