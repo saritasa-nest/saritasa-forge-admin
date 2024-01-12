@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
+using Saritasa.NetForge.Tests.Constants;
 using Saritasa.NetForge.Tests.Domain;
 using Saritasa.NetForge.Tests.Domain.Models;
 using Saritasa.NetForge.Tests.Utilities;

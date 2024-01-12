@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using Saritasa.NetForge.Domain.Attributes;
+using Saritasa.NetForge.Tests.Constants;
 using Saritasa.NetForge.Tests.Utilities;
 
 namespace Saritasa.NetForge.Tests.Domain.Models;

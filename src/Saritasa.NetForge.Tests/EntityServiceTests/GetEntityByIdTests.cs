@@ -2,6 +2,7 @@
 using Moq;
 using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.DomainServices;
+using Saritasa.NetForge.Tests.Constants;
 using Saritasa.NetForge.Tests.Domain;
 using Saritasa.NetForge.Tests.Domain.Models;
 using Saritasa.NetForge.Tests.Helpers;

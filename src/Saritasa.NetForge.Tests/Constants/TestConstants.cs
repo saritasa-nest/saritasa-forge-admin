@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace Saritasa.NetForge.Tests.Utilities;
+namespace Saritasa.NetForge.Tests.Constants;
 
 /// <summary>
 /// Constants for tests.
