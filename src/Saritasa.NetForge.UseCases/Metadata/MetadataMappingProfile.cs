@@ -25,6 +25,8 @@ public class MetadataMappingProfile : Profile
             .ForMember(dto => dto.IsNavigation, options => options.MapFrom(entity => true))
             .ForMember(dto => dto.IsNavigationCollection, options => options.MapFrom(entity => entity.IsCollection))
             .ForMember(dto => dto.IsPrimaryKey, options => options.Ignore())
-            .ForMember(dto => dto.IsCalculatedProperty, options => options.Ignore());
+            .ForMember(dto => dto.IsCalculatedProperty, options => options.Ignore())
+            .ForMember(dto => dto.IsValueGeneratedOnAdd, options => options.Ignore())
+            .ForMember(dto => dto.IsValueGeneratedOnUpdate, options => options.Ignore());
     }
 }
