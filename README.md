@@ -475,7 +475,7 @@ public string Property { get; set; }
 
 # Generated Properties
 
-Generated properties will not displayed on the create or edit entity pages. Entity framework example of generated property:
+Generated properties will not be displayed on the create or edit entity pages. Entity framework example of generated property:
 
 ```csharp
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
