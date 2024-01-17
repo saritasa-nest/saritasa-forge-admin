@@ -1,10 +1,7 @@
 ﻿using System.Linq.Expressions;
-using System.Net.Sockets;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.VisualBasic;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
@@ -37,41 +34,48 @@ public class EfCoreDataService : IOrmDataService
         return dbContext.Set(clrType).OfType<object>();
     }
 
-    public async Task<object> GetInstanceAsync(object primaryKey, Type entityType)
+    public async Task<object> GetInstanceAsync(string primaryKey, Type entityType)
     {
         var dbContext = GetDbContextThatContainsEntity(entityType);
         var type = dbContext.Model.FindEntityType(entityType);
         var key = type.FindPrimaryKey();
-        var schema = type.GetSchema();
-        var tableName = type.GetTableName();
-        var storeObjectIdentifier = StoreObjectIdentifier.Table(tableName, schema);
-        IList<string> primaryKeyColumns = key.Properties
-            .Select(x => x.GetColumnName(storeObjectIdentifier))
-            .ToList();
 
         var primaryKeyNames = key.Properties.Select(property => property.Name);
 
-        var keys = type.GetKeys();
+        var primaryKeyValues = primaryKey.Split("--");
+
+        var primaryKeyNamesWithValues = primaryKeyNames.Zip(primaryKeyValues);
 
         var query = GetQuery(entityType);
 
-        // entity => entity
+        // entity
         var entity = Expression.Parameter(typeof(object), Entity);
 
-        // entity => (entityType)entity
+        // (entityType)entity
         var convertedEntity = Expression.Convert(entity, entityType);
 
-        // entity => ((entityType)entity).propertyName
-        var propertyExpression = Expression.Property(convertedEntity, primaryKeyNames.First());
+        Expression? primaryKeyExpression = null;
+        foreach (var (name, value) in primaryKeyNamesWithValues)
+        {
+            // ((entityType)entity).propertyName
+            var propertyExpression = Expression.Property(convertedEntity, name);
 
-        var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
-        var entryConstant = Expression.Constant(primaryKey);
+            var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
+            var constant = Expression.Constant(value);
 
-        // entity => ((entityType)entity).propertyName.StartsWith(searchConstant)
-        var equalsCall = Expression.Call(
-            property, typeof(string).GetMethod(nameof(string.Equals), new[] { typeof(object) })!, entryConstant);
+            // ((entityType)entity).propertyName.StartsWith(constant)
+            var equalsCall = Expression.Call(
+                property, typeof(string).GetMethod(nameof(string.Equals), new[] { typeof(object) })!, constant);
 
-        var lambda = Expression.Lambda<Func<object, bool>>(equalsCall, entity);
+            primaryKeyExpression = primaryKeyExpression is null
+                ? equalsCall
+                : AddAndBetweenExpressions(equalsCall, primaryKeyExpression);
+        }
+
+        // Example with composite primary key:
+        // entity => ((entityType)entity).propertyName1.StartsWith(constant1)
+        // && ((entityType)entity).propertyName2.StartsWith(constant2)
+        var lambda = Expression.Lambda<Func<object, bool>>(primaryKeyExpression!, entity);
 
         return await query.FirstAsync(lambda, CancellationToken.None);
     }
@@ -120,7 +124,7 @@ public class EfCoreDataService : IOrmDataService
             var singleEntrySearchExpression = GetEntrySearchExpression(properties, convertedEntity, searchEntry);
 
             combinedSearchExpressions =
-                AddAndBetweenSearchExpressions(combinedSearchExpressions, singleEntrySearchExpression);
+                AddAndBetweenExpressions(combinedSearchExpressions, singleEntrySearchExpression);
         }
 
         if (combinedSearchExpressions is null)
@@ -171,31 +175,31 @@ public class EfCoreDataService : IOrmDataService
     }
 
     /// <summary>
-    /// Combines all search method call expressions to one expression with <see langword="OR"/> operator between.
+    /// Combines all expressions to one expression with <see langword="OR"/> operator between.
     /// </summary>
     private static Expression AddOrBetweenSearchExpressions(
-        Expression? singleEntrySearchExpression, Expression searchMethodCallExpression)
+        Expression? combinedExpressions, Expression expression)
     {
-        if (singleEntrySearchExpression is not null)
+        if (combinedExpressions is not null)
         {
             // Add OR operator between every searchable property using search entry
             // Example:
             // entity => Regex.IsMatch(((entityType)entity).propertyName, searchEntry, RegexOptions.IgnoreCase) ||
             //           ((entityType)entity).propertyName2.StartsWith(searchEntry) ||
             //           ...
-            return Expression.OrElse(singleEntrySearchExpression, searchMethodCallExpression);
+            return Expression.OrElse(combinedExpressions, expression);
         }
 
-        return searchMethodCallExpression;
+        return expression;
     }
 
     /// <summary>
-    /// Combines all search entry expressions to one expression with <see langword="AND"/> operator between.
+    /// Combines all expressions to one expression with <see langword="AND"/> operator between.
     /// </summary>
-    private static Expression AddAndBetweenSearchExpressions(
-        Expression? combinedSearchExpressions, Expression singleEntrySearchExpression)
+    private static Expression AddAndBetweenExpressions(
+        Expression? combinedExpressions, Expression expression)
     {
-        if (combinedSearchExpressions is not null)
+        if (combinedExpressions is not null)
         {
             // Example:
             // entity => (Regex.IsMatch(((entityType)entity).propertyName, searchEntry, RegexOptions.IgnoreCase) ||
@@ -204,10 +208,10 @@ public class EfCoreDataService : IOrmDataService
             //           (Regex.IsMatch(((entityType)entity).propertyName, searchEntry2, RegexOptions.IgnoreCase) ||
             //           ((entityType)entity).propertyName2.StartsWith(searchEntry2) ||
             //           ...) && ...
-            return Expression.And(combinedSearchExpressions, singleEntrySearchExpression);
+            return Expression.And(combinedExpressions, expression);
         }
 
-        return singleEntrySearchExpression;
+        return expression;
     }
 
     /// <summary>

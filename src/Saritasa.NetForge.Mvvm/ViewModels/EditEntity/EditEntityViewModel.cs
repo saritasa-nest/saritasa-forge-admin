@@ -43,7 +43,7 @@ public class EditEntityViewModel : BaseViewModel
     /// <summary>
     /// Entity model.
     /// </summary>
-    public object EntityModel { get; set; } = null!;
+    public object? EntityModel { get; set; }
 
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
@@ -53,8 +53,6 @@ public class EditEntityViewModel : BaseViewModel
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
             Model = mapper.Map<EditEntityModel>(entity);
             EntityModel = await dataService.GetInstanceAsync(InstanceId, Model.ClrType!);
-
-            //EntityModel = Activator.CreateInstance(Model.ClrType!)!;
         }
         catch (NotFoundException)
         {
@@ -67,6 +65,6 @@ public class EditEntityViewModel : BaseViewModel
     /// </summary>
     public async Task UpdateEntityAsync()
     {
-       await dataService.UpdateAsync(EntityModel, CancellationToken);
+       await dataService.UpdateAsync(EntityModel!, CancellationToken);
     }
 }

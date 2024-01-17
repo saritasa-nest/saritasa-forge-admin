@@ -60,14 +60,6 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
     {
         await base.OnParametersSetAsync();
 
-        //if (StateContainer.Value is not null)
-        //{
-        //    ViewModel.EntityModel = StateContainer.Value;
-        //}
-
-        //var entity = await EntityService.GetEntityByIdAsync(StringId, CancellationToken);
-        //ViewModel.EntityModel = await DataService.GetInstanceAsync(InstanceId, entity.ClrType!);
-
         var adminPanelEndpoint = AdminOptions!.AdminPanelEndpoint;
         var entityDetailsEndpoint = $"{adminPanelEndpoint}/entities/{StringId}";
         var editEntityEndpoint = $"{entityDetailsEndpoint}/edit";

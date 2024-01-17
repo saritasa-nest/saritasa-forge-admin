@@ -18,9 +18,6 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>, 
     [Inject]
     private INavigationService NavigationService { get; set; } = null!;
 
-    //[Inject]
-    //private StateContainer StateContainer { get; set; } = null!;
-
     /// <summary>
     /// Entity id.
     /// </summary>
@@ -64,16 +61,17 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>, 
 
     private void NavigateToEditing(DataGridRowClickEventArgs<object> row)
     {
-        //StateContainer.SetValue(row.Item);
-
         var primaryKeys = new StringBuilder();
+
+        var primaryKeyValues = new List<string>();
 
         foreach (var primaryKey in ViewModel.Model.Properties.Where(property => property.IsPrimaryKey))
         {
             primaryKeys.Append(ViewModel.GetPropertyValue(row.Item, primaryKey));
+            primaryKeyValues.Add(ViewModel.GetPropertyValue(row.Item, primaryKey).ToString()!);
         }
 
-        NavigationService.NavigateTo<EditEntityViewModel>(parameters: [StringId, primaryKeys.ToString()]);
+        NavigationService.NavigateTo<EditEntityViewModel>(parameters: [StringId, string.Join("--", primaryKeyValues)]);
     }
 
     //public void Dispose()
