@@ -472,3 +472,12 @@ optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
 [NetForgeProperty(DisplayAsHtml = true)]
 public string Property { get; set; }
 ```
+
+# Generated Properties
+
+Generated properties will not be displayed on the create or edit entity pages. Entity framework example of generated property:
+
+```csharp
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public DateTime CreatedAt { get; set; }
+```
