@@ -23,8 +23,9 @@ public interface IOrmDataService
     /// In case of composite primary key, they have to be separated by "--".
     /// </param>
     /// <param name="entityType">Type to get instance of.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>Instance.</returns>
-    Task<object> GetInstanceAsync(string primaryKey, Type entityType);
+    Task<object> GetInstanceAsync(string primaryKey, Type entityType, CancellationToken cancellationToken);
 
     /// <summary>
     /// Performs search.

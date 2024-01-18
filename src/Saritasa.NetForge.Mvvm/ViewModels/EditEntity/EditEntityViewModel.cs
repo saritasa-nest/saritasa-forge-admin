@@ -59,7 +59,7 @@ public class EditEntityViewModel : BaseViewModel
         {
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
             Model = mapper.Map<EditEntityModel>(entity);
-            EntityModel = await dataService.GetInstanceAsync(InstancePrimaryKey, Model.ClrType!);
+            EntityModel = await dataService.GetInstanceAsync(InstancePrimaryKey, Model.ClrType!, CancellationToken);
         }
         catch (NotFoundException)
         {

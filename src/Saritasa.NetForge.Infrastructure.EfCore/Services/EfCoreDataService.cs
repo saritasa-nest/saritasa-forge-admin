@@ -35,13 +35,13 @@ public class EfCoreDataService : IOrmDataService
     }
 
     /// <inheritdoc />
-    public async Task<object> GetInstanceAsync(string primaryKey, Type entityType)
+    public async Task<object> GetInstanceAsync(string primaryKey, Type entityType, CancellationToken cancellationToken)
     {
         var dbContext = GetDbContextThatContainsEntity(entityType);
         var type = dbContext.Model.FindEntityType(entityType)!;
-        var key = type.FindPrimaryKey();
+        var key = type.FindPrimaryKey(); // TODO: Handle keyless entities
 
-        var primaryKeyNames = key!.Properties.Select(property => property.Name);
+        var primaryKeyNames = key.Properties.Select(property => property.Name);
         var primaryKeyValues = primaryKey.Split("--");
         var primaryKeyNamesWithValues = primaryKeyNames.Zip(primaryKeyValues);
 
@@ -76,7 +76,7 @@ public class EfCoreDataService : IOrmDataService
         // && ((entityType)entity).propertyName2.StartsWith(constant2)
         var lambda = Expression.Lambda<Func<object, bool>>(primaryKeyExpression!, entity);
 
-        return await query.FirstAsync(lambda, CancellationToken.None);
+        return await query.FirstAsync(lambda, cancellationToken);
     }
 
     private DbContext GetDbContextThatContainsEntity(Type clrType)
