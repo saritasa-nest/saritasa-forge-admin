@@ -34,16 +34,15 @@ public class EfCoreDataService : IOrmDataService
         return dbContext.Set(clrType).OfType<object>();
     }
 
+    /// <inheritdoc />
     public async Task<object> GetInstanceAsync(string primaryKey, Type entityType)
     {
         var dbContext = GetDbContextThatContainsEntity(entityType);
-        var type = dbContext.Model.FindEntityType(entityType);
+        var type = dbContext.Model.FindEntityType(entityType)!;
         var key = type.FindPrimaryKey();
 
-        var primaryKeyNames = key.Properties.Select(property => property.Name);
-
+        var primaryKeyNames = key!.Properties.Select(property => property.Name);
         var primaryKeyValues = primaryKey.Split("--");
-
         var primaryKeyNamesWithValues = primaryKeyNames.Zip(primaryKeyValues);
 
         var query = GetQuery(entityType);

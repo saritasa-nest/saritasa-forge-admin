@@ -25,6 +25,5 @@ internal static class ApplicationModule
         services.AddMemoryCache();
         services.AddScoped<INavigationService, NavigationService>();
         services.AddScoped<IEntityService, EntityService>();
-        //services.AddSingleton<StateContainer>();
     }
 }

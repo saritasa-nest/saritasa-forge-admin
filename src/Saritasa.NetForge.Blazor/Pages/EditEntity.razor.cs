@@ -1,20 +1,16 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Saritasa.NetForge.Blazor.Infrastructure;
 using Saritasa.NetForge.Domain.Entities.Options;
-using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
-using Saritasa.NetForge.UseCases.Interfaces;
 
 namespace Saritasa.NetForge.Blazor.Pages;
 
 /// <summary>
 /// Edit entity page.
 /// </summary>
-[Route("/entities/{stringId}/{instanceId}")]
+[Route("/entities/{stringId}/{instancePrimaryKey}")]
 public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
 {
     [Inject]
@@ -22,18 +18,6 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
 
     [Inject]
     private AdminOptions? AdminOptions { get; set; }
-
-    //[Inject]
-    //private StateContainer StateContainer { get; set; } = null!;
-
-    [Inject]
-    private IOrmDataService DataService { get; set; } = null!;
-
-    [Inject]
-    private IEntityService EntityService { get; set; } = null!;
-
-    [Inject]
-    private IMapper mapper { get; set; } = null!;
 
     /// <summary>
     /// Entity id.
@@ -45,14 +29,14 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
     /// Entity instance id.
     /// </summary>
     [Parameter]
-    public string InstanceId { get; init; } = null!;
+    public string InstancePrimaryKey { get; init; } = null!;
 
     private readonly List<BreadcrumbItem> breadcrumbItems = new();
 
     /// <inheritdoc/>
     protected override EditEntityViewModel CreateViewModel()
     {
-        return ViewModelFactory.Create<EditEntityViewModel>(StringId, InstanceId);
+        return ViewModelFactory.Create<EditEntityViewModel>(StringId, InstancePrimaryKey);
     }
 
     /// <inheritdoc />

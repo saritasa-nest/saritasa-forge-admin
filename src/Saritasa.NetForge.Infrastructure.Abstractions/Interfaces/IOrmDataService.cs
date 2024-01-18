@@ -15,6 +15,15 @@ public interface IOrmDataService
     /// <returns>Entity data.</returns>
     IQueryable<object> GetQuery(Type clrType);
 
+    /// <summary>
+    /// Get instance by primary key value.
+    /// </summary>
+    /// <param name="primaryKey">
+    /// Primary key values.
+    /// In case of composite primary key, they have to be separated by "--".
+    /// </param>
+    /// <param name="entityType">Type to get instance of.</param>
+    /// <returns>Instance.</returns>
     Task<object> GetInstanceAsync(string primaryKey, Type entityType);
 
     /// <summary>
