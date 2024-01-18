@@ -52,6 +52,11 @@ public class EditEntityViewModel : BaseViewModel
     /// </summary>
     public object? EntityModel { get; set; }
 
+    /// <summary>
+    /// Is entity was updated.
+    /// </summary>
+    public bool IsUpdated { get; set; }
+
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
     {
@@ -73,5 +78,6 @@ public class EditEntityViewModel : BaseViewModel
     public async Task UpdateEntityAsync()
     {
        await dataService.UpdateAsync(EntityModel!, CancellationToken);
+       IsUpdated = true;
     }
 }

@@ -53,6 +53,14 @@ else if (ViewModel.IsEntityExists)
                             Cancel
                         </MudButton>
                     </div>
+
+                    @if (ViewModel.IsUpdated)
+                    {
+                        <MudAlert Variant="Variant.Outlined"
+                                  Severity="Severity.Success">
+                            Update was completed successfully
+                        </MudAlert>
+                    }
                 </div>
             </EditForm>
         </MudItem>
