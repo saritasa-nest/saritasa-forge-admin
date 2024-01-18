@@ -22,6 +22,13 @@ public partial class TextField
     [EditorRequired]
     public object EntityModel { get; init; } = null!;
 
+    [Parameter]
+    [EditorRequired]
+    /// <summary>
+    /// Is field with read only access.
+    /// </summary>
+    public bool IsReadOnly { get; init; }
+
     /// <summary>
     /// Property value.
     /// </summary>

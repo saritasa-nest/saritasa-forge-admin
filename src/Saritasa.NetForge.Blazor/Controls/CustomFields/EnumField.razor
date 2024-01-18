@@ -2,6 +2,7 @@
            Label="@Property.Name"
            Variant="Variant.Outlined"
            HelperText="@Property.Description"
+           Disabled="IsReadOnly"
            @bind-Value="PropertyValue">
     @foreach (var enumValue in Enum.GetNames(Property.ClrType!))
     {

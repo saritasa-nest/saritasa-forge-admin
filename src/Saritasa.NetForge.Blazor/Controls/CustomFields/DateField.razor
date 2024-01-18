@@ -9,6 +9,7 @@
                       InputType="InputType.DateTimeLocal"
                       Format="s"
                       HelperText="@Property.Description"
+                      Disabled="IsReadOnly"
                       @bind-Value="PropertyValue">
         </MudTextField>
     }
@@ -18,6 +19,7 @@
                        Variant="Variant.Outlined"
                        Editable="true"
                        HelperText="@Property.Description"
+                       Disabled="IsReadOnly"
                        @bind-Date="PropertyValue" />
     }
 }

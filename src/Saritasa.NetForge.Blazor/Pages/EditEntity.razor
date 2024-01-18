@@ -31,7 +31,8 @@ else if (ViewModel.IsEntityExists)
                             var parameters = new Dictionary<string, object>
                             {
                                 { "Property", property },
-                                { "EntityModel", ViewModel.EntityModel }
+                                { "EntityModel", ViewModel.EntityModel },
+                                { "IsReadOnly", property.IsPrimaryKey }
                             };
 
                             <DynamicComponent Type="componentType" Parameters="parameters" />
