@@ -1,4 +1,9 @@
-﻿namespace Saritasa.NetForge.Tests.Domain.Models;
+﻿using System.ComponentModel;
+using Saritasa.NetForge.Domain.Attributes;
+using Saritasa.NetForge.Tests.Constants;
+using Saritasa.NetForge.Tests.Utilities;
+
+namespace Saritasa.NetForge.Tests.Domain.Models;
 
 /// <summary>
 /// Represents an address entity.
@@ -8,11 +13,14 @@ public class Address
     /// <summary>
     /// The unique identifier for the address.
     /// </summary>
+    [NetForgeProperty(Order = 1)]
     public int Id { get; set; }
 
     /// <summary>
     /// The street name and number.
     /// </summary>
+    [DisplayName(AddressConstants.StreetDisplayName)]
+    [Description(AddressConstants.StreetDescription)]
     public string Street { get; set; } = string.Empty;
 
     /// <summary>
@@ -23,6 +31,7 @@ public class Address
     /// <summary>
     /// The postal code of the address.
     /// </summary>
+    [NetForgeProperty(IsExcludedFromQuery = true)]
     public string PostalCode { get; set; } = string.Empty;
 
     /// <summary>
@@ -33,11 +42,16 @@ public class Address
     /// <summary>
     /// The latitude coordinate of the address location.
     /// </summary>
+    [NetForgeProperty(
+        Order = 0,
+        DisplayName = AddressConstants.LatitudeDisplayName,
+        Description = AddressConstants.LatitudeDescription)]
     public double Latitude { get; set; }
 
     /// <summary>
     /// The longitude coordinate of the address location.
     /// </summary>
+    [NetForgeProperty(IsHidden = true)]
     public double Longitude { get; set; }
 
     /// <summary>
