@@ -1,4 +1,5 @@
-﻿using Saritasa.NetForge.Demo.Constants;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Saritasa.NetForge.Demo.Constants;
 using Saritasa.NetForge.Domain.Attributes;
 
 namespace Saritasa.NetForge.Demo.Models;
@@ -28,5 +29,11 @@ public class ContactInfo
     /// The phone number of the contact person.
     /// </summary>
     public required string PhoneNumber { get; set; }
+
+    /// <summary>
+    /// Date when contact was created.
+    /// </summary>
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public DateTime CreatedAt { get; set; }
 }
 

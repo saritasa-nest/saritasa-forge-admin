@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Saritasa.NetForge.Blazor.Extensions;
-using Saritasa.NetForge.Blazor.Infrastructure.DependencyInjection;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 using Saritasa.NetForge.Tests.Domain;
 using Xunit.Microsoft.DependencyInjection;
@@ -43,7 +42,7 @@ public class TestDatabaseFixture : TestBedFixture
     /// <inheritdoc />
     protected override void AddServices(IServiceCollection services, IConfiguration? configuration)
     {
-        AutoMapperModule.Register(services);
+        services.AddDbContext<TestDbContext>(options => options.UseInMemoryDatabase("NetForgeTest"));
 
         services.AddNetForge(optionsBuilder =>
         {
