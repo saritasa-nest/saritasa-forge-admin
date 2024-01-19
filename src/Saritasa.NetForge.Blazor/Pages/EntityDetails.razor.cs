@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Saritasa.NetForge.Blazor.Controls;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
 using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
@@ -12,8 +13,11 @@ namespace Saritasa.NetForge.Blazor.Pages;
 [Route("/entities/{stringId}")]
 public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
 {
-    [Inject]
-    private INavigationService NavigationService { get; set; } = null!;
+    private readonly List<BreadcrumbItem> breadcrumbItems = new();
+
+    [Inject] private INavigationService NavigationService { get; set; } = null!;
+
+    [Inject] private IDialogService DialogService { get; set; } = default!;
 
     /// <summary>
     /// Entity id.
@@ -44,5 +48,10 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     private void NavigateToCreation()
     {
         NavigationService.NavigateTo<CreateEntityViewModel>(parameters: StringId);
+        var result = await DialogService.Show<DeleteEntityConfirmationDialog>(string.Empty).Result;
+        if (!result.Canceled)
+        {
+            await ViewModel.DeleteEntityAsync(source, CancellationToken.None);
+        }
     }
 }
