@@ -26,11 +26,6 @@ public class PropertyMetadata : PropertyMetadataBase
     public bool IsEditable { get; set; } = true;
 
     /// <summary>
-    /// The type of the property.
-    /// </summary>
-    public Type? ClrType { get; set; }
-
-    /// <summary>
     /// Gets a value indicating whether this is a shadow property (does not have a
     /// corresponding property in the entity class).
     /// </summary>
