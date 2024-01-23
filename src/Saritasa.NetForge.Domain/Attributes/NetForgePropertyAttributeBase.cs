@@ -13,6 +13,9 @@ public abstract class NetForgePropertyAttributeBase : Attribute
     /// <inheritdoc cref="PropertyMetadataBase.IsHiddenFromListView"/>
     public bool IsHiddenFromListView { get; set; }
 
+    /// <inheritdoc cref="PropertyMetadataBase.IsHiddenFromDetails"/>
+    public bool IsHiddenFromDetails { get; set; }
+
     /// <inheritdoc cref="PropertyMetadataBase.IsExcludedFromQuery"/>
     public bool IsExcludedFromQuery { get; set; }
 

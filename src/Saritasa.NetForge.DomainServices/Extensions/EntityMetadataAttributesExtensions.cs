@@ -118,6 +118,11 @@ public static class EntityMetadataAttributesExtensions
             property.IsHiddenFromListView = netForgePropertyAttribute.IsHiddenFromListView;
         }
 
+        if (netForgePropertyAttribute.IsHiddenFromDetails)
+        {
+            property.IsHiddenFromDetails = netForgePropertyAttribute.IsHiddenFromDetails;
+        }
+
         if (netForgePropertyAttribute.IsExcludedFromQuery)
         {
             property.IsExcludedFromQuery = netForgePropertyAttribute.IsExcludedFromQuery;
