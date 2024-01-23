@@ -13,8 +13,6 @@ namespace Saritasa.NetForge.Blazor.Pages;
 [Route("/entities/{stringId}")]
 public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
 {
-    private readonly List<BreadcrumbItem> breadcrumbItems = new();
-
     [Inject] private INavigationService NavigationService { get; set; } = null!;
 
     [Inject] private IDialogService DialogService { get; set; } = default!;
@@ -30,6 +28,7 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     /// <inheritdoc/>
     protected override EntityDetailsViewModel CreateViewModel()
     {
+        this.StateHasChanged();
         return ViewModelFactory.Create<EntityDetailsViewModel>(StringId);
     }
 
@@ -48,6 +47,10 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     private void NavigateToCreation()
     {
         NavigationService.NavigateTo<CreateEntityViewModel>(parameters: StringId);
+    }
+
+    private async void ShowDeleteEntityConfirmationAsync(object source)
+    {
         var result = await DialogService.Show<DeleteEntityConfirmationDialog>(string.Empty).Result;
         if (!result.Canceled)
         {

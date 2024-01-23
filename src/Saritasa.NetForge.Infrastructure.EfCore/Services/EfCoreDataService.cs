@@ -296,7 +296,6 @@ public class EfCoreDataService : IOrmDataService
         var dbContext = GetDbContextThatContainsEntity(entityType);
 
         dbContext.Remove(entity);
-        dbContext.Entry(entity).State = EntityState.Deleted;
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 }
