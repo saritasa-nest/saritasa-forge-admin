@@ -108,10 +108,10 @@ public class GetEntityByIdTests : IDisposable
     public async Task GetEntityByIdAsync_WithNavigations_ShouldBeNotNull()
     {
         // Arrange
-        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
-        {
-            builder.IncludeNavigations(entity => entity.Address);
-        });
+        //adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        //{
+        //    builder.IncludeNavigations(entity => entity.Address);
+        //});
 
         const string navigationPropertyName = nameof(Shop.Address);
 

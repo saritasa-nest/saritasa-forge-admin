@@ -127,17 +127,6 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
-    /// Include navigations when entity data accessed.
-    /// </summary>
-    /// <param name="navigationExpression">An array of lambda expressions representing navigations to include.</param>
-    public EntityOptionsBuilder<TEntity> IncludeNavigations(params Expression<Func<TEntity, object?>>[] navigationExpression)
-    {
-        var navigationNames = navigationExpression.Select(expression => expression.GetMemberName());
-        options.IncludedNavigations.AddRange(navigationNames);
-        return this;
-    }
-
-    /// <summary>
     /// Adds navigation property to the entity.
     /// </summary>
     /// <param name="navigationExpression">Lambda expression representing navigation to include.</param>

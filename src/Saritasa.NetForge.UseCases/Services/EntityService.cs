@@ -64,20 +64,13 @@ public class EntityService : IEntityService
         var propertyDtos = mapper
             .Map<IEnumerable<PropertyMetadata>, IEnumerable<PropertyMetadataDto>>(displayableProperties);
 
-        if (metadata.Navigations.Any())
-        {
-            var displayableNavigations = metadata.Navigations
-                .Where(navigation => navigation is { IsExcludedFromQuery: false, IsIncluded: true });
+        var displayableNavigations = metadata.Navigations
+            .Where(navigation => navigation is { IsExcludedFromQuery: false, IsIncluded: true });
 
-            var navigations = mapper
-                .Map<IEnumerable<NavigationMetadata>, IEnumerable<PropertyMetadataDto>>(displayableNavigations);
+        var navigationDtos = mapper
+            .Map<IEnumerable<NavigationMetadata>, IEnumerable<NavigationMetadataDto>>(displayableNavigations);
 
-            propertyDtos = propertyDtos.Union(navigations);
-        }
-
-        metadata.Navigations = metadata.Navigations
-            .Where(navigation => navigation is { IsExcludedFromQuery: false, IsIncluded: true })
-            .ToList();
+        propertyDtos = propertyDtos.Union(navigationDtos);
 
         var orderedProperties = propertyDtos
             .OrderByDescending(property => property is { IsPrimaryKey: true, Order: null })

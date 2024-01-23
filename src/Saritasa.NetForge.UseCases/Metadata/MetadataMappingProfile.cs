@@ -17,18 +17,7 @@ public class MetadataMappingProfile : Profile
     {
         CreateMap<EntityMetadata, EntityMetadataDto>();
         CreateMap<EntityMetadata, GetEntityByIdDto>();
-        CreateMap<PropertyMetadata, PropertyMetadataDto>()
-            .ForMember(dto => dto.IsNavigation, options => options.Ignore())
-            .ForMember(dto => dto.IsNavigationCollection, options => options.Ignore())
-            .ForMember(dto => dto.TargetEntityProperties, options => options.Ignore());
-        CreateMap<NavigationMetadata, PropertyMetadataDto>()
-            .ForMember(dto => dto.IsNavigation, options => options.MapFrom(entity => true))
-            .ForMember(dto => dto.IsNavigationCollection, options => options.MapFrom(entity => entity.IsCollection))
-            .ForMember(dto => dto.IsPrimaryKey, options => options.Ignore())
-            .ForMember(dto => dto.IsCalculatedProperty, options => options.Ignore())
-            .ForMember(dto => dto.IsValueGeneratedOnAdd, options => options.Ignore())
-            .ForMember(dto => dto.IsValueGeneratedOnUpdate, options => options.Ignore());
-
+        CreateMap<PropertyMetadata, PropertyMetadataDto>();
         CreateMap<NavigationMetadata, NavigationMetadataDto>();
     }
 }

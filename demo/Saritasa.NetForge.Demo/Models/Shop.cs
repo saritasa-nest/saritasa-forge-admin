@@ -27,7 +27,7 @@ public class Shop
     /// <summary>
     /// The address of the shop.
     /// </summary>
-    [NetForgeNavigation(DisplayName = "AddressId", Description = "Address identifier.", Order = 1)]
+    [NetForgeNavigation(Order = 1)]
     public Address? Address { get; set; }
 
     /// <summary>

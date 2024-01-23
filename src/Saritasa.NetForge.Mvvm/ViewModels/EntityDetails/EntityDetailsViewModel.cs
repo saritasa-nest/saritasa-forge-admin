@@ -143,9 +143,9 @@ public class EntityDetailsViewModel : BaseViewModel
                 : DefaultEmptyValueDisplay;
         }
 
-        if (property.IsNavigation)
+        if (property is NavigationMetadataDto navigation)
         {
-            value = GetNavigationValue(value, property);
+            value = GetNavigationValue(value, navigation);
         }
 
         value = FormatValue(value, property.Name);
@@ -153,9 +153,9 @@ public class EntityDetailsViewModel : BaseViewModel
         return value;
     }
 
-    private static object GetNavigationValue(object navigation, PropertyMetadataDto property)
+    private static object GetNavigationValue(object navigation, NavigationMetadataDto navigationMetadata)
     {
-        var primaryKeys = property.TargetEntityProperties
+        var primaryKeys = navigationMetadata.TargetEntityProperties
             .Where(targetProperty => targetProperty.IsPrimaryKey)
             .ToList();
 
@@ -164,7 +164,7 @@ public class EntityDetailsViewModel : BaseViewModel
             return navigation;
         }
 
-        if (!property.IsNavigationCollection)
+        if (!navigationMetadata.IsCollection)
         {
             if (primaryKeys.Count == 1)
             {

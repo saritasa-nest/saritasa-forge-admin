@@ -2,6 +2,7 @@
 @using Saritasa.NetForge.Domain.Enums
 @using Saritasa.NetForge.Domain.Entities.Options
 @using Saritasa.NetForge.Blazor.Extensions
+@using Saritasa.NetForge.UseCases.Metadata.GetEntityById
 @inject AdminOptions AdminOptions
 @inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.EntityDetails.EntityDetailsViewModel>
 
@@ -44,6 +45,66 @@
                 <Columns>
                     @foreach (var property in ViewModel.Model.Properties)
                     {
+                        if (property is NavigationMetadataDto navigation)
+                        {
+                            foreach (var targetProperty in navigation.TargetEntityProperties)
+                            {
+                                if (targetProperty.IsHidden)
+                                {
+                                    continue;
+                                }
+
+                                <TemplateColumn Title="@targetProperty.Name" Sortable="targetProperty.IsSortable">
+                                    <HeaderTemplate>
+                                        @{
+                                            var displayName = ViewModel.GetPropertyDisplayName(targetProperty);
+                                            if (AdminOptions.TitleCaseProperties)
+                                            {
+                                                displayName = displayName.ToMeaningfulName();
+                                            }
+
+                                            if (string.IsNullOrEmpty(targetProperty.Description))
+                                            {
+                                                @displayName
+                                            }
+                                            else
+                                            {
+                                                <MudTooltip Arrow="true" Placement="@Placement.Top">
+                                                    <ChildContent>
+                                                        @displayName
+                                                    </ChildContent>
+                                                    <TooltipContent>
+                                                        <MudText Typo="@Typo.body2">@targetProperty.Description</MudText>
+                                                    </TooltipContent>
+                                                </MudTooltip>
+                                            }
+                                        }
+                                    </HeaderTemplate>
+
+                                    <CellTemplate Context="cell">
+                                        @{
+                                            var navigationInstance =
+                                                cell.Item.GetType().GetProperty(navigation.Name).GetValue(cell.Item);
+
+                                            var propertyValue = ViewModel
+                                                .GetPropertyValue(navigationInstance, targetProperty)
+                                                .ToString();
+                                            if (targetProperty.DisplayAsHtml)
+                                            {
+                                                @((MarkupString)propertyValue!)
+                                            }
+                                            else
+                                            {
+                                                @propertyValue
+                                            }
+                                        }
+                                    </CellTemplate>
+                                </TemplateColumn>
+                            }
+
+                            continue;
+                        }
+
                         if (property.IsHidden)
                         {
                             continue;
@@ -89,64 +150,6 @@
                                 }
                             </CellTemplate>
                         </TemplateColumn>
-                    }
-
-                    @foreach (var navigation in ViewModel.Model.Navigations)
-                    {
-                        foreach (var property in navigation.TargetEntityProperties)
-                        {
-                            if (property.IsHidden)
-                            {
-                                continue;
-                            }
-
-                            <TemplateColumn Title="@property.Name" Sortable="property.IsSortable">
-                                <HeaderTemplate>
-                                    @{
-                                        var displayName = ViewModel.GetPropertyDisplayName(property);
-                                        if (AdminOptions.TitleCaseProperties)
-                                        {
-                                            displayName = displayName.ToMeaningfulName();
-                                        }
-
-                                        if (string.IsNullOrEmpty(property.Description))
-                                        {
-                                            @displayName
-                                        }
-                                        else
-                                        {
-                                            <MudTooltip Arrow="true" Placement="@Placement.Top">
-                                                <ChildContent>
-                                                    @displayName
-                                                </ChildContent>
-                                                <TooltipContent>
-                                                    <MudText Typo="@Typo.body2">@property.Description</MudText>
-                                                </TooltipContent>
-                                            </MudTooltip>
-                                        }
-                                    }
-                                </HeaderTemplate>
-
-                                <CellTemplate Context="cell">
-                                    @{
-                                        var navigationInstance =
-                                            cell.Item.GetType().GetProperty(navigation.Name).GetValue(cell.Item);
-
-                                        var propertyValue = ViewModel
-                                            .GetPropertyValue(navigationInstance, property)
-                                            .ToString();
-                                        if (property.DisplayAsHtml)
-                                        {
-                                            @((MarkupString)propertyValue!)
-                                        }
-                                        else
-                                        {
-                                            @propertyValue
-                                        }
-                                    }
-                                </CellTemplate>
-                            </TemplateColumn>
-                        }
                     }
                 </Columns>
 

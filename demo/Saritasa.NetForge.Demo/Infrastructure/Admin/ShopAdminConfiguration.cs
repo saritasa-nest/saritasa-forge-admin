@@ -29,27 +29,21 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             builder.SetIsSortable(true);
         });
 
-        entityOptionsBuilder.IncludeNavigation<Address>(shop => shop.Address, navigationOptionsBuilder =>
-        {
-            navigationOptionsBuilder.IncludeProperty(address => address.Street, builder =>
-            {
-                builder.SetDisplayName("Address Street");
-            })
-            .IncludeProperty(address => address.Id);
-        });
-
         entityOptionsBuilder
-            .IncludeNavigations(
-                shop => shop.OwnerContact,
-                shop => shop.Products,
-                shop => shop.Suppliers)
-            .ConfigureProperty(shop => shop.OwnerContact, builder =>
+            .IncludeNavigation<Address>(shop => shop.Address, navigationOptionsBuilder =>
             {
-                builder
-                .SetDisplayName("OwnerContactInfo")
-                .SetDescription("Information about owner contact.")
-                .SetOrder(2)
-                .SetEmptyValueDisplay("N/A");
+                navigationOptionsBuilder
+                    .IncludeProperty(address => address.Street, builder =>
+                    {
+                        builder.SetDisplayName("Address Street");
+                    })
+                    .IncludeProperty(address => address.Id);
+            })
+            .IncludeNavigation<ContactInfo>(shop => shop.OwnerContact, navigationOptionsBuilder =>
+            {
+                navigationOptionsBuilder
+                    .IncludeProperty(contact => contact.Id)
+                    .IncludeProperty(contact => contact.FullName);
             });
     }
 }

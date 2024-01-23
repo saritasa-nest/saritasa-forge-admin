@@ -19,7 +19,6 @@
                         var properties = ViewModel.Model.Properties
                             .Where(property => property is
                             {
-                                IsNavigation: false,
                                 IsCalculatedProperty: false,
                                 IsValueGeneratedOnAdd: false,
                                 IsValueGeneratedOnUpdate: false

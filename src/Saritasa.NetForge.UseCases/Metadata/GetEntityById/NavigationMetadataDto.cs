@@ -5,11 +5,8 @@ namespace Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 /// <summary>
 /// DTO for <see cref="NavigationMetadata"/>.
 /// </summary>
-public class NavigationMetadataDto
+public record NavigationMetadataDto : PropertyMetadataDto
 {
-    /// <inheritdoc cref="PropertyMetadataBase.Name"/>
-    public string Name { get; set; } = string.Empty;
-
     /// <inheritdoc cref="NavigationMetadata.IsCollection"/>
     public bool IsCollection { get; set; }
 
