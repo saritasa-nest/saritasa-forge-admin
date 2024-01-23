@@ -29,9 +29,17 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             builder.SetIsSortable(true);
         });
 
+        entityOptionsBuilder.IncludeNavigation<Address>(shop => shop.Address, navigationOptionsBuilder =>
+        {
+            navigationOptionsBuilder.IncludeProperty(address => address.Street, builder =>
+            {
+                builder.SetDisplayName("Address Street");
+            })
+            .IncludeProperty(address => address.Id);
+        });
+
         entityOptionsBuilder
             .IncludeNavigations(
-                shop => shop.Address,
                 shop => shop.OwnerContact,
                 shop => shop.Products,
                 shop => shop.Suppliers)

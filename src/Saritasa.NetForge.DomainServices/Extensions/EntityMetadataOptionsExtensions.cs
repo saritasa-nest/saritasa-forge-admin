@@ -47,12 +47,6 @@ public static class EntityMetadataOptionsExtensions
             entityMetadata.CustomQueryFunction = entityOptions.CustomQueryFunction;
         }
 
-        entityMetadata.Navigations = entityMetadata.Navigations
-            .Where(navigation => entityOptions.IncludedNavigations.Contains(navigation.Name))
-            .ToList();
-
-        entityMetadata.Navigations.ForEach(navigation => navigation.IsIncluded = true);
-
         foreach (var option in entityOptions.PropertyOptions)
         {
             var property = entityMetadata.Properties
@@ -68,6 +62,36 @@ public static class EntityMetadataOptionsExtensions
                 .FirstOrDefault(navigation => navigation.Name == option.PropertyName);
 
             navigation?.ApplyPropertyOptions(option);
+        }
+
+        foreach (var navigationOptions in entityOptions.NavigationOptions)
+        {
+            var navigation = entityMetadata.Navigations
+                .First(navigation => navigation.Name.Equals(navigationOptions.PropertyName));
+
+            navigation.IsIncluded = true;
+
+            navigation.TargetEntityProperties = navigation.TargetEntityProperties
+                .Where(property => navigationOptions.PropertyOptions
+                    .Any(includedProperty => includedProperty.PropertyName.Equals(property.Name)))
+                .ToList();
+
+            foreach (var includedProperty in navigationOptions.PropertyOptions)
+            {
+                var property = navigation.TargetEntityProperties
+                    .FirstOrDefault(property => property.Name == includedProperty.PropertyName);
+
+                if (property is not null)
+                {
+                    property.ApplyPropertyOptions(includedProperty);
+                    continue;
+                }
+
+                var innerNavigation = navigation.TargetEntityProperties
+                    .FirstOrDefault(navigation => navigation.Name == includedProperty.PropertyName);
+
+                innerNavigation?.ApplyPropertyOptions(includedProperty);
+            }
         }
 
         entityMetadata.AssignGroupToEntity(entityOptions.GroupName, adminOptions);

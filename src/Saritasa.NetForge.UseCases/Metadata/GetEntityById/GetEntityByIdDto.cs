@@ -28,6 +28,9 @@ public record GetEntityByIdDto
     /// <inheritdoc cref="EntityMetadata.Properties"/>
     public ICollection<PropertyMetadataDto> Properties { get; set; } = new List<PropertyMetadataDto>();
 
+    /// <inheritdoc cref="EntityMetadata.Navigations"/>
+    public ICollection<NavigationMetadataDto> Navigations { get; set; } = new List<NavigationMetadataDto>();
+
     /// <inheritdoc cref="EntityMetadata.SearchFunction"/>
     public Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? SearchFunction { get; set; }
 

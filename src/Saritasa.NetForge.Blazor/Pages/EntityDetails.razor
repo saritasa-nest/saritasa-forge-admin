@@ -90,6 +90,64 @@
                             </CellTemplate>
                         </TemplateColumn>
                     }
+
+                    @foreach (var navigation in ViewModel.Model.Navigations)
+                    {
+                        foreach (var property in navigation.TargetEntityProperties)
+                        {
+                            if (property.IsHidden)
+                            {
+                                continue;
+                            }
+
+                            <TemplateColumn Title="@property.Name" Sortable="property.IsSortable">
+                                <HeaderTemplate>
+                                    @{
+                                        var displayName = ViewModel.GetPropertyDisplayName(property);
+                                        if (AdminOptions.TitleCaseProperties)
+                                        {
+                                            displayName = displayName.ToMeaningfulName();
+                                        }
+
+                                        if (string.IsNullOrEmpty(property.Description))
+                                        {
+                                            @displayName
+                                        }
+                                        else
+                                        {
+                                            <MudTooltip Arrow="true" Placement="@Placement.Top">
+                                                <ChildContent>
+                                                    @displayName
+                                                </ChildContent>
+                                                <TooltipContent>
+                                                    <MudText Typo="@Typo.body2">@property.Description</MudText>
+                                                </TooltipContent>
+                                            </MudTooltip>
+                                        }
+                                    }
+                                </HeaderTemplate>
+
+                                <CellTemplate Context="cell">
+                                    @{
+                                        var navigationInstance =
+                                            cell.Item.GetType().GetProperty(navigation.Name).GetValue(cell.Item);
+
+                                        var propertyValue = ViewModel
+                                            .GetPropertyValue(navigationInstance, property)
+                                            .ToString();
+                                        if (property.DisplayAsHtml)
+                                        {
+                                            @((MarkupString)propertyValue!)
+                                        }
+                                        else
+                                        {
+                                            @propertyValue
+                                        }
+                                    }
+                                </CellTemplate>
+                            </TemplateColumn>
+                        }
+                    }
                 </Columns>
 
                 <PagerContent>

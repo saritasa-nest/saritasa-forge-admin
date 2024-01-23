@@ -75,6 +75,10 @@ public class EntityService : IEntityService
             propertyDtos = propertyDtos.Union(navigations);
         }
 
+        metadata.Navigations = metadata.Navigations
+            .Where(navigation => navigation is { IsExcludedFromQuery: false, IsIncluded: true })
+            .ToList();
+
         var orderedProperties = propertyDtos
             .OrderByDescending(property => property is { IsPrimaryKey: true, Order: null })
             .ThenByDescending(property => property.Order.HasValue)
