@@ -226,6 +226,39 @@ public class GetEntityByIdTests : IDisposable
     }
 
     /// <summary>
+    /// Test for case when property is hidden from details via Fluent API.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithHiddenFromDetailsPropertyViaFluentApi_PropertyShouldBeHidden()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.ConfigureProperty(
+                shop => shop.IsOpen, optionsBuilder => optionsBuilder.SetIsHiddenFromDetails(true));
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(entity.Properties, property => property.IsHiddenFromDetails);
+    }
+
+    /// <summary>
+    /// Test for case when property is hidden from details via <see cref="NetForgePropertyAttribute"/>.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithHiddenFromDetailsPropertyViaAttribute_PropertyShouldBeHidden()
+    {
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(entity.Properties, property => property.IsHiddenFromDetails);
+    }
+
+    /// <summary>
     /// Test for case when properties don't have ordering.
     /// </summary>
     [Fact]
