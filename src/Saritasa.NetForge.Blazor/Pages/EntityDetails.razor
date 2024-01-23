@@ -44,7 +44,7 @@
                 <Columns>
                     @foreach (var property in ViewModel.Model.Properties)
                     {
-                        if (property.IsHidden)
+                        if (property.IsHidden || property.IsHiddenFromListView)
                         {
                             continue;
                         }
