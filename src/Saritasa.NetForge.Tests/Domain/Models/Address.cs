@@ -51,7 +51,7 @@ public class Address
     /// <summary>
     /// The longitude coordinate of the address location.
     /// </summary>
-    [NetForgeProperty(IsHidden = true)]
+    [NetForgeProperty(IsHidden = true, IsHiddenFromListView = true)]
     public double Longitude { get; set; }
 
     /// <summary>
