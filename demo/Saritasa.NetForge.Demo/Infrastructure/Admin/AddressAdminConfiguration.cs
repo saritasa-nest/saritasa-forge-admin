@@ -35,7 +35,8 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
         {
             propertyBuilder
                 .SetOrder(6)
-                .SetSearchType(SearchType.StartsWithCaseSensitive);
+                .SetSearchType(SearchType.StartsWithCaseSensitive)
+                .SetIsHiddenFromListView(true);
         }).ConfigureProperty(address => address.Country, propertyBuilder =>
         {
             propertyBuilder.SetSearchType(SearchType.ContainsCaseInsensitive);

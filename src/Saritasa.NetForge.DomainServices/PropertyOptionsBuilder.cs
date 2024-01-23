@@ -32,6 +32,15 @@ public class PropertyOptionsBuilder
     }
 
     /// <summary>
+    /// Sets whether the property should be hidden from the list view.
+    /// </summary>
+    public PropertyOptionsBuilder SetIsHiddenFromListView(bool isHiddenFromListView)
+    {
+        options.IsHiddenFromListView = isHiddenFromListView;
+        return this;
+    }
+
+    /// <summary>
     /// Sets whether the property should be excluded from the query.
     /// </summary>
     public PropertyOptionsBuilder SetIsExcludedFromQuery(bool isExcludedFromQuery)
