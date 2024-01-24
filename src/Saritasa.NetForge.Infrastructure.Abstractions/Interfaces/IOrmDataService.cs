@@ -1,5 +1,4 @@
-﻿using Saritasa.NetForge.Domain.Entities.Metadata;
-using Saritasa.NetForge.Domain.Enums;
+﻿using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
