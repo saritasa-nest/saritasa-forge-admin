@@ -22,11 +22,11 @@ public partial class EnumField
     [EditorRequired]
     public object EntityModel { get; init; } = null!;
 
-    [Parameter]
-    [EditorRequired]
     /// <summary>
     /// Is field with read only access.
     /// </summary>
+    [Parameter]
+    [EditorRequired]
     public bool IsReadOnly { get; init; }
 
     /// <summary>
