@@ -39,7 +39,7 @@ public class EfCoreDataService : IOrmDataService
     {
         var dbContext = GetDbContextThatContainsEntity(entityType);
         var type = dbContext.Model.FindEntityType(entityType)!;
-        var key = type.FindPrimaryKey(); // TODO: Handle keyless entities
+        var key = type.FindPrimaryKey()!; // TODO: Handle keyless entities
 
         var primaryKeyNames = key.Properties.Select(property => property.Name);
         var primaryKeyValues = primaryKey.Split("--");
