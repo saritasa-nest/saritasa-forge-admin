@@ -26,7 +26,7 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
     public string StringId { get; init; } = null!;
 
     /// <summary>
-    /// Entity instance id.
+    /// Entity instance primary key.
     /// </summary>
     [Parameter]
     public string InstancePrimaryKey { get; init; } = null!;
