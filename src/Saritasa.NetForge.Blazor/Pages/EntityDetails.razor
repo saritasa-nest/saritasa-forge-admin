@@ -46,7 +46,7 @@
                     @{
                         foreach (var property in ViewModel.Model.Properties)
                         {
-                            if (property is NavigationMetadataDto navigation)
+                            if (property is NavigationMetadataDto { IsCollection: false } navigation)
                             {
                                 foreach (var targetProperty in navigation.TargetEntityProperties)
                                 {
