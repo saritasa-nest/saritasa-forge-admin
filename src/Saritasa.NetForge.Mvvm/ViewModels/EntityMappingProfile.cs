@@ -18,7 +18,9 @@ internal class EntityMappingProfile : Profile
     {
         CreateMap<GetEntityByIdDto, EntityDetailsModel>()
             .ForMember(model => model.StringId, options => options.Ignore());
-        CreateMap<GetEntityByIdDto, CreateEntityModel>();
-        CreateMap<GetEntityByIdDto, EditEntityModel>();
+        CreateMap<GetEntityByIdDto, CreateEntityModel>()
+            .ForMember(model => model.EntityInstance, options => options.Ignore());
+        CreateMap<GetEntityByIdDto, EditEntityModel>()
+            .ForMember(model => model.EntityInstance, options => options.Ignore());
     }
 }
