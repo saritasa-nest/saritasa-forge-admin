@@ -16,11 +16,11 @@ public partial class DateField
     public PropertyMetadataDto Property { get; init; } = null!;
 
     /// <summary>
-    /// Entity model that contains property value for this field.
+    /// Entity instance that contains property value for this field.
     /// </summary>
     [Parameter]
     [EditorRequired]
-    public object EntityModel { get; init; } = null!;
+    public object EntityInstance { get; init; } = null!;
 
     /// <summary>
     /// Is field with read only access.
@@ -36,7 +36,7 @@ public partial class DateField
     {
         get
         {
-            var propertyValue = EntityModel.GetType().GetProperty(Property.Name)?.GetValue(EntityModel)?.ToString();
+            var propertyValue = EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance)?.ToString();
 
             var isDateParsed = DateTime.TryParse(propertyValue, out var parsedDate);
 
@@ -60,26 +60,26 @@ public partial class DateField
     /// <param name="value">Input value.</param>
     private void SetPropertyValue(DateTime? value)
     {
-        var property = EntityModel.GetType().GetProperty(Property.Name)!;
+        var property = EntityInstance.GetType().GetProperty(Property.Name)!;
 
         if (!value.HasValue)
         {
-            property.SetValue(EntityModel, null);
+            property.SetValue(EntityInstance, null);
             return;
         }
 
         var actualPropertyType = Nullable.GetUnderlyingType(Property.ClrType!) ?? Property.ClrType;
         if (actualPropertyType == typeof(DateTimeOffset))
         {
-            property.SetValue(EntityModel, new DateTimeOffset(value.Value));
+            property.SetValue(EntityInstance, new DateTimeOffset(value.Value));
         }
         else if (actualPropertyType == typeof(DateOnly))
         {
-            property.SetValue(EntityModel, DateOnly.FromDateTime(value.Value));
+            property.SetValue(EntityInstance, DateOnly.FromDateTime(value.Value));
         }
         else
         {
-            property.SetValue(EntityModel, value);
+            property.SetValue(EntityInstance, value);
         }
     }
 }

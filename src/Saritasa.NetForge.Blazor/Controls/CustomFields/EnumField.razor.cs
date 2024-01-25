@@ -16,11 +16,11 @@ public partial class EnumField
     public PropertyMetadataDto Property { get; init; } = null!;
 
     /// <summary>
-    /// Entity model that contains property value for this field.
+    /// Entity instance that contains property value for this field.
     /// </summary>
     [Parameter]
     [EditorRequired]
-    public object EntityModel { get; init; } = null!;
+    public object EntityInstance { get; init; } = null!;
 
     /// <summary>
     /// Is field with read only access.
@@ -34,13 +34,13 @@ public partial class EnumField
     /// </summary>
     public string? PropertyValue
     {
-        get => EntityModel.GetType().GetProperty(Property.Name)?.GetValue(EntityModel)?.ToString();
+        get => EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance)?.ToString();
         set
         {
             var propertyType = Property.ClrType!;
             var actualPropertyType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
             var enumValue = Enum.Parse(actualPropertyType, value!);
-            EntityModel.GetType().GetProperty(Property.Name)?.SetValue(EntityModel, enumValue);
+            EntityInstance.GetType().GetProperty(Property.Name)?.SetValue(EntityInstance, enumValue);
         }
     }
 }

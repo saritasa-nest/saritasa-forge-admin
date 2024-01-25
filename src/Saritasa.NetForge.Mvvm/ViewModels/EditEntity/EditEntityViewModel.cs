@@ -48,9 +48,9 @@ public class EditEntityViewModel : BaseViewModel
     public bool IsEntityExists { get; private set; } = true;
 
     /// <summary>
-    /// Entity model.
+    /// Entity instance.
     /// </summary>
-    public object? EntityModel { get; set; }
+    public object? EntityInstance { get; set; }
 
     /// <summary>
     /// Is entity was updated.
@@ -64,7 +64,7 @@ public class EditEntityViewModel : BaseViewModel
         {
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
             Model = mapper.Map<EditEntityModel>(entity);
-            EntityModel = await dataService.GetInstanceAsync(InstancePrimaryKey, Model.ClrType!, CancellationToken);
+            EntityInstance = await dataService.GetInstanceAsync(InstancePrimaryKey, Model.ClrType!, CancellationToken);
         }
         catch (NotFoundException)
         {
@@ -77,7 +77,7 @@ public class EditEntityViewModel : BaseViewModel
     /// </summary>
     public async Task UpdateEntityAsync()
     {
-       await dataService.UpdateAsync(EntityModel!, CancellationToken);
+       await dataService.UpdateAsync(EntityInstance!, CancellationToken);
        IsUpdated = true;
     }
 }

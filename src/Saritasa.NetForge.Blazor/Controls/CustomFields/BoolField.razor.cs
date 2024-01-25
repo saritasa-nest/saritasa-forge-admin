@@ -16,11 +16,11 @@ public partial class BoolField
     public PropertyMetadataDto Property { get; init; } = null!;
 
     /// <summary>
-    /// Entity model that contains property value for this field.
+    /// Entity instance that contains property value for this field.
     /// </summary>
     [Parameter]
     [EditorRequired]
-    public object EntityModel { get; init; } = null!;
+    public object EntityInstance { get; init; } = null!;
 
     /// <summary>
     /// Is field with read only access.
@@ -34,7 +34,7 @@ public partial class BoolField
     /// </summary>
     public bool? PropertyValue
     {
-        get => (bool?)EntityModel.GetType().GetProperty(Property.Name)?.GetValue(EntityModel);
-        set => EntityModel.GetType().GetProperty(Property.Name)?.SetValue(EntityModel, value);
+        get => (bool?)EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance);
+        set => EntityInstance.GetType().GetProperty(Property.Name)?.SetValue(EntityInstance, value);
     }
 }
