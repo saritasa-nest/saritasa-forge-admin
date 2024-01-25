@@ -1,4 +1,6 @@
-﻿<MudCheckBox Label="@Property.Name"
+﻿@inherits CustomField
+
+<MudCheckBox Label="@Property.Name"
              Disabled="IsReadOnly"
              @bind-Checked="PropertyValue">
     <MudText class="mud-input-helper-text ml-3">@Property.Description</MudText>

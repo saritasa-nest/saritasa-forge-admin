@@ -1,34 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
-using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
-
-namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
+﻿namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
 
 /// <summary>
 /// Represents date field.
 /// </summary>
-public partial class DateField
+public partial class DateField : CustomField
 {
-    /// <summary>
-    /// Property name.
-    /// </summary>
-    [Parameter]
-    [EditorRequired]
-    public PropertyMetadataDto Property { get; init; } = null!;
-
-    /// <summary>
-    /// Entity instance that contains property value for this field.
-    /// </summary>
-    [Parameter]
-    [EditorRequired]
-    public object EntityInstance { get; init; } = null!;
-
-    /// <summary>
-    /// Is field with read only access.
-    /// </summary>
-    [Parameter]
-    [EditorRequired]
-    public bool IsReadOnly { get; init; }
-
     /// <summary>
     /// Property date value.
     /// </summary>

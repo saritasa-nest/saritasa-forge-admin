@@ -1,4 +1,6 @@
-﻿@{
+﻿@inherits CustomField
+
+@{
     var propertyType = Property.ClrType;
 
     if (propertyType == typeof(DateTime) || propertyType == typeof(DateTime?)
