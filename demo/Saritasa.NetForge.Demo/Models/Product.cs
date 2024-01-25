@@ -128,7 +128,6 @@ public class Product
     /// <summary>
     /// Supplier that providing this product.
     /// </summary>
-    [NetForgeNavigation(IsIncluded = true)]
     public required Supplier Supplier { get; set; }
 
     /// <summary>
@@ -136,4 +135,9 @@ public class Product
     /// </summary>
     [Description("Product category.")]
     public Category Category { get; set; }
+
+    /// <summary>
+    /// The shop where this product can be bought.
+    /// </summary>
+    public Shop? Shop { get; set; }
 }
