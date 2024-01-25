@@ -5,7 +5,7 @@
 
 @inherits MvvmComponentBase<EditEntityViewModel>
 
-@if (ViewModel.EntityInstance is null)
+@if (ViewModel.Model.EntityInstance is null)
 {
     <p>Loading...</p>
 }
@@ -19,7 +19,8 @@ else if (ViewModel.IsEntityExists)
 
     <MudGrid Justify="Justify.Center">
         <MudItem xs="6">
-            <EditForm EditContext="new EditContext(ViewModel.EntityInstance)" OnValidSubmit="ViewModel.UpdateEntityAsync">
+            <EditForm EditContext="new EditContext(ViewModel.Model.EntityInstance)"
+                      OnValidSubmit="ViewModel.UpdateEntityAsync">
                 <div class="d-flex flex-column flex-grow-1 gap-4">
                     @{
                         var properties = ViewModel.Model.Properties
@@ -37,7 +38,7 @@ else if (ViewModel.IsEntityExists)
                             var parameters = new Dictionary<string, object>
                             {
                                 { "Property", property },
-                                { "EntityInstance", ViewModel.EntityInstance },
+                                { "EntityInstance", ViewModel.Model.EntityInstance },
                                 { "IsReadOnly", property.IsPrimaryKey }
                             };
 

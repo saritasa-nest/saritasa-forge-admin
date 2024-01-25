@@ -14,7 +14,7 @@
 
     <MudGrid Justify="Justify.Center">
         <MudItem xs="6">
-            <EditForm Model="ViewModel.EntityInstance" OnValidSubmit="ViewModel.CreateEntityAsync">
+            <EditForm Model="ViewModel.Model.EntityInstance" OnValidSubmit="ViewModel.CreateEntityAsync">
                 <div class="d-flex flex-column flex-grow-1 gap-4">
                     @{
                         var properties = ViewModel.Model.Properties
@@ -32,7 +32,7 @@
                             var parameters = new Dictionary<string, object>
                             {
                                 { "Property", property },
-                                { "EntityInstance", ViewModel.EntityInstance }
+                                { "EntityInstance", ViewModel.Model.EntityInstance }
                             };
 
                             <DynamicComponent Type="componentType" Parameters="parameters" />

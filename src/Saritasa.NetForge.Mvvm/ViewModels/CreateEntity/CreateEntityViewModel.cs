@@ -38,11 +38,6 @@ public class CreateEntityViewModel : BaseViewModel
     /// </summary>
     public bool IsEntityExists { get; private set; } = true;
 
-    /// <summary>
-    /// Entity model.
-    /// </summary>
-    public object EntityModel { get; private set; } = null!;
-
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
     {
@@ -50,7 +45,7 @@ public class CreateEntityViewModel : BaseViewModel
         {
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
             Model = mapper.Map<CreateEntityModel>(entity);
-            EntityModel = Activator.CreateInstance(Model.ClrType!)!;
+            Model.EntityInstance = Activator.CreateInstance(Model.ClrType!)!;
         }
         catch (NotFoundException)
         {
@@ -63,7 +58,7 @@ public class CreateEntityViewModel : BaseViewModel
     /// </summary>
     public async Task CreateEntityAsync()
     {
-        await entityService.CreateEntityAsync(EntityModel, Model.ClrType!, CancellationToken);
+        await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
         navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
     }
 }
