@@ -46,6 +46,18 @@ public class CreateEntityViewModel : BaseViewModel
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
             Model = mapper.Map<CreateEntityModel>(entity);
             Model.EntityInstance = Activator.CreateInstance(Model.ClrType!)!;
+            Model = Model with
+            {
+                Properties = Model.Properties
+                    .Where(property => property is
+                    {
+                        IsNavigation: false,
+                        IsCalculatedProperty: false,
+                        IsValueGeneratedOnAdd: false,
+                        IsValueGeneratedOnUpdate: false
+                    })
+                    .ToList()
+            };
         }
         catch (NotFoundException)
         {

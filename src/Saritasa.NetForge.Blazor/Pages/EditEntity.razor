@@ -22,28 +22,17 @@ else if (ViewModel.IsEntityExists)
             <EditForm EditContext="new EditContext(ViewModel.Model.EntityInstance)"
                       OnValidSubmit="ViewModel.UpdateEntityAsync">
                 <div class="d-flex flex-column flex-grow-1 gap-4">
-                    @{
-                        var properties = ViewModel.Model.Properties
-                            .Where(property => property is
-                            {
-                                IsNavigation: false,
-                                IsCalculatedProperty: false,
-                                IsValueGeneratedOnAdd: false,
-                                IsValueGeneratedOnUpdate: false
-                            });
-
-                        foreach (var property in properties)
+                    @foreach (var property in ViewModel.Model.Properties)
+                    {
+                        var componentType = CustomFieldHelper.GetComponentType(property.ClrType!);
+                        var parameters = new Dictionary<string, object>
                         {
-                            var componentType = CustomFieldHelper.GetComponentType(property.ClrType!);
-                            var parameters = new Dictionary<string, object>
-                            {
-                                { "Property", property },
-                                { "EntityInstance", ViewModel.Model.EntityInstance },
-                                { "IsReadOnly", property.IsPrimaryKey }
-                            };
+                            { "Property", property },
+                            { "EntityInstance", ViewModel.Model.EntityInstance },
+                            { "IsReadOnly", property.IsPrimaryKey }
+                        };
 
-                            <DynamicComponent Type="componentType" Parameters="parameters" />
-                        }
+                        <DynamicComponent Type="componentType" Parameters="parameters" />
                     }
 
                     <div class="d-flex flex-row gap-4 pt-4">

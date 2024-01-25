@@ -59,7 +59,20 @@ public class EditEntityViewModel : BaseViewModel
         {
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
             Model = mapper.Map<EditEntityModel>(entity);
-            Model.EntityInstance = await dataService.GetInstanceAsync(InstancePrimaryKey, Model.ClrType!, CancellationToken);
+            Model.EntityInstance = await dataService
+                .GetInstanceAsync(InstancePrimaryKey, Model.ClrType!, CancellationToken);
+            Model = Model with
+            {
+                Properties = Model.Properties
+                    .Where(property => property is
+                    {
+                        IsNavigation: false,
+                        IsCalculatedProperty: false,
+                        IsValueGeneratedOnAdd: false,
+                        IsValueGeneratedOnUpdate: false
+                    })
+                    .ToList()
+            };
         }
         catch (NotFoundException)
         {
