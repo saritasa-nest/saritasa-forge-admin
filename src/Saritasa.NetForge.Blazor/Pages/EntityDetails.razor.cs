@@ -11,7 +11,7 @@ namespace Saritasa.NetForge.Blazor.Pages;
 /// Entity details.
 /// </summary>
 [Route("/entities/{stringId}")]
-public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>, IDisposable
+public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
 {
     [Inject]
     private INavigationService NavigationService { get; set; } = null!;
@@ -53,6 +53,7 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>, 
             .Where(property => property.IsPrimaryKey)
             .Select(primaryKey => ViewModel.GetPropertyValue(row.Item, primaryKey).ToString()!);
 
-        NavigationService.NavigateTo<EditEntityViewModel>(parameters: [StringId, string.Join("--", primaryKeyValues)]);
+        NavigationService.NavigateTo<EditEntityViewModel>(
+            parameters: new[] { StringId, string.Join("--", primaryKeyValues) });
     }
 }
