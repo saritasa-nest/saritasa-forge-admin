@@ -18,7 +18,7 @@
 
         <MudItem xs="12">
             <MudButton Variant="Variant.Outlined" OnClick="@NavigateToCreation">
-                    Add @ViewModel.Model.DisplayName.ToMeaningfulName()
+                Add @ViewModel.Model.DisplayName.ToMeaningfulName()
             </MudButton>
         </MudItem>
 
@@ -43,113 +43,75 @@
             <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true"
                          @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple">
                 <Columns>
-                    @foreach (var property in ViewModel.Model.Properties)
-                    {
-                        if (property is NavigationMetadataDto navigation)
+                    @{
+                        foreach (var property in ViewModel.Model.Properties)
                         {
-                            foreach (var targetProperty in navigation.TargetEntityProperties)
+                            if (property is NavigationMetadataDto navigation)
                             {
-                                if (targetProperty.IsHidden)
+                                foreach (var targetProperty in navigation.TargetEntityProperties)
                                 {
-                                    continue;
+                                    RenderPropertyColumn(targetProperty, navigation.Name);
                                 }
+                            }
+                            else
+                            {
+                                RenderPropertyColumn(property);
+                            }
+                        }
 
-                                <TemplateColumn Title="@targetProperty.Name" Sortable="targetProperty.IsSortable">
-                                    <HeaderTemplate>
-                                        @{
-                                            var displayName = ViewModel.GetPropertyDisplayName(targetProperty);
-                                            if (AdminOptions.TitleCaseProperties)
-                                            {
-                                                displayName = displayName.ToMeaningfulName();
-                                            }
-
-                                            if (string.IsNullOrEmpty(targetProperty.Description))
-                                            {
-                                                @displayName
-                                            }
-                                            else
-                                            {
-                                                <MudTooltip Arrow="true" Placement="@Placement.Top">
-                                                    <ChildContent>
-                                                        @displayName
-                                                    </ChildContent>
-                                                    <TooltipContent>
-                                                        <MudText Typo="@Typo.body2">@targetProperty.Description</MudText>
-                                                    </TooltipContent>
-                                                </MudTooltip>
-                                            }
-                                        }
-                                    </HeaderTemplate>
-
-                                    <CellTemplate Context="cell">
-                                        @{
-                                            var navigationInstance =
-                                                cell.Item.GetType().GetProperty(navigation.Name).GetValue(cell.Item);
-
-                                            var propertyValue = ViewModel
-                                                .GetPropertyValue(navigationInstance, targetProperty)
-                                                .ToString();
-                                            if (targetProperty.DisplayAsHtml)
-                                            {
-                                                @((MarkupString)propertyValue!)
-                                            }
-                                            else
-                                            {
-                                                @propertyValue
-                                            }
-                                        }
-                                    </CellTemplate>
-                                </TemplateColumn>
+                        void RenderPropertyColumn(PropertyMetadataDto property, string? navigationName = null)
+                        {
+                            if (property.IsHidden)
+                            {
+                                return;
                             }
 
-                            continue;
+                            <TemplateColumn T="object" Title="@property.Name" Sortable="property.IsSortable">
+                                <HeaderTemplate>
+                                    @{
+                                        var displayName = ViewModel.GetPropertyDisplayName(property);
+                                        if (AdminOptions.TitleCaseProperties)
+                                        {
+                                            displayName = displayName.ToMeaningfulName();
+                                        }
+
+                                        if (string.IsNullOrEmpty(property.Description))
+                                        {
+                                            @displayName
+                                        }
+                                        else
+                                        {
+                                            <MudTooltip Arrow="true" Placement="@Placement.Top">
+                                                <ChildContent>
+                                                    @displayName
+                                                </ChildContent>
+                                                <TooltipContent>
+                                                    <MudText Typo="@Typo.body2">@property.Description</MudText>
+                                                    </TooltipContent>
+                                                </MudTooltip>
+                                        }
+                                    }
+                                </HeaderTemplate>
+
+                                <CellTemplate Context="cell">
+                                    @{
+                                        var instance = navigationName is null
+                                        ? cell.Item
+                                        : cell.Item.GetType().GetProperty(navigationName)?.GetValue(cell.Item);
+
+                                        var propertyValue = ViewModel.GetPropertyValue(instance, property).ToString();
+                                        if (property.DisplayAsHtml)
+                                        {
+                                            @((MarkupString)propertyValue!)
+                                        }
+                                        else
+                                        {
+                                            @propertyValue
+                                        }
+                                    }
+                                </CellTemplate>
+                            </TemplateColumn>
                         }
-
-                        if (property.IsHidden)
-                        {
-                            continue;
-                        }
-                        <TemplateColumn Title="@property.Name" Sortable="property.IsSortable">
-                            <HeaderTemplate>
-                                @{
-                                    var displayName = ViewModel.GetPropertyDisplayName(property);
-                                    if (AdminOptions.TitleCaseProperties)
-                                    {
-                                        displayName = displayName.ToMeaningfulName();
-                                    }
-
-                                    if (string.IsNullOrEmpty(property.Description))
-                                    {
-                                        @displayName
-                                    }
-                                    else
-                                    {
-                                        <MudTooltip Arrow="true" Placement="@Placement.Top">
-                                            <ChildContent>
-                                                @displayName
-                                            </ChildContent>
-                                            <TooltipContent>
-                                                <MudText Typo="@Typo.body2">@property.Description</MudText>
-                                            </TooltipContent>
-                                        </MudTooltip>
-                                    }
-                                }
-                            </HeaderTemplate>
-
-                            <CellTemplate Context="cell">
-                                @{
-                                    var propertyValue = ViewModel.GetPropertyValue(cell.Item, property).ToString();
-                                    if (property.DisplayAsHtml)
-                                    {
-                                        @((MarkupString)propertyValue!)
-                                    }
-                                    else
-                                    {
-                                        @propertyValue
-                                    }
-                                }
-                            </CellTemplate>
-                        </TemplateColumn>
                     }
                 </Columns>
 
