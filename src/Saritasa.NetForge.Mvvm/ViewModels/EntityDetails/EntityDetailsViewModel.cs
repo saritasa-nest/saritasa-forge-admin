@@ -72,11 +72,17 @@ public class EntityDetailsViewModel : BaseViewModel
     public async Task<GridData<object>> LoadEntityGridDataAsync(GridState<object> gridState)
     {
         var orderBy = gridState.SortDefinitions
-            .Select(sort => new OrderByDto
+            .Select(sort =>
             {
-                FieldName =
-                    DataGrid!.RenderedColumns.First(column => column.PropertyName.Equals(sort.SortBy)).Title,
-                IsDescending = sort.Descending
+                var column = DataGrid!.RenderedColumns.First(column => column.PropertyName.Equals(sort.SortBy));
+                var navigationName = column.UserAttributes["NavigationName"]?.ToString();
+
+                return new OrderByDto
+                {
+                    FieldName = column.Title,
+                    IsDescending = sort.Descending,
+                    NavigationName = navigationName
+                };
             })
             .ToList();
 

@@ -106,7 +106,7 @@ public class EntityService : IEntityService
 
         if (searchOptions.OrderBy is not null)
         {
-            query = Order(query, searchOptions.OrderBy, entityType);
+            query = Order(query, searchOptions.OrderBy.ToList(), entityType);
         }
 
         var pagedList = PagedListFactory.FromSource(query, searchOptions.Page, searchOptions.PageSize);
@@ -176,20 +176,20 @@ public class EntityService : IEntityService
     }
 
     private static IOrderedQueryable<object> Order(
-        IQueryable<object> query, IEnumerable<OrderByDto> orderBy, Type entityType)
+        IQueryable<object> query, IList<OrderByDto> orderBy, Type entityType)
     {
         var orderByTuples = orderBy
             .Select(order =>
                 (order.FieldName, order.IsDescending ? ListSortDirection.Descending : ListSortDirection.Ascending))
             .ToArray();
 
-        var keySelectors = GetKeySelectors(orderByTuples.Select(order => order.FieldName).ToArray(), entityType);
+        var keySelectors = GetKeySelectors(orderBy, entityType);
 
         return CollectionUtils.OrderMultiple(query, orderByTuples, keySelectors);
     }
 
     private static (string FieldName, Expression<Func<object, object>> Selector)[] GetKeySelectors(
-        string[] orderByFields, Type entityType)
+        IList<OrderByDto> orderByFields, Type entityType)
     {
         // entity
         var entity = Expression.Parameter(typeof(object), "entity");
@@ -201,16 +201,35 @@ public class EntityService : IEntityService
         // ((entityType)entity).Name
         // ((entityType)entity).Description
         // ((entityType)entity).Count
+        // ((entityType)entity).Address.Street
         // ...
         // Note that there are converting property to object.
         // We need it to sort types that are not string. For example, numbers.
         var propertyExpressions = orderByFields
-            .Select(fieldName => Expression.Convert(Expression.Property(convertedEntity, fieldName), typeof(object)));
+            .Select(field =>
+            {
+                Expression propertyExpression;
+                if (field.NavigationName is not null)
+                {
+                    var navigationExpression = Expression.Property(convertedEntity, field.NavigationName);
+
+                    // ((entityType)entity).NavigationName.FieldName
+                    propertyExpression = Expression.Property(navigationExpression, field.FieldName);
+                }
+                else
+                {
+                    // ((entityType)entity).FieldName
+                    propertyExpression = Expression.Property(convertedEntity, field.FieldName);
+                }
+
+                return Expression.Convert(propertyExpression, typeof(object));
+            });
 
         // Make lambdas with properties. For example:
         // entity => ((entityType)entity).Name
         // entity => ((entityType)entity).Description
         // entity => ((entityType)entity).Count
+        // entity => ((entityType)entity).Address.Street
         // ...
         var lambdas = propertyExpressions
             .Select(property => Expression.Lambda<Func<object, object>>(property, entity))
@@ -220,11 +239,12 @@ public class EntityService : IEntityService
         // ("name", entity => ((entityType)entity).Name)
         // ("description", entity => ((entityType)entity).Description)
         // ("count", entity => ((entityType)entity).Count)
+        // ("street", entity => ((entityType)entity).Address.Street)
         // ...
-        var keySelectors = new (string, Expression<Func<object, object>>)[orderByFields.Length];
-        for (var i = 0; i < orderByFields.Length; i++)
+        var keySelectors = new (string, Expression<Func<object, object>>)[orderByFields.Count];
+        for (var i = 0; i < orderByFields.Count; i++)
         {
-            keySelectors[i] = (orderByFields[i], lambdas[i]);
+            keySelectors[i] = (orderByFields[i].FieldName, lambdas[i]);
         }
 
         return keySelectors;

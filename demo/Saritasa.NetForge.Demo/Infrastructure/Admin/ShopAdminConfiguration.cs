@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Demo.Models;
+using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.DomainServices;
 using Saritasa.NetForge.DomainServices.Interfaces;
 
@@ -33,11 +34,19 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             .IncludeNavigation<Address>(shop => shop.Address, navigationOptionsBuilder =>
             {
                 navigationOptionsBuilder
+                    .IncludeProperty(address => address.Id, builder =>
+                    {
+                        builder.SetDisplayName("Address Id");
+                    })
                     .IncludeProperty(address => address.Street, builder =>
                     {
-                        builder.SetDisplayName("Address Street");
-                    })
-                    .IncludeProperty(address => address.Id);
+                        builder
+                            .SetDisplayName("Address Street")
+                            .SetDescription("Address street name.")
+                            .SetEmptyValueDisplay("N/A")
+                            .SetIsSortable(true)
+                            .SetSearchType(SearchType.ContainsCaseInsensitive);
+                    });
             })
             .IncludeNavigation<ContactInfo>(shop => shop.OwnerContact, navigationOptionsBuilder =>
             {

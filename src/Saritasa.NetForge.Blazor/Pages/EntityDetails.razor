@@ -66,7 +66,7 @@
                                 return;
                             }
 
-                            <TemplateColumn T="object" Title="@property.Name" Sortable="property.IsSortable">
+                            <TemplateColumn Title="@property.Name" Sortable="property.IsSortable" NavigationName="@navigationName">
                                 <HeaderTemplate>
                                     @{
                                         var displayName = ViewModel.GetPropertyDisplayName(property);
