@@ -1,5 +1,4 @@
-﻿using Saritasa.NetForge.Domain.Entities.Metadata;
-using Saritasa.NetForge.Domain.Enums;
+﻿using Saritasa.NetForge.Domain.Dtos;
 
 namespace Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
@@ -22,14 +21,12 @@ public interface IOrmDataService
     /// <param name="searchString">Search string.</param>
     /// <param name="entityType">Entity type.</param>
     /// <param name="properties">Properties.</param>
-    /// <param name="navigationName">Navigation name. In case when we search property that part of navigation.</param>
     /// <returns>Query with searched data.</returns>
     IQueryable<object> Search(
         IQueryable<object> query,
         string searchString,
         Type entityType,
-        IEnumerable<(string Name, SearchType SearchType)> properties,
-        string? navigationName = null);
+        IEnumerable<PropertySearchDto> properties);
 
     /// <summary>
     /// Adds entity to the database.

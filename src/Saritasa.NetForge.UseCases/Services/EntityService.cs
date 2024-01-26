@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Linq.Expressions;
 using AutoMapper;
+using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Enums;
+using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Interfaces;
@@ -157,32 +159,45 @@ public class EntityService : IEntityService
         ICollection<PropertyMetadataDto> properties,
         Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? searchFunction)
     {
-        if (!string.IsNullOrEmpty(searchString))
+        if (string.IsNullOrEmpty(searchString))
         {
+            return query;
+        }
+
+        if (properties.Any(property => property.SearchType != SearchType.None))
+        {
+            var propertySearches = new List<PropertySearchDto>();
+
             foreach (var property in properties)
             {
-                if (property is NavigationMetadataDto navigation
-                    && navigation.TargetEntityProperties.Any(targetProperty => targetProperty.SearchType != SearchType.None))
+                if (property is NavigationMetadataDto navigation)
                 {
-                    var propertyNamesWithSearchType = navigation.TargetEntityProperties
-                        .Select(targetProperty => (targetProperty.Name, targetProperty.SearchType));
-
-                    query = dataService
-                        .Search(query, searchString, entityType, propertyNamesWithSearchType, navigation.Name);
+                    foreach (var targetProperty in navigation.TargetEntityProperties)
+                    {
+                        propertySearches.Add(new PropertySearchDto
+                        {
+                            PropertyName = targetProperty.Name,
+                            SearchType = targetProperty.SearchType,
+                            NavigationName = navigation.Name
+                        });
+                    }
+                }
+                else
+                {
+                    propertySearches.Add(new PropertySearchDto
+                    {
+                        PropertyName = property.Name,
+                        SearchType = property.SearchType
+                    });
                 }
             }
 
-            if (properties.Any(property => property.SearchType != SearchType.None))
-            {
-                var propertyNamesWithSearchType = properties.Select(property => (property.Name, property.SearchType));
+            query = dataService.Search(query, searchString, entityType, propertySearches);
+        }
 
-                query = dataService.Search(query, searchString, entityType, propertyNamesWithSearchType);
-            }
-
-            if (searchFunction is not null)
-            {
-                query = searchFunction(serviceProvider, query, searchString);
-            }
+        if (searchFunction is not null)
+        {
+            query = searchFunction(serviceProvider, query, searchString);
         }
 
         return query;
@@ -221,19 +236,11 @@ public class EntityService : IEntityService
         var propertyExpressions = orderByFields
             .Select(field =>
             {
-                Expression propertyExpression;
-                if (field.NavigationName is not null)
-                {
-                    var navigationExpression = Expression.Property(convertedEntity, field.NavigationName);
+                var propertyName = field.NavigationName is null
+                    ? field.FieldName
+                    : $"{field.NavigationName}.{field.FieldName}";
 
-                    // ((entityType)entity).NavigationName.FieldName
-                    propertyExpression = Expression.Property(navigationExpression, field.FieldName);
-                }
-                else
-                {
-                    // ((entityType)entity).FieldName
-                    propertyExpression = Expression.Property(convertedEntity, field.FieldName);
-                }
+                var propertyExpression = ExpressionExtensions.GetPropertyExpression(convertedEntity, propertyName);
 
                 return Expression.Convert(propertyExpression, typeof(object));
             });
