@@ -90,6 +90,15 @@ public class SearchTests : TestBed<TestDatabaseFixture>
                 City = "London"
             }
         });
+        testDbContext.Products.Add(new Product
+        {
+            WeightInGrams = 222,
+            Supplier = new Supplier
+            {
+                Name = "ABC",
+                City = "New-York"
+            }
+        });
         testDbContext.SaveChanges();
     }
 
@@ -298,6 +307,36 @@ public class SearchTests : TestBed<TestDatabaseFixture>
         // Act
         var searchedData =
             dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
+
+        // Assert
+        var actualCount = await searchedData.CountAsync();
+        Assert.Equal(expectedCount, actualCount);
+    }
+
+    /// <summary>
+    /// Test for <seealso cref="IOrmDataService.Search"/> when searched property is not <see cref="string"/>.
+    /// </summary>
+    [Fact]
+    public async Task Search_ByPropertyInsideNavigation_ShouldFind1()
+    {
+        // Arrange
+        const string searchString = "London";
+        var entityType = typeof(Product);
+        var properties = new List<PropertySearchDto>
+        {
+            new()
+            {
+                PropertyName = nameof(Supplier.City),
+                SearchType = SearchType.ContainsCaseInsensitive,
+                NavigationName = nameof(Product.Supplier)
+            }
+        };
+
+        const int expectedCount = 1;
+
+        // Act
+        var searchedData =
+            dataService.Search(testDbContext.Products, searchString, entityType, properties);
 
         // Assert
         var actualCount = await searchedData.CountAsync();
