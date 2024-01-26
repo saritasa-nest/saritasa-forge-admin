@@ -41,4 +41,19 @@ public class NavigationOptionsBuilder<TEntity>
         options.PropertyOptions.Add(propertyOptions);
         return this;
     }
+
+    /// <summary>
+    /// Sets order to navigation.
+    /// </summary>
+    /// <param name="order">Order number.</param>
+    /// <remarks>
+    /// It means all properties related to navigation will be close to each other.
+    /// For example:
+    /// Id (Order = 0), AddressId (Order = 1), AddressStreet (Order = 1), Name (Order = 2), etc.
+    /// </remarks>
+    public NavigationOptionsBuilder<TEntity> SetOrder(int order)
+    {
+        options.Order = order;
+        return this;
+    }
 }
