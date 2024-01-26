@@ -14,7 +14,7 @@ namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 /// Create entity tests.
 /// </summary>
 [CollectionDefinition(Constants.DependencyInjection)]
-public class SearchTests : TestBed<TestDatabaseFixture>
+public class SearchTests : TestBed<NetForgeFixture>
 {
     private readonly TestDbContext testDbContext;
     private readonly IOrmDataService dataService;
@@ -22,11 +22,11 @@ public class SearchTests : TestBed<TestDatabaseFixture>
     /// <summary>
     /// Constructor.
     /// </summary>
-    public SearchTests(ITestOutputHelper testOutputHelper, TestDatabaseFixture testDatabaseFixture)
-        : base(testOutputHelper, testDatabaseFixture)
+    public SearchTests(ITestOutputHelper testOutputHelper, NetForgeFixture netForgeFixture)
+        : base(testOutputHelper, netForgeFixture)
     {
-        testDbContext = testDatabaseFixture.TestDbContext;
-        dataService = testDatabaseFixture.GetScopedService<IOrmDataService>(testOutputHelper)!;
+        testDbContext = netForgeFixture.TestDbContext;
+        dataService = netForgeFixture.GetScopedService<IOrmDataService>(testOutputHelper)!;
 
         PopulateDatabaseWithTestData();
     }
