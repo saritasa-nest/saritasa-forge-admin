@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using AutoMapper;
 using MudBlazor;
+using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Mvvm.Utils;
 using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Interfaces;
@@ -50,6 +51,11 @@ public class EntityDetailsViewModel : BaseViewModel
     /// </summary>
     public bool IsEntityExists { get; private set; } = true;
 
+    /// <summary>
+    /// Whether display search input.
+    /// </summary>
+    public bool IsDisplaySearchInput { get; set; }
+
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
     {
@@ -57,6 +63,18 @@ public class EntityDetailsViewModel : BaseViewModel
         {
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
             Model = mapper.Map<EntityDetailsModel>(entity);
+
+            IsDisplaySearchInput = Model.Properties.Any(property =>
+                                   {
+                                       if (property is NavigationMetadataDto navigation)
+                                       {
+                                           return navigation.TargetEntityProperties
+                                               .Any(targetProperty => targetProperty.SearchType != SearchType.None);
+                                       }
+
+                                       return property.SearchType != SearchType.None;
+                                   })
+                                   || Model.SearchFunction is not null;
         }
         catch (NotFoundException)
         {

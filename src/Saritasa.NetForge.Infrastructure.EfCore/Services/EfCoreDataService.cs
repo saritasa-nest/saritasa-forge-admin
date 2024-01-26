@@ -62,7 +62,8 @@ public class EfCoreDataService : IOrmDataService
         IQueryable<object> query,
         string searchString,
         Type entityType,
-        IEnumerable<(string Name, SearchType SearchType)> properties)
+        IEnumerable<(string Name, SearchType SearchType)> properties,
+        string? navigationName = null)
     {
         // entity => entity
         var entity = Expression.Parameter(typeof(object), Entity);
@@ -75,7 +76,8 @@ public class EfCoreDataService : IOrmDataService
         var searchEntries = GetSearchEntries(searchString);
         foreach (var searchEntry in searchEntries)
         {
-            var singleEntrySearchExpression = GetEntrySearchExpression(properties, convertedEntity, searchEntry);
+            var singleEntrySearchExpression
+                = GetEntrySearchExpression(properties, convertedEntity, searchEntry, navigationName);
 
             combinedSearchExpressions =
                 AddAndBetweenSearchExpressions(combinedSearchExpressions, singleEntrySearchExpression);
@@ -94,7 +96,10 @@ public class EfCoreDataService : IOrmDataService
     /// Applies search using search entry to every searchable property, every property can have their own search type.
     /// </summary>
     private static Expression GetEntrySearchExpression(
-        IEnumerable<(string Name, SearchType SearchType)> properties, Expression entity, string searchEntry)
+        IEnumerable<(string Name, SearchType SearchType)> properties,
+        Expression entity,
+        string searchEntry,
+        string? navigationName = null)
     {
         Expression? singleEntrySearchExpression = null;
         foreach (var (propertyName, searchType) in properties)
@@ -104,8 +109,19 @@ public class EfCoreDataService : IOrmDataService
                 continue;
             }
 
-            // entity => ((entityType)entity).propertyName
-            var propertyExpression = Expression.Property(entity, propertyName);
+            MemberExpression propertyExpression;
+            if (navigationName is not null)
+            {
+                var navigationExpression = Expression.Property(entity, navigationName);
+
+                // ((entityType)entity).NavigationName.FieldName
+                propertyExpression = Expression.Property(navigationExpression, propertyName);
+            }
+            else
+            {
+                // ((entityType)entity).propertyName
+                propertyExpression = Expression.Property(entity, propertyName);
+            }
 
             var searchMethodCallExpression = searchType switch
             {

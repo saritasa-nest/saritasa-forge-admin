@@ -27,7 +27,9 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
 
         entityOptionsBuilder.ConfigureProperty(shop => shop.OpenedDate, builder =>
         {
-            builder.SetIsSortable(true);
+            builder
+                .SetIsSortable(true)
+                .SetSearchType(SearchType.ContainsCaseInsensitive);
         });
 
         entityOptionsBuilder
@@ -47,12 +49,6 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                             .SetIsSortable(true)
                             .SetSearchType(SearchType.ContainsCaseInsensitive);
                     });
-            })
-            .IncludeNavigation<ContactInfo>(shop => shop.OwnerContact, navigationOptionsBuilder =>
-            {
-                navigationOptionsBuilder
-                    .IncludeProperty(contact => contact.Id)
-                    .IncludeProperty(contact => contact.FullName);
             });
     }
 }

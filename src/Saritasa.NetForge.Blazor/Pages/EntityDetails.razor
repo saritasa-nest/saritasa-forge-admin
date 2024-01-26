@@ -22,8 +22,7 @@
             </MudButton>
         </MudItem>
 
-        @if (ViewModel.Model.Properties.Any(property => property.SearchType != SearchType.None)
-             || ViewModel.Model.SearchFunction is not null)
+        @if (ViewModel.IsDisplaySearchInput)
         {
             const int debounceInterval = 250;
             <MudItem xs="6">
