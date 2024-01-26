@@ -1,0 +1,27 @@
+﻿@inherits CustomField
+
+@{
+    var propertyType = Property.ClrType;
+
+    if (propertyType == typeof(DateTime) || propertyType == typeof(DateTime?)
+         || propertyType == typeof(DateTimeOffset) || propertyType == typeof(DateTimeOffset?))
+    {
+        <MudTextField Label="@Property.Name"
+                      Variant="Variant.Outlined"
+                      InputType="InputType.DateTimeLocal"
+                      Format="s"
+                      HelperText="@Property.Description"
+                      Disabled="IsReadOnly"
+                      @bind-Value="PropertyValue">
+        </MudTextField>
+    }
+    else if (propertyType == typeof(DateOnly) || propertyType == typeof(DateOnly?))
+    {
+        <MudDatePicker Label="@Property.Name"
+                       Variant="Variant.Outlined"
+                       Editable="true"
+                       HelperText="@Property.Description"
+                       Disabled="IsReadOnly"
+                       @bind-Date="PropertyValue" />
+    }
+}

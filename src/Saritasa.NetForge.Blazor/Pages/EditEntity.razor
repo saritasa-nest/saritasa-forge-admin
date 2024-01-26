@@ -1,20 +1,26 @@
-﻿@using Saritasa.NetForge.Blazor.Controls
+﻿@using Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
+@using Saritasa.NetForge.Blazor.Controls
 @using Saritasa.NetForge.Blazor.Extensions
 @using Saritasa.NetForge.Blazor.Infrastructure.Helpers
 
-@inherits MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.CreateEntity.CreateEntityViewModel>
+@inherits MvvmComponentBase<EditEntityViewModel>
 
-@if (ViewModel.IsEntityExists)
+@if (ViewModel.Model.EntityInstance is null)
+{
+    <p>Loading...</p>
+}
+else if (ViewModel.IsEntityExists)
 {
     <MudBreadcrumbs Items="breadcrumbItems"></MudBreadcrumbs>
 
-    var title = $"Create {ViewModel.Model.DisplayName.ToMeaningfulName()}";
+    var title = $"Edit {ViewModel.Model.DisplayName.ToMeaningfulName()}";
     <PageTitle>@title</PageTitle>
     <MudText Class="pb-4" Typo="Typo.h4">@title</MudText>
 
     <MudGrid Justify="Justify.Center">
         <MudItem xs="6">
-            <EditForm Model="ViewModel.Model.EntityInstance" OnValidSubmit="ViewModel.CreateEntityAsync">
+            <EditForm EditContext="new EditContext(ViewModel.Model.EntityInstance)"
+                      OnValidSubmit="ViewModel.UpdateEntityAsync">
                 <div class="d-flex flex-column flex-grow-1 gap-4">
                     @foreach (var property in ViewModel.Model.Properties)
                     {
@@ -22,11 +28,11 @@
                         var parameters = new Dictionary<string, object>
                         {
                             { "Property", property },
-                            { "EntityInstance", ViewModel.Model.EntityInstance }
+                            { "EntityInstance", ViewModel.Model.EntityInstance },
+                            { "IsReadOnly", property.IsPrimaryKey }
                         };
 
                         <DynamicComponent Type="componentType" Parameters="parameters" />
-                    }
                     }
 
                     <div class="d-flex flex-row gap-4 pt-4">
@@ -37,6 +43,14 @@
                             Cancel
                         </MudButton>
                     </div>
+
+                    @if (ViewModel.IsUpdated)
+                    {
+                        <MudAlert Variant="Variant.Outlined"
+                                  Severity="Severity.Success">
+                            Update was completed successfully
+                        </MudAlert>
+                    }
                 </div>
             </EditForm>
         </MudItem>
