@@ -162,10 +162,10 @@ public class EntityService : IEntityService
             foreach (var property in properties)
             {
                 if (property is NavigationMetadataDto navigation
-                    && navigation.TargetEntityProperties.Any(property => property.SearchType != SearchType.None))
+                    && navigation.TargetEntityProperties.Any(targetProperty => targetProperty.SearchType != SearchType.None))
                 {
                     var propertyNamesWithSearchType = navigation.TargetEntityProperties
-                        .Select(property => (property.Name, property.SearchType));
+                        .Select(targetProperty => (targetProperty.Name, targetProperty.SearchType));
 
                     query = dataService
                         .Search(query, searchString, entityType, propertyNamesWithSearchType, navigation.Name);
