@@ -91,7 +91,7 @@ public static class EntityMetadataAttributesExtensions
         }
 
         var netForgePropertyAttribute = property.PropertyInformation?
-            .GetCustomAttribute<NetForgePropertyAttributeBase>();
+            .GetCustomAttribute<NetForgePropertyAttribute>();
 
         if (netForgePropertyAttribute is null)
         {
@@ -125,36 +125,14 @@ public static class EntityMetadataAttributesExtensions
 
         property.DisplayFormat = netForgePropertyAttribute.DisplayFormat ?? property.DisplayFormat;
 
-        switch (property)
+        if (netForgePropertyAttribute.SearchType != SearchType.None)
         {
-            case PropertyMetadata propertyMetadata:
-                {
-                    var propertyAttribute = (NetForgePropertyAttribute)netForgePropertyAttribute;
+            property.SearchType = netForgePropertyAttribute.SearchType;
+        }
 
-                    if (propertyAttribute.SearchType != SearchType.None)
-                    {
-                        propertyMetadata.SearchType = propertyAttribute.SearchType;
-                    }
-
-                    if (propertyAttribute.IsSortable)
-                    {
-                        propertyMetadata.IsSortable = propertyAttribute.IsSortable;
-                    }
-
-                    break;
-                }
-
-            case NavigationMetadata navigationMetadata:
-                {
-                    var navigationAttribute = (NetForgeNavigationAttribute)netForgePropertyAttribute;
-
-                    if (navigationAttribute.IsIncluded)
-                    {
-                        navigationMetadata.IsIncluded = navigationAttribute.IsIncluded;
-                    }
-
-                    break;
-                }
+        if (netForgePropertyAttribute.IsSortable)
+        {
+            property.IsSortable = netForgePropertyAttribute.IsSortable;
         }
 
         if (!string.IsNullOrEmpty(netForgePropertyAttribute.EmptyValueDisplay))

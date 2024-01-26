@@ -122,7 +122,6 @@ public class Product
     /// <summary>
     /// The list of tags associated with the product.
     /// </summary>
-    [NetForgeNavigation(IsIncluded = true)]
     public List<ProductTag> Tags { get; set; } = new();
 
     /// <summary>
