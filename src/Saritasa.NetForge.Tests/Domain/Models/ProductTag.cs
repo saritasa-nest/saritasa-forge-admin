@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a tag associated with a product in the shop.
 /// </summary>
-public class ProductTag
+internal class ProductTag
 {
     /// <summary>
     /// The unique identifier for the tag.

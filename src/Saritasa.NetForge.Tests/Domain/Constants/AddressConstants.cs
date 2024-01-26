@@ -1,6 +1,6 @@
 ﻿using Saritasa.NetForge.Tests.Domain.Models;
 
-namespace Saritasa.NetForge.Tests.Constants;
+namespace Saritasa.NetForge.Tests.Domain.Constants;
 
 /// <summary>
 /// Constants for <see cref="Address"/>.

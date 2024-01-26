@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
-using Saritasa.NetForge.Tests.Constants;
 using Saritasa.NetForge.Tests.Domain;
 using Saritasa.NetForge.Tests.Domain.Models;
-using Saritasa.NetForge.Tests.Utilities;
+using Saritasa.NetForge.Tests.Fixtures;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
@@ -14,7 +13,7 @@ namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 /// <summary>
 /// Create entity tests.
 /// </summary>
-[CollectionDefinition(TestConstants.DependencyInjection)]
+[CollectionDefinition(Constants.DependencyInjection)]
 public class SearchTests : TestBed<TestDatabaseFixture>
 {
     private readonly TestDbContext testDbContext;

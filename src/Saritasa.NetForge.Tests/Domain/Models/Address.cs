@@ -1,14 +1,13 @@
 ﻿using System.ComponentModel;
 using Saritasa.NetForge.Domain.Attributes;
-using Saritasa.NetForge.Tests.Constants;
-using Saritasa.NetForge.Tests.Utilities;
+using Saritasa.NetForge.Tests.Domain.Constants;
 
 namespace Saritasa.NetForge.Tests.Domain.Models;
 
 /// <summary>
 /// Represents an address entity.
 /// </summary>
-public class Address
+internal class Address
 {
     /// <summary>
     /// The unique identifier for the address.

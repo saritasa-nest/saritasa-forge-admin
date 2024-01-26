@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents contact information of a user or entity.
 /// </summary>
-public class ContactInfo
+internal class ContactInfo
 {
     /// <summary>
     /// The unique identifier for the contact information.

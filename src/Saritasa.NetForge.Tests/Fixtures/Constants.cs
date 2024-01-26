@@ -1,11 +1,11 @@
 ﻿using Xunit;
 
-namespace Saritasa.NetForge.Tests.Constants;
+namespace Saritasa.NetForge.Tests.Fixtures;
 
 /// <summary>
-/// Constants for tests.
+/// Common tests constants.
 /// </summary>
-internal static class TestConstants
+internal static class Constants
 {
     /// <summary>
     /// Constant for <see cref="CollectionDefinitionAttribute"/> value.
