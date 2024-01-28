@@ -20,21 +20,8 @@ public class UpdateEntityTests : IDisposable
     public UpdateEntityTests()
     {
         TestDbContext = EfCoreHelper.CreateTestDbContext();
-
-        TestDbContext.ContactInfos.Add(new ContactInfo
-        {
-            Id = 1,
-            Email = "Test1@test.test",
-            FullName = "Test Contact1",
-            PhoneNumber = "12223334455"
-        });
-        TestDbContext.ContactInfos.Add(new ContactInfo
-        {
-            Id = 2,
-            Email = "Test2@test.test",
-            FullName = "Test Contact2",
-            PhoneNumber = "22223334455"
-        });
+        var contacts = Fakers.ContactInfoFaker.Generate(2);
+        TestDbContext.ContactInfos.AddRange(contacts);
         TestDbContext.SaveChanges();
     }
 

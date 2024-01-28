@@ -19,20 +19,8 @@ public class CreateEntityTests : IDisposable
     {
         TestDbContext = EfCoreHelper.CreateTestDbContext();
 
-        TestDbContext.ContactInfos.Add(new ContactInfo
-        {
-            Id = 1,
-            Email = "Test1@test.test",
-            FullName = "Test Contact1",
-            PhoneNumber = "12223334455"
-        });
-        TestDbContext.ContactInfos.Add(new ContactInfo
-        {
-            Id = 2,
-            Email = "Test2@test.test",
-            FullName = "Test Contact2",
-            PhoneNumber = "22223334455"
-        });
+        var contactInfos = Fakers.ContactInfoFaker.Generate(2);
+        TestDbContext.ContactInfos.AddRange(contactInfos);
         TestDbContext.SaveChanges();
     }
 
@@ -72,13 +60,7 @@ public class CreateEntityTests : IDisposable
         var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
 
         var contactInfoType = typeof(ContactInfo);
-        var contactInfo = new ContactInfo
-        {
-            Id = 3,
-            Email = "Test3@test.test",
-            FullName = "Test Contact3",
-            PhoneNumber = "32223334455"
-        };
+        var contactInfo = Fakers.ContactInfoFaker.Generate();
 
         // Act
         await efCoreDataService.AddAsync(contactInfo, contactInfoType, CancellationToken.None);
@@ -97,13 +79,8 @@ public class CreateEntityTests : IDisposable
         var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
 
         var contactInfoType = typeof(ContactInfo);
-        var contactInfo = new ContactInfo
-        {
-            Id = 1,
-            Email = "Test1@test.test",
-            FullName = "Test Contact1",
-            PhoneNumber = "12223334455"
-        };
+        var contactInfo = Fakers.ContactInfoFaker.Generate();
+        contactInfo.Id = 1;
 
         // Act
         async Task Act() => await efCoreDataService.AddAsync(contactInfo, contactInfoType, CancellationToken.None);
