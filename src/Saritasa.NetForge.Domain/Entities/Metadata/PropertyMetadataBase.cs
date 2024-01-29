@@ -14,6 +14,11 @@ public abstract class PropertyMetadataBase
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
+    /// The type of the property.
+    /// </summary>
+    public Type? ClrType { get; set; }
+
+    /// <summary>
     /// The display name of the property. If not empty this name will be displayed instead of <see cref="Name"/>.
     /// </summary>
     public string DisplayName { get; set; } = string.Empty;

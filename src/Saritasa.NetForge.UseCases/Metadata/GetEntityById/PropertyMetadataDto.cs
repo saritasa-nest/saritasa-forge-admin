@@ -20,6 +20,9 @@ public record PropertyMetadataDto
     /// <inheritdoc cref="PropertyMetadata.IsPrimaryKey"/>
     public bool IsPrimaryKey { get; set; }
 
+    /// <inheritdoc cref="PropertyMetadataBase.ClrType"/>
+    public Type? ClrType { get; set; }
+
     /// <inheritdoc cref="PropertyMetadataBase.SearchType"/>
     public SearchType SearchType { get; set; } = SearchType.None;
 

@@ -1,36 +1,45 @@
 ﻿using AutoMapper;
-using Saritasa.NetForge.Mvvm.Navigation;
-using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
+using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.Tools.Domain.Exceptions;
 
-namespace Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
+namespace Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 
 /// <summary>
-/// View model for create entity page.
+/// View model for edit entity page.
 /// </summary>
-public class CreateEntityViewModel : BaseViewModel
+public class EditEntityViewModel : BaseViewModel
 {
     /// <summary>
     /// Entity details model.
     /// </summary>
-    public CreateEntityModel Model { get; private set; }
+    public EditEntityModel Model { get; set; }
+
+    /// <summary>
+    /// Instance primary key.
+    /// </summary>
+    public string InstancePrimaryKey { get; set; }
 
     private readonly IEntityService entityService;
     private readonly IMapper mapper;
-    private readonly INavigationService navigationService;
+    private readonly IOrmDataService dataService;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public CreateEntityViewModel(
-        string stringId, IEntityService entityService, IMapper mapper, INavigationService navigationService)
+    public EditEntityViewModel(
+        string stringId,
+        string instancePrimaryKey,
+        IEntityService entityService,
+        IMapper mapper,
+        IOrmDataService dataService)
     {
-        Model = new CreateEntityModel { StringId = stringId };
+        Model = new EditEntityModel { StringId = stringId };
+        InstancePrimaryKey = instancePrimaryKey;
 
         this.entityService = entityService;
         this.mapper = mapper;
-        this.navigationService = navigationService;
+        this.dataService = dataService;
     }
 
     /// <summary>
@@ -38,14 +47,20 @@ public class CreateEntityViewModel : BaseViewModel
     /// </summary>
     public bool IsEntityExists { get; private set; } = true;
 
+    /// <summary>
+    /// Is entity was updated.
+    /// </summary>
+    public bool IsUpdated { get; set; }
+
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
     {
         try
         {
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
-            Model = mapper.Map<CreateEntityModel>(entity);
-            Model.EntityInstance = Activator.CreateInstance(Model.ClrType!)!;
+            Model = mapper.Map<EditEntityModel>(entity);
+            Model.EntityInstance = await dataService
+                .GetInstanceAsync(InstancePrimaryKey, Model.ClrType!, CancellationToken);
             Model = Model with
             {
                 Properties = Model.Properties
@@ -66,11 +81,11 @@ public class CreateEntityViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// Creates entity.
+    /// Updates entity.
     /// </summary>
-    public async Task CreateEntityAsync()
+    public async Task UpdateEntityAsync()
     {
-        await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
-        navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
+       await dataService.UpdateAsync(Model.EntityInstance!, CancellationToken);
+       IsUpdated = true;
     }
 }
