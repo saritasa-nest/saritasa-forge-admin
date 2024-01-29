@@ -1,6 +1,11 @@
-﻿using Saritasa.NetForge.Tests.Domain;
+﻿using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
+using Saritasa.NetForge.Tests.Domain;
+using Saritasa.NetForge.Tests.Fixtures;
 using Saritasa.NetForge.Tests.Helpers;
 using Xunit;
+using Xunit.Abstractions;
+using Xunit.Microsoft.DependencyInjection.Abstracts;
+using Xunit.Microsoft.DependencyInjection.Attributes;
 using ContactInfo = Saritasa.NetForge.Tests.Domain.Models.ContactInfo;
 
 namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
@@ -8,57 +13,30 @@ namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 /// <summary>
 /// Create entity tests.
 /// </summary>
-public class CreateEntityTests : IDisposable
+[TestCaseOrderer("Xunit.Microsoft.DependencyInjection.TestsOrder.TestPriorityOrderer", "Xunit.Microsoft.DependencyInjection")]
+public class CreateEntityTests : TestBed<NetForgeFixture>
 {
-    private TestDbContext TestDbContext { get; set; }
+    private readonly TestDbContext testDbContext;
+    private readonly IOrmDataService efCoreDataService;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public CreateEntityTests()
+    public CreateEntityTests(ITestOutputHelper testOutputHelper, NetForgeFixture netForgeFixture)
+        : base(testOutputHelper, netForgeFixture)
     {
-        TestDbContext = EfCoreHelper.CreateTestDbContext();
-
-        var contactInfos = Fakers.ContactInfoFaker.Generate(2);
-        TestDbContext.ContactInfos.AddRange(contactInfos);
-        TestDbContext.SaveChanges();
-    }
-
-    private bool disposedValue;
-
-    /// <inheritdoc />
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
-    /// Deletes the database after one test is complete,
-    /// so it gives us the same state of the database for every test.
-    /// </summary>
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!disposedValue)
-        {
-            if (disposing)
-            {
-                TestDbContext.Dispose();
-            }
-
-            disposedValue = true;
-        }
+        testDbContext = _fixture.GetService<TestDbContext>(_testOutputHelper)!;
+        efCoreDataService = _fixture.GetService<IOrmDataService>(_testOutputHelper)!;
     }
 
     /// <summary>
     /// Create valid entity test.
     /// </summary>
     [Fact]
+    [TestOrder(1)]
     public async Task CreateEntity_ValidEntity_Success()
     {
         // Arrange
-        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
-
         var contactInfoType = typeof(ContactInfo);
         var contactInfo = Fakers.ContactInfoFaker.Generate();
 
@@ -66,18 +44,20 @@ public class CreateEntityTests : IDisposable
         await efCoreDataService.AddAsync(contactInfo, contactInfoType, CancellationToken.None);
 
         // Assert
-        Assert.Contains(contactInfo, TestDbContext.ContactInfos);
+        Assert.Contains(contactInfo, testDbContext.ContactInfos);
     }
 
     /// <summary>
     /// Create already existed entity test.
-    /// </summary>
+    /// </summary>s
     [Fact]
+    [TestOrder(2)]
     public async Task CreateEntity_AlreadyExistingEntity_Error()
     {
         // Arrange
-        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
-
+        var contactInfos = Fakers.ContactInfoFaker.Generate(2);
+        testDbContext.ContactInfos.AddRange(contactInfos);
+        await testDbContext.SaveChangesAsync(CancellationToken.None);
         var contactInfoType = typeof(ContactInfo);
         var contactInfo = Fakers.ContactInfoFaker.Generate();
         contactInfo.Id = 1;

@@ -14,7 +14,7 @@ namespace Saritasa.NetForge.Tests.Fixtures;
 /// </summary>
 public class NetForgeFixture : TestBedFixture
 {
-    internal TestDbContext TestDbContext { get; set; }
+    internal TestDbContext TestDbContext { get; }
 
     /// <summary>
     /// Constructor. This code executes before tests.
@@ -32,7 +32,10 @@ public class NetForgeFixture : TestBedFixture
     }
 
     /// <inheritdoc />
-    protected override ValueTask DisposeAsyncCore() => default;
+    protected override ValueTask DisposeAsyncCore()
+    {
+        return TestDbContext.DisposeAsync();
+    }
 
     /// <inheritdoc />
     protected override void AddServices(IServiceCollection services, IConfiguration? configuration)
