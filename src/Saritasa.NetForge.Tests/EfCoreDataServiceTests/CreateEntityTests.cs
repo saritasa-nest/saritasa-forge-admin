@@ -13,7 +13,8 @@ namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 /// <summary>
 /// Create entity tests.
 /// </summary>
-[TestCaseOrderer("Xunit.Microsoft.DependencyInjection.TestsOrder.TestPriorityOrderer", "Xunit.Microsoft.DependencyInjection")]
+[TestCaseOrderer(nameof(Xunit.Microsoft.DependencyInjection.TestsOrder.TestPriorityOrderer),
+    nameof(Xunit.Microsoft.DependencyInjection))]
 public class CreateEntityTests : TestBed<NetForgeFixture>
 {
     private readonly TestDbContext testDbContext;
@@ -49,7 +50,7 @@ public class CreateEntityTests : TestBed<NetForgeFixture>
 
     /// <summary>
     /// Create already existed entity test.
-    /// </summary>s
+    /// </summary>
     [Fact]
     [TestOrder(2)]
     public async Task CreateEntity_AlreadyExistingEntity_Error()
