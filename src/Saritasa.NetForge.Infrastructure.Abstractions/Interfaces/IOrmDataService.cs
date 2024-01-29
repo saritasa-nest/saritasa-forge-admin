@@ -15,6 +15,18 @@ public interface IOrmDataService
     IQueryable<object> GetQuery(Type clrType);
 
     /// <summary>
+    /// Get instance by primary key value.
+    /// </summary>
+    /// <param name="primaryKey">
+    /// Primary key values.
+    /// In case of composite primary key, they have to be separated by "--".
+    /// </param>
+    /// <param name="entityType">Type to get instance of.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>Instance.</returns>
+    Task<object> GetInstanceAsync(string primaryKey, Type entityType, CancellationToken cancellationToken);
+
+    /// <summary>
     /// Performs search.
     /// </summary>
     /// <param name="query">Query to search.</param>
@@ -35,4 +47,11 @@ public interface IOrmDataService
     /// <param name="entityType">Entity type.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     Task AddAsync(object entity, Type entityType, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Updates entity in the database.
+    /// </summary>
+    /// <param name="entity">Entity to update.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    Task UpdateAsync(object entity, CancellationToken cancellationToken);
 }

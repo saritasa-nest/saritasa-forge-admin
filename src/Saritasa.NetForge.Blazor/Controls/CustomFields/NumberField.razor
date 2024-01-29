@@ -1,0 +1,10 @@
+﻿@inherits CustomField
+
+@typeparam T
+
+<MudNumericField Label="@Property.Name"
+                 Variant="Variant.Outlined"
+                 HideSpinButtons="true"
+                 HelperText="@Property.Description"
+                 Disabled="IsReadOnly"
+                 @bind-Value="PropertyValue"/>

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
+using Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
@@ -17,6 +18,9 @@ internal class EntityMappingProfile : Profile
     {
         CreateMap<GetEntityByIdDto, EntityDetailsModel>()
             .ForMember(model => model.StringId, options => options.Ignore());
-        CreateMap<GetEntityByIdDto, CreateEntityModel>();
+        CreateMap<GetEntityByIdDto, CreateEntityModel>()
+            .ForMember(model => model.EntityInstance, options => options.Ignore());
+        CreateMap<GetEntityByIdDto, EditEntityModel>()
+            .ForMember(model => model.EntityInstance, options => options.Ignore());
     }
 }

@@ -1,12 +1,12 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
-namespace Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
+namespace Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 
 /// <summary>
-/// Model for create entity page.
+/// Model for edit entity page.
 /// </summary>
-public record CreateEntityModel
+public record EditEntityModel
 {
     /// <inheritdoc cref="EntityMetadata.Id"/>
     public string StringId { get; init; } = string.Empty;
@@ -26,5 +26,5 @@ public record CreateEntityModel
     /// <summary>
     /// Entity instance.
     /// </summary>
-    public object EntityInstance { get; set; } = null!;
+    public object? EntityInstance { get; set; }
 }
