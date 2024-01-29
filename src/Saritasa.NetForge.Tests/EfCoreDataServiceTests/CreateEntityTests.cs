@@ -13,8 +13,7 @@ namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 /// <summary>
 /// Create entity tests.
 /// </summary>
-[TestCaseOrderer(nameof(Xunit.Microsoft.DependencyInjection.TestsOrder.TestPriorityOrderer),
-    nameof(Xunit.Microsoft.DependencyInjection))]
+[TestCaseOrderer(Constants.OrdererTypeName, Constants.OrdererAssemblyName)]
 public class CreateEntityTests : TestBed<NetForgeFixture>
 {
     private readonly TestDbContext testDbContext;
