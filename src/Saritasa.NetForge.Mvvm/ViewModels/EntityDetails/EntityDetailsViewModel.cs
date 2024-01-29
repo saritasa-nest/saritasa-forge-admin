@@ -57,6 +57,12 @@ public class EntityDetailsViewModel : BaseViewModel
         {
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
             Model = mapper.Map<EntityDetailsModel>(entity);
+            Model = Model with
+            {
+                Properties = Model.Properties
+                    .Where(property => property is { IsHidden: false, IsHiddenFromListView: false })
+                    .ToList()
+            };
         }
         catch (NotFoundException)
         {
