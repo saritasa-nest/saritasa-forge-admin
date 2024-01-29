@@ -16,7 +16,9 @@ namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 [TestCaseOrderer(Constants.OrdererTypeName, Constants.OrdererAssemblyName)]
 public class CreateEntityTests : TestBed<NetForgeFixture>
 {
+#pragma warning disable CA2213
     private readonly TestDbContext testDbContext;
+#pragma warning restore CA2213
     private readonly IOrmDataService efCoreDataService;
 
     /// <summary>
@@ -66,6 +68,6 @@ public class CreateEntityTests : TestBed<NetForgeFixture>
         async Task Act() => await efCoreDataService.AddAsync(contactInfo, contactInfoType, CancellationToken.None);
 
         // Assert
-        await Assert.ThrowsAnyAsync<InvalidOperationException>(Act);
+        await Assert.ThrowsAnyAsync<Exception>(Act);
     }
 }

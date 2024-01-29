@@ -14,7 +14,9 @@ namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 /// </summary>
 public class UpdateEntityTests : TestBed<NetForgeFixture>
 {
+#pragma warning disable CA2213
     private readonly TestDbContext testDbContext;
+#pragma warning restore CA2213
     private readonly IOrmDataService efCoreDataService;
 
     /// <summary>

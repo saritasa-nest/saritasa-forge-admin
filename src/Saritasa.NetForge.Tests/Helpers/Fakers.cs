@@ -49,12 +49,12 @@ internal static class Fakers
         .RuleFor(p => p.CreatedDate, f => f.Date.Recent(10))
         .RuleFor(p => p.UpdatedDate, (f, p) => f.Date.Future(refDate: p.CreatedDate))
         .RuleFor(p => p.RemovedAt, (f, p) => f.Random.Bool() ? f.Date.Future(refDate: p.UpdatedDate) : null)
-        .RuleFor(p => p.EndOfSalesDate, (f, p) => (bool)p.IsSalesEnded ? p.UpdatedDate : null)
+        .RuleFor(p => p.EndOfSalesDate, (f, p) => p.IsSalesEnded ?? false ? p.UpdatedDate : null)
         .RuleFor(p => p.PreviousSupplyDate, f => f.Date.PastDateOnly())
         .RuleFor(p => p.NextSupplyDate, f => f.Date.FutureDateOnly())
         .RuleFor(p => p.Category, f => f.PickRandom(Enum.GetValues(typeof(Category)).Cast<Category>()))
-        .RuleFor(p => p.Supplier, f => SupplierFaker.Generate())
-        .RuleFor(p => p.Tags, f => f.Make(3, () => ProductTagFaker.Generate()));
+        .RuleFor(p => p.Supplier, f => SupplierFaker!.Generate())
+        .RuleFor(p => p.Tags, f => f.Make(3, () => ProductTagFaker!.Generate()));
 
     /// <summary>
     /// Product Tag faker.
@@ -75,7 +75,7 @@ internal static class Fakers
         .RuleFor(s => s.IsOpen, f => f.Random.Bool())
         .RuleFor(s => s.Products, (f, s) => f.Make(3, () => ProductFaker.Generate()))
         .RuleFor(s => s.OwnerContact, f => ContactInfoFaker.Generate())
-        .RuleFor(s => s.Suppliers, f => f.Make(3, () => SupplierFaker.Generate()));
+        .RuleFor(s => s.Suppliers, f => f.Make(3, () => SupplierFaker!.Generate()));
 
     /// <summary>
     /// Supplier faker.
