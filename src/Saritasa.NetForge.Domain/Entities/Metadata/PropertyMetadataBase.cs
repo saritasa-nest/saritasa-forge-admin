@@ -44,6 +44,16 @@ public abstract class PropertyMetadataBase
     public bool IsHidden { get; set; }
 
     /// <summary>
+    /// Whether the property is hidden from the list view.
+    /// </summary>
+    public bool IsHiddenFromListView { get; set; }
+
+    /// <summary>
+    /// Whether the property is hidden from the details.
+    /// </summary>
+    public bool IsHiddenFromDetails { get; set; }
+
+    /// <summary>
     /// Whether the property is excluded from the query.
     /// </summary>
     public bool IsExcludedFromQuery { get; set; }
