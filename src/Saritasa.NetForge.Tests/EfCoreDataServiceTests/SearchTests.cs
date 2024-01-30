@@ -11,7 +11,7 @@ using Xunit.Microsoft.DependencyInjection.Abstracts;
 namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 
 /// <summary>
-/// Create entity tests.
+/// Searching tests.
 /// </summary>
 [CollectionDefinition(Constants.DependencyInjection)]
 public class SearchTests : TestBed<NetForgeFixture>
