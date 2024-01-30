@@ -7,24 +7,19 @@ using Saritasa.NetForge.Tests.Domain;
 using Xunit.Microsoft.DependencyInjection;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
 
-namespace Saritasa.NetForge.Tests.Utilities;
+namespace Saritasa.NetForge.Tests.Fixtures;
 
 /// <summary>
-/// Test database fixture.
+/// Sets up an in-memory database and adds the NetForge library to the service collection.
 /// </summary>
-/// <remarks>
-/// Use case:
-/// When we want the same database state for all tests.
-/// For example, when we don't modify any data in the database.
-/// </remarks>
-public class TestDatabaseFixture : TestBedFixture
+public class NetForgeFixture : TestBedFixture
 {
-    internal TestDbContext TestDbContext { get; set; }
+    internal TestDbContext TestDbContext { get; }
 
     /// <summary>
     /// Constructor. This code executes before tests.
     /// </summary>
-    public TestDatabaseFixture()
+    public NetForgeFixture()
     {
         var dbOptions = new DbContextOptionsBuilder<TestDbContext>()
             .UseInMemoryDatabase("NetForgeTest")
@@ -37,7 +32,10 @@ public class TestDatabaseFixture : TestBedFixture
     }
 
     /// <inheritdoc />
-    protected override ValueTask DisposeAsyncCore() => default;
+    protected override ValueTask DisposeAsyncCore()
+    {
+        return TestDbContext.DisposeAsync();
+    }
 
     /// <inheritdoc />
     protected override void AddServices(IServiceCollection services, IConfiguration? configuration)

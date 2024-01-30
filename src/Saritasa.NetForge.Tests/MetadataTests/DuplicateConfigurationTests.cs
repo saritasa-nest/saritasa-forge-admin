@@ -1,9 +1,8 @@
 ﻿using Saritasa.NetForge.DomainServices;
 using Saritasa.NetForge.Tests.Domain.Models;
-using Saritasa.NetForge.Tests.Infrastructure.Admin;
 using Xunit;
 
-namespace Saritasa.NetForge.Tests;
+namespace Saritasa.NetForge.Tests.MetadataTests;
 
 /// <summary>
 /// Duplicate entity options configuration tests.

@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents shop supplier.
 /// </summary>
-public class Supplier
+internal class Supplier
 {
     /// <summary>
     /// Supplier's name.

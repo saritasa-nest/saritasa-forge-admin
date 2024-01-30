@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a product entity.
 /// </summary>
-public class Product
+internal class Product
 {
     /// <summary>
     /// The unique identifier for the product.

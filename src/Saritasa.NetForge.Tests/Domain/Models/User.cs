@@ -5,7 +5,7 @@ namespace Saritasa.NetForge.Tests.Domain.Models;
 /// <summary>
 /// Represents the application's user.
 /// </summary>
-public class User : IdentityUser
+internal class User : IdentityUser
 {
     /// <summary>
     /// Gets or sets the first name of the user.

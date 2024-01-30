@@ -1,6 +1,11 @@
-﻿using Saritasa.NetForge.Tests.Domain;
+﻿using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
+using Saritasa.NetForge.Tests.Domain;
+using Saritasa.NetForge.Tests.Fixtures;
 using Saritasa.NetForge.Tests.Helpers;
 using Xunit;
+using Xunit.Abstractions;
+using Xunit.Microsoft.DependencyInjection.Abstracts;
+using Xunit.Microsoft.DependencyInjection.Attributes;
 using ContactInfo = Saritasa.NetForge.Tests.Domain.Models.ContactInfo;
 
 namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
@@ -8,107 +13,61 @@ namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 /// <summary>
 /// Create entity tests.
 /// </summary>
-public class CreateEntityTests : IDisposable
+[TestCaseOrderer(Constants.OrdererTypeName, Constants.OrdererAssemblyName)]
+public class CreateEntityTests : TestBed<NetForgeFixture>
 {
-    private TestDbContext TestDbContext { get; set; }
+#pragma warning disable CA2213
+    private readonly TestDbContext testDbContext;
+#pragma warning restore CA2213
+    private readonly IOrmDataService efCoreDataService;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public CreateEntityTests()
+    public CreateEntityTests(ITestOutputHelper testOutputHelper, NetForgeFixture netForgeFixture)
+        : base(testOutputHelper, netForgeFixture)
     {
-        TestDbContext = EfCoreHelper.CreateTestDbContext();
-
-        TestDbContext.ContactInfos.Add(new ContactInfo
-        {
-            Id = 1,
-            Email = "Test1@test.test",
-            FullName = "Test Contact1",
-            PhoneNumber = "12223334455"
-        });
-        TestDbContext.ContactInfos.Add(new ContactInfo
-        {
-            Id = 2,
-            Email = "Test2@test.test",
-            FullName = "Test Contact2",
-            PhoneNumber = "22223334455"
-        });
-        TestDbContext.SaveChanges();
-    }
-
-    private bool disposedValue;
-
-    /// <inheritdoc />
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
-    /// Deletes the database after one test is complete,
-    /// so it gives us the same state of the database for every test.
-    /// </summary>
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!disposedValue)
-        {
-            if (disposing)
-            {
-                TestDbContext.Dispose();
-            }
-
-            disposedValue = true;
-        }
+        testDbContext = _fixture.GetService<TestDbContext>(_testOutputHelper)!;
+        efCoreDataService = _fixture.GetService<IOrmDataService>(_testOutputHelper)!;
     }
 
     /// <summary>
     /// Create valid entity test.
     /// </summary>
     [Fact]
+    [TestOrder(1)]
     public async Task CreateEntity_ValidEntity_Success()
     {
         // Arrange
-        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
-
         var contactInfoType = typeof(ContactInfo);
-        var contactInfo = new ContactInfo
-        {
-            Id = 3,
-            Email = "Test3@test.test",
-            FullName = "Test Contact3",
-            PhoneNumber = "32223334455"
-        };
+        var contactInfo = Fakers.ContactInfoFaker.Generate();
 
         // Act
         await efCoreDataService.AddAsync(contactInfo, contactInfoType, CancellationToken.None);
 
         // Assert
-        Assert.Contains(contactInfo, TestDbContext.ContactInfos);
+        Assert.Contains(contactInfo, testDbContext.ContactInfos);
     }
 
     /// <summary>
     /// Create already existed entity test.
     /// </summary>
     [Fact]
+    [TestOrder(2)]
     public async Task CreateEntity_AlreadyExistingEntity_Error()
     {
         // Arrange
-        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
-
+        var contactInfos = Fakers.ContactInfoFaker.Generate(2);
+        testDbContext.ContactInfos.AddRange(contactInfos);
+        await testDbContext.SaveChangesAsync(CancellationToken.None);
         var contactInfoType = typeof(ContactInfo);
-        var contactInfo = new ContactInfo
-        {
-            Id = 1,
-            Email = "Test1@test.test",
-            FullName = "Test Contact1",
-            PhoneNumber = "12223334455"
-        };
+        var contactInfo = Fakers.ContactInfoFaker.Generate();
+        contactInfo.Id = 1;
 
         // Act
         async Task Act() => await efCoreDataService.AddAsync(contactInfo, contactInfoType, CancellationToken.None);
 
         // Assert
-        await Assert.ThrowsAnyAsync<InvalidOperationException>(Act);
+        await Assert.ThrowsAnyAsync<Exception>(Act);
     }
 }

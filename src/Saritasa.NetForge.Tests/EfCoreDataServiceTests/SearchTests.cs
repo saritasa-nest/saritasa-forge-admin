@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
-using Saritasa.NetForge.Tests.Constants;
 using Saritasa.NetForge.Tests.Domain;
 using Saritasa.NetForge.Tests.Domain.Models;
-using Saritasa.NetForge.Tests.Utilities;
+using Saritasa.NetForge.Tests.Fixtures;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
@@ -12,10 +11,10 @@ using Xunit.Microsoft.DependencyInjection.Abstracts;
 namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 
 /// <summary>
-/// Create entity tests.
+/// Searching tests.
 /// </summary>
-[CollectionDefinition(TestConstants.DependencyInjection)]
-public class SearchTests : TestBed<TestDatabaseFixture>
+[CollectionDefinition(Constants.DependencyInjection)]
+public class SearchTests : TestBed<NetForgeFixture>
 {
     private readonly TestDbContext testDbContext;
     private readonly IOrmDataService dataService;
@@ -23,11 +22,11 @@ public class SearchTests : TestBed<TestDatabaseFixture>
     /// <summary>
     /// Constructor.
     /// </summary>
-    public SearchTests(ITestOutputHelper testOutputHelper, TestDatabaseFixture testDatabaseFixture)
-        : base(testOutputHelper, testDatabaseFixture)
+    public SearchTests(ITestOutputHelper testOutputHelper, NetForgeFixture netForgeFixture)
+        : base(testOutputHelper, netForgeFixture)
     {
-        testDbContext = testDatabaseFixture.TestDbContext;
-        dataService = testDatabaseFixture.GetScopedService<IOrmDataService>(testOutputHelper)!;
+        testDbContext = netForgeFixture.TestDbContext;
+        dataService = netForgeFixture.GetScopedService<IOrmDataService>(testOutputHelper)!;
 
         PopulateDatabaseWithTestData();
     }
