@@ -1,10 +1,18 @@
-﻿namespace Saritasa.NetForge.Domain.Entities.Options;
+﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+
+namespace Saritasa.NetForge.Domain.Entities.Options;
 
 /// <summary>
 /// Navigation options.
 /// </summary>
-public class NavigationOptions : PropertyOptions
+public class NavigationOptions
 {
+    /// <inheritdoc cref="PropertyMetadataBase.Name"/>
+    public string PropertyName { get; set; } = string.Empty;
+
+    /// <inheritdoc cref="PropertyMetadataBase.Order"/>
+    public int? Order { get; set; }
+
     /// <summary>
     /// Property options for the navigation properties.
     /// </summary>
