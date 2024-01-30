@@ -6,7 +6,7 @@ namespace Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 /// <summary>
 /// Entity details model.
 /// </summary>
-public class EntityDetailsModel
+public record EntityDetailsModel
 {
     /// <inheritdoc cref="EntityMetadata.Id"/>
     public Guid Id { get; set; }

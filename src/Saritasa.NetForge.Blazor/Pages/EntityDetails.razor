@@ -61,11 +61,6 @@
 
                         void RenderPropertyColumn(PropertyMetadataDto property, string? navigationName = null)
                         {
-                            if (property.IsHidden)
-                            {
-                                return;
-                            }
-
                             <TemplateColumn Title="@property.Name" Sortable="property.IsSortable" NavigationName="@navigationName">
                                 <HeaderTemplate>
                                     @{

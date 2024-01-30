@@ -79,6 +79,8 @@ public static class EntityMetadataOptionsExtensions
         this PropertyMetadataBase property, PropertyOptions propertyOptions)
     {
         property.IsHidden = propertyOptions.IsHidden;
+        property.IsHiddenFromListView = propertyOptions.IsHiddenFromListView;
+        property.IsHiddenFromDetails = propertyOptions.IsHiddenFromDetails;
         property.IsExcludedFromQuery = propertyOptions.IsExcludedFromQuery;
 
         if (!string.IsNullOrEmpty(propertyOptions.DisplayName))
