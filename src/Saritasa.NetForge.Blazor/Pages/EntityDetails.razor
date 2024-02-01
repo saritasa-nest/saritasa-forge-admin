@@ -43,8 +43,8 @@
 
         <MudItem xs="12">
             <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true"
-                         @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple" RowClick="NavigateToEditing"
-                         Hover RowClass="cursor-pointer">
+                         @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple"
+                         @attributes="NonKeylessEntityDataGridAttributes">
                 <Columns>
                     @foreach (var property in ViewModel.Model.Properties)
                     {
