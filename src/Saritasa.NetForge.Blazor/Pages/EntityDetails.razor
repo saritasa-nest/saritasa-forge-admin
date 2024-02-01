@@ -15,11 +15,14 @@
             <MudText Typo="Typo.body1">@ViewModel.Model.Description</MudText>
         </MudItem>
 
-        <MudItem xs="12">
-            <MudButton Variant="Variant.Outlined" OnClick="@NavigateToCreation">
+        @if (!ViewModel.Model.IsKeyless)
+        {
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Outlined" OnClick="@NavigateToCreation">
                     Add @ViewModel.Model.DisplayName.ToMeaningfulName()
-            </MudButton>
-        </MudItem>
+                </MudButton>
+            </MudItem>
+        }
 
         @if (ViewModel.Model.Properties.Any(property => property.SearchType != SearchType.None)
              || ViewModel.Model.SearchFunction is not null)

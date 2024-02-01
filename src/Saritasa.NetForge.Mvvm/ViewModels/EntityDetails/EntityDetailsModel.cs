@@ -34,4 +34,7 @@ public class EntityDetailsModel
 
     /// <inheritdoc cref="EntityMetadata.CustomQueryFunction"/>
     public Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? CustomQueryFunction { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.IsKeyless"/>
+    public bool IsKeyless { get; set; }
 }
