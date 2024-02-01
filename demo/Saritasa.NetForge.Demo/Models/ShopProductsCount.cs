@@ -8,7 +8,7 @@ namespace Saritasa.NetForge.Demo.Models;
 /// Count of products in the shop.
 /// </summary>
 [Keyless]
-[NetForgeEntity(GroupName = GroupConstants.Shops)]
+[NetForgeEntity(GroupName = GroupConstants.Shops, PluralName = "Shop Products Count")]
 public class ShopProductsCount
 {
     /// <summary>
