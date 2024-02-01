@@ -32,6 +32,7 @@ internal static class NetForgeModule
                     new() { Name = GroupConstants.Identity, Description = GroupConstants.IdentityDescription },
                     new() { Name = GroupConstants.Shops }
                 })
+                .SetGroupHeadersExpanded(true)
                 .ConfigureEntity(new ShopAdminConfiguration())
                 .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
                 {
