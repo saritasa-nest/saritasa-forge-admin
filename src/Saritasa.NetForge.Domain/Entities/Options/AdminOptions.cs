@@ -50,4 +50,9 @@ public class AdminOptions
     /// Groups that entities belong to.
     /// </summary>
     public ICollection<EntityGroup> EntityGroupsList { get; } = new List<EntityGroup>();
+
+    /// <summary>
+    /// Whether entity group header should be expanded.
+    /// </summary>
+    public bool GroupHeadersExpanded { get; set; } = true;
 }
