@@ -21,6 +21,6 @@ public partial class Entities : MvvmComponentBase<EntitiesViewModel>
         Indentation = true,
         Expandable = true,
         Selector = e => e.Group.Name,
-        IsInitiallyExpanded = false
+        IsInitiallyExpanded = true
     };
 }
