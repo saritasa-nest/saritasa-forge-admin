@@ -65,11 +65,13 @@ public class Shop
     /// <summary>
     /// Path to image file.
     /// </summary>
+    [NetForgeProperty(IsImagePath = true)]
     public string? ImagePath { get; set; }
 
     /// <summary>
     /// Bytes that represents image.
     /// </summary>
+    [NetForgeProperty(IsImageBytes = true)]
     public byte[]? ImageBytes { get; set; }
 }
 

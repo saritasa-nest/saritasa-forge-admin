@@ -45,4 +45,14 @@ public class PropertyMetadata : PropertyMetadataBase
     /// Whether this property is calculated.
     /// </summary>
     public bool IsCalculatedProperty { get; set; }
+
+    /// <summary>
+    /// Whether this property is image path.
+    /// </summary>
+    public bool IsImagePath { get; set; }
+
+    /// <summary>
+    /// Whether this property is bytes image.
+    /// </summary>
+    public bool IsImageBytes { get; set; }
 }

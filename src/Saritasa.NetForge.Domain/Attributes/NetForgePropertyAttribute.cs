@@ -14,4 +14,10 @@ public class NetForgePropertyAttribute : NetForgePropertyAttributeBase
 
     /// <inheritdoc cref="PropertyMetadataBase.IsSortable"/>
     public bool IsSortable { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.IsImagePath"/>
+    public bool IsImagePath { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.IsImageBytes"/>
+    public bool IsImageBytes { get; set; }
 }

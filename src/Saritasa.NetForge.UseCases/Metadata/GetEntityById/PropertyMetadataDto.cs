@@ -74,4 +74,10 @@ public record PropertyMetadataDto
 
     /// <inheritdoc cref="PropertyMetadata.IsValueGeneratedOnUpdate"/>
     public bool IsValueGeneratedOnUpdate { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.IsImagePath"/>
+    public bool IsImagePath { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.IsImageBytes"/>
+    public bool IsImageBytes { get; set; }
 }
