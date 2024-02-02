@@ -35,6 +35,9 @@ public static class CustomFieldHelper
             },
             {
                 [typeof(bool), typeof(bool?)], typeof(BoolField)
+            },
+            {
+                [typeof(byte[])], typeof(UploadFile)
             }
         };
 

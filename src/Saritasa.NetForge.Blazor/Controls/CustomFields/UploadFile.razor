@@ -1,0 +1,29 @@
+﻿@using Saritasa.NetForge.Blazor.Extensions
+@inherits CustomField
+
+<MudStack Row>
+    <MudFileUpload T="IBrowserFile" FilesChanged="UploadFileAsync">
+        <ButtonTemplate>
+            <MudButton HtmlTag="label"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                       for="@context.Id">
+                Upload @Property.Name.ToMeaningfulName()
+            </MudButton>
+        </ButtonTemplate>
+    </MudFileUpload>
+
+    @{
+        if (PropertyValue is not null)
+        {
+            var propertyValue = $"data:image/png;base64,{Convert.ToBase64String(PropertyValue)}";
+
+            <div>
+                <MudImage Src="@propertyValue"
+                          Elevation="25"
+                          Class="rounded-lg property-image" />
+            </div>
+        }
+    }
+</MudStack>
