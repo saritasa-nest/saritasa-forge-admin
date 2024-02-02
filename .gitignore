@@ -346,3 +346,4 @@ web.config
 appsettings.Development.json
 firestore.Development.json
 .data
+/demo/Saritasa.NetForge.Demo/wwwroot/images

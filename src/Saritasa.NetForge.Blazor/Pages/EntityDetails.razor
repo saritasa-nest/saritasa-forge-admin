@@ -74,10 +74,31 @@
 
                             <CellTemplate Context="cell">
                                 @{
+
                                     var propertyValue = ViewModel.GetPropertyValue(cell.Item, property).ToString();
-                                    if (property.DisplayAsHtml)
+
+                                    if (property.IsImagePath)
+                                    {
+                                        const string DefaultEmptyValueDisplay = "-";
+
+                                        if (propertyValue!.Equals(property.EmptyValueDisplay)
+                                            || propertyValue.Equals(DefaultEmptyValueDisplay))
+                                        {
+                                            @propertyValue
+                                        }
+                                        else
+                                        {
+                                            <div>
+                                                <MudImage Src="@propertyValue"
+                                                          Elevation="25"
+                                                          Class="rounded-lg property-image" />
+                                            </div>
+                                        }
+                                    }
+                                    else if (property.DisplayAsHtml)
                                     {
                                         @((MarkupString)propertyValue!)
+
                                     }
                                     else
                                     {
