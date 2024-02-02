@@ -17,7 +17,9 @@
     @{
         if (PropertyValue is not null)
         {
-            var propertyValue = $"data:image/png;base64,{Convert.ToBase64String(PropertyValue)}";
+            var propertyValue = Property.IsImageBytes
+                ? $"data:image/png;base64,{Convert.ToBase64String((byte[])PropertyValue)}"
+                : PropertyValue.ToString();
 
             <div>
                 <MudImage Src="@propertyValue"
