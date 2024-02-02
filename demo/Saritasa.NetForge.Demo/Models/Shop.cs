@@ -61,5 +61,15 @@ public class Shop
     /// The list of suppliers.
     /// </summary>
     public List<Supplier> Suppliers { get; set; } = new();
+
+    /// <summary>
+    /// Path to image file.
+    /// </summary>
+    public string? ImagePath { get; set; }
+
+    /// <summary>
+    /// Bytes that represents image.
+    /// </summary>
+    public byte[]? ImageBytes { get; set; }
 }
 
