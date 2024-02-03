@@ -3,6 +3,7 @@ using AutoMapper;
 using MudBlazor;
 using Saritasa.NetForge.Mvvm.Utils;
 using Saritasa.NetForge.UseCases.Common;
+using Saritasa.NetForge.UseCases.Constants;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using Saritasa.Tools.Domain.Exceptions;
@@ -14,8 +15,6 @@ namespace Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 /// </summary>
 public class EntityDetailsViewModel : BaseViewModel
 {
-    private const string DefaultEmptyValueDisplay = "-";
-
     /// <summary>
     /// Entity details model.
     /// </summary>
@@ -146,7 +145,7 @@ public class EntityDetailsViewModel : BaseViewModel
         {
             return !string.IsNullOrEmpty(property.EmptyValueDisplay)
                 ? property.EmptyValueDisplay
-                : DefaultEmptyValueDisplay;
+                : DefaultValueConstants.DefaultEmptyPropertyValueDisplay;
         }
 
         if (property.IsNavigation)
