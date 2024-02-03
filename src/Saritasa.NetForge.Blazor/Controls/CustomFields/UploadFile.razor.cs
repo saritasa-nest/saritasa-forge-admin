@@ -12,9 +12,9 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
     /// <summary>
     /// Property value.
     /// </summary>
-    public object? PropertyValue
+    public string? PropertyValue
     {
-        get => EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance);
+        get => EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance)?.ToString();
         set => EntityInstance.GetType().GetProperty(Property.Name)?.SetValue(EntityInstance, value);
     }
 
@@ -30,7 +30,7 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
         await file.OpenReadStream().CopyToAsync(memoryStream);
         selectedFileBytes = memoryStream.ToArray();
 
-        if (Property.IsImagePath)
+        if (Property.IsPathToImage)
         {
             WeakReferenceMessenger.Default.Register(this);
 
@@ -39,7 +39,7 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
             return;
         }
 
-        PropertyValue = selectedFileBytes;
+        PropertyValue = $"data:{selectedFile!.ContentType};base64,{Convert.ToBase64String(selectedFileBytes)}";
     }
 
     /// <summary>
@@ -51,7 +51,7 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
     /// </remarks>
     public async void Receive(EntitySubmittedMessage message)
     {
-        if (Property.IsImagePath)
+        if (Property.IsPathToImage)
         {
             var filePath = $"images/{selectedFile!.Name}";
             var filePathToCreate = $"wwwroot/{filePath}";

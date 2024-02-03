@@ -151,8 +151,8 @@ public static class EntityMetadataAttributesExtensions
                         propertyMetadata.IsSortable = propertyAttribute.IsSortable;
                     }
 
-                    propertyMetadata.IsImagePath = propertyAttribute.IsImagePath;
-                    propertyMetadata.IsImageBytes = propertyAttribute.IsImageBytes;
+                    propertyMetadata.IsPathToImage = propertyAttribute.IsPathToImage;
+                    propertyMetadata.IsBase64Image = propertyAttribute.IsBase64Image;
 
                     break;
                 }

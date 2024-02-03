@@ -10,14 +10,15 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<byte[]>(
-                name: "image_bytes",
+            migrationBuilder.AddColumn<string>(
+                name: "base64image",
                 table: "shops",
-                type: "bytea",
+                type: "text",
+                unicode: false,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "image_path",
+                name: "path_to_image",
                 table: "shops",
                 type: "text",
                 unicode: false,
@@ -28,11 +29,11 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "image_bytes",
+                name: "base64image",
                 table: "shops");
 
             migrationBuilder.DropColumn(
-                name: "image_path",
+                name: "path_to_image",
                 table: "shops");
         }
     }

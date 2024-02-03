@@ -12,7 +12,7 @@ using Saritasa.NetForge.Demo;
 namespace Saritasa.NetForge.Demo.Net7.Migrations
 {
     [DbContext(typeof(ShopDbContext))]
-    [Migration("20240202034647_AddImagePropertiesToShop")]
+    [Migration("20240203091920_AddImagePropertiesToShop")]
     partial class AddImagePropertiesToShop
     {
         /// <inheritdoc />
@@ -488,14 +488,10 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("address_id");
 
-                    b.Property<byte[]>("ImageBytes")
-                        .HasColumnType("bytea")
-                        .HasColumnName("image_bytes");
-
-                    b.Property<string>("ImagePath")
+                    b.Property<string>("Base64Image")
                         .IsUnicode(false)
                         .HasColumnType("text")
-                        .HasColumnName("image_path");
+                        .HasColumnName("base64image");
 
                     b.Property<bool>("IsOpen")
                         .HasColumnType("boolean")
@@ -514,6 +510,11 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.Property<int?>("OwnerContactId")
                         .HasColumnType("integer")
                         .HasColumnName("owner_contact_id");
+
+                    b.Property<string>("PathToImage")
+                        .IsUnicode(false)
+                        .HasColumnType("text")
+                        .HasColumnName("path_to_image");
 
                     b.Property<decimal>("TotalSales")
                         .HasColumnType("numeric")

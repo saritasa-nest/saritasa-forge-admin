@@ -36,9 +36,6 @@ public static class CustomFieldHelper
             },
             {
                 [typeof(bool), typeof(bool?)], typeof(BoolField)
-            },
-            {
-                [typeof(byte[])], typeof(UploadFile)
             }
         };
 
@@ -47,7 +44,7 @@ public static class CustomFieldHelper
     /// </summary>
     public static Type GetComponentType(PropertyMetadataDto property)
     {
-        if (property.IsImagePath)
+        if (property.IsPathToImage || property.IsBase64Image)
         {
             return typeof(UploadFile);
         }

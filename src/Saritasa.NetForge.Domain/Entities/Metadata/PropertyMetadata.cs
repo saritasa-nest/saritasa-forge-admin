@@ -49,10 +49,10 @@ public class PropertyMetadata : PropertyMetadataBase
     /// <summary>
     /// Whether this property is image path.
     /// </summary>
-    public bool IsImagePath { get; set; }
+    public bool IsPathToImage { get; set; }
 
     /// <summary>
     /// Whether this property is bytes image.
     /// </summary>
-    public bool IsImageBytes { get; set; }
+    public bool IsBase64Image { get; set; }
 }
