@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CommunityToolkit.Mvvm.Messaging;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.Tools.Domain.Exceptions;
@@ -87,6 +88,7 @@ public class EditEntityViewModel : BaseViewModel
     public async Task UpdateEntityAsync()
     {
        await dataService.UpdateAsync(Model.EntityInstance!, CancellationToken);
+       WeakReferenceMessenger.Default.Send(new EntitySubmittedMessage());
        IsUpdated = true;
     }
 }

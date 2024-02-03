@@ -1,5 +1,6 @@
 ﻿using System.Transactions;
 using AutoMapper;
+using CommunityToolkit.Mvvm.Messaging;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 using Saritasa.NetForge.UseCases.Interfaces;
@@ -74,7 +75,7 @@ public class CreateEntityViewModel : BaseViewModel
     public async Task CreateEntityAsync()
     {
         await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
-        OnCreate(this, "Something has changed");
+        WeakReferenceMessenger.Default.Send(new EntitySubmittedMessage());
         navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
     }
 }

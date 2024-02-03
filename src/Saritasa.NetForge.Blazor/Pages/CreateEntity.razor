@@ -25,11 +25,6 @@
                             { "EntityInstance", ViewModel.Model.EntityInstance }
                         };
 
-                        if (property.IsImagePath)
-                        {
-                            parameters.Add("OnSubmit", ViewModel.OnCreate);
-                        }
-
                         <DynamicComponent Type="componentType" Parameters="parameters" />
                     }
 
