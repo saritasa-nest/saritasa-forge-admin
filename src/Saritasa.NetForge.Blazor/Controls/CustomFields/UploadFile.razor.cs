@@ -30,16 +30,12 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
         await file.OpenReadStream().CopyToAsync(memoryStream);
         selectedFileBytes = memoryStream.ToArray();
 
+        PropertyValue = $"data:{selectedFile!.ContentType};base64,{Convert.ToBase64String(selectedFileBytes)}";
+
         if (Property.IsPathToImage)
         {
             WeakReferenceMessenger.Default.Register(this);
-
-            var filePath = $"images/{file.Name}";
-            PropertyValue = filePath;
-            return;
         }
-
-        PropertyValue = $"data:{selectedFile!.ContentType};base64,{Convert.ToBase64String(selectedFileBytes)}";
     }
 
     /// <summary>
@@ -58,6 +54,8 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
 
             await using var fileStream = File.Create(filePathToCreate);
             fileStream.Write(selectedFileBytes);
+
+            PropertyValue = filePath;
         }
     }
 }
