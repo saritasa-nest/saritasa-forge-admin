@@ -152,6 +152,8 @@ public static class EntityMetadataAttributesExtensions
                     }
 
                     propertyMetadata.IsPathToImage = propertyAttribute.IsPathToImage;
+                    propertyMetadata.ImageFolder = propertyAttribute.ImageFolder;
+
                     propertyMetadata.IsBase64Image = propertyAttribute.IsBase64Image;
 
                     break;

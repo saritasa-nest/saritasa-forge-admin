@@ -1,29 +1,35 @@
 ﻿@using Saritasa.NetForge.Blazor.Extensions
 @inherits CustomField
 
-<MudStack Row>
-    <MudFileUpload T="IBrowserFile" FilesChanged="UploadFileAsync">
-        <ButtonTemplate>
-            <MudButton HtmlTag="label"
-                       Variant="Variant.Filled"
-                       Color="Color.Primary"
-                       StartIcon="@Icons.Material.Filled.CloudUpload"
-                       for="@context.Id">
-                Upload @Property.Name.ToMeaningfulName()
-            </MudButton>
+<MudGrid>
+    <MudItem xs="4">
+        <MudFileUpload T="IBrowserFile" FilesChanged="UploadFileAsync">
+            <ButtonTemplate>
+                <MudStack>
+                    <MudButton HtmlTag="label"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.CloudUpload"
+                               for="@context.Id">
+                        Upload @Property.Name.ToMeaningfulName()
+                    </MudButton>
 
-            <MudText class="mud-input-helper-text">@Property.Description</MudText>
-        </ButtonTemplate>
-    </MudFileUpload>
+                    <MudText class="mud-input-helper-text">@Property.Description</MudText>
+                </MudStack>
+            </ButtonTemplate>
+        </MudFileUpload>
+    </MudItem>
 
     @{
         if (PropertyValue is not null)
         {
-            <div>
-                <MudImage Src="@PropertyValue"
-                          Elevation="25"
-                          Class="rounded-lg property-image" />
-            </div>
+            <MudItem xs="8">
+                <div>
+                    <MudImage Src="@PropertyValue"
+                              Elevation="25"
+                              Class="rounded-lg property-image"/>
+                </div>
+            </MudItem>
         }
     }
-</MudStack>
+</MudGrid>

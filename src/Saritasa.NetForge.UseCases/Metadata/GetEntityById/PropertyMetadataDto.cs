@@ -78,6 +78,9 @@ public record PropertyMetadataDto
     /// <inheritdoc cref="PropertyMetadata.IsPathToImage"/>
     public bool IsPathToImage { get; set; }
 
+    /// <inheritdoc cref="PropertyMetadata.ImageFolder"/>
+    public string ImageFolder { get; set; } = string.Empty;
+
     /// <inheritdoc cref="PropertyMetadata.IsBase64Image"/>
     public bool IsBase64Image { get; set; }
 }

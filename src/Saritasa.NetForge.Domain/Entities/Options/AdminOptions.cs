@@ -50,4 +50,14 @@ public class AdminOptions
     /// Groups that entities belong to.
     /// </summary>
     public ICollection<EntityGroup> EntityGroupsList { get; } = new List<EntityGroup>();
+
+    /// <summary>
+    /// Path to folder that contains static files.
+    /// </summary>
+    public string StaticFilesFolder { get; set; } = "wwwroot";
+
+    /// <summary>
+    /// Path to folder where to store images.
+    /// </summary>
+    public string ImagesFolder { get; set; } = "images";
 }
