@@ -43,5 +43,13 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                 .SetOrder(2)
                 .SetEmptyValueDisplay("N/A");
             });
+
+        entityOptionsBuilder.ConfigureProperty(shop => shop.Logo, builder =>
+        {
+            builder
+                .SetIsPathToImage(true)
+                .ImageFolder("Shop images")
+                .SetOrder(3);
+        });
     }
 }

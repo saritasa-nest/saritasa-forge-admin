@@ -110,5 +110,13 @@ public static class EntityMetadataOptionsExtensions
         {
             property.EmptyValueDisplay = propertyOptions.EmptyValueDisplay;
         }
+
+        if (property is PropertyMetadata propertyMetadata)
+        {
+            propertyMetadata.IsPathToImage = propertyOptions.IsPathToImage;
+            propertyMetadata.ImageFolder = propertyOptions.ImageFolder;
+
+            propertyMetadata.IsBase64Image = propertyOptions.IsBase64Image;
+        }
     }
 }

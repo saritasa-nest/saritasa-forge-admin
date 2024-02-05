@@ -143,4 +143,31 @@ public class PropertyOptionsBuilder
         options.DisplayAsHtml = displayAsHtml;
         return this;
     }
+
+    /// <summary>
+    /// Marks this property as path to image.
+    /// </summary>
+    public PropertyOptionsBuilder SetIsPathToImage(bool isPathToImage)
+    {
+        options.IsPathToImage = isPathToImage;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the folder for storing the image.
+    /// </summary>
+    public PropertyOptionsBuilder ImageFolder(string imageFolder)
+    {
+        options.ImageFolder = imageFolder;
+        return this;
+    }
+
+    /// <summary>
+    /// Marks this property as base 64 image.
+    /// </summary>
+    public PropertyOptionsBuilder SetIsBase64Image(bool isBase64Image)
+    {
+        options.IsBase64Image = isBase64Image;
+        return this;
+    }
 }

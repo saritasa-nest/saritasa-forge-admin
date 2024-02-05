@@ -65,10 +65,6 @@ public class Shop
     /// <summary>
     /// Path to image file.
     /// </summary>
-    [NetForgeProperty(
-        IsPathToImage = true,
-        ImageFolder = "Shop images",
-        Order = 3)]
     public string? Logo { get; set; }
 
     /// <summary>
