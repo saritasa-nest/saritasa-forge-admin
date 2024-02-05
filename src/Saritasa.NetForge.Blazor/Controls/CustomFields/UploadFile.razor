@@ -23,12 +23,20 @@
     @{
         if (PropertyValue is not null)
         {
-            <MudItem xs="8">
+            <MudItem xs="3">
                 <div>
                     <MudImage Src="@PropertyValue"
                               Elevation="25"
                               Class="rounded-lg property-image"/>
                 </div>
+            </MudItem>
+
+            <MudItem xs="5">
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Error"
+                           OnClick="RemoveImage">
+                    Remove @Property.Name.ToMeaningfulName()
+                </MudButton>
             </MudItem>
         }
     }

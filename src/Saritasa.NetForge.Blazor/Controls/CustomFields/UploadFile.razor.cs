@@ -67,4 +67,15 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
 
         PropertyValue = imagePath;
     }
+
+    private void RemoveImage()
+    {
+        if (Property.IsPathToImage)
+        {
+            var pathToImage = Path.Combine(AdminOptions.StaticFilesFolder, PropertyValue!);
+            File.Delete(pathToImage);
+        }
+
+        PropertyValue = null;
+    }
 }
