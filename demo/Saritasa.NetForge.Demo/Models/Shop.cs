@@ -69,7 +69,7 @@ public class Shop
         IsPathToImage = true,
         ImageFolder = "Shop images",
         Order = 3)]
-    public string? PathToImage { get; set; }
+    public string? Logo { get; set; }
 
     /// <summary>
     /// Bytes that represents image.
@@ -77,7 +77,7 @@ public class Shop
     [NetForgeProperty(
         IsBase64Image = true,
         Order = 4, 
-        Description = "Represents base 64 image: data:image/{MIME};base64,{bytes of image}.")]
-    public string? Base64Image { get; set; }
+        Description = "Photo of the shop from the outside.")]
+    public string? BuildingPhoto { get; set; }
 }
 

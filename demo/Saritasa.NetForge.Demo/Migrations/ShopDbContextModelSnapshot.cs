@@ -485,14 +485,19 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("address_id");
 
-                    b.Property<string>("Base64Image")
+                    b.Property<string>("BuildingPhoto")
                         .IsUnicode(false)
                         .HasColumnType("text")
-                        .HasColumnName("base64image");
+                        .HasColumnName("building_photo");
 
                     b.Property<bool>("IsOpen")
                         .HasColumnType("boolean")
                         .HasColumnName("is_open");
+
+                    b.Property<string>("Logo")
+                        .IsUnicode(false)
+                        .HasColumnType("text")
+                        .HasColumnName("logo");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -507,11 +512,6 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.Property<int?>("OwnerContactId")
                         .HasColumnType("integer")
                         .HasColumnName("owner_contact_id");
-
-                    b.Property<string>("PathToImage")
-                        .IsUnicode(false)
-                        .HasColumnType("text")
-                        .HasColumnName("path_to_image");
 
                     b.Property<decimal>("TotalSales")
                         .HasColumnType("numeric")

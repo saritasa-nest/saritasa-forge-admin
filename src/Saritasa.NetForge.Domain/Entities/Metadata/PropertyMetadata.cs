@@ -64,5 +64,9 @@ public class PropertyMetadata : PropertyMetadataBase
     /// <summary>
     /// Whether this property is bytes image.
     /// </summary>
+    /// <remarks>
+    /// Property will have this value:
+    /// <c>data:image/{MIME};base64,{bytes of image}</c>.
+    /// </remarks>
     public bool IsBase64Image { get; set; }
 }
