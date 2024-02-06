@@ -91,7 +91,7 @@ public static class EntityMetadataAttributesExtensions
         }
 
         var netForgePropertyAttribute = property.PropertyInformation?
-            .GetCustomAttribute<NetForgePropertyAttributeBase>();
+            .GetCustomAttribute<NetForgePropertyAttribute>();
 
         if (netForgePropertyAttribute is null)
         {
@@ -135,41 +135,9 @@ public static class EntityMetadataAttributesExtensions
 
         property.DisplayFormat = netForgePropertyAttribute.DisplayFormat ?? property.DisplayFormat;
 
-        switch (property)
+        if (netForgePropertyAttribute.SearchType != SearchType.None)
         {
-            case PropertyMetadata propertyMetadata:
-                {
-                    var propertyAttribute = (NetForgePropertyAttribute)netForgePropertyAttribute;
-
-                    if (propertyAttribute.SearchType != SearchType.None)
-                    {
-                        propertyMetadata.SearchType = propertyAttribute.SearchType;
-                    }
-
-                    if (propertyAttribute.IsSortable)
-                    {
-                        propertyMetadata.IsSortable = propertyAttribute.IsSortable;
-                    }
-
-                    propertyMetadata.IsPathToImage = propertyAttribute.IsPathToImage;
-                    propertyMetadata.ImageFolder = propertyAttribute.ImageFolder;
-
-                    propertyMetadata.IsBase64Image = propertyAttribute.IsBase64Image;
-
-                    break;
-                }
-
-            case NavigationMetadata navigationMetadata:
-                {
-                    var navigationAttribute = (NetForgeNavigationAttribute)netForgePropertyAttribute;
-
-                    if (navigationAttribute.IsIncluded)
-                    {
-                        navigationMetadata.IsIncluded = navigationAttribute.IsIncluded;
-                    }
-
-                    break;
-                }
+            property.SearchType = netForgePropertyAttribute.SearchType;
         }
 
         if (!string.IsNullOrEmpty(netForgePropertyAttribute.EmptyValueDisplay))
@@ -180,6 +148,14 @@ public static class EntityMetadataAttributesExtensions
         if (netForgePropertyAttribute.DisplayAsHtml)
         {
             property.DisplayAsHtml = netForgePropertyAttribute.DisplayAsHtml;
+        }
+
+        if (property is PropertyMetadata propertyMetadata)
+        {
+            propertyMetadata.IsPathToImage = netForgePropertyAttribute.IsPathToImage;
+            propertyMetadata.ImageFolder = netForgePropertyAttribute.ImageFolder;
+
+            propertyMetadata.IsBase64Image = netForgePropertyAttribute.IsBase64Image;
         }
     }
 }

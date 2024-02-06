@@ -37,7 +37,8 @@ internal static class NetForgeModule
                     entityOptionsBuilder.SetIsHidden(true);
                 }).AddIdentityGroup()
                 .ConfigureEntity(new UserAdminConfiguration())
-                .ConfigureEntity(new AddressAdminConfiguration());
+                .ConfigureEntity(new AddressAdminConfiguration())
+                .ConfigureEntity(new ProductAdminConfiguration());
         });
     }
 }

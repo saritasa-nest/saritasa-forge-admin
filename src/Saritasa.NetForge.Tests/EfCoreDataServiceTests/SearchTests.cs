@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Tests.Domain;
@@ -88,6 +89,15 @@ public class SearchTests : TestBed<NetForgeFixture>
                 City = "London"
             }
         });
+        testDbContext.Products.Add(new Product
+        {
+            WeightInGrams = 222,
+            Supplier = new Supplier
+            {
+                Name = "ABC",
+                City = "New-York"
+            }
+        });
         testDbContext.SaveChanges();
     }
 
@@ -101,16 +111,16 @@ public class SearchTests : TestBed<NetForgeFixture>
         // Arrange
         const string searchString = "ain";
         var entityType = typeof(Address);
-        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        var properties = new List<PropertySearchDto>
         {
-            (nameof(Address.Street), SearchType.ContainsCaseInsensitive)
+            new() { PropertyName = nameof(Address.Street), SearchType = SearchType.ContainsCaseInsensitive }
         };
 
         const int expectedCount = 3;
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
 
         // Assert
 
@@ -128,16 +138,16 @@ public class SearchTests : TestBed<NetForgeFixture>
         // Arrange
         const string searchString = "Second";
         var entityType = typeof(Address);
-        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        var properties = new List<PropertySearchDto>
         {
-            (nameof(Address.Street), SearchType.StartsWithCaseSensitive)
+            new() { PropertyName = nameof(Address.Street), SearchType = SearchType.StartsWithCaseSensitive }
         };
 
         const int expectedCount = 2;
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
 
         // Assert
 
@@ -155,16 +165,16 @@ public class SearchTests : TestBed<NetForgeFixture>
         // Arrange
         const string searchString = "Central";
         var entityType = typeof(Address);
-        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        var properties = new List<PropertySearchDto>
         {
-            (nameof(Address.Street), SearchType.ExactMatchCaseInsensitive)
+            new() { PropertyName = nameof(Address.Street), SearchType = SearchType.ExactMatchCaseInsensitive }
         };
 
         const int expectedCount = 1;
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
 
         // Assert
 
@@ -182,16 +192,16 @@ public class SearchTests : TestBed<NetForgeFixture>
         // Arrange
         const string searchString = "None";
         var entityType = typeof(Product);
-        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        var properties = new List<PropertySearchDto>
         {
-            (nameof(Product.WeightInGrams), SearchType.ExactMatchCaseInsensitive)
+            new() { PropertyName = nameof(Product.WeightInGrams), SearchType = SearchType.ExactMatchCaseInsensitive }
         };
 
         const int expectedCount = 1;
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Products, searchString, entityType, propertiesWithSearchTypes);
+            dataService.Search(testDbContext.Products, searchString, entityType, properties);
 
         // Assert
 
@@ -208,16 +218,16 @@ public class SearchTests : TestBed<NetForgeFixture>
         // Arrange
         var searchString = "SearchString";
         var entityType = typeof(Address);
-        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        var properties = new List<PropertySearchDto>
         {
-            (nameof(Address.Street), SearchType.None)
+            new() { PropertyName = nameof(Address.Street), SearchType = SearchType.None }
         };
 
         var expectedCount = await testDbContext.Addresses.CountAsync();
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
 
         // Assert
 
@@ -234,17 +244,17 @@ public class SearchTests : TestBed<NetForgeFixture>
         // Arrange
         const string searchString = "sq lond";
         var entityType = typeof(Address);
-        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        var properties = new List<PropertySearchDto>
         {
-            (nameof(Address.Street), SearchType.ContainsCaseInsensitive),
-            (nameof(Address.City), SearchType.ContainsCaseInsensitive)
+            new() { PropertyName = nameof(Address.Street), SearchType = SearchType.ContainsCaseInsensitive },
+            new() { PropertyName = nameof(Address.City), SearchType = SearchType.ContainsCaseInsensitive },
         };
 
         const int expectedCount = 2;
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
 
         // Assert
 
@@ -261,16 +271,16 @@ public class SearchTests : TestBed<NetForgeFixture>
         // Arrange
         const string searchString = "\"main St.\"";
         var entityType = typeof(Address);
-        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        var properties = new List<PropertySearchDto>
         {
-            (nameof(Address.Street), SearchType.ContainsCaseInsensitive)
+            new() { PropertyName = nameof(Address.Street), SearchType = SearchType.ContainsCaseInsensitive }
         };
 
         const int expectedCount = 2;
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
 
         // Assert
         var actualCount = await searchedData.CountAsync();
@@ -286,16 +296,46 @@ public class SearchTests : TestBed<NetForgeFixture>
         // Arrange
         const string searchString = "10";
         var entityType = typeof(Address);
-        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        var properties = new List<PropertySearchDto>
         {
-            (nameof(Address.Latitude), SearchType.ContainsCaseInsensitive)
+            new() { PropertyName = nameof(Address.Latitude), SearchType = SearchType.ContainsCaseInsensitive }
         };
 
         const int expectedCount = 4;
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
+
+        // Assert
+        var actualCount = await searchedData.CountAsync();
+        Assert.Equal(expectedCount, actualCount);
+    }
+
+    /// <summary>
+    /// Test for <seealso cref="IOrmDataService.Search"/> when searched property is not <see cref="string"/>.
+    /// </summary>
+    [Fact]
+    public async Task Search_ByPropertyInsideNavigation_ShouldFind1()
+    {
+        // Arrange
+        const string searchString = "London";
+        var entityType = typeof(Product);
+        var properties = new List<PropertySearchDto>
+        {
+            new()
+            {
+                PropertyName = nameof(Supplier.City),
+                SearchType = SearchType.ContainsCaseInsensitive,
+                NavigationName = nameof(Product.Supplier)
+            }
+        };
+
+        const int expectedCount = 1;
+
+        // Act
+        var searchedData =
+            dataService.Search(testDbContext.Products, searchString, entityType, properties);
 
         // Assert
         var actualCount = await searchedData.CountAsync();

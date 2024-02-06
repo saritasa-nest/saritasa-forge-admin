@@ -55,7 +55,6 @@ public class CreateEntityViewModel : BaseViewModel
                 Properties = Model.Properties
                     .Where(property => property is
                     {
-                        IsNavigation: false,
                         IsCalculatedProperty: false,
                         IsValueGeneratedOnAdd: false,
                         IsValueGeneratedOnUpdate: false

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using AutoMapper;
 using MudBlazor;
+using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Mvvm.Utils;
 using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Constants;
@@ -49,6 +50,11 @@ public class EntityDetailsViewModel : BaseViewModel
     /// </summary>
     public bool IsEntityExists { get; private set; } = true;
 
+    /// <summary>
+    /// Whether display search input.
+    /// </summary>
+    public bool IsDisplaySearchInput { get; set; }
+
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
     {
@@ -56,12 +62,36 @@ public class EntityDetailsViewModel : BaseViewModel
         {
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
             Model = mapper.Map<EntityDetailsModel>(entity);
+
             Model = Model with
             {
                 Properties = Model.Properties
-                    .Where(property => property is { IsHidden: false, IsHiddenFromListView: false })
+                    .Where(property =>
+                    {
+                        if (property is NavigationMetadataDto navigation)
+                        {
+                            navigation.TargetEntityProperties = navigation.TargetEntityProperties
+                                .Where(targetProperty
+                                    => targetProperty is { IsHidden: false, IsHiddenFromListView: false })
+                                .ToList();
+                        }
+
+                        return property is { IsHidden: false, IsHiddenFromListView: false };
+                    })
                     .ToList()
             };
+
+            IsDisplaySearchInput = Model.Properties.Any(property =>
+                                   {
+                                       if (property is NavigationMetadataDto navigation)
+                                       {
+                                           return navigation.TargetEntityProperties
+                                               .Any(targetProperty => targetProperty.SearchType != SearchType.None);
+                                       }
+
+                                       return property.SearchType != SearchType.None;
+                                   })
+                                   || Model.SearchFunction is not null;
         }
         catch (NotFoundException)
         {
@@ -77,11 +107,17 @@ public class EntityDetailsViewModel : BaseViewModel
     public async Task<GridData<object>> LoadEntityGridDataAsync(GridState<object> gridState)
     {
         var orderBy = gridState.SortDefinitions
-            .Select(sort => new OrderByDto
+            .Select(sort =>
             {
-                FieldName =
-                    DataGrid!.RenderedColumns.First(column => column.PropertyName.Equals(sort.SortBy)).Title,
-                IsDescending = sort.Descending
+                var column = DataGrid!.RenderedColumns.First(column => column.PropertyName.Equals(sort.SortBy));
+                var navigationName = column.UserAttributes["NavigationName"]?.ToString();
+
+                return new OrderByDto
+                {
+                    FieldName = column.Title,
+                    IsDescending = sort.Descending,
+                    NavigationName = navigationName
+                };
             })
             .ToList();
 
@@ -136,9 +172,9 @@ public class EntityDetailsViewModel : BaseViewModel
     /// <param name="source">Source object.</param>
     /// <param name="property">Property metadata.</param>
     /// <returns>Property value.</returns>
-    public object GetPropertyValue(object source, PropertyMetadataDto property)
+    public object GetPropertyValue(object? source, PropertyMetadataDto property)
     {
-        var propertyInfo = source.GetType().GetProperty(property.Name);
+        var propertyInfo = source?.GetType().GetProperty(property.Name);
         var value = propertyInfo?.GetValue(source);
 
         if (value is null || value.ToString() == string.Empty)
@@ -148,9 +184,9 @@ public class EntityDetailsViewModel : BaseViewModel
                 : DefaultValueConstants.DefaultEmptyPropertyValueDisplay;
         }
 
-        if (property.IsNavigation)
+        if (property is NavigationMetadataDto navigation)
         {
-            value = GetNavigationValue(value, property);
+            value = GetNavigationValue(value, navigation);
         }
 
         value = FormatValue(value, property.Name);
@@ -158,9 +194,9 @@ public class EntityDetailsViewModel : BaseViewModel
         return value;
     }
 
-    private static object GetNavigationValue(object navigation, PropertyMetadataDto property)
+    private static object GetNavigationValue(object navigation, NavigationMetadataDto navigationMetadata)
     {
-        var primaryKeys = property.TargetEntityProperties
+        var primaryKeys = navigationMetadata.TargetEntityProperties
             .Where(targetProperty => targetProperty.IsPrimaryKey)
             .ToList();
 
@@ -169,7 +205,7 @@ public class EntityDetailsViewModel : BaseViewModel
             return navigation;
         }
 
-        if (!property.IsNavigationCollection)
+        if (!navigationMetadata.IsCollection)
         {
             if (primaryKeys.Count == 1)
             {

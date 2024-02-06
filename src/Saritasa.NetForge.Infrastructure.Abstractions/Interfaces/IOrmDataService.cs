@@ -1,4 +1,4 @@
-﻿using Saritasa.NetForge.Domain.Enums;
+﻿using Saritasa.NetForge.Domain.Dtos;
 
 namespace Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
@@ -38,7 +38,7 @@ public interface IOrmDataService
         IQueryable<object> query,
         string searchString,
         Type entityType,
-        IEnumerable<(string Name, SearchType SearchType)> properties);
+        IEnumerable<PropertySearchDto> properties);
 
     /// <summary>
     /// Adds entity to the database.
