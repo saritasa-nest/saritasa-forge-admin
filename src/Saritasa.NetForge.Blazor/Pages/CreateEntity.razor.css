@@ -3,5 +3,6 @@
 }
 
 ::deep .property-image {
-    height: 640px;
+    max-width: 960px;
+    max-height: 640px;
 }
