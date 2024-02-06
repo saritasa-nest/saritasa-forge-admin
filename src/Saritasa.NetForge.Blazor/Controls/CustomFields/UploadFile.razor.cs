@@ -41,6 +41,7 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
 
         if (Property.IsPathToImage)
         {
+            WeakReferenceMessenger.Default.UnregisterAll(this);
             WeakReferenceMessenger.Default.Register(this);
         }
     }
@@ -50,6 +51,7 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
         if (Property.IsPathToImage)
         {
             pathToImageToDelete = PropertyValue!;
+            WeakReferenceMessenger.Default.UnregisterAll(this);
             WeakReferenceMessenger.Default.Register(this);
         }
 
