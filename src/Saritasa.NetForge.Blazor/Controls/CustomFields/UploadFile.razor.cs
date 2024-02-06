@@ -27,6 +27,8 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
 
     private byte[]? selectedFileBytes;
 
+    private string? pathToImageToDelete;
+
     private async Task UploadFileAsync(IBrowserFile file)
     {
         selectedFile = file;
@@ -43,17 +45,31 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
         }
     }
 
+    private void RemoveImage()
+    {
+        if (Property.IsPathToImage)
+        {
+            pathToImageToDelete = PropertyValue!;
+            WeakReferenceMessenger.Default.Register(this);
+        }
+
+        PropertyValue = null;
+    }
+
     /// <summary>
     /// Method to receive entity submit message.
-    /// Used to create file only after user confirmed intention to save changes to entity.
+    /// Used to commit an operation to an actual image on the storage.
+    /// For example, create image only after submit updating of the entity.
     /// </summary>
     /// <remarks>
     /// For example create entity case: upload file, submit, create entity in database and create file.
     /// </remarks>
     public async void Receive(EntitySubmittedMessage message)
     {
-        if (!Property.IsPathToImage)
+        if (pathToImageToDelete is not null)
         {
+            File.Delete(Path.Combine(AdminOptions.StaticFilesFolder, pathToImageToDelete));
+
             return;
         }
 
@@ -66,16 +82,5 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
         fileStream.Write(selectedFileBytes);
 
         PropertyValue = imagePath;
-    }
-
-    private void RemoveImage()
-    {
-        if (Property.IsPathToImage)
-        {
-            var pathToImage = Path.Combine(AdminOptions.StaticFilesFolder, PropertyValue!);
-            File.Delete(pathToImage);
-        }
-
-        PropertyValue = null;
     }
 }
