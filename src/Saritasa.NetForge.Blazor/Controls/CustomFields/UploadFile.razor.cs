@@ -31,6 +31,8 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
 
     private async Task UploadFileAsync(IBrowserFile file)
     {
+        MarkPreviousImageToDeleteIfExists();
+
         selectedFile = file;
 
         using var memoryStream = new MemoryStream();
@@ -41,21 +43,34 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
 
         if (Property.IsPathToImage)
         {
-            WeakReferenceMessenger.Default.UnregisterAll(this);
-            WeakReferenceMessenger.Default.Register(this);
+            RegisterEntitySubmittedMessage();
+        }
+    }
+
+    private void MarkPreviousImageToDeleteIfExists()
+    {
+        if (PropertyValue is not null && selectedFile is null)
+        {
+            pathToImageToDelete = Path.Combine(AdminOptions.StaticFilesFolder, PropertyValue!);
         }
     }
 
     private void RemoveImage()
     {
-        if (Property.IsPathToImage)
+        if (Property.IsPathToImage && selectedFile is null)
         {
-            pathToImageToDelete = PropertyValue!;
-            WeakReferenceMessenger.Default.UnregisterAll(this);
-            WeakReferenceMessenger.Default.Register(this);
+            pathToImageToDelete = Path.Combine(AdminOptions.StaticFilesFolder, PropertyValue!);
+            RegisterEntitySubmittedMessage();
         }
 
         PropertyValue = null;
+        selectedFile = null;
+    }
+
+    private void RegisterEntitySubmittedMessage()
+    {
+        WeakReferenceMessenger.Default.UnregisterAll(this);
+        WeakReferenceMessenger.Default.Register(this);
     }
 
     /// <summary>
@@ -70,19 +85,22 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
     {
         if (pathToImageToDelete is not null)
         {
-            File.Delete(Path.Combine(AdminOptions.StaticFilesFolder, pathToImageToDelete));
-
-            return;
+            File.Delete(pathToImageToDelete);
         }
 
-        var imagePath = Path.Combine(AdminOptions.ImagesFolder, Property.ImageFolder, selectedFile!.Name);
-        var filePathToCreate = Path.Combine(AdminOptions.StaticFilesFolder, imagePath);
+        if (selectedFile is not null)
+        {
+            var imagePath = Path.Combine(AdminOptions.ImagesFolder, Property.ImageFolder, selectedFile!.Name);
+            var filePathToCreate = Path.Combine(AdminOptions.StaticFilesFolder, imagePath);
 
-        Directory.CreateDirectory(Path.GetDirectoryName(filePathToCreate)!);
+            Directory.CreateDirectory(Path.GetDirectoryName(filePathToCreate)!);
 
-        await using var fileStream = File.Create(filePathToCreate);
-        fileStream.Write(selectedFileBytes);
+            await using var fileStream = File.Create(filePathToCreate);
+            fileStream.Write(selectedFileBytes);
 
-        PropertyValue = imagePath;
+            PropertyValue = imagePath;
+        }
+
+        WeakReferenceMessenger.Default.Reset();
     }
 }
