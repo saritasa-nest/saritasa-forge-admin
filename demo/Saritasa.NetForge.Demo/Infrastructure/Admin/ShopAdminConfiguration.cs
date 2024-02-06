@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Demo.Models;
+using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.DomainServices;
 using Saritasa.NetForge.DomainServices.Interfaces;
 
@@ -26,22 +27,29 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
 
         entityOptionsBuilder.ConfigureProperty(shop => shop.OpenedDate, builder =>
         {
-            builder.SetIsSortable(true);
+            builder
+                .SetIsSortable(true)
+                .SetSearchType(SearchType.ContainsCaseInsensitive);
         });
 
         entityOptionsBuilder
-            .IncludeNavigations(
-                shop => shop.Address,
-                shop => shop.OwnerContact,
-                shop => shop.Products,
-                shop => shop.Suppliers)
-            .ConfigureProperty(shop => shop.OwnerContact, builder =>
+            .IncludeNavigation<Address>(shop => shop.Address, navigationOptionsBuilder =>
             {
-                builder
-                .SetDisplayName("OwnerContactInfo")
-                .SetDescription("Information about owner contact.")
-                .SetOrder(2)
-                .SetEmptyValueDisplay("N/A");
+                navigationOptionsBuilder
+                    .SetOrder(1)
+                    .IncludeProperty(address => address.Id, builder =>
+                    {
+                        builder.SetDisplayName("Address Id");
+                    })
+                    .IncludeProperty(address => address.Street, builder =>
+                    {
+                        builder
+                            .SetDisplayName("Address Street")
+                            .SetDescription("Address street name.")
+                            .SetEmptyValueDisplay("N/A")
+                            .SetIsSortable(true)
+                            .SetSearchType(SearchType.ContainsCaseInsensitive);
+                    });
             });
     }
 }

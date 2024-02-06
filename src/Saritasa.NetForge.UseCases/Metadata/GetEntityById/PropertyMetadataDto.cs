@@ -41,19 +41,6 @@ public record PropertyMetadataDto
     /// <inheritdoc cref="PropertyMetadataBase.IsSortable"/>
     public bool IsSortable { get; set; }
 
-    /// <summary>
-    /// Whether the property is navigation or not.
-    /// </summary>
-    public bool IsNavigation { get; set; }
-
-    /// <summary>
-    /// Whether the property is navigation collection or not.
-    /// </summary>
-    public bool IsNavigationCollection { get; set; }
-
-    /// <inheritdoc cref="NavigationMetadata.TargetEntityProperties"/>
-    public ICollection<PropertyMetadataDto> TargetEntityProperties { get; set; } = new List<PropertyMetadataDto>();
-
     /// <inheritdoc cref="PropertyMetadataBase.EmptyValueDisplay"/>
     public string EmptyValueDisplay { get; set; } = string.Empty;
 
