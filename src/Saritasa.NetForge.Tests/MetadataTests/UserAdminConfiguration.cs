@@ -2,12 +2,12 @@
 using Saritasa.NetForge.DomainServices.Interfaces;
 using Saritasa.NetForge.Tests.Domain.Models;
 
-namespace Saritasa.NetForge.Tests.Infrastructure.Admin;
+namespace Saritasa.NetForge.Tests.MetadataTests;
 
 /// <summary>
 /// <see cref="User"/> admin panel configuration.
 /// </summary>
-public class UserAdminConfiguration : IEntityAdminConfiguration<User>
+internal class UserAdminConfiguration : IEntityAdminConfiguration<User>
 {
     /// <inheritdoc />
     public void Configure(EntityOptionsBuilder<User> entityOptionsBuilder)

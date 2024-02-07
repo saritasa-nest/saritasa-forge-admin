@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel;
 using Moq;
 using Saritasa.NetForge.Domain.Attributes;
+using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.DomainServices;
-using Saritasa.NetForge.Tests.Constants;
 using Saritasa.NetForge.Tests.Domain;
+using Saritasa.NetForge.Tests.Domain.Constants;
 using Saritasa.NetForge.Tests.Domain.Models;
 using Saritasa.NetForge.Tests.Helpers;
-using Saritasa.NetForge.Tests.Utilities;
 using Saritasa.NetForge.UseCases.Interfaces;
+using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.UseCases.Metadata.Services;
 using Saritasa.NetForge.UseCases.Services;
 using Saritasa.Tools.Domain.Exceptions;
@@ -102,27 +103,6 @@ public class GetEntityByIdTests : IDisposable
     }
 
     /// <summary>
-    /// Test for case when navigation included to entity.
-    /// </summary>
-    [Fact]
-    public async Task GetEntityByIdAsync_WithNavigations_ShouldBeNotNull()
-    {
-        // Arrange
-        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
-        {
-            builder.IncludeNavigations(entity => entity.Address);
-        });
-
-        const string navigationPropertyName = nameof(Shop.Address);
-
-        // Act
-        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
-
-        // Assert
-        Assert.Contains(entity.Properties, property => property.Name.Equals(navigationPropertyName));
-    }
-
-    /// <summary>
     /// Test for case when property excluded from query via Fluent API.
     /// </summary>
     [Fact]
@@ -190,6 +170,72 @@ public class GetEntityByIdTests : IDisposable
 
         // Assert
         Assert.Contains(entity.Properties, property => property.IsHidden);
+    }
+
+    /// <summary>
+    /// Test for case when property is hidden from list view via Fluent API.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithHiddenFromListViewPropertyViaFluentApi_PropertyShouldBeHidden()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.ConfigureProperty(
+                shop => shop.IsOpen, optionsBuilder => optionsBuilder.SetIsHiddenFromListView(true));
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(entity.Properties, property => property.IsHiddenFromListView);
+    }
+
+    /// <summary>
+    /// Test for case when property is hidden from list view via <see cref="NetForgePropertyAttribute"/>.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithHiddenFromListViewPropertyViaAttribute_PropertyShouldBeHidden()
+    {
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(entity.Properties, property => property.IsHiddenFromListView);
+    }
+
+    /// <summary>
+    /// Test for case when property is hidden from details via Fluent API.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithHiddenFromDetailsPropertyViaFluentApi_PropertyShouldBeHidden()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.ConfigureProperty(
+                shop => shop.IsOpen, optionsBuilder => optionsBuilder.SetIsHiddenFromDetails(true));
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(entity.Properties, property => property.IsHiddenFromDetails);
+    }
+
+    /// <summary>
+    /// Test for case when property is hidden from details via <see cref="NetForgePropertyAttribute"/>.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithHiddenFromDetailsPropertyViaAttribute_PropertyShouldBeHidden()
+    {
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(entity.Properties, property => property.IsHiddenFromDetails);
     }
 
     /// <summary>
@@ -345,5 +391,71 @@ public class GetEntityByIdTests : IDisposable
         // Assert
         Assert.Contains(
             entity.Properties, property => property.Description.Equals(AddressConstants.StreetDescription));
+    }
+
+    /// <summary>
+    /// Test for case when navigation included to entity.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithNavigation_ShouldBeNotNull()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.IncludeNavigation<Address>(entity => entity.Address, navigationOptionsBuilder =>
+            {
+                navigationOptionsBuilder.IncludeProperty(navigation => navigation.Id);
+            });
+        });
+
+        const string navigationPropertyName = nameof(Shop.Address);
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(entity.Properties, property => property.Name.Equals(navigationPropertyName));
+    }
+
+    /// <summary>
+    /// Test for case when property inside navigation customized.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_CustomizedPropertyInsideNavigation_ShouldBeCustomized()
+    {
+        // Arrange
+        const string idDisplayName = "Address Id";
+        const string streetDescription = "Address street name.";
+
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.IncludeNavigation<Address>(entity => entity.Address, navigationOptionsBuilder =>
+            {
+                navigationOptionsBuilder.
+                    IncludeProperty(address => address.Id, propertyOptionsBuilder =>
+                    {
+                        propertyOptionsBuilder.SetDisplayName(idDisplayName);
+                    })
+                    .IncludeProperty(address => address.Street, propertyOptionsBuilder =>
+                    {
+                        propertyOptionsBuilder.SetDescription(streetDescription);
+                    });
+            });
+        });
+
+        const string navigationPropertyName = nameof(Shop.Address);
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        var navigation = entity.Properties
+            .FirstOrDefault(property => property.Name.Equals(navigationPropertyName)) as NavigationMetadataDto;
+
+        Assert.NotNull(navigation);
+        Assert
+            .Contains(navigation.TargetEntityProperties, property => property.DisplayName.Equals(idDisplayName));
+        Assert
+            .Contains(navigation.TargetEntityProperties, property => property.Description.Equals(streetDescription));
     }
 }

@@ -31,6 +31,11 @@ public class Address
     public required string City { get; set; }
 
     /// <summary>
+    /// Display name of the address.
+    /// </summary>
+    public string DisplayName { get; set; } = string.Empty;
+
+    /// <summary>
     /// The postal code of the address.
     /// </summary>
     [NetForgeProperty(Order = 6)]
@@ -51,6 +56,7 @@ public class Address
     /// <summary>
     /// The longitude coordinate of the address location.
     /// </summary>
+    [NetForgeProperty(IsHiddenFromDetails = true)]
     public double Longitude { get; set; }
 
     /// <summary>

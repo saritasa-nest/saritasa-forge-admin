@@ -67,6 +67,10 @@ public class ShopDbContext : IdentityDbContext<User>
         
         modelBuilder.Entity<Product>()
             .ToTable(options => options.HasComment("Represents single product in the Shop."));
+
+        modelBuilder.Entity<Address>()
+            .Property(address => address.DisplayName)
+            .HasComputedColumnSql("city || ', ' || street", stored: true);
     }
     
     private static void RestrictCascadeDelete(ModelBuilder modelBuilder)

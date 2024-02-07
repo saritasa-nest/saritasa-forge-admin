@@ -1,67 +1,36 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Tests.Domain;
-using Saritasa.NetForge.Tests.Domain.Models;
+using Saritasa.NetForge.Tests.Fixtures;
 using Saritasa.NetForge.Tests.Helpers;
 using Xunit;
+using Xunit.Abstractions;
+using Xunit.Microsoft.DependencyInjection.Abstracts;
 
 namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 
 /// <summary>
 /// Tests for <see cref="IOrmDataService.UpdateAsync"/>.
 /// </summary>
-public class UpdateEntityTests : IDisposable
+public class UpdateEntityTests : TestBed<NetForgeFixture>
 {
-    private TestDbContext TestDbContext { get; set; }
+#pragma warning disable CA2213
+    private readonly TestDbContext testDbContext;
+#pragma warning restore CA2213
+    private readonly IOrmDataService efCoreDataService;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public UpdateEntityTests()
+    public UpdateEntityTests(ITestOutputHelper testOutputHelper, NetForgeFixture netForgeFixture)
+        : base(testOutputHelper, netForgeFixture)
     {
-        TestDbContext = EfCoreHelper.CreateTestDbContext();
+        testDbContext = _fixture.GetService<TestDbContext>(_testOutputHelper)!;
+        efCoreDataService = _fixture.GetService<IOrmDataService>(_testOutputHelper)!;
 
-        TestDbContext.ContactInfos.Add(new ContactInfo
-        {
-            Id = 1,
-            Email = "Test1@test.test",
-            FullName = "Test Contact1",
-            PhoneNumber = "12223334455"
-        });
-        TestDbContext.ContactInfos.Add(new ContactInfo
-        {
-            Id = 2,
-            Email = "Test2@test.test",
-            FullName = "Test Contact2",
-            PhoneNumber = "22223334455"
-        });
-        TestDbContext.SaveChanges();
-    }
-
-    private bool disposedValue;
-
-    /// <inheritdoc />
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
-    /// Deletes the database after one test is complete,
-    /// so it gives us the same state of the database for every test.
-    /// </summary>
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!disposedValue)
-        {
-            if (disposing)
-            {
-                TestDbContext.Dispose();
-            }
-
-            disposedValue = true;
-        }
+        var contacts = Fakers.ContactInfoFaker.Generate(2);
+        testDbContext.ContactInfos.AddRange(contacts);
+        testDbContext.SaveChanges();
     }
 
     /// <summary>
@@ -71,9 +40,7 @@ public class UpdateEntityTests : IDisposable
     public async Task UpdateEntity_ValidEntity_Success()
     {
         // Arrange
-        var efCoreDataService = EfCoreHelper.CreateEfCoreDataService(TestDbContext);
-
-        var contactInfo = await TestDbContext.ContactInfos.FirstAsync();
+        var contactInfo = await testDbContext.ContactInfos.FirstAsync();
 
         const string newEmail = "Test222@test.test";
         contactInfo.Email = newEmail;
@@ -82,6 +49,6 @@ public class UpdateEntityTests : IDisposable
         await efCoreDataService.UpdateAsync(contactInfo, CancellationToken.None);
 
         // Assert
-        Assert.Contains(TestDbContext.ContactInfos, contact => contact.Email.Equals(newEmail));
+        Assert.Contains(testDbContext.ContactInfos, contact => contact.Email.Equals(newEmail));
     }
 }

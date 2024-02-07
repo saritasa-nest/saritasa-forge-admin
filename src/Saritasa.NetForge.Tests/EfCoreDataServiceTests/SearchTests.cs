@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
-using Saritasa.NetForge.Tests.Constants;
 using Saritasa.NetForge.Tests.Domain;
 using Saritasa.NetForge.Tests.Domain.Models;
-using Saritasa.NetForge.Tests.Utilities;
+using Saritasa.NetForge.Tests.Fixtures;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
@@ -12,10 +12,10 @@ using Xunit.Microsoft.DependencyInjection.Abstracts;
 namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 
 /// <summary>
-/// Create entity tests.
+/// Searching tests.
 /// </summary>
-[CollectionDefinition(TestConstants.DependencyInjection)]
-public class SearchTests : TestBed<TestDatabaseFixture>
+[CollectionDefinition(Constants.DependencyInjection)]
+public class SearchTests : TestBed<NetForgeFixture>
 {
     private readonly TestDbContext testDbContext;
     private readonly IOrmDataService dataService;
@@ -23,11 +23,11 @@ public class SearchTests : TestBed<TestDatabaseFixture>
     /// <summary>
     /// Constructor.
     /// </summary>
-    public SearchTests(ITestOutputHelper testOutputHelper, TestDatabaseFixture testDatabaseFixture)
-        : base(testOutputHelper, testDatabaseFixture)
+    public SearchTests(ITestOutputHelper testOutputHelper, NetForgeFixture netForgeFixture)
+        : base(testOutputHelper, netForgeFixture)
     {
-        testDbContext = testDatabaseFixture.TestDbContext;
-        dataService = testDatabaseFixture.GetScopedService<IOrmDataService>(testOutputHelper)!;
+        testDbContext = netForgeFixture.TestDbContext;
+        dataService = netForgeFixture.GetScopedService<IOrmDataService>(testOutputHelper)!;
 
         PopulateDatabaseWithTestData();
     }
@@ -89,6 +89,15 @@ public class SearchTests : TestBed<TestDatabaseFixture>
                 City = "London"
             }
         });
+        testDbContext.Products.Add(new Product
+        {
+            WeightInGrams = 222,
+            Supplier = new Supplier
+            {
+                Name = "ABC",
+                City = "New-York"
+            }
+        });
         testDbContext.SaveChanges();
     }
 
@@ -102,16 +111,16 @@ public class SearchTests : TestBed<TestDatabaseFixture>
         // Arrange
         const string searchString = "ain";
         var entityType = typeof(Address);
-        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        var properties = new List<PropertySearchDto>
         {
-            (nameof(Address.Street), SearchType.ContainsCaseInsensitive)
+            new() { PropertyName = nameof(Address.Street), SearchType = SearchType.ContainsCaseInsensitive }
         };
 
         const int expectedCount = 3;
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
 
         // Assert
 
@@ -129,16 +138,16 @@ public class SearchTests : TestBed<TestDatabaseFixture>
         // Arrange
         const string searchString = "Second";
         var entityType = typeof(Address);
-        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        var properties = new List<PropertySearchDto>
         {
-            (nameof(Address.Street), SearchType.StartsWithCaseSensitive)
+            new() { PropertyName = nameof(Address.Street), SearchType = SearchType.StartsWithCaseSensitive }
         };
 
         const int expectedCount = 2;
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
 
         // Assert
 
@@ -156,16 +165,16 @@ public class SearchTests : TestBed<TestDatabaseFixture>
         // Arrange
         const string searchString = "Central";
         var entityType = typeof(Address);
-        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        var properties = new List<PropertySearchDto>
         {
-            (nameof(Address.Street), SearchType.ExactMatchCaseInsensitive)
+            new() { PropertyName = nameof(Address.Street), SearchType = SearchType.ExactMatchCaseInsensitive }
         };
 
         const int expectedCount = 1;
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
 
         // Assert
 
@@ -183,16 +192,16 @@ public class SearchTests : TestBed<TestDatabaseFixture>
         // Arrange
         const string searchString = "None";
         var entityType = typeof(Product);
-        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        var properties = new List<PropertySearchDto>
         {
-            (nameof(Product.WeightInGrams), SearchType.ExactMatchCaseInsensitive)
+            new() { PropertyName = nameof(Product.WeightInGrams), SearchType = SearchType.ExactMatchCaseInsensitive }
         };
 
         const int expectedCount = 1;
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Products, searchString, entityType, propertiesWithSearchTypes);
+            dataService.Search(testDbContext.Products, searchString, entityType, properties);
 
         // Assert
 
@@ -209,16 +218,16 @@ public class SearchTests : TestBed<TestDatabaseFixture>
         // Arrange
         var searchString = "SearchString";
         var entityType = typeof(Address);
-        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        var properties = new List<PropertySearchDto>
         {
-            (nameof(Address.Street), SearchType.None)
+            new() { PropertyName = nameof(Address.Street), SearchType = SearchType.None }
         };
 
         var expectedCount = await testDbContext.Addresses.CountAsync();
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
 
         // Assert
 
@@ -235,17 +244,17 @@ public class SearchTests : TestBed<TestDatabaseFixture>
         // Arrange
         const string searchString = "sq lond";
         var entityType = typeof(Address);
-        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        var properties = new List<PropertySearchDto>
         {
-            (nameof(Address.Street), SearchType.ContainsCaseInsensitive),
-            (nameof(Address.City), SearchType.ContainsCaseInsensitive)
+            new() { PropertyName = nameof(Address.Street), SearchType = SearchType.ContainsCaseInsensitive },
+            new() { PropertyName = nameof(Address.City), SearchType = SearchType.ContainsCaseInsensitive },
         };
 
         const int expectedCount = 2;
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
 
         // Assert
 
@@ -262,16 +271,16 @@ public class SearchTests : TestBed<TestDatabaseFixture>
         // Arrange
         const string searchString = "\"main St.\"";
         var entityType = typeof(Address);
-        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        var properties = new List<PropertySearchDto>
         {
-            (nameof(Address.Street), SearchType.ContainsCaseInsensitive)
+            new() { PropertyName = nameof(Address.Street), SearchType = SearchType.ContainsCaseInsensitive }
         };
 
         const int expectedCount = 2;
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
 
         // Assert
         var actualCount = await searchedData.CountAsync();
@@ -287,16 +296,46 @@ public class SearchTests : TestBed<TestDatabaseFixture>
         // Arrange
         const string searchString = "10";
         var entityType = typeof(Address);
-        var propertiesWithSearchTypes = new List<(string, SearchType)>
+        var properties = new List<PropertySearchDto>
         {
-            (nameof(Address.Latitude), SearchType.ContainsCaseInsensitive)
+            new() { PropertyName = nameof(Address.Latitude), SearchType = SearchType.ContainsCaseInsensitive }
         };
 
         const int expectedCount = 4;
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, propertiesWithSearchTypes);
+            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
+
+        // Assert
+        var actualCount = await searchedData.CountAsync();
+        Assert.Equal(expectedCount, actualCount);
+    }
+
+    /// <summary>
+    /// Test for <seealso cref="IOrmDataService.Search"/> when searched property is not <see cref="string"/>.
+    /// </summary>
+    [Fact]
+    public async Task Search_ByPropertyInsideNavigation_ShouldFind1()
+    {
+        // Arrange
+        const string searchString = "London";
+        var entityType = typeof(Product);
+        var properties = new List<PropertySearchDto>
+        {
+            new()
+            {
+                PropertyName = nameof(Supplier.City),
+                SearchType = SearchType.ContainsCaseInsensitive,
+                NavigationName = nameof(Product.Supplier)
+            }
+        };
+
+        const int expectedCount = 1;
+
+        // Act
+        var searchedData =
+            dataService.Search(testDbContext.Products, searchString, entityType, properties);
 
         // Assert
         var actualCount = await searchedData.CountAsync();

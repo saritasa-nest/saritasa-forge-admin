@@ -189,4 +189,13 @@ public class AdminOptionsBuilder
         options.TitleCaseProperties = false;
         return this;
     }
+
+    /// <summary>
+    /// Sets entity group headers to be expanded.
+    /// </summary>
+    public AdminOptionsBuilder SetGroupHeadersExpanded(bool groupHeadersExpanded)
+    {
+        options.GroupHeadersExpanded = groupHeadersExpanded;
+        return this;
+    }
 }

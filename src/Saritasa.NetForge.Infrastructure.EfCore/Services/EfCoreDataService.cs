@@ -2,7 +2,9 @@
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Domain.Enums;
+using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
@@ -107,7 +109,7 @@ public class EfCoreDataService : IOrmDataService
         IQueryable<object> query,
         string searchString,
         Type entityType,
-        IEnumerable<(string Name, SearchType SearchType)> properties)
+        IEnumerable<PropertySearchDto> properties)
     {
         // entity => entity
         var entity = Expression.Parameter(typeof(object), Entity);
@@ -139,20 +141,25 @@ public class EfCoreDataService : IOrmDataService
     /// Applies search using search entry to every searchable property, every property can have their own search type.
     /// </summary>
     private static Expression GetEntrySearchExpression(
-        IEnumerable<(string Name, SearchType SearchType)> properties, Expression entity, string searchEntry)
+        IEnumerable<PropertySearchDto> properties,
+        Expression entity,
+        string searchEntry)
     {
         Expression? singleEntrySearchExpression = null;
-        foreach (var (propertyName, searchType) in properties)
+        foreach (var property in properties)
         {
-            if (searchType == SearchType.None)
+            if (property.SearchType == SearchType.None)
             {
                 continue;
             }
 
-            // entity => ((entityType)entity).propertyName
-            var propertyExpression = Expression.Property(entity, propertyName);
+            var propertyName = property.NavigationName is null
+                ? property.PropertyName
+                : $"{property.NavigationName}.{property.PropertyName}";
 
-            var searchMethodCallExpression = searchType switch
+            var propertyExpression = ExpressionExtensions.GetPropertyExpression(entity, propertyName);
+
+            var searchMethodCallExpression = property.SearchType switch
             {
                 SearchType.ContainsCaseInsensitive
                     => GetContainsCaseInsensitiveMethodCall(propertyExpression, searchEntry),
