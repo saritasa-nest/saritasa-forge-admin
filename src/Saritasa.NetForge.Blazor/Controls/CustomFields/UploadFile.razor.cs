@@ -90,7 +90,7 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
 
         if (selectedFile is not null)
         {
-            var imagePath = Path.Combine(AdminOptions.ImagesFolder, Property.ImageFolder, selectedFile!.Name);
+            var imagePath = Path.Combine(AdminOptions.MediaFolder, Property.ImageFolder, selectedFile!.Name);
             var filePathToCreate = Path.Combine(AdminOptions.StaticFilesFolder, imagePath);
 
             Directory.CreateDirectory(Path.GetDirectoryName(filePathToCreate)!);

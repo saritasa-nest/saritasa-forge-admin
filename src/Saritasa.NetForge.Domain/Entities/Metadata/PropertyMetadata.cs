@@ -57,7 +57,7 @@ public class PropertyMetadata : PropertyMetadataBase
     /// The folder where to save an image.
     /// </summary>
     /// <remarks>
-    /// Use it when you need to store images in separate folder inside <see cref="AdminOptions.ImagesFolder"/>.
+    /// Use it when you need to store images in separate folder inside <see cref="AdminOptions.MediaFolder"/>.
     /// </remarks>
     public string? ImageFolder { get; set; }
 

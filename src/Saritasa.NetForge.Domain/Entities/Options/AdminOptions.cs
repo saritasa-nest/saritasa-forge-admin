@@ -62,7 +62,7 @@ public class AdminOptions
     public string StaticFilesFolder { get; set; } = "wwwroot";
 
     /// <summary>
-    /// Path to folder where to store images.
+    /// Path to folder where to store media files.
     /// </summary>
-    public string ImagesFolder { get; set; } = "images";
+    public string MediaFolder { get; set; } = "media";
 }

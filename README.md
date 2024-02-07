@@ -507,12 +507,12 @@ Both of them can be configured via `[NetForgeProperty]` and `Fluent API`.
 
 ### Configuring place to store images
 
-`AdminOptions` has properties related to storage of images.
+`AdminOptions` has properties related to storage of static files.
 
 ``` csharp
 public string StaticFilesFolder { get; set; } = "wwwroot";
 
-public string ImagesFolder { get; set; } = "images";
+public string MediaFolder { get; set; } = "media";
 ```
 
 So default path to images - `wwwroot/images`.
