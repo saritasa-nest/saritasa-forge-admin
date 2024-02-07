@@ -27,12 +27,8 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
 
     private byte[]? selectedFileBytes;
 
-    private string? pathToImageToDelete;
-
     private async Task UploadFileAsync(IBrowserFile file)
     {
-        MarkPreviousImageToDeleteIfExists();
-
         selectedFile = file;
 
         using var memoryStream = new MemoryStream();
@@ -43,34 +39,14 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
 
         if (Property.IsPathToImage)
         {
-            RegisterEntitySubmittedMessage();
-        }
-    }
-
-    private void MarkPreviousImageToDeleteIfExists()
-    {
-        if (PropertyValue is not null && selectedFile is null)
-        {
-            pathToImageToDelete = Path.Combine(AdminOptions.StaticFilesFolder, PropertyValue!);
+            WeakReferenceMessenger.Default.Register(this);
         }
     }
 
     private void RemoveImage()
     {
-        if (Property.IsPathToImage && selectedFile is null)
-        {
-            pathToImageToDelete = Path.Combine(AdminOptions.StaticFilesFolder, PropertyValue!);
-            RegisterEntitySubmittedMessage();
-        }
-
         PropertyValue = null;
         selectedFile = null;
-    }
-
-    private void RegisterEntitySubmittedMessage()
-    {
-        WeakReferenceMessenger.Default.UnregisterAll(this);
-        WeakReferenceMessenger.Default.Register(this);
     }
 
     /// <summary>
@@ -83,11 +59,6 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
     /// </remarks>
     public async void Receive(EntitySubmittedMessage message)
     {
-        if (pathToImageToDelete is not null)
-        {
-            File.Delete(pathToImageToDelete);
-        }
-
         if (selectedFile is not null)
         {
             var imagePath = Path.Combine(AdminOptions.MediaFolder, Property.ImageFolder, selectedFile!.Name);
