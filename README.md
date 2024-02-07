@@ -505,7 +505,7 @@ Both of them can be configured via `[NetForgeProperty]` and `Fluent API`.
 
 `PathToImage` represents path to image on your storage.
 
-### Configuring place to store images
+### Configuring place to store media files
 
 `AdminOptions` has properties related to storage of static files.
 
@@ -515,10 +515,10 @@ public string StaticFilesFolder { get; set; } = "wwwroot";
 public string MediaFolder { get; set; } = "media";
 ```
 
-So default path to images - `wwwroot/images`.
+So default path to media files - `wwwroot/media`.
 
 Also, you can set `ImageFolder` property of `PropertyMetadata` to store images in separate folder.
-For example, if `ImageFolder` of the selected property is `Shop images`, then images will be stored in that way: `wwwroot/images/Shop images`.
+For example, if `ImageFolder` of the selected property is `Shop images`, then images will be stored in that way: `wwwroot/media/Shop images`.
 
 ## Base 64 String
 
