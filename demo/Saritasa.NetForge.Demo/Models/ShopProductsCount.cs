@@ -14,12 +14,10 @@ public class ShopProductsCount
     /// <summary>
     /// Shop.
     /// </summary>
-    [NetForgeNavigation(IsIncluded = true, Order = 1, DisplayName = "Shop Id")]
     public required Shop Shop { get; init; }
 
     /// <summary>
     /// Products count.
     /// </summary>
-    [NetForgeProperty(Order = 2)]
     public int ProductsCount { get; init; }
 }
