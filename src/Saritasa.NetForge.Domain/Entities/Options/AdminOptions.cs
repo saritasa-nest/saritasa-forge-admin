@@ -52,6 +52,11 @@ public class AdminOptions
     public ICollection<EntityGroup> EntityGroupsList { get; } = new List<EntityGroup>();
 
     /// <summary>
+    /// Whether entity group header should be expanded.
+    /// </summary>
+    public bool GroupHeadersExpanded { get; set; } = true;
+
+    /// <summary>
     /// Path to folder that contains static files.
     /// </summary>
     public string StaticFilesFolder { get; set; } = "wwwroot";
