@@ -20,13 +20,13 @@ public partial class NavigationField : CustomField
         set => EntityInstance.GetType().GetProperty(Property.Name)?.SetValue(EntityInstance, value);
     }
 
-    private IEnumerable<object>? NavigationInstances { get; set; }
+    private IEnumerable<object> NavigationInstances { get; set; } = new List<object>();
 
     /// <inheritdoc />
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        base.OnParametersSet();
+        await base.OnParametersSetAsync();
 
-        NavigationInstances = DataService.GetQuery(Property.ClrType!);
+        NavigationInstances = await DataService.GetDataAsync(Property.ClrType!);
     }
 }

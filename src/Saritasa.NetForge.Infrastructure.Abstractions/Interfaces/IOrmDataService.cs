@@ -15,6 +15,13 @@ public interface IOrmDataService
     IQueryable<object> GetQuery(Type clrType);
 
     /// <summary>
+    /// Gets data for specified type.
+    /// </summary>
+    /// <param name="clrType">CLR type.</param>
+    /// <returns>Data for specified type.</returns>
+    Task<IEnumerable<object>> GetDataAsync(Type clrType);
+
+    /// <summary>
     /// Get instance by primary key value.
     /// </summary>
     /// <param name="primaryKey">

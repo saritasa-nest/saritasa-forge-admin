@@ -1,7 +1,7 @@
 ﻿@inherits CustomField
 
 <MudSelect @bind-Value="PropertyValue" Variant="Variant.Outlined">
-    @foreach (var instance in NavigationInstances!)
+    @foreach (var instance in NavigationInstances)
     {
         <MudSelectItem Value="instance"></MudSelectItem>
     }
