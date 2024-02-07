@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Saritasa.NetForge.Blazor.Infrastructure.Services;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Mvvm.ViewModels;
 
@@ -13,6 +14,9 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
 {
     [Inject]
     private AdminOptions AdminOptions { get; init; } = null!;
+
+    [Inject]
+    private FileService FileService { get; init; } = null!;
 
     /// <summary>
     /// Property value.
@@ -30,10 +34,7 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
     private async Task UploadFileAsync(IBrowserFile file)
     {
         selectedFile = file;
-
-        using var memoryStream = new MemoryStream();
-        await file.OpenReadStream().CopyToAsync(memoryStream);
-        selectedFileBytes = memoryStream.ToArray();
+        selectedFileBytes = await FileService.GetFileBytesAsync(file.OpenReadStream());
 
         PropertyValue = $"data:{selectedFile!.ContentType};base64,{Convert.ToBase64String(selectedFileBytes)}";
 
@@ -61,15 +62,12 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
     {
         if (selectedFile is not null)
         {
-            var imagePath = Path.Combine(AdminOptions.MediaFolder, Property.ImageFolder, selectedFile!.Name);
-            var filePathToCreate = Path.Combine(AdminOptions.StaticFilesFolder, imagePath);
+            var filePath = Path.Combine(AdminOptions.MediaFolder, Property.ImageFolder, selectedFile!.Name);
+            var filePathToCreate = Path.Combine(AdminOptions.StaticFilesFolder, filePath);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(filePathToCreate)!);
+            await FileService.CreateFileAsync(filePathToCreate, selectedFileBytes!);
 
-            await using var fileStream = File.Create(filePathToCreate);
-            fileStream.Write(selectedFileBytes);
-
-            PropertyValue = imagePath;
+            PropertyValue = filePath;
         }
 
         WeakReferenceMessenger.Default.Reset();
