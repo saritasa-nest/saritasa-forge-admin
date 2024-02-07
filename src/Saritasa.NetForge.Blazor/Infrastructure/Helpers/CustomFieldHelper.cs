@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Blazor.Controls.CustomFields;
+using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.Blazor.Infrastructure.Helpers;
 
@@ -39,18 +40,23 @@ public static class CustomFieldHelper
         };
 
     /// <summary>
-    /// Gets custom field <see cref="Type"/> depending on <paramref name="propertyType"/>.
+    /// Gets custom field <see cref="Type"/> depending on <paramref name="property"/>.
     /// </summary>
-    public static Type GetComponentType(Type propertyType)
+    public static Type GetComponentType(PropertyMetadataDto property)
     {
+        if (property is NavigationMetadataDto)
+        {
+            return typeof(NavigationField);
+        }
+
         foreach (var (types, inputType) in TypeMappingDictionary)
         {
-            if (types.Contains(propertyType))
+            if (types.Contains(property.ClrType!))
             {
-                return inputType.IsGenericType ? inputType.MakeGenericType(propertyType) : inputType;
+                return inputType.IsGenericType ? inputType.MakeGenericType(property.ClrType!) : inputType;
             }
         }
 
-        return propertyType.IsEnum ? typeof(EnumField) : typeof(TextField);
+        return property.ClrType!.IsEnum ? typeof(EnumField) : typeof(TextField);
     }
 }
