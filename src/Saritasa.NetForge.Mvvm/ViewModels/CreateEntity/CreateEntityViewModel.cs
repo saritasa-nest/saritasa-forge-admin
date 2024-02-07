@@ -1,5 +1,4 @@
-﻿using System.Transactions;
-using AutoMapper;
+﻿using AutoMapper;
 using CommunityToolkit.Mvvm.Messaging;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
@@ -40,8 +39,6 @@ public class CreateEntityViewModel : BaseViewModel
     /// </summary>
     public bool IsEntityExists { get; private set; } = true;
 
-    public event EventHandler<string> OnCreate;
-
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
     {
@@ -73,8 +70,8 @@ public class CreateEntityViewModel : BaseViewModel
     /// </summary>
     public async Task CreateEntityAsync()
     {
-        WeakReferenceMessenger.Default.Send(new EntitySubmittedMessage());
         await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
+        WeakReferenceMessenger.Default.Send(new EntitySubmittedMessage());
         navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
     }
 }
