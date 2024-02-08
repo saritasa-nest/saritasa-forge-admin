@@ -36,12 +36,6 @@ public class EfCoreDataService : IOrmDataService
         return dbContext.Set(clrType).OfType<object>();
     }
 
-    /// <inheritdoc/>
-    public async Task<IEnumerable<object>> GetDataAsync(Type clrType)
-    {
-        return await GetQuery(clrType).ToListAsync();
-    }
-
     /// <inheritdoc />
     public async Task<object> GetInstanceAsync(string primaryKey, Type entityType, CancellationToken cancellationToken)
     {
