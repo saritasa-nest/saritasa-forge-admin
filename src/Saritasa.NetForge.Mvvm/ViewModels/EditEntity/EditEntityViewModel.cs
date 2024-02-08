@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Interfaces;
+using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using Saritasa.Tools.Domain.Exceptions;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
@@ -59,8 +60,6 @@ public class EditEntityViewModel : BaseViewModel
         {
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
             Model = mapper.Map<EditEntityModel>(entity);
-            Model.EntityInstance = await dataService
-                .GetInstanceAsync(InstancePrimaryKey, Model.ClrType!, CancellationToken);
             Model = Model with
             {
                 Properties = Model.Properties
@@ -73,6 +72,13 @@ public class EditEntityViewModel : BaseViewModel
                     })
                     .ToList()
             };
+
+            var includedNavigationNames = Model.Properties
+                .Where(property => property is NavigationMetadataDto)
+                .Select(property => property.Name);
+
+            Model.EntityInstance = await dataService
+                .GetInstanceAsync(InstancePrimaryKey, Model.ClrType!, includedNavigationNames, CancellationToken);
         }
         catch (NotFoundException)
         {
@@ -86,6 +92,6 @@ public class EditEntityViewModel : BaseViewModel
     public async Task UpdateEntityAsync()
     {
        await dataService.UpdateAsync(Model.EntityInstance!, CancellationToken);
-       IsUpdated = true;
+        IsUpdated = true;
     }
 }

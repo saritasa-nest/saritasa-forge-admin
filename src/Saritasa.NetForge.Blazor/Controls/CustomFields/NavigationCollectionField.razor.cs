@@ -9,9 +9,6 @@ namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
 /// <typeparam name="T">Underlying type of the collection.</typeparam>
 public partial class NavigationCollectionField<T> : CustomField
 {
-    [Inject]
-    private IOrmDataService DataService { get; init; } = null!;
-
     /// <summary>
     /// Navigation collection.
     /// </summary>
@@ -30,6 +27,6 @@ public partial class NavigationCollectionField<T> : CustomField
 
         var propertyType = Property.ClrType!.GetGenericArguments().First();
 
-        NavigationInstances = DataService.GetQuery(propertyType).Cast<T>().ToList();
+        NavigationInstances = Service.GetQuery(propertyType).Cast<T>().ToList();
     }
 }

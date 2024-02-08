@@ -37,7 +37,11 @@ public class EfCoreDataService : IOrmDataService
     }
 
     /// <inheritdoc />
-    public async Task<object> GetInstanceAsync(string primaryKey, Type entityType, CancellationToken cancellationToken)
+    public async Task<object> GetInstanceAsync(
+        string primaryKey,
+        Type entityType,
+        IEnumerable<string> includedNavigationNames,
+        CancellationToken cancellationToken)
     {
         var dbContext = GetDbContextThatContainsEntity(entityType);
         var type = dbContext.Model.FindEntityType(entityType)!;
@@ -77,6 +81,14 @@ public class EfCoreDataService : IOrmDataService
         // entity => ((entityType)entity).propertyName1.StartsWith(constant1)
         // && ((entityType)entity).propertyName2.StartsWith(constant2)
         var lambda = Expression.Lambda<Func<object, bool>>(primaryKeyExpression!, entity);
+
+        foreach (var navigationName in includedNavigationNames)
+        {
+            var navigationExpression = ExpressionExtensions.GetPropertyExpression(convertedEntity, navigationName);
+            var navigationLambda = Expression.Lambda<Func<object, object>>(navigationExpression, entity);
+
+            query = query.Include(navigationLambda);
+        }
 
         return await query.FirstAsync(lambda, cancellationToken);
     }
@@ -351,6 +363,6 @@ public class EfCoreDataService : IOrmDataService
         dbContext.Update(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        dbContext.Entry(entity).State = EntityState.Detached;
+        dbContext.ChangeTracker.Clear();
     }
 }
