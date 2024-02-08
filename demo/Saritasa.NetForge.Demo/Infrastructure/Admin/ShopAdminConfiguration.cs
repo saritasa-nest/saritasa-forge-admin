@@ -50,6 +50,10 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                             .SetIsSortable(true)
                             .SetSearchType(SearchType.ContainsCaseInsensitive);
                     });
+            })
+            .IncludeNavigation<Product>(shop => shop.Products, builder =>
+            {
+                builder.IncludeProperty(product => product.Id);
             });
     }
 }

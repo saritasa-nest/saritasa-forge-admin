@@ -12,7 +12,7 @@ When navigation represents a reference to another entity, then you can choose wh
 
 ### Collection
 
-When navigation represents a collection, the primary keys of all items will be displayed. For example: `[1, 15, 99]`.
+In case of the collection navigation we support displaying only primary keys. For example: `[1, 15, 99]`.
 
 ## Display navigations configuration
 
