@@ -37,7 +37,7 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     {
         base.OnParametersSet();
 
-        if (!ViewModel.Model.IsKeyless)
+        if (ViewModel.CanEdit)
         {
             NonKeylessEntityDataGridAttributes = new Dictionary<string, object>
             {

@@ -16,7 +16,7 @@
             <MudText Typo="Typo.body1">@ViewModel.Model.Description</MudText>
         </MudItem>
 
-        @if (!ViewModel.Model.IsKeyless)
+        @if (ViewModel.CanAdd)
         {
             <MudItem xs="12">
                 <MudButton Variant="Variant.Outlined" OnClick="@NavigateToCreation">
