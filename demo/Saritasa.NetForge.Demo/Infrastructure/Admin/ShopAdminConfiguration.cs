@@ -51,9 +51,21 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                             .SetSearchType(SearchType.ContainsCaseInsensitive);
                     });
             })
-            .IncludeNavigation<Product>(shop => shop.Products, builder =>
+            .IncludeNavigation<Product>(shop => shop.Products, navigationOptionsBuilder =>
             {
-                builder.IncludeProperty(product => product.Id);
+                navigationOptionsBuilder.IncludeProperty(product => product.Id);
+            })
+            .IncludeNavigation<Supplier>(shop => shop.Suppliers, navigationOptionsBuilder =>
+            {
+                navigationOptionsBuilder
+                    .IncludeProperty(supplier => supplier.Name, propertyOptionsBuilder =>
+                    {
+                        propertyOptionsBuilder.SetDisplayName("Supplier Name");
+                    })
+                    .IncludeProperty(supplier => supplier.City, propertyOptionsBuilder =>
+                    {
+                        propertyOptionsBuilder.SetDisplayName("Supplier City");
+                    });
             });
     }
 }
