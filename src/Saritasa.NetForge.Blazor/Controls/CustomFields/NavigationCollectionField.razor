@@ -1,7 +1,10 @@
 ﻿@inherits CustomField
 
-<MudSelect @bind-Value="PropertyValue"
-           Variant="Variant.Outlined">
+@typeparam T
+
+<MudSelect @bind-SelectedValues="NavigationCollection"
+           Variant="Variant.Outlined"
+           MultiSelection="true">
     @foreach (var instance in NavigationInstances)
     {
         <MudSelectItem Value="instance" />

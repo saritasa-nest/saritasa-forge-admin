@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
-using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
 
@@ -24,14 +23,10 @@ public partial class NavigationField : CustomField
     private List<object> NavigationInstances { get; set; } = new();
 
     /// <inheritdoc />
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        await base.OnInitializedAsync();
 
-        var propertyType = Property is NavigationMetadataDto { IsCollection: true }
-            ? Property.ClrType!.GetGenericArguments().First()
-            : Property.ClrType;
-
-        NavigationInstances = DataService.GetQuery(propertyType!).ToList();
+        NavigationInstances = DataService.GetQuery(Property.ClrType!).ToList();
     }
 }

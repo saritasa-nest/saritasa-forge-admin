@@ -44,9 +44,11 @@ public static class CustomFieldHelper
     /// </summary>
     public static Type GetComponentType(PropertyMetadataDto property)
     {
-        if (property is NavigationMetadataDto)
+        if (property is NavigationMetadataDto navigation)
         {
-            return typeof(NavigationField);
+            return navigation.IsCollection
+                ? typeof(NavigationCollectionField<>).MakeGenericType(property.ClrType!.GetGenericArguments().First())
+                : typeof(NavigationField);
         }
 
         foreach (var (types, inputType) in TypeMappingDictionary)
