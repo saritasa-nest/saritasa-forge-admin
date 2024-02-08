@@ -69,7 +69,7 @@ public class EditEntityViewModel : BaseViewModel
                         IsCalculatedProperty: false,
                         IsValueGeneratedOnAdd: false,
                         IsValueGeneratedOnUpdate: false,
-                        IsHiddenFromListView: false
+                        IsHiddenFromListView: false,
                     })
                     .ToList()
             };

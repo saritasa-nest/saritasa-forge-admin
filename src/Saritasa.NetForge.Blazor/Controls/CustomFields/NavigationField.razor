@@ -1,6 +1,9 @@
-﻿@inherits CustomField
+﻿@using Saritasa.NetForge.UseCases.Metadata.GetEntityById
+@inherits CustomField
 
-<MudSelect @bind-Value="PropertyValue" Variant="Variant.Outlined">
+<MudSelect @bind-Value="PropertyValue"
+           Variant="Variant.Outlined"
+           MultiSelection="Property is NavigationMetadataDto { IsCollection: true }">
     @foreach (var instance in NavigationInstances)
     {
         <MudSelectItem Value="instance"></MudSelectItem>
