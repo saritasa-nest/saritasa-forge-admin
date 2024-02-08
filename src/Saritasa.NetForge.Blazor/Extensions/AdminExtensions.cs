@@ -42,9 +42,9 @@ public static class AdminExtensions
     /// Setup Blazor routing for the NetForge admin panel.
     /// </summary>
     /// <param name="app">Web Application instance.</param>
-    public static void UseNetForge(this WebApplication app)
+    public static void UseNetForge(this IApplicationBuilder app)
     {
-        var optionsService = app.Services.GetRequiredService<AdminOptions>();
+        var optionsService = app.ApplicationServices.GetRequiredService<AdminOptions>();
         var adminPanelEndpoint = optionsService.AdminPanelEndpoint;
 
         // Make the application use blazor dependencies on a specific URL.
