@@ -1,0 +1,1 @@
+web: /workspace/app/Saritasa.NetForge.Demo.Net7S
