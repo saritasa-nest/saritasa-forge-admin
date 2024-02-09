@@ -1,1 +1,1 @@
-web: /workspace/app/Saritasa.NetForge.Demo.Net7
+web: /workspace/app/Saritasa.NetForge.Demo
