@@ -1,0 +1,10 @@
+﻿@inherits CustomField
+
+<MudTextField T="string"
+              Label="@Property.Name"
+              Variant="Variant.Outlined"
+              InputType="InputType.Text"
+              HelperText="@Property.Description"
+              Disabled="IsReadOnly"
+              @bind-Value="PropertyValue">
+</MudTextField>

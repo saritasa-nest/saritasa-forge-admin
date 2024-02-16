@@ -2,7 +2,9 @@
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Domain.Enums;
+using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
@@ -34,6 +36,51 @@ public class EfCoreDataService : IOrmDataService
         return dbContext.Set(clrType).OfType<object>();
     }
 
+    /// <inheritdoc />
+    public async Task<object> GetInstanceAsync(string primaryKey, Type entityType, CancellationToken cancellationToken)
+    {
+        var dbContext = GetDbContextThatContainsEntity(entityType);
+        var type = dbContext.Model.FindEntityType(entityType)!;
+        var key = type.FindPrimaryKey()!; // TODO: Handle keyless entities
+
+        var primaryKeyNames = key.Properties.Select(property => property.Name);
+        var primaryKeyValues = primaryKey.Split("--");
+        var primaryKeyNamesWithValues = primaryKeyNames.Zip(primaryKeyValues);
+
+        var query = GetQuery(entityType);
+
+        // entity
+        var entity = Expression.Parameter(typeof(object), Entity);
+
+        // (entityType)entity
+        var convertedEntity = Expression.Convert(entity, entityType);
+
+        Expression? primaryKeyExpression = null;
+        foreach (var (name, value) in primaryKeyNamesWithValues)
+        {
+            // ((entityType)entity).propertyName
+            var propertyExpression = Expression.Property(convertedEntity, name);
+
+            var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
+            var constant = Expression.Constant(value);
+
+            // ((entityType)entity).propertyName.StartsWith(constant)
+            var equalsCall = Expression.Call(
+                property, typeof(string).GetMethod(nameof(string.Equals), new[] { typeof(object) })!, constant);
+
+            primaryKeyExpression = primaryKeyExpression is null
+                ? equalsCall
+                : AddAndBetweenExpressions(equalsCall, primaryKeyExpression);
+        }
+
+        // Example with composite primary key:
+        // entity => ((entityType)entity).propertyName1.StartsWith(constant1)
+        // && ((entityType)entity).propertyName2.StartsWith(constant2)
+        var lambda = Expression.Lambda<Func<object, bool>>(primaryKeyExpression!, entity);
+
+        return await query.FirstAsync(lambda, cancellationToken);
+    }
+
     private DbContext GetDbContextThatContainsEntity(Type clrType)
     {
         foreach (var dbContextType in efCoreOptions.DbContexts)
@@ -62,7 +109,7 @@ public class EfCoreDataService : IOrmDataService
         IQueryable<object> query,
         string searchString,
         Type entityType,
-        IEnumerable<(string Name, SearchType SearchType)> properties)
+        IEnumerable<PropertySearchDto> properties)
     {
         // entity => entity
         var entity = Expression.Parameter(typeof(object), Entity);
@@ -78,7 +125,7 @@ public class EfCoreDataService : IOrmDataService
             var singleEntrySearchExpression = GetEntrySearchExpression(properties, convertedEntity, searchEntry);
 
             combinedSearchExpressions =
-                AddAndBetweenSearchExpressions(combinedSearchExpressions, singleEntrySearchExpression);
+                AddAndBetweenExpressions(combinedSearchExpressions, singleEntrySearchExpression);
         }
 
         if (combinedSearchExpressions is null)
@@ -94,20 +141,25 @@ public class EfCoreDataService : IOrmDataService
     /// Applies search using search entry to every searchable property, every property can have their own search type.
     /// </summary>
     private static Expression GetEntrySearchExpression(
-        IEnumerable<(string Name, SearchType SearchType)> properties, Expression entity, string searchEntry)
+        IEnumerable<PropertySearchDto> properties,
+        Expression entity,
+        string searchEntry)
     {
         Expression? singleEntrySearchExpression = null;
-        foreach (var (propertyName, searchType) in properties)
+        foreach (var property in properties)
         {
-            if (searchType == SearchType.None)
+            if (property.SearchType == SearchType.None)
             {
                 continue;
             }
 
-            // entity => ((entityType)entity).propertyName
-            var propertyExpression = Expression.Property(entity, propertyName);
+            var propertyName = property.NavigationName is null
+                ? property.PropertyName
+                : $"{property.NavigationName}.{property.PropertyName}";
 
-            var searchMethodCallExpression = searchType switch
+            var propertyExpression = ExpressionExtensions.GetPropertyExpression(entity, propertyName);
+
+            var searchMethodCallExpression = property.SearchType switch
             {
                 SearchType.ContainsCaseInsensitive
                     => GetContainsCaseInsensitiveMethodCall(propertyExpression, searchEntry),
@@ -129,31 +181,31 @@ public class EfCoreDataService : IOrmDataService
     }
 
     /// <summary>
-    /// Combines all search method call expressions to one expression with <see langword="OR"/> operator between.
+    /// Combines all expressions to one expression with <see langword="OR"/> operator between.
     /// </summary>
     private static Expression AddOrBetweenSearchExpressions(
-        Expression? singleEntrySearchExpression, Expression searchMethodCallExpression)
+        Expression? combinedExpressions, Expression expression)
     {
-        if (singleEntrySearchExpression is not null)
+        if (combinedExpressions is not null)
         {
             // Add OR operator between every searchable property using search entry
             // Example:
             // entity => Regex.IsMatch(((entityType)entity).propertyName, searchEntry, RegexOptions.IgnoreCase) ||
             //           ((entityType)entity).propertyName2.StartsWith(searchEntry) ||
             //           ...
-            return Expression.OrElse(singleEntrySearchExpression, searchMethodCallExpression);
+            return Expression.OrElse(combinedExpressions, expression);
         }
 
-        return searchMethodCallExpression;
+        return expression;
     }
 
     /// <summary>
-    /// Combines all search entry expressions to one expression with <see langword="AND"/> operator between.
+    /// Combines all expressions to one expression with <see langword="AND"/> operator between.
     /// </summary>
-    private static Expression AddAndBetweenSearchExpressions(
-        Expression? combinedSearchExpressions, Expression singleEntrySearchExpression)
+    private static Expression AddAndBetweenExpressions(
+        Expression? combinedExpressions, Expression expression)
     {
-        if (combinedSearchExpressions is not null)
+        if (combinedExpressions is not null)
         {
             // Example:
             // entity => (Regex.IsMatch(((entityType)entity).propertyName, searchEntry, RegexOptions.IgnoreCase) ||
@@ -162,10 +214,10 @@ public class EfCoreDataService : IOrmDataService
             //           (Regex.IsMatch(((entityType)entity).propertyName, searchEntry2, RegexOptions.IgnoreCase) ||
             //           ((entityType)entity).propertyName2.StartsWith(searchEntry2) ||
             //           ...) && ...
-            return Expression.And(combinedSearchExpressions, singleEntrySearchExpression);
+            return Expression.And(combinedExpressions, expression);
         }
 
-        return singleEntrySearchExpression;
+        return expression;
     }
 
     /// <summary>
@@ -298,5 +350,17 @@ public class EfCoreDataService : IOrmDataService
 
         dbContext.Remove(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task UpdateAsync(object entity, CancellationToken cancellationToken)
+    {
+        var entityType = entity.GetType();
+        var dbContext = GetDbContextThatContainsEntity(entityType);
+
+        dbContext.Update(entity);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        dbContext.Entry(entity).State = EntityState.Detached;
     }
 }

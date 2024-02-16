@@ -1,5 +1,6 @@
 ﻿@using Saritasa.NetForge.Blazor.Controls
 @using Saritasa.NetForge.Blazor.Extensions
+@using Saritasa.NetForge.Blazor.Infrastructure.Helpers
 
 @inherits MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.CreateEntity.CreateEntityViewModel>
 
@@ -13,24 +14,18 @@
 
     <MudGrid Justify="Justify.Center">
         <MudItem xs="6">
-            <EditForm Model="ViewModel.EntityModel" OnValidSubmit="ViewModel.CreateEntityAsync">
+            <EditForm Model="ViewModel.Model.EntityInstance" OnValidSubmit="ViewModel.CreateEntityAsync">
                 <div class="d-flex flex-column flex-grow-1 gap-4">
-                    @{
-                        var properties = ViewModel.Model.Properties
-                            .Where(property => property is
-                            {
-                                IsNavigation: false,
-                                IsCalculatedProperty: false,
-                                IsValueGeneratedOnAdd: false,
-                                IsValueGeneratedOnUpdate: false
-                            });
-
-                        foreach (var property in properties)
+                    @foreach (var property in ViewModel.Model.Properties)
+                    {
+                        var componentType = CustomFieldHelper.GetComponentType(property.ClrType!);
+                        var parameters = new Dictionary<string, object>
                         {
-                            <CustomField Property="@property"
-                                         EntityModel="@ViewModel.EntityModel">
-                            </CustomField>
-                        }
+                            { "Property", property },
+                            { "EntityInstance", ViewModel.Model.EntityInstance }
+                        };
+
+                        <DynamicComponent Type="componentType" Parameters="parameters" />
                     }
 
                     <div class="d-flex flex-row gap-4 pt-4">

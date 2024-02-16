@@ -22,4 +22,9 @@ public record CreateEntityModel
 
     /// <inheritdoc cref="EntityMetadata.Properties"/>
     public ICollection<PropertyMetadataDto> Properties { get; init; } = new List<PropertyMetadataDto>();
+
+    /// <summary>
+    /// Entity instance.
+    /// </summary>
+    public object EntityInstance { get; set; } = null!;
 }

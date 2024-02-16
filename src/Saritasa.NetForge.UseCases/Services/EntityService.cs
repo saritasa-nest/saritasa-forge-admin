@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Linq.Expressions;
 using AutoMapper;
+using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Enums;
+using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Interfaces;
@@ -64,16 +66,13 @@ public class EntityService : IEntityService
         var propertyDtos = mapper
             .Map<IEnumerable<PropertyMetadata>, IEnumerable<PropertyMetadataDto>>(displayableProperties);
 
-        if (metadata.Navigations.Any())
-        {
-            var displayableNavigations = metadata.Navigations
-                .Where(navigation => navigation is { IsExcludedFromQuery: false, IsIncluded: true });
+        var displayableNavigations = metadata.Navigations
+            .Where(navigation => navigation is { IsExcludedFromQuery: false, IsIncluded: true });
 
-            var navigations = mapper
-                .Map<IEnumerable<NavigationMetadata>, IEnumerable<PropertyMetadataDto>>(displayableNavigations);
+        var navigationDtos = mapper
+            .Map<IEnumerable<NavigationMetadata>, IEnumerable<NavigationMetadataDto>>(displayableNavigations);
 
-            propertyDtos = propertyDtos.Union(navigations);
-        }
+        propertyDtos = propertyDtos.Union(navigationDtos);
 
         var orderedProperties = propertyDtos
             .OrderByDescending(property => property is { IsPrimaryKey: true, Order: null })
@@ -109,7 +108,7 @@ public class EntityService : IEntityService
 
         if (searchOptions.OrderBy is not null)
         {
-            query = Order(query, searchOptions.OrderBy, entityType);
+            query = Order(query, searchOptions.OrderBy.ToList(), entityType);
         }
 
         var pagedList = PagedListFactory.FromSource(query, searchOptions.Page, searchOptions.PageSize);
@@ -160,39 +159,65 @@ public class EntityService : IEntityService
         ICollection<PropertyMetadataDto> properties,
         Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? searchFunction)
     {
-        if (!string.IsNullOrEmpty(searchString))
+        if (string.IsNullOrEmpty(searchString))
         {
-            if (properties.Any(property => property.SearchType != SearchType.None))
-            {
-                var propertyNamesWithSearchType = properties.Select(property => (property.Name, property.SearchType));
+            return query;
+        }
 
-                query = dataService.Search(query, searchString, entityType, propertyNamesWithSearchType);
+        if (properties.Any(property => property.SearchType != SearchType.None))
+        {
+            var propertySearches = new List<PropertySearchDto>();
+
+            foreach (var property in properties)
+            {
+                if (property is NavigationMetadataDto navigation)
+                {
+                    foreach (var targetProperty in navigation.TargetEntityProperties)
+                    {
+                        propertySearches.Add(new PropertySearchDto
+                        {
+                            PropertyName = targetProperty.Name,
+                            SearchType = targetProperty.SearchType,
+                            NavigationName = navigation.Name
+                        });
+                    }
+                }
+                else
+                {
+                    propertySearches.Add(new PropertySearchDto
+                    {
+                        PropertyName = property.Name,
+                        SearchType = property.SearchType
+                    });
+                }
             }
 
-            if (searchFunction is not null)
-            {
-                query = searchFunction(serviceProvider, query, searchString);
-            }
+            query = dataService.Search(query, searchString, entityType, propertySearches);
+        }
+
+        if (searchFunction is not null)
+        {
+            query = searchFunction(serviceProvider, query, searchString);
         }
 
         return query;
     }
 
     private static IOrderedQueryable<object> Order(
-        IQueryable<object> query, IEnumerable<OrderByDto> orderBy, Type entityType)
+        IQueryable<object> query, IList<OrderByDto> orderBy, Type entityType)
     {
         var orderByTuples = orderBy
             .Select(order =>
                 (order.FieldName, order.IsDescending ? ListSortDirection.Descending : ListSortDirection.Ascending))
             .ToArray();
 
-        var keySelectors = GetKeySelectors(orderByTuples.Select(order => order.FieldName).ToArray(), entityType);
+        var keySelectors = GetKeySelectors(orderBy, entityType);
 
         return CollectionUtils.OrderMultiple(query, orderByTuples, keySelectors);
     }
 
     private static (string FieldName, Expression<Func<object, object>> Selector)[] GetKeySelectors(
-        string[] orderByFields, Type entityType)
+        IList<OrderByDto> orderByFields, Type entityType)
     {
         // entity
         var entity = Expression.Parameter(typeof(object), "entity");
@@ -204,16 +229,27 @@ public class EntityService : IEntityService
         // ((entityType)entity).Name
         // ((entityType)entity).Description
         // ((entityType)entity).Count
+        // ((entityType)entity).Address.Street
         // ...
         // Note that there are converting property to object.
         // We need it to sort types that are not string. For example, numbers.
         var propertyExpressions = orderByFields
-            .Select(fieldName => Expression.Convert(Expression.Property(convertedEntity, fieldName), typeof(object)));
+            .Select(field =>
+            {
+                var propertyName = field.NavigationName is null
+                    ? field.FieldName
+                    : $"{field.NavigationName}.{field.FieldName}";
+
+                var propertyExpression = ExpressionExtensions.GetPropertyExpression(convertedEntity, propertyName);
+
+                return Expression.Convert(propertyExpression, typeof(object));
+            });
 
         // Make lambdas with properties. For example:
         // entity => ((entityType)entity).Name
         // entity => ((entityType)entity).Description
         // entity => ((entityType)entity).Count
+        // entity => ((entityType)entity).Address.Street
         // ...
         var lambdas = propertyExpressions
             .Select(property => Expression.Lambda<Func<object, object>>(property, entity))
@@ -223,11 +259,12 @@ public class EntityService : IEntityService
         // ("name", entity => ((entityType)entity).Name)
         // ("description", entity => ((entityType)entity).Description)
         // ("count", entity => ((entityType)entity).Count)
+        // ("street", entity => ((entityType)entity).Address.Street)
         // ...
-        var keySelectors = new (string, Expression<Func<object, object>>)[orderByFields.Length];
-        for (var i = 0; i < orderByFields.Length; i++)
+        var keySelectors = new (string, Expression<Func<object, object>>)[orderByFields.Count];
+        for (var i = 0; i < orderByFields.Count; i++)
         {
-            keySelectors[i] = (orderByFields[i], lambdas[i]);
+            keySelectors[i] = (orderByFields[i].FieldName, lambdas[i]);
         }
 
         return keySelectors;

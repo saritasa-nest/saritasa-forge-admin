@@ -252,6 +252,14 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                         .HasColumnType("text")
                         .HasColumnName("country");
 
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .IsUnicode(false)
+                        .HasColumnType("text")
+                        .HasColumnName("display_name")
+                        .HasComputedColumnSql("city || ', ' || street", true);
+
                     b.Property<double>("Latitude")
                         .HasColumnType("double precision")
                         .HasColumnName("latitude");

@@ -14,6 +14,11 @@ public abstract class PropertyMetadataBase
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
+    /// The type of the property.
+    /// </summary>
+    public Type? ClrType { get; set; }
+
+    /// <summary>
     /// The display name of the property. If not empty this name will be displayed instead of <see cref="Name"/>.
     /// </summary>
     public string DisplayName { get; set; } = string.Empty;
@@ -37,6 +42,16 @@ public abstract class PropertyMetadataBase
     /// Whether the property is hidden from the view.
     /// </summary>
     public bool IsHidden { get; set; }
+
+    /// <summary>
+    /// Whether the property is hidden from the list view.
+    /// </summary>
+    public bool IsHiddenFromListView { get; set; }
+
+    /// <summary>
+    /// Whether the property is hidden from the details.
+    /// </summary>
+    public bool IsHiddenFromDetails { get; set; }
 
     /// <summary>
     /// Whether the property is excluded from the query.

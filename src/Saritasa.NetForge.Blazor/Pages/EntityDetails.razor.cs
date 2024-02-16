@@ -3,6 +3,7 @@ using MudBlazor;
 using Saritasa.NetForge.Blazor.Controls;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
+using Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 
 namespace Saritasa.NetForge.Blazor.Pages;
@@ -56,5 +57,15 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
         {
             await ViewModel.DeleteEntityAsync(source, CancellationToken.None);
         }
+    }
+    
+    private void NavigateToEditing(DataGridRowClickEventArgs<object> row)
+    {
+        var primaryKeyValues = ViewModel.Model.Properties
+            .Where(property => property.IsPrimaryKey)
+            .Select(primaryKey => ViewModel.GetPropertyValue(row.Item, primaryKey).ToString()!);
+
+        NavigationService.NavigateTo<EditEntityViewModel>(
+            parameters: new[] { StringId, string.Join("--", primaryKeyValues) });
     }
 }

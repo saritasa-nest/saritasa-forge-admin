@@ -2,7 +2,7 @@
 using Saritasa.NetForge.Tests.Domain.Models;
 using Xunit;
 
-namespace Saritasa.NetForge.Tests;
+namespace Saritasa.NetForge.Tests.MetadataTests;
 
 /// <summary>
 /// HTML format for entity properties tests.

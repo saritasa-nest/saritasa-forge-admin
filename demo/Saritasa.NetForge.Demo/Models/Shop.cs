@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using Saritasa.NetForge.Demo.Constants;
 using Saritasa.NetForge.Domain.Attributes;
+using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.Demo.Models;
 
@@ -27,7 +28,6 @@ public class Shop
     /// <summary>
     /// The address of the shop.
     /// </summary>
-    [NetForgeNavigation(DisplayName = "AddressId", Description = "Address identifier.", Order = 1)]
     public Address? Address { get; set; }
 
     /// <summary>
@@ -38,7 +38,11 @@ public class Shop
     /// <summary>
     /// The total sales amount for the shop.
     /// </summary>
-    [NetForgeProperty(DisplayName = "Sales", Description = "Total sales.", IsSortable = true)]
+    [NetForgeProperty(
+        DisplayName = "Sales",
+        Description = "Total sales.",
+        IsSortable = true,
+        SearchType = SearchType.StartsWithCaseSensitive)]
     public decimal TotalSales { get; set; }
 
     /// <summary>

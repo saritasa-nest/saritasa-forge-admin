@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a shop entity.
 /// </summary>
-public class Shop
+internal class Shop
 {
     /// <summary>
     /// Unique identifier for the shop.

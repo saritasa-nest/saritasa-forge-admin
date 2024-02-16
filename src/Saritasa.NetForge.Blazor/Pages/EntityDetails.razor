@@ -2,6 +2,7 @@
 @using Saritasa.NetForge.Domain.Enums
 @using Saritasa.NetForge.Domain.Entities.Options
 @using Saritasa.NetForge.Blazor.Extensions
+@using Saritasa.NetForge.UseCases.Metadata.GetEntityById
 @inject AdminOptions AdminOptions
 @inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.EntityDetails.EntityDetailsViewModel>
 
@@ -17,12 +18,11 @@
 
         <MudItem xs="12">
             <MudButton Variant="Variant.Outlined" OnClick="@NavigateToCreation">
-                    Add @ViewModel.Model.DisplayName.ToMeaningfulName()
+                Add @ViewModel.Model.DisplayName.ToMeaningfulName()
             </MudButton>
         </MudItem>
 
-        @if (ViewModel.Model.Properties.Any(property => property.SearchType != SearchType.None)
-             || ViewModel.Model.SearchFunction is not null)
+        @if (ViewModel.IsDisplaySearchInput)
         {
             const int debounceInterval = 250;
             <MudItem xs="6">
@@ -40,55 +40,73 @@
 
         <MudItem xs="12">
             <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true"
-                         @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple">
+                         @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple" RowClick="NavigateToEditing"
+                         Hover RowClass="cursor-pointer">
                 <Columns>
-                    @foreach (var property in ViewModel.Model.Properties)
-                    {
-                        if (property.IsHidden)
+                    @{
+                        foreach (var property in ViewModel.Model.Properties)
                         {
-                            continue;
+                            if (property is NavigationMetadataDto { IsCollection: false } navigation)
+                            {
+                                foreach (var targetProperty in navigation.TargetEntityProperties)
+                                {
+                                    RenderPropertyColumn(targetProperty, navigation.Name);
+                                }
+                            }
+                            else
+                            {
+                                RenderPropertyColumn(property);
+                            }
                         }
-                        <TemplateColumn Title="@property.Name" Sortable="property.IsSortable">
-                            <HeaderTemplate>
-                                @{
-                                    var displayName = ViewModel.GetPropertyDisplayName(property);
-                                    if (AdminOptions.TitleCaseProperties)
-                                    {
-                                        displayName = displayName.ToMeaningfulName();
-                                    }
 
-                                    if (string.IsNullOrEmpty(property.Description))
-                                    {
-                                        @displayName
-                                    }
-                                    else
-                                    {
-                                        <MudTooltip Arrow="true" Placement="@Placement.Top">
-                                            <ChildContent>
-                                                @displayName
-                                            </ChildContent>
-                                            <TooltipContent>
-                                                <MudText Typo="@Typo.body2">@property.Description</MudText>
-                                            </TooltipContent>
-                                        </MudTooltip>
-                                    }
-                                }
-                            </HeaderTemplate>
+                        void RenderPropertyColumn(PropertyMetadataDto property, string? navigationName = null)
+                        {
+                            <TemplateColumn Title="@property.Name" Sortable="property.IsSortable" NavigationName="@navigationName">
+                                <HeaderTemplate>
+                                    @{
+                                        var displayName = ViewModel.GetPropertyDisplayName(property);
+                                        if (AdminOptions.TitleCaseProperties)
+                                        {
+                                            displayName = displayName.ToMeaningfulName();
+                                        }
 
-                            <CellTemplate Context="cell">
-                                @{
-                                    var propertyValue = ViewModel.GetPropertyValue(cell.Item, property).ToString();
-                                    if (property.DisplayAsHtml)
-                                    {
-                                        @((MarkupString)propertyValue!)
+                                        if (string.IsNullOrEmpty(property.Description))
+                                        {
+                                            @displayName
+                                        }
+                                        else
+                                        {
+                                            <MudTooltip Arrow="true" Placement="@Placement.Top">
+                                                <ChildContent>
+                                                    @displayName
+                                                </ChildContent>
+                                                <TooltipContent>
+                                                    <MudText Typo="@Typo.body2">@property.Description</MudText>
+                                                    </TooltipContent>
+                                                </MudTooltip>
+                                        }
                                     }
-                                    else
-                                    {
-                                        @propertyValue
+                                </HeaderTemplate>
+
+                                <CellTemplate Context="cell">
+                                    @{
+                                        var instance = navigationName is null
+                                        ? cell.Item
+                                        : cell.Item.GetType().GetProperty(navigationName)?.GetValue(cell.Item);
+
+                                        var propertyValue = ViewModel.GetPropertyValue(instance, property).ToString();
+                                        if (property.DisplayAsHtml)
+                                        {
+                                            @((MarkupString)propertyValue!)
+                                        }
+                                        else
+                                        {
+                                            @propertyValue
+                                        }
                                     }
-                                }
-                            </CellTemplate>
-                        </TemplateColumn>
+                                </CellTemplate>
+                            </TemplateColumn>
+                        }
                     }
                     <TemplateColumn CellClass="d-flex justify-end">
                         <CellTemplate>

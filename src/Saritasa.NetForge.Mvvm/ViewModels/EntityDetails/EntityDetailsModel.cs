@@ -6,7 +6,7 @@ namespace Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 /// <summary>
 /// Entity details model.
 /// </summary>
-public class EntityDetailsModel
+public record EntityDetailsModel
 {
     /// <inheritdoc cref="EntityMetadata.Id"/>
     public Guid Id { get; set; }
@@ -28,6 +28,9 @@ public class EntityDetailsModel
 
     /// <inheritdoc cref="EntityMetadata.Properties"/>
     public ICollection<PropertyMetadataDto> Properties { get; set; } = new List<PropertyMetadataDto>();
+
+    /// <inheritdoc cref="EntityMetadata.Navigations"/>
+    public ICollection<NavigationMetadataDto> Navigations { get; set; } = new List<NavigationMetadataDto>();
 
     /// <inheritdoc cref="EntityMetadata.SearchFunction"/>
     public Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? SearchFunction { get; set; }

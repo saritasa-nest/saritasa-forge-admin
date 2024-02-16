@@ -319,6 +319,17 @@ services.AddNetForge(optionsBuilder =>
 public class ProductTag
 ```
 
+### Groups Headers Expanded
+
+You can customize expanded header of all groups. By default, all groups are expanded.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetGroupHeadersExpanded(true)
+});
+```
+
 ## Calculated Properties
 Calculated properties are properties that don't have a direct representation in your database but are computed based on other existing properties. These properties can be useful for displaying calculated values in the admin panel.
 

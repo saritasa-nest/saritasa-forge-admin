@@ -3,7 +3,7 @@
 /// <summary>
 /// Product category.
 /// </summary>
-public enum Category
+internal enum Category
 {
     /// <summary>
     /// Milk.
