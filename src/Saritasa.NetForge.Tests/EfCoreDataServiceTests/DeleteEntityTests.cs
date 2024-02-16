@@ -4,6 +4,7 @@ using Saritasa.NetForge.Infrastructure.EfCore;
 using Saritasa.NetForge.Infrastructure.EfCore.Services;
 using Saritasa.NetForge.Tests.Domain;
 using Saritasa.NetForge.Tests.Domain.Models;
+using Saritasa.NetForge.Tests.Helpers;
 using Xunit;
 
 namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
@@ -13,22 +14,17 @@ namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 /// </summary>
 public class DeleteEntityTests : IDisposable
 {
-    private bool disposedValue;
+    private TestDbContext TestDbContext { get; set; }
 
     /// <summary>
     /// Constructor.
     /// </summary>
     public DeleteEntityTests()
     {
-        var dbOptions = new DbContextOptionsBuilder<TestDbContext>()
-            .UseInMemoryDatabase("NetForgeTest")
-            .Options;
-
-        DbContext = new TestDbContext(dbOptions);
-        DbContext.Database.EnsureCreated();
+        TestDbContext = EfCoreHelper.CreateTestDbContext();
     }
 
-    private TestDbContext DbContext { get; }
+    private bool disposedValue;
 
     /// <inheritdoc />
     public void Dispose()
@@ -47,8 +43,7 @@ public class DeleteEntityTests : IDisposable
         {
             if (disposing)
             {
-                DbContext.Database.EnsureDeleted();
-                DbContext.Dispose();
+                TestDbContext.Dispose();
             }
 
             disposedValue = true;
@@ -77,7 +72,7 @@ public class DeleteEntityTests : IDisposable
     public async Task DeleteEntity_ValidEntity_Success()
     {
         // Arrange
-        var efCoreDataService = CreateEfCoreDataService(DbContext);
+        var efCoreDataService = CreateEfCoreDataService(TestDbContext);
 
         var contactInfoType = typeof(ContactInfo);
         var contactInfo = new ContactInfo
@@ -92,7 +87,7 @@ public class DeleteEntityTests : IDisposable
         await efCoreDataService.DeleteAsync(contactInfo, contactInfoType, CancellationToken.None);
 
         // Assert
-        Assert.DoesNotContain(contactInfo, DbContext.ContactInfos);
+        Assert.DoesNotContain(contactInfo, TestDbContext.ContactInfos);
     }
 
     /// <summary>
@@ -102,7 +97,7 @@ public class DeleteEntityTests : IDisposable
     public async Task DeleteEntity_NonExistingEntity_NoEffect()
     {
         // Arrange
-        var efCoreDataService = CreateEfCoreDataService(DbContext);
+        var efCoreDataService = CreateEfCoreDataService(TestDbContext);
 
         var contactInfoType = typeof(ContactInfo);
         var nonExistingContactInfo = new ContactInfo
@@ -123,7 +118,7 @@ public class DeleteEntityTests : IDisposable
     public async Task DeleteEntity_InvalidType_ThrowsException()
     {
         // Arrange
-        var efCoreDataService = CreateEfCoreDataService(DbContext);
+        var efCoreDataService = CreateEfCoreDataService(TestDbContext);
 
         var invalidType = typeof(int); // Assuming InvalidType is not a valid entity type
 
