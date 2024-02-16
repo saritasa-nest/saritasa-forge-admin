@@ -82,6 +82,6 @@ public class DeleteEntityTests : TestBed<NetForgeFixture>
 
         // Act and Assert
         await Assert.ThrowsAsync<ArgumentException>(() =>
-            efCoreDataService.DeleteAsync(null, invalidType, CancellationToken.None));
+            efCoreDataService.DeleteAsync(1, invalidType, CancellationToken.None));
     }
 }
