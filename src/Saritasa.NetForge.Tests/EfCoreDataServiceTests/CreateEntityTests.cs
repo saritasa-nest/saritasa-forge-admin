@@ -84,7 +84,7 @@ public class CreateEntityTests : IDisposable
         await efCoreDataService.AddAsync(contactInfo, contactInfoType, CancellationToken.None);
 
         // Assert
-        Assert.Contains(contactInfo, TestDbContext.ContactInfos);
+        Assert.Contains(TestDbContext.ContactInfos, item => item.Id == contactInfo.Id);
     }
 
     /// <summary>
