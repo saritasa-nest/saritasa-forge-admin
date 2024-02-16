@@ -1,109 +1,69 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Moq;
-using Saritasa.NetForge.Infrastructure.EfCore;
-using Saritasa.NetForge.Infrastructure.EfCore.Services;
+using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Tests.Domain;
 using Saritasa.NetForge.Tests.Domain.Models;
+using Saritasa.NetForge.Tests.Fixtures;
 using Saritasa.NetForge.Tests.Helpers;
 using Xunit;
+using Xunit.Abstractions;
+using Xunit.Microsoft.DependencyInjection.Abstracts;
+using Xunit.Microsoft.DependencyInjection.Attributes;
 
 namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 
 /// <summary>
 /// Delete entity tests.
 /// </summary>
-public class DeleteEntityTests : IDisposable
+[TestCaseOrderer(Constants.OrdererTypeName, Constants.OrdererAssemblyName)]
+public class DeleteEntityTests : TestBed<NetForgeFixture>
 {
-    private TestDbContext TestDbContext { get; set; }
+#pragma warning disable CA2213
+    private readonly TestDbContext testDbContext;
+#pragma warning restore CA2213
+    private readonly IOrmDataService efCoreDataService;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public DeleteEntityTests()
+    public DeleteEntityTests(ITestOutputHelper testOutputHelper, NetForgeFixture netForgeFixture)
+        : base(testOutputHelper, netForgeFixture)
     {
-        TestDbContext = EfCoreHelper.CreateTestDbContext();
-    }
-
-    private bool disposedValue;
-
-    /// <inheritdoc />
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
-    /// Deletes the database after one test is complete,
-    /// so it gives us the same state of the database for every test.
-    /// </summary>
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!disposedValue)
-        {
-            if (disposing)
-            {
-                TestDbContext.Dispose();
-            }
-
-            disposedValue = true;
-        }
-    }
-
-    private static EfCoreDataService CreateEfCoreDataService(TestDbContext testDbContext)
-    {
-        var efCoreOptions = new EfCoreOptions();
-        var shopDbContextType = typeof(TestDbContext);
-        efCoreOptions.DbContexts.Add(shopDbContextType);
-
-        var serviceProvider = new Mock<IServiceProvider>();
-
-        serviceProvider
-            .Setup(provider => provider.GetService(shopDbContextType))
-            .Returns(testDbContext);
-
-        return new EfCoreDataService(efCoreOptions, serviceProvider.Object);
+        testDbContext = _fixture.GetService<TestDbContext>(_testOutputHelper)!;
+        efCoreDataService = _fixture.GetService<IOrmDataService>(_testOutputHelper)!;
     }
 
     /// <summary>
     /// Delete valid entity test.
     /// </summary>
     [Fact]
+    [TestOrder(1)]
     public async Task DeleteEntity_ValidEntity_Success()
     {
         // Arrange
-        var efCoreDataService = CreateEfCoreDataService(TestDbContext);
-
         var contactInfoType = typeof(ContactInfo);
-        var contactInfo = new ContactInfo
-        {
-            Id = 3, Email = "Test3@test.test", FullName = "Test Contact3", PhoneNumber = "32223334455"
-        };
+        var contactInfo = Fakers.ContactInfoFaker.Generate();
 
         // Add the contactInfo to the database before attempting to delete it
         await efCoreDataService.AddAsync(contactInfo, contactInfoType, CancellationToken.None);
+        var deletedEntity = testDbContext.ContactInfos.FirstOrDefault(x => x.Id == contactInfo.Id);
 
         // Act
-        await efCoreDataService.DeleteAsync(contactInfo, contactInfoType, CancellationToken.None);
+        await efCoreDataService.DeleteAsync(deletedEntity!, contactInfoType, CancellationToken.None);
 
         // Assert
-        Assert.DoesNotContain(contactInfo, TestDbContext.ContactInfos);
+        Assert.DoesNotContain(contactInfo, testDbContext.ContactInfos);
     }
 
     /// <summary>
     /// Delete non-existing entity test.
     /// </summary>
     [Fact]
+    [TestOrder(2)]
     public async Task DeleteEntity_NonExistingEntity_NoEffect()
     {
         // Arrange
-        var efCoreDataService = CreateEfCoreDataService(TestDbContext);
-
         var contactInfoType = typeof(ContactInfo);
-        var nonExistingContactInfo = new ContactInfo
-        {
-            Id = 99, Email = "NonExisting@test.test", FullName = "Non-Existing Contact", PhoneNumber = "9999999999"
-        };
+        var nonExistingContactInfo = Fakers.ContactInfoFaker.Generate();
 
         // Act
         // Assert that DbUpdateConcurrencyException is not thrown
@@ -115,11 +75,10 @@ public class DeleteEntityTests : IDisposable
     /// Delete entity with invalid type test.
     /// </summary>
     [Fact]
+    [TestOrder(2)]
     public async Task DeleteEntity_InvalidType_ThrowsException()
     {
         // Arrange
-        var efCoreDataService = CreateEfCoreDataService(TestDbContext);
-
         var invalidType = typeof(int); // Assuming InvalidType is not a valid entity type
 
         // Act and Assert
