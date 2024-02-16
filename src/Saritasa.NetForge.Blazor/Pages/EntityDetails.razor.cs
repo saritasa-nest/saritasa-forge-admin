@@ -14,9 +14,11 @@ namespace Saritasa.NetForge.Blazor.Pages;
 [Route("/entities/{stringId}")]
 public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
 {
-    [Inject] private INavigationService NavigationService { get; set; } = null!;
+    [Inject]
+    private INavigationService NavigationService { get; set; } = null!;
 
-    [Inject] private IDialogService DialogService { get; set; } = default!;
+    [Inject]
+    private IDialogService DialogService { get; set; } = default!;
 
     /// <summary>
     /// Entity id.
@@ -29,7 +31,6 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     /// <inheritdoc/>
     protected override EntityDetailsViewModel CreateViewModel()
     {
-        this.StateHasChanged();
         return ViewModelFactory.Create<EntityDetailsViewModel>(StringId);
     }
 
@@ -58,7 +59,7 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
             await ViewModel.DeleteEntityAsync(source, CancellationToken.None);
         }
     }
-    
+
     private void NavigateToEditing(DataGridRowClickEventArgs<object> row)
     {
         var primaryKeyValues = ViewModel.Model.Properties
