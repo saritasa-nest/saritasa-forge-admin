@@ -288,6 +288,7 @@ public class EfCoreDataService : IOrmDataService
 
         dbContext.Add(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
+        dbContext.ChangeTracker.Clear();
     }
 
     /// <inheritdoc />
