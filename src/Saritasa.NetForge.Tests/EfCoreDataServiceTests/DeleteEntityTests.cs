@@ -45,13 +45,12 @@ public class DeleteEntityTests : TestBed<NetForgeFixture>
 
         // Add the contactInfo to the database before attempting to delete it
         await efCoreDataService.AddAsync(contactInfo, contactInfoType, CancellationToken.None);
-        var deletedEntity = testDbContext.ContactInfos.FirstOrDefault(x => x.Id == contactInfo.Id);
 
         // Act
-        await efCoreDataService.DeleteAsync(deletedEntity!, contactInfoType, CancellationToken.None);
+        await efCoreDataService.DeleteAsync(contactInfo, contactInfoType, CancellationToken.None);
 
         // Assert
-        Assert.DoesNotContain(contactInfo, testDbContext.ContactInfos);
+        Assert.DoesNotContain(testDbContext.ContactInfos, item => item.Id == contactInfo.Id);
     }
 
     /// <summary>

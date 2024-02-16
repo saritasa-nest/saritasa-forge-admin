@@ -44,10 +44,9 @@ public class CreateEntityTests : TestBed<NetForgeFixture>
 
         // Act
         await efCoreDataService.AddAsync(contactInfo, contactInfoType, CancellationToken.None);
-        var existingContactInfo = testDbContext.ContactInfos.FirstOrDefault(x => x.Id == contactInfo.Id);
 
         // Assert
-        Assert.Contains(existingContactInfo, testDbContext.ContactInfos);
+        Assert.Contains(testDbContext.ContactInfos, item => item.Id == contactInfo.Id);
     }
 
     /// <summary>
