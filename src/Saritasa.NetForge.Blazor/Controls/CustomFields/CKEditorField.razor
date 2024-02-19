@@ -1,0 +1,8 @@
+﻿@inject IJSRuntime JsRuntime;
+@inherits Saritasa.NetForge.Blazor.Controls.CustomFields.CustomField;
+
+<div>
+    <textarea @ref="editor">
+        @PropertyValue
+    </textarea>
+</div>
