@@ -346,3 +346,6 @@ web.config
 appsettings.Development.json
 firestore.Development.json
 .data
+
+# Ignore the launch setting of the Blazor library.
+src/Saritasa.NetForge.Blazor/Properties/launchSettings.json
