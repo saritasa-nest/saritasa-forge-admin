@@ -1,7 +1,7 @@
 ﻿@inject IJSRuntime JsRuntime;
 @inherits Saritasa.NetForge.Blazor.Controls.CustomFields.CustomField;
 
-<div>
+<div class="@(IsReadOnly ? "editor--disabled" : "")">
     <MudText Typo="Typo.subtitle2" Class="px-2">@Property.Name</MudText>
     <textarea @ref="editor">
         @PropertyValue
