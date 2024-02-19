@@ -7,6 +7,38 @@
  * @param {boolean} isReadOnly - A boolean indicating whether the editor should be in read-only mode.
  */
 export function InitCKEditor(element, id, isReadOnly) {
+    ClassicEditor.defaultConfig = {
+        toolbar: {
+            items: [
+                'heading',
+                '|',
+                'bold',
+                'italic',
+                '|',
+                'bulletedList',
+                'numberedList',
+                '|',
+                'insertTable',
+                '|',
+                '|',
+                'mediaEmbed',
+                'undo',
+                'redo'
+            ]
+        },
+        image: {
+            toolbar: [
+                'imageStyle:full',
+                'imageStyle:side',
+                '|',
+                'imageTextAlternative'
+            ]
+        },
+        table: {
+            contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+        },
+        language: 'en'
+    };
     ClassicEditor.create(element)
     .then(editor => {
         if (isReadOnly) {
