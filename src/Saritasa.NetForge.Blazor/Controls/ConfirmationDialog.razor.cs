@@ -6,7 +6,7 @@ namespace Saritasa.NetForge.Blazor.Controls;
 /// <summary>
 /// Delete entity confirmation dialog.
 /// </summary>
-public partial class DeleteEntityConfirmationDialog
+public partial class ConfirmationDialog
 {
     [CascadingParameter]
     private MudDialogInstance MudDialog { get; set; } = default!;

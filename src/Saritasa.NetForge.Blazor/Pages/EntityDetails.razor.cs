@@ -18,6 +18,9 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     private INavigationService NavigationService { get; set; } = null!;
 
     [Inject]
+    private ISnackbar Snackbar { get; set; } = default!;
+
+    [Inject]
     private IDialogService DialogService { get; set; } = default!;
 
     /// <summary>
@@ -53,10 +56,18 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
 
     private async void ShowDeleteEntityConfirmationAsync(object source)
     {
-        var result = await DialogService.Show<DeleteEntityConfirmationDialog>(string.Empty).Result;
+        var result = await DialogService.Show<ConfirmationDialog>(string.Empty).Result;
         if (!result.Canceled)
         {
-            await ViewModel.DeleteEntityAsync(source, CancellationToken.None);
+            try
+            {
+                await ViewModel.DeleteEntityAsync(source, CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Failed to delete record due to error: {ex.Message}", Severity.Error);
+                throw;
+            }
         }
     }
 

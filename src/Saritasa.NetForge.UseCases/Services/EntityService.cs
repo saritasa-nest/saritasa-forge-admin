@@ -289,8 +289,8 @@ public class EntityService : IEntityService
     }
 
     /// <inheritdoc />
-    public async Task DeleteEntityAsync(object entity, Type entityType, CancellationToken cancellationToken)
+    public Task DeleteEntityAsync(object entity, Type entityType, CancellationToken cancellationToken)
     {
-        await dataService.DeleteAsync(entity, entityType, cancellationToken);
+        return dataService.DeleteAsync(entity, entityType, cancellationToken);
     }
 }
