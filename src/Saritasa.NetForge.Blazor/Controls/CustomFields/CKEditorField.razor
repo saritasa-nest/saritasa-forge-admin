@@ -2,7 +2,7 @@
 @inherits Saritasa.NetForge.Blazor.Controls.CustomFields.CustomField;
 
 <div>
-    <MudText Typo="Typo.subtitle2">@Property.DisplayName</MudText>
+    <MudText Typo="Typo.subtitle2" Class="px-2">@Property.Name</MudText>
     <textarea @ref="editor">
         @PropertyValue
     </textarea>
