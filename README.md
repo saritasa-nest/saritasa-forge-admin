@@ -452,7 +452,7 @@ You can explicitly control whether a property should be excluded from the data q
 optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
 {
     entityOptionsBuilder.ConfigureProperty(user => user.DateOfBirth,
-        propertyBuilder => propertyBuilder.SetIsExcludeFromQuery(true));
+        propertyBuilder => propertyBuilder.SetIsExcludedFromQuery(true));
 });
 ```
 
