@@ -154,5 +154,10 @@ public static class EntityMetadataAttributesExtensions
         {
             property.DisplayAsHtml = netForgePropertyAttribute.DisplayAsHtml;
         }
+
+        if (netForgePropertyAttribute.IsRichTextField)
+        {
+            property.IsRichTextField = netForgePropertyAttribute.IsRichTextField;
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Blazor.Controls.CustomFields;
+using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.Blazor.Infrastructure.Helpers;
 
@@ -47,10 +48,17 @@ public static class CustomFieldHelper
         };
 
     /// <summary>
-    /// Gets custom field <see cref="Type"/> depending on <paramref name="propertyType"/>.
+    /// Gets custom field <see cref="Type"/> depending on <see cref="PropertyMetadataDto.ClrType"/>.
     /// </summary>
-    public static Type GetComponentType(Type propertyType)
+    public static Type GetComponentType(PropertyMetadataDto propertyMetadata)
     {
+        if (propertyMetadata.IsRichTextField)
+        {
+            return typeof(CKEditorField);
+        }
+
+        var propertyType = propertyMetadata.ClrType!;
+
         foreach (var (types, inputType) in TypeMappingDictionary)
         {
             if (types.Contains(propertyType))

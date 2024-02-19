@@ -24,6 +24,7 @@ public class Product
     /// <summary>
     /// The description of the product.
     /// </summary>
+    [NetForgeProperty(IsRichTextField = true)]
     public required string Description { get; set; }
 
     /// <summary>

@@ -87,4 +87,9 @@ public abstract class PropertyMetadataBase
     /// Whether the property is rendered as HTML.
     /// </summary>
     public bool DisplayAsHtml { get; set; }
+
+    /// <summary>
+    /// Whether the property should be displayed in the rich text field.
+    /// </summary>
+    public bool IsRichTextField { get; set; }
 }
