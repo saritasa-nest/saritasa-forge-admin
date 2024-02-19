@@ -63,4 +63,3 @@ public static class CustomFieldHelper
         return propertyType.IsEnum ? typeof(EnumField) : typeof(TextField);
     }
 }
-
