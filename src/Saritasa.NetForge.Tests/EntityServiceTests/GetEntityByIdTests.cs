@@ -2,6 +2,7 @@
 using Moq;
 using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.Domain.Enums;
+using Saritasa.NetForge.Domain.Exceptions;
 using Saritasa.NetForge.DomainServices;
 using Saritasa.NetForge.Tests.Domain;
 using Saritasa.NetForge.Tests.Domain.Constants;
@@ -11,7 +12,6 @@ using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.UseCases.Metadata.Services;
 using Saritasa.NetForge.UseCases.Services;
-using Saritasa.Tools.Domain.Exceptions;
 using Xunit;
 
 namespace Saritasa.NetForge.Tests.EntityServiceTests;

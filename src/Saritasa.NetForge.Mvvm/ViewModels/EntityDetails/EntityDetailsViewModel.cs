@@ -2,11 +2,11 @@
 using AutoMapper;
 using MudBlazor;
 using Saritasa.NetForge.Domain.Enums;
+using Saritasa.NetForge.Domain.Exceptions;
 using Saritasa.NetForge.Mvvm.Utils;
 using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
-using Saritasa.Tools.Domain.Exceptions;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 
