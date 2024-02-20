@@ -4,7 +4,7 @@ using MudBlazor;
 namespace Saritasa.NetForge.Blazor.Controls;
 
 /// <summary>
-/// Delete entity confirmation dialog.
+/// Confirmation dialog.
 /// </summary>
 public partial class ConfirmationDialog
 {
