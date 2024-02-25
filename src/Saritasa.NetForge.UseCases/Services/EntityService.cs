@@ -61,13 +61,13 @@ public class EntityService : IEntityService
         }
 
         var displayableProperties = metadata.Properties
-            .Where(property => property is { IsForeignKey: false, IsHidden: false });
+            .Where(property => property is { IsForeignKey: false });
 
         var propertyDtos = mapper
             .Map<IEnumerable<PropertyMetadata>, IEnumerable<PropertyMetadataDto>>(displayableProperties);
 
         var displayableNavigations = metadata.Navigations
-            .Where(navigation => navigation is { IsHidden: false, IsIncluded: true });
+            .Where(navigation => navigation is { IsIncluded: true });
 
         var navigationDtos = mapper
             .Map<IEnumerable<NavigationMetadata>, IEnumerable<NavigationMetadataDto>>(displayableNavigations);
