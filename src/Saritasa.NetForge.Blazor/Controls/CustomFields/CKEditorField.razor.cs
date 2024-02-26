@@ -20,7 +20,9 @@ public partial class CKEditorField : CustomField, IAsyncDisposable
             jsModule = await JsRuntime.InvokeAsync<IJSObjectReference>("import",
                 "./_content/NetForgeBlazor/Controls/CustomFields/CKEditorField.razor.js");
             var editorId = Guid.NewGuid().ToString();
-            await jsModule.InvokeVoidAsync("InitCKEditor", editor, editorId, IsReadOnly);
+            var dotnetReference = DotNetObjectReference.Create(this);
+            await jsModule.InvokeVoidAsync("InitCKEditor", editor, editorId, IsReadOnly,
+                dotnetReference);
         }
     }
 
@@ -42,5 +44,16 @@ public partial class CKEditorField : CustomField, IAsyncDisposable
         {
             await jsModule.DisposeAsync();
         }
+    }
+
+    [JSInvokable]
+    public Task UpdateText(string editorText)
+    {
+        if (PropertyValue != editorText)
+        {
+            PropertyValue = editorText;
+        }
+
+        return Task.CompletedTask;
     }
 }
