@@ -86,8 +86,8 @@ public class EditEntityViewModel : BaseViewModel
     /// </summary>
     public async Task UpdateEntityAsync()
     {
-        await dataService.UpdateAsync(Model.EntityInstance!, CancellationToken);
         WeakReferenceMessenger.Default.Send(new EntitySubmittedMessage());
+        await dataService.UpdateAsync(Model.EntityInstance!, CancellationToken);
         IsUpdated = true;
     }
 }
