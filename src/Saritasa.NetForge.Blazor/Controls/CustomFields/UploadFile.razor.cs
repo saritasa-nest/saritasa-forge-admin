@@ -80,9 +80,17 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
             var filePath = Path.Combine(AdminOptions.MediaFolder, Property.ImageFolder, selectedFile!.Name);
             var filePathToCreate = Path.Combine(AdminOptions.StaticFilesFolder, filePath);
 
-            await FileService.CreateFileAsync(filePathToCreate, selectedFileBytes!);
-
-            PropertyValue = filePath;
+            try
+            {
+                await FileService.CreateFileAsync(filePathToCreate, selectedFileBytes!);
+                PropertyValue = filePath;
+            }
+            catch
+            {
+                error = "Something went wrong with uploading the file.";
+                message.HasErrors = true;
+                PropertyValue = null;
+            }
         }
 
         WeakReferenceMessenger.Default.Reset();
