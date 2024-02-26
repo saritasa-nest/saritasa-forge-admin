@@ -513,6 +513,8 @@ Both of them can be configured via `[NetForgeProperty]` and `Fluent API`.
 public string StaticFilesFolder { get; set; } = "wwwroot";
 
 public string MediaFolder { get; set; } = "media";
+
+public int MaxImageSizeInMb { get; set; } = 10;
 ```
 
 So default path to media files - `wwwroot/media`.
