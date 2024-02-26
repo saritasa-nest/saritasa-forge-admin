@@ -83,12 +83,12 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
         if (selectedFile is not null)
         {
             var filePath = Path.Combine(AdminOptions.MediaFolder, Property.ImageFolder, selectedFile!.Name);
+            PropertyValue = filePath;
             var filePathToCreate = Path.Combine(AdminOptions.StaticFilesFolder, filePath);
 
             try
             {
                 await FileService.CreateFileAsync(filePathToCreate, selectedFileBytes!);
-                PropertyValue = filePath;
             }
             catch (Exception exception)
             {
