@@ -51,6 +51,11 @@ public class ShopDbContext : IdentityDbContext<User>
     /// Gets or sets the database set for the suppliers.
     /// </summary>
     public DbSet<Supplier> Suppliers { get; private set; }
+
+    /// <summary>
+    /// Gets or sets the database set for the counts of shop products.
+    /// </summary>
+    public DbSet<ShopProductsCount> ShopProductsCounts { get; private set; }
     
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)

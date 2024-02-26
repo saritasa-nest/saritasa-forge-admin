@@ -56,6 +56,16 @@ public class EntityDetailsViewModel : BaseViewModel
     /// </summary>
     public bool IsDisplaySearchInput { get; set; }
 
+    /// <summary>
+    /// Whether instance of the entity can be added.
+    /// </summary>
+    public bool CanAdd { get; set; }
+
+    /// <summary>
+    /// Whether instance of the entity can be edited.
+    /// </summary>
+    public bool CanEdit { get; set; }
+
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
     {
@@ -93,6 +103,9 @@ public class EntityDetailsViewModel : BaseViewModel
                                        return property.SearchType != SearchType.None;
                                    })
                                    || Model.SearchFunction is not null;
+
+            CanAdd = !Model.IsKeyless;
+            CanEdit = !Model.IsKeyless;
         }
         catch (NotFoundException)
         {
