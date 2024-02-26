@@ -10,8 +10,40 @@ namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
 /// <summary>
 /// Represents upload file control.
 /// </summary>
-public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage>
+public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage>, IDisposable
 {
+    private bool disposedValue;
+    private readonly CancellationTokenSource cancellationTokenSource = new();
+
+    /// <summary>
+    /// Cancellation token.
+    /// </summary>
+    private CancellationToken CancellationToken => cancellationTokenSource.Token;
+
+    /// <summary>
+    /// Disposes resources of the view model.
+    /// </summary>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                cancellationTokenSource.Cancel();
+                cancellationTokenSource.Dispose();
+            }
+
+            disposedValue = true;
+        }
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
     [Inject]
     private AdminOptions AdminOptions { get; init; } = null!;
 
@@ -47,7 +79,7 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
             // Convert to number of bytes.
             var maxImageSize = 1024 * 1024 * AdminOptions.MaxImageSizeInMb;
             var stream = file.OpenReadStream(maxImageSize);
-            selectedFileBytes = await FileService.GetFileBytesAsync(stream);
+            selectedFileBytes = await FileService.GetFileBytesAsync(stream, CancellationToken);
 
             PropertyValue = $"data:{selectedFile!.ContentType};base64,{Convert.ToBase64String(selectedFileBytes)}";
 
@@ -88,7 +120,7 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
 
             try
             {
-                await FileService.CreateFileAsync(filePathToCreate, selectedFileBytes!);
+                await FileService.CreateFileAsync(filePathToCreate, selectedFileBytes!, CancellationToken);
             }
             catch (Exception exception)
             {
