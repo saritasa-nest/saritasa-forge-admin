@@ -54,7 +54,7 @@ public static class CustomFieldHelper
     {
         if (property.IsPathToImage || property.IsBase64Image)
         {
-            return typeof(UploadFile);
+            return typeof(UploadImage);
         }
 
         foreach (var (types, inputType) in TypeMappingDictionary)
@@ -66,6 +66,6 @@ public static class CustomFieldHelper
         }
 
         // Text field is a default one.
-        return propertyType.IsEnum ? typeof(EnumField) : typeof(TextField);
+        return property.ClrType!.IsEnum ? typeof(EnumField) : typeof(TextField);
     }
 }

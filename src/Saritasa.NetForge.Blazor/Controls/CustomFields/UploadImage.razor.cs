@@ -8,9 +8,9 @@ using Saritasa.NetForge.Mvvm.ViewModels;
 namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
 
 /// <summary>
-/// Represents upload file control.
+/// Represents upload image control.
 /// </summary>
-public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage>, IDisposable
+public partial class UploadImage : CustomField, IRecipient<EntitySubmittedMessage>, IDisposable
 {
     private bool disposedValue;
     private readonly CancellationTokenSource cancellationTokenSource = new();
@@ -51,7 +51,7 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
     private IFileService FileService { get; init; } = null!;
 
     [Inject]
-    private ILogger<UploadFile> Logger { get; init; } = null!;
+    private ILogger<UploadImage> Logger { get; init; } = null!;
 
     /// <summary>
     /// Property value.
@@ -68,7 +68,7 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
 
     private string? error;
 
-    private async Task UploadFileAsync(IBrowserFile file)
+    private async Task UploadImageAsync(IBrowserFile file)
     {
         error = null;
 
