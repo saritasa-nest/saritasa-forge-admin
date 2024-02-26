@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Saritasa.NetForge.Blazor.Infrastructure.Services;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Mvvm.ViewModels;
 
 namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
@@ -16,7 +16,7 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
     private AdminOptions AdminOptions { get; init; } = null!;
 
     [Inject]
-    private FileService FileService { get; init; } = null!;
+    private IFileService FileService { get; init; } = null!;
 
     [Inject]
     private ILogger<UploadFile> Logger { get; init; } = null!;
