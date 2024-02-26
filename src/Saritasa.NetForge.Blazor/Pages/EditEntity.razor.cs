@@ -46,7 +46,7 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
 
         var adminPanelEndpoint = AdminOptions!.AdminPanelEndpoint;
         var entityDetailsEndpoint = $"{adminPanelEndpoint}/entities/{StringId}";
-        var editEntityEndpoint = $"{entityDetailsEndpoint}/edit";
+        var editEntityEndpoint = $"{entityDetailsEndpoint}/{InstancePrimaryKey}";
 
         breadcrumbItems.Add(new BreadcrumbItem("Entities", adminPanelEndpoint));
         breadcrumbItems.Add(new BreadcrumbItem(ViewModel.Model.PluralName, entityDetailsEndpoint));

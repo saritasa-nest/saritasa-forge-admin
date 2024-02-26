@@ -8,35 +8,43 @@ namespace Saritasa.NetForge.Blazor.Infrastructure.Helpers;
 /// </summary>
 public static class CustomFieldHelper
 {
-    private static IReadOnlyDictionary<List<Type>, Type> TypeMappingDictionary { get; }
-        = new Dictionary<List<Type>, Type>
+    private static readonly IEnumerable<Type> NumberFieldTypes = new List<Type>
+    {
+        typeof(short), typeof(short?),
+        typeof(ushort), typeof(ushort?),
+        typeof(int), typeof(int?),
+        typeof(uint), typeof(uint?),
+        typeof(long), typeof(long?),
+        typeof(ulong), typeof(ulong?),
+        typeof(float), typeof(float?),
+        typeof(double), typeof(double?),
+        typeof(decimal), typeof(decimal?)
+    };
+
+    private static readonly IEnumerable<Type> DateFieldTypes = new List<Type>
+    {
+        typeof(DateTime), typeof(DateTime?),
+        typeof(DateTimeOffset), typeof(DateTimeOffset?),
+        typeof(DateOnly), typeof(DateOnly?)
+    };
+
+    private static readonly IEnumerable<Type> BooleanFieldTypes = new List<Type>
+    {
+        typeof(bool), typeof(bool?)
+    };
+
+    private static readonly IEnumerable<Type> TextFieldTypes = new List<Type>
+    {
+        typeof(string)
+    };
+
+    private static IReadOnlyDictionary<IEnumerable<Type>, Type> TypeMappingDictionary { get; } =
+        new Dictionary<IEnumerable<Type>, Type>
         {
-            {
-                [typeof(string)], typeof(TextField)
-            },
-            {
-                [
-                    typeof(short), typeof(short?),
-                    typeof(ushort), typeof(ushort?),
-                    typeof(int), typeof(int?),
-                    typeof(uint), typeof(uint?),
-                    typeof(long), typeof(long?),
-                    typeof(ulong), typeof(ulong?),
-                    typeof(float), typeof(float?),
-                    typeof(double), typeof(double?),
-                    typeof(decimal), typeof(decimal?)
-                ], typeof(NumberField<>)
-            },
-            {
-                [
-                    typeof(DateTime), typeof(DateTime?),
-                    typeof(DateTimeOffset), typeof(DateTimeOffset?),
-                    typeof(DateOnly), typeof(DateOnly?)
-                ], typeof(DateField)
-            },
-            {
-                [typeof(bool), typeof(bool?)], typeof(BoolField)
-            }
+            { NumberFieldTypes, typeof(NumberField<>) },
+            { DateFieldTypes, typeof(DateField) },
+            { BooleanFieldTypes, typeof(BoolField) },
+            { TextFieldTypes, typeof(TextField) }
         };
 
     /// <summary>
@@ -57,6 +65,7 @@ public static class CustomFieldHelper
             }
         }
 
-        return property.ClrType!.IsEnum ? typeof(EnumField) : typeof(TextField);
+        // Text field is a default one.
+        return propertyType.IsEnum ? typeof(EnumField) : typeof(TextField);
     }
 }

@@ -346,4 +346,9 @@ web.config
 appsettings.Development.json
 firestore.Development.json
 .data
+
+# Ignore the launch setting of the Blazor library.
+src/Saritasa.NetForge.Blazor/Properties/launchSettings.json
+
+# Ignore local media files to not download and remove images everytime
 /demo/Saritasa.NetForge.Demo/wwwroot/media

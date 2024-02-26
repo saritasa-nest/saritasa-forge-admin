@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
+using Saritasa.NetForge.Domain.Exceptions;
 using CommunityToolkit.Mvvm.Messaging;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 using Saritasa.NetForge.UseCases.Interfaces;
-using Saritasa.Tools.Domain.Exceptions;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
 

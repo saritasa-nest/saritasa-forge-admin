@@ -40,7 +40,21 @@ internal static class NetForgeModule
                 }).AddIdentityGroup()
                 .ConfigureEntity(new UserAdminConfiguration())
                 .ConfigureEntity(new AddressAdminConfiguration())
-                .ConfigureEntity(new ProductAdminConfiguration());
+                .ConfigureEntity(new ProductAdminConfiguration())
+                .ConfigureEntity<ShopProductsCount>(entityOptionsBuilder =>
+                {
+                    entityOptionsBuilder.IncludeNavigation<Shop>(
+                        shopProductsCount => shopProductsCount.Shop,
+                        navigationOptionsBuilder =>
+                        {
+                            navigationOptionsBuilder
+                                .IncludeProperty(shop => shop.Name, propertyOptionsBuilder =>
+                                {
+                                    propertyOptionsBuilder.SetDisplayName("Shop name");
+                                })
+                                .SetOrder(1);
+                        });
+                });
         });
     }
 }

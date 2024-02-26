@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Saritasa.NetForge.Demo;
@@ -11,9 +12,11 @@ using Saritasa.NetForge.Demo;
 namespace Saritasa.NetForge.Demo.Net7.Migrations
 {
     [DbContext(typeof(ShopDbContext))]
-    partial class ShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240131102943_AddKeylessEntity")]
+    partial class AddKeylessEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -252,14 +255,6 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                         .HasColumnType("text")
                         .HasColumnName("country");
 
-                    b.Property<string>("DisplayName")
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .IsUnicode(false)
-                        .HasColumnType("text")
-                        .HasColumnName("display_name")
-                        .HasComputedColumnSql("city || ', ' || street", true);
-
                     b.Property<double>("Latitude")
                         .HasColumnType("double precision")
                         .HasColumnName("latitude");
@@ -493,19 +488,9 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("address_id");
 
-                    b.Property<string>("BuildingPhoto")
-                        .IsUnicode(false)
-                        .HasColumnType("text")
-                        .HasColumnName("building_photo");
-
                     b.Property<bool>("IsOpen")
                         .HasColumnType("boolean")
                         .HasColumnName("is_open");
-
-                    b.Property<string>("Logo")
-                        .IsUnicode(false)
-                        .HasColumnType("text")
-                        .HasColumnName("logo");
 
                     b.Property<string>("Name")
                         .IsRequired()
