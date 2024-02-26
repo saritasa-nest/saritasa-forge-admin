@@ -31,16 +31,31 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
 
     private byte[]? selectedFileBytes;
 
+    private string? error;
+
     private async Task UploadFileAsync(IBrowserFile file)
     {
+        error = null;
+
         selectedFile = file;
-        selectedFileBytes = await FileService.GetFileBytesAsync(file.OpenReadStream());
 
-        PropertyValue = $"data:{selectedFile!.ContentType};base64,{Convert.ToBase64String(selectedFileBytes)}";
-
-        if (Property.IsPathToImage)
+        try
         {
-            WeakReferenceMessenger.Default.Register(this);
+            // Convert to number of bytes.
+            var maxImageSize = 1024 * 1024 * AdminOptions.MaxImageSizeInMb;
+            var stream = file.OpenReadStream(maxImageSize);
+            selectedFileBytes = await FileService.GetFileBytesAsync(stream);
+
+            PropertyValue = $"data:{selectedFile!.ContentType};base64,{Convert.ToBase64String(selectedFileBytes)}";
+
+            if (Property.IsPathToImage)
+            {
+                WeakReferenceMessenger.Default.Register(this);
+            }
+        }
+        catch (IOException)
+        {
+            error = $"Uploaded file exceeds the maximum file size of {AdminOptions.MaxImageSizeInMb} MB.";
         }
     }
 

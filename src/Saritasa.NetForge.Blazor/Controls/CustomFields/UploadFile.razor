@@ -29,9 +29,14 @@
                 <div>
                     <MudImage Src="@PropertyValue"
                               Elevation="25"
-                              Class="rounded-lg property-image"/>
+                              Class="rounded-lg property-image" />
                 </div>
             </MudBadge>
         </MudItem>
     }
 </MudGrid>
+
+@if (error is not null)
+{
+    <MudAlert Variant="Variant.Outlined" Severity="Severity.Error">@error</MudAlert>
+}

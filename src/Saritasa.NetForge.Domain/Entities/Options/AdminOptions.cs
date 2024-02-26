@@ -65,4 +65,9 @@ public class AdminOptions
     /// Path to folder where to store media files.
     /// </summary>
     public string MediaFolder { get; set; } = "media";
+
+    /// <summary>
+    /// Maximum image size in megabytes.
+    /// </summary>
+    public int MaxImageSizeInMb { get; set; } = 10;
 }
