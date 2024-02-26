@@ -5,6 +5,16 @@
 /// </summary>
 public class FileService
 {
+    private readonly ILogger<FileService> logger;
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    public FileService(ILogger<FileService> logger)
+    {
+        this.logger = logger;
+    }
+
     /// <summary>
     /// Get file content as array of bytes.
     /// </summary>
@@ -27,6 +37,8 @@ public class FileService
         Directory.CreateDirectory(Path.GetDirectoryName(pathToFile)!);
 
         await using var fileStream = File.Create(pathToFile);
-        fileStream.Write(fileContent);
+        await fileStream.WriteAsync(fileContent);
+
+        logger.LogInformation("File with path {PathToFile} was created successfully.", pathToFile);
     }
 }

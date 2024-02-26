@@ -18,6 +18,9 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
     [Inject]
     private FileService FileService { get; init; } = null!;
 
+    [Inject]
+    private ILogger<UploadFile> Logger { get; init; } = null!;
+
     /// <summary>
     /// Property value.
     /// </summary>
@@ -53,9 +56,11 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
                 WeakReferenceMessenger.Default.Register(this);
             }
         }
-        catch (IOException)
+        catch (IOException exception)
         {
             error = $"Uploaded file exceeds the maximum file size of {AdminOptions.MaxImageSizeInMb} MB.";
+
+            Logger.LogInformation(exception, "Uploaded file exceeds the maximum file size");
         }
     }
 
@@ -85,11 +90,13 @@ public partial class UploadFile : CustomField, IRecipient<EntitySubmittedMessage
                 await FileService.CreateFileAsync(filePathToCreate, selectedFileBytes!);
                 PropertyValue = filePath;
             }
-            catch
+            catch (Exception exception)
             {
                 error = "Something went wrong with uploading the file.";
                 message.HasErrors = true;
                 PropertyValue = null;
+
+                Logger.LogError(exception, "Error encountered when file was saved.");
             }
         }
 
