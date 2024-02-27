@@ -484,11 +484,33 @@ optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
 public string Property { get; set; }
 ```
 
-# Generated Properties
+## Generated Properties
 
 Generated properties will not be displayed on the create or edit entity pages. Entity framework example of generated property:
 
 ```csharp
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public DateTime CreatedAt { get; set; }
+[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+public DateTime CreatedAt { get; set; }
+```
+
+## Rich Text Field
+
+RTF provides some common text formatting options like paragraphs, links, tables, etc.
+The [ClassicEditor of CKEditor 5](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/classic-editor.html) is used by the admin panel.
+
+The configuration is the following:
+
+### Using Attribute
+```csharp
+[NetForgeProperty(IsRichTextField = true)]
+public required string Description { get; set; }
+```
+
+### Using Fluent API
+```csharp
+optionsBuilder.ConfigureEntity<Product>(entityOptionsBuilder =>
+{
+    entityOptionsBuilder.ConfigureProperty(product => product.Description,
+        propertyBuilder => propertyBuilder.SetIsRichTextField(true));
+});
 ```
