@@ -4,6 +4,7 @@ using AutoMapper;
 using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Enums;
+using Saritasa.NetForge.Domain.Exceptions;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Common;
@@ -13,7 +14,6 @@ using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.UseCases.Metadata.Services;
 using Saritasa.Tools.Common.Pagination;
 using Saritasa.Tools.Common.Utils;
-using Saritasa.Tools.Domain.Exceptions;
 
 namespace Saritasa.NetForge.UseCases.Services;
 

@@ -71,4 +71,9 @@ public class EntityMetadata
     /// Represents custom query function.
     /// </summary>
     public Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? CustomQueryFunction { get; set; }
+
+    /// <summary>
+    /// Whether the entity has the primary key.
+    /// </summary>
+    public bool IsKeyless { get; set; }
 }

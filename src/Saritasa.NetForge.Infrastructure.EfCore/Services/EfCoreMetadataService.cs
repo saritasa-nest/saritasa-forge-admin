@@ -69,7 +69,8 @@ internal class EfCoreMetadataService : IOrmMetadataService
             Description = entityType.GetComment() ?? string.Empty,
             IsHidden = entityType.IsPropertyBag,
             Properties = propertiesMetadata.ToList(),
-            Navigations = navigationsMetadata.ToList()
+            Navigations = navigationsMetadata.ToList(),
+            IsKeyless = entityType.FindPrimaryKey() is null
         };
 
         return entityMetadata;
