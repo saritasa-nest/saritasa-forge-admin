@@ -33,7 +33,7 @@ public class EfCoreDataService : IOrmDataService
     public IQueryable<object> GetQuery(Type clrType)
     {
         var dbContext = GetDbContextThatContainsEntity(clrType);
-        return dbContext.Set(clrType).OfType<object>();
+        return dbContext.Set(clrType).OfType<object>().AsNoTracking();
     }
 
     /// <inheritdoc />
@@ -350,8 +350,28 @@ public class EfCoreDataService : IOrmDataService
     {
         var dbContext = GetDbContextThatContainsEntity(entityType);
 
+        foreach (var navigationEntry in dbContext.Entry(entity).Navigations)
+        {
+            if (navigationEntry.CurrentValue is not null)
+            {
+                if (navigationEntry.Metadata.IsCollection)
+                {
+                    foreach (var navigationElement in (IEnumerable<object>)navigationEntry.CurrentValue)
+                    {
+                        dbContext.Attach(navigationElement);
+                    }
+                }
+                else
+                {
+                    dbContext.Attach(navigationEntry.CurrentValue);
+                }
+            }
+        }
+
         dbContext.Add(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
+
+        dbContext.ChangeTracker.Clear();
     }
 
     /// <inheritdoc />
