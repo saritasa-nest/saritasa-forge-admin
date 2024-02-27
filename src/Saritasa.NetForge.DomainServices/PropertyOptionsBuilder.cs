@@ -143,4 +143,13 @@ public class PropertyOptionsBuilder
         options.DisplayAsHtml = displayAsHtml;
         return this;
     }
+
+    /// <summary>
+    /// Sets whether the field is a rich text field.
+    /// </summary>
+    public PropertyOptionsBuilder SetIsRichTextField(bool isRichTextField)
+    {
+        options.IsRichTextField = isRichTextField;
+        return this;
+    }
 }
