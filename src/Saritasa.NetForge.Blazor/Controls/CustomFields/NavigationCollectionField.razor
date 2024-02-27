@@ -3,6 +3,7 @@
 @typeparam T
 
 <MudSelect @bind-SelectedValues="NavigationCollection"
+           Label="@Property.Name"
            Variant="Variant.Outlined"
            MultiSelection="true">
     @foreach (var instance in NavigationInstances)
