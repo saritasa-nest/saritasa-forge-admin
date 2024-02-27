@@ -8,6 +8,9 @@ namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
 /// </summary>
 public partial class NavigationField : CustomField
 {
+    [Inject]
+    private IOrmDataService DataService { get; init; } = null!;
+
     /// <summary>
     /// Property value.
     /// </summary>
@@ -24,6 +27,6 @@ public partial class NavigationField : CustomField
     {
         await base.OnInitializedAsync();
 
-        NavigationInstances = Service.GetQuery(Property.ClrType!).ToList();
+        NavigationInstances = DataService.GetQuery(Property.ClrType!).ToList();
     }
 }

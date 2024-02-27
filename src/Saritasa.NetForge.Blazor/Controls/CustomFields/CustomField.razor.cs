@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
@@ -7,7 +6,7 @@ namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
 /// <summary>
 /// Base class for custom fields.
 /// </summary>
-public abstract class CustomField : OwningComponentBase<IOrmDataService>
+public abstract class CustomField : ComponentBase
 {
     /// <summary>
     /// Property name.
