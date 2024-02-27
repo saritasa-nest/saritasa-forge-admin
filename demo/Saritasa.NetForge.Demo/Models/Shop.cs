@@ -71,5 +71,17 @@ public class Shop
     {
         return $"{Id}; {Name}";
     }
+
+    /// <inheritdoc />
+    public override bool Equals(object? obj) 
+    {
+        return obj?.ToString() == ToString();
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+        return ToString().GetHashCode();
+    }
 }
 
