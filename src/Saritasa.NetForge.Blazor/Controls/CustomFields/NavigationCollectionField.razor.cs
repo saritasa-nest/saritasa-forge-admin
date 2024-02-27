@@ -15,7 +15,7 @@ public partial class NavigationCollectionField<T> : CustomField
         set => EntityInstance.GetType().GetProperty(Property.Name)?.SetValue(EntityInstance, value.ToList());
     }
 
-    private List<T> NavigationInstances { get; set; } = new();
+    private IEnumerable<T> NavigationInstances { get; set; } = null!;
 
     /// <inheritdoc />
     protected override async Task OnInitializedAsync()
@@ -27,7 +27,6 @@ public partial class NavigationCollectionField<T> : CustomField
         NavigationInstances = Service
             .GetQuery(propertyType)
             .Cast<T>()
-            .OrderBy(instance => instance)
-            .ToList();
+            .OrderBy(instance => instance);
     }
 }

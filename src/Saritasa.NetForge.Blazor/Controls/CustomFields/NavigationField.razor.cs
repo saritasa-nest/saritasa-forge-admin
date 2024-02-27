@@ -14,7 +14,7 @@ public partial class NavigationField : CustomField
         set => EntityInstance.GetType().GetProperty(Property.Name)?.SetValue(EntityInstance, value);
     }
 
-    private List<object> NavigationInstances { get; set; } = new();
+    private IEnumerable<object> NavigationInstances { get; set; } = null!;
 
     /// <inheritdoc />
     protected override async Task OnInitializedAsync()
@@ -23,7 +23,6 @@ public partial class NavigationField : CustomField
 
         NavigationInstances = Service
             .GetQuery(Property.ClrType!)
-            .OrderBy(instance => instance)
-            .ToList();
+            .OrderBy(instance => instance);
     }
 }
