@@ -60,8 +60,9 @@ public override string ToString()
 
 ### Equals and GetHashCode
 
-We use <MudSelect> from `MudBlazor` library to display navigations, and there are requirement when not primitive type was used.
-To compare custom types between each other you need to override `Equals` and `GetHashCode` methods.
+We use `MudSelect` control from `MudBlazor` library to display navigations, and there are requirement when not primitive type was used.
+To compare custom types between each other you need to override `Equals` and `GetHashCode` methods on entites that used as navigations.
+It needs for displaying selected navigatons on the control.
 
 For example:
 
