@@ -364,6 +364,8 @@ public class EfCoreDataService : IOrmDataService
         var entityType = entity.GetType();
         var dbContext = GetDbContextThatContainsEntity(entityType);
 
+        AttachNavigationEntities(entity, dbContext);
+
         dbContext.Update(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
 
@@ -374,9 +376,10 @@ public class EfCoreDataService : IOrmDataService
     /// Attaches all related navigations to the <paramref name="entity"/>.
     /// </summary>
     /// <remarks>
-    /// Why do we need this method? For example, we are trying to create new entity that contains some navigations.
+    /// Use case: We are trying to create new entity that contains some navigations.
     /// By default, EF will try to create new entity and create all navigations (even when they are exist in database).
     /// This method resolves this problem by explicitly attaching navigations to EF change tracker.
+    /// Also, this method will not work in case of creating or editing navigations with entity at the same time.
     /// </remarks>
     private static void AttachNavigationEntities(object entity, DbContext dbContext)
     {
