@@ -79,6 +79,8 @@ public class EditEntityViewModel : BaseViewModel
 
             Model.EntityInstance = await dataService
                 .GetInstanceAsync(InstancePrimaryKey, Model.ClrType!, includedNavigationNames, CancellationToken);
+
+            mapper.Map(Model.EntityInstance, Model.OriginalEntityInstance);
         }
         catch (NotFoundException)
         {
@@ -91,7 +93,7 @@ public class EditEntityViewModel : BaseViewModel
     /// </summary>
     public async Task UpdateEntityAsync()
     {
-       await dataService.UpdateAsync(Model.EntityInstance!, CancellationToken);
-        IsUpdated = true;
+       await dataService.UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance, CancellationToken);
+       IsUpdated = true;
     }
 }

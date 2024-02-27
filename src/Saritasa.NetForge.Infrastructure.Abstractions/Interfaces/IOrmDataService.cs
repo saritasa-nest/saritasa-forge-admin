@@ -58,5 +58,5 @@ public interface IOrmDataService
     /// </summary>
     /// <param name="entity">Entity to update.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    Task UpdateAsync(object entity, CancellationToken cancellationToken);
+    Task UpdateAsync(object entity, object originalEntity, CancellationToken cancellationToken);
 }

@@ -358,20 +358,6 @@ public class EfCoreDataService : IOrmDataService
         dbContext.ChangeTracker.Clear();
     }
 
-    /// <inheritdoc />
-    public async Task UpdateAsync(object entity, CancellationToken cancellationToken)
-    {
-        var entityType = entity.GetType();
-        var dbContext = GetDbContextThatContainsEntity(entityType);
-
-        AttachNavigationEntities(entity, dbContext);
-
-        dbContext.Update(entity);
-        await dbContext.SaveChangesAsync(cancellationToken);
-
-        dbContext.ChangeTracker.Clear();
-    }
-
     /// <summary>
     /// Attaches all related navigations to the <paramref name="entity"/>.
     /// </summary>
@@ -379,7 +365,7 @@ public class EfCoreDataService : IOrmDataService
     /// Use case: We are trying to create new entity that contains some navigations.
     /// By default, EF will try to create new entity and create all navigations (even when they are exist in database).
     /// This method resolves this problem by explicitly attaching navigations to EF change tracker.
-    /// Also, this method will not work in case of creating or editing navigations with entity at the same time.
+    /// Also, this method will not work in case of creating navigations with entity at the same time.
     /// </remarks>
     private static void AttachNavigationEntities(object entity, DbContext dbContext)
     {
@@ -402,5 +388,33 @@ public class EfCoreDataService : IOrmDataService
                 }
             }
         }
+    }
+
+    /// <inheritdoc />
+    public async Task UpdateAsync(object entity, object originalEntity, CancellationToken cancellationToken)
+    {
+        var entityType = entity.GetType();
+        var dbContext = GetDbContextThatContainsEntity(entityType);
+
+        foreach (var navigationEntry in dbContext.Entry(entity).Navigations)
+        {
+            var navigationInstance = navigationEntry.CurrentValue;
+
+            if (navigationInstance is not null)
+            {
+                if (navigationEntry.Metadata.IsCollection)
+                {
+                    foreach (var navigationCollectionElement in (IEnumerable<object>)navigationInstance)
+                    {
+                        dbContext.Attach(navigationCollectionElement);
+                    }
+                }
+            }
+        }
+
+        dbContext.Update(entity);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        dbContext.ChangeTracker.Clear();
     }
 }
