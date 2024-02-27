@@ -21,6 +21,9 @@ public partial class NavigationField : CustomField
     {
         await base.OnInitializedAsync();
 
-        NavigationInstances = Service.GetQuery(Property.ClrType!).ToList();
+        NavigationInstances = Service
+            .GetQuery(Property.ClrType!)
+            .OrderBy(instance => instance)
+            .ToList();
     }
 }

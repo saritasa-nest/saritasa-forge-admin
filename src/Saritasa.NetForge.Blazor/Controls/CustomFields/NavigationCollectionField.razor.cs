@@ -24,6 +24,10 @@ public partial class NavigationCollectionField<T> : CustomField
 
         var propertyType = Property.ClrType!.GetGenericArguments().First();
 
-        NavigationInstances = Service.GetQuery(propertyType).Cast<T>().ToList();
+        NavigationInstances = Service
+            .GetQuery(propertyType)
+            .Cast<T>()
+            .OrderBy(instance => instance)
+            .ToList();
     }
 }
