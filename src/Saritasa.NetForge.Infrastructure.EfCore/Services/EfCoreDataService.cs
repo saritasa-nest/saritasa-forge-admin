@@ -370,22 +370,32 @@ public class EfCoreDataService : IOrmDataService
         dbContext.ChangeTracker.Clear();
     }
 
+    /// <summary>
+    /// Attaches all related navigations to the <paramref name="entity"/>.
+    /// </summary>
+    /// <remarks>
+    /// Why do we need this method? For example, we are trying to create new entity that contains some navigations.
+    /// By default, EF will try to create new entity and create all navigations (even when they are exist in database).
+    /// This method resolves this problem by explicitly attaching navigations to EF change tracker.
+    /// </remarks>
     private static void AttachNavigationEntities(object entity, DbContext dbContext)
     {
         foreach (var navigationEntry in dbContext.Entry(entity).Navigations)
         {
-            if (navigationEntry.CurrentValue is not null)
+            var navigationInstance = navigationEntry.CurrentValue;
+
+            if (navigationInstance is not null)
             {
                 if (navigationEntry.Metadata.IsCollection)
                 {
-                    foreach (var navigationElement in (IEnumerable<object>)navigationEntry.CurrentValue)
+                    foreach (var navigationCollectionElement in (IEnumerable<object>)navigationInstance)
                     {
-                        dbContext.Attach(navigationElement);
+                        dbContext.Attach(navigationCollectionElement);
                     }
                 }
                 else
                 {
-                    dbContext.Attach(navigationEntry.CurrentValue);
+                    dbContext.Attach(navigationInstance);
                 }
             }
         }
