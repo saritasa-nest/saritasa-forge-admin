@@ -67,6 +67,7 @@ public class Shop
     /// </summary>
     public List<Supplier> Suppliers { get; set; } = new();
 
+    /// <inheritdoc />
     public override string ToString()
     {
         return $"{Id}; {Name}";
