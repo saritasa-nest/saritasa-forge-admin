@@ -2,7 +2,9 @@
 
 <MudSelect @bind-Value="PropertyValue"
            Label="@Property.Name"
-           Variant="Variant.Outlined">
+           Variant="Variant.Outlined"
+           HelperText="@Property.Description"
+           Disabled="IsReadOnly">
     @foreach (var instance in NavigationInstances)
     {
         <MudSelectItem Value="instance" />

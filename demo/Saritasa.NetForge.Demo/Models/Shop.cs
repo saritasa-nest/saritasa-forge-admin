@@ -28,6 +28,7 @@ public class Shop
     /// <summary>
     /// The address of the shop.
     /// </summary>
+    [NetForgeProperty(Description = "Represents address of the shop.")]
     public Address? Address { get; set; }
 
     /// <summary>

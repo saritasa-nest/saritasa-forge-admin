@@ -5,6 +5,8 @@
 <MudSelect @bind-SelectedValues="PropertyValue"
            Label="@Property.Name"
            Variant="Variant.Outlined"
+           HelperText="@Property.Description"
+           Disabled="IsReadOnly"
            MultiSelection="true">
     @foreach (var instance in NavigationInstances)
     {
