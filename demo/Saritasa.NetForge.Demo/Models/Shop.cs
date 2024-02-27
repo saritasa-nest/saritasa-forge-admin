@@ -65,5 +65,10 @@ public class Shop
     /// The list of suppliers.
     /// </summary>
     public List<Supplier> Suppliers { get; set; } = new();
+
+    public override string ToString()
+    {
+        return $"{Id}; {Name}";
+    }
 }
 
