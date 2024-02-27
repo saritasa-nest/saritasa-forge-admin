@@ -80,7 +80,8 @@ public class EditEntityViewModel : BaseViewModel
             Model.EntityInstance = await dataService
                 .GetInstanceAsync(InstancePrimaryKey, Model.ClrType!, includedNavigationNames, CancellationToken);
 
-            mapper.Map(Model.EntityInstance, Model.OriginalEntityInstance);
+            Model.OriginalEntityInstance = await dataService
+                .GetInstanceAsync(InstancePrimaryKey, Model.ClrType!, includedNavigationNames, CancellationToken);
         }
         catch (NotFoundException)
         {
