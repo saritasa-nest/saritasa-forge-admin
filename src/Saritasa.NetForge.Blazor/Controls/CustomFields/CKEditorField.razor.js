@@ -1,51 +1,51 @@
 ﻿import "/_content/NetForgeBlazor/ckeditor.js";
 
-const editors = [];
 const timeouts = [];
+const editorConfig = {
+    toolbar: {
+        items: [
+            'heading',
+            '|',
+            'bold',
+            'italic',
+            '|',
+            'bulletedList',
+            'numberedList',
+            '|',
+            'insertTable',
+            '|',
+            '|',
+            'mediaEmbed',
+            'undo',
+            'redo'
+        ]
+    },
+    image: {
+        toolbar: [
+            'imageStyle:full',
+            'imageStyle:side',
+            '|',
+            'imageTextAlternative'
+        ]
+    },
+    table: {
+        contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+    },
+    language: 'en'
+};
 
 /**
  * Initializes the CKEditor instance on the given element.
  * @param {HTMLElement} element - The HTML element where the CKEditor should be initialized.
  * @param {string} id - A unique ID for the editor.
  * @param {boolean} isReadOnly - A boolean indicating whether the editor should be in read-only mode.
+ * @param dotnetReference {Object} - DotNet object reference.
  */
 export function InitCKEditor(element, id, isReadOnly, dotnetReference) {
-    ClassicEditor.defaultConfig = {
-        toolbar: {
-            items: [
-                'heading',
-                '|',
-                'bold',
-                'italic',
-                '|',
-                'bulletedList',
-                'numberedList',
-                '|',
-                'insertTable',
-                '|',
-                '|',
-                'mediaEmbed',
-                'undo',
-                'redo'
-            ]
-        },
-        image: {
-            toolbar: [
-                'imageStyle:full',
-                'imageStyle:side',
-                '|',
-                'imageTextAlternative'
-            ]
-        },
-        table: {
-            contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
-        },
-        language: 'en'
-    };
+    ClassicEditor.defaultConfig = editorConfig;
 
     ClassicEditor.create(element)
     .then(editor => {
-        editors[id] = editor;
         if (isReadOnly) {
             editor.enableReadOnlyMode(id);
         }
@@ -56,7 +56,7 @@ export function InitCKEditor(element, id, isReadOnly, dotnetReference) {
                     delete timeouts[id];
                 }
 
-                // Invoke UpdateText method after a delay.
+                // Update the text after a delay.
                 timeouts[id] = setTimeout(() => {
                     dotnetReference.invokeMethodAsync('UpdateText', editor.getData());
                 }, 50);

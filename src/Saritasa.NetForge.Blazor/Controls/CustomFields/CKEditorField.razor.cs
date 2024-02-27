@@ -46,6 +46,10 @@ public partial class CKEditorField : CustomField, IAsyncDisposable
         }
     }
 
+    /// <summary>
+    /// Updates the property content with the value from the editor.
+    /// </summary>
+    /// <param name="editorText">Text from the editor.</param>
     [JSInvokable]
     public Task UpdateText(string editorText)
     {
