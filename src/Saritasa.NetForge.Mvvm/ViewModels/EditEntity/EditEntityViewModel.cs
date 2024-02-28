@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Saritasa.NetForge.Domain.Exceptions;
+using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
@@ -80,8 +81,7 @@ public class EditEntityViewModel : BaseViewModel
             Model.EntityInstance = await dataService
                 .GetInstanceAsync(InstancePrimaryKey, Model.ClrType!, includedNavigationNames, CancellationToken);
 
-            Model.OriginalEntityInstance = await dataService
-                .GetInstanceAsync(InstancePrimaryKey, Model.ClrType!, includedNavigationNames, CancellationToken);
+            Model.OriginalEntityInstance = Model.EntityInstance.CloneJson();
         }
         catch (NotFoundException)
         {
@@ -94,7 +94,7 @@ public class EditEntityViewModel : BaseViewModel
     /// </summary>
     public async Task UpdateEntityAsync()
     {
-       await dataService.UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance, CancellationToken);
+       await dataService.UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken);
        IsUpdated = true;
     }
 }
