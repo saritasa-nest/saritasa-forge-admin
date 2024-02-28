@@ -365,23 +365,48 @@ public class EfCoreDataService : IOrmDataService
         var entityType = entity.GetType();
         var dbContext = GetDbContextThatContainsEntity(entityType);
 
+        dbContext.Attach(originalEntity);
+
+        // By default, EF does not track removed items from navigation collections
+        // when you just change reference to another collection.
+        // We use this foreach to explicitly remove items from navigation collection
+        // to give EF opportunity to track these changes.
         foreach (var navigationEntry in dbContext.Entry(entity).Navigations)
         {
-            var navigationInstance = navigationEntry.CurrentValue;
+            var originalNavigationEntry = dbContext
+                .Entry(originalEntity)
+                .Navigation(navigationEntry.Metadata.Name);
 
-            if (navigationInstance is not null)
+            if (!navigationEntry.Metadata.IsCollection
+                || navigationEntry.CurrentValue is null
+                || originalNavigationEntry.CurrentValue is null)
             {
-                if (navigationEntry.Metadata.IsCollection)
-                {
-                    foreach (var navigationCollectionElement in (IEnumerable<object>)navigationInstance)
-                    {
-                        dbContext.Attach(navigationCollectionElement);
-                    }
-                }
+                continue;
             }
+
+            var navigationInstance = (IEnumerable<object>)navigationEntry.CurrentValue;
+            var originalNavigationInstance = (IEnumerable<object>)originalNavigationEntry.CurrentValue;
+
+            var addedElements = navigationInstance.Except(originalNavigationInstance);
+            var removedElements = originalNavigationInstance.Except(navigationInstance);
+
+            var actualElements = originalNavigationInstance
+                .Union(addedElements)
+                .Except(removedElements);
+
+            var underlyingTypeOfCollection = navigationEntry.Metadata.TargetEntityType.ClrType;
+
+            var castedCollection = actualElements.Cast(underlyingTypeOfCollection);
+
+            var listCollection = typeof(Enumerable)
+                .GetMethod(nameof(Enumerable.ToList))!
+                .MakeGenericMethod(underlyingTypeOfCollection)
+                .Invoke(null, new object[] { castedCollection });
+
+            originalNavigationEntry.CurrentValue = listCollection;
         }
 
-        dbContext.Update(entity);
+        dbContext.Entry(originalEntity).CurrentValues.SetValues(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
 
         dbContext.ChangeTracker.Clear();
