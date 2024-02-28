@@ -377,10 +377,23 @@ public class EfCoreDataService : IOrmDataService
                 .Entry(originalEntity)
                 .Navigation(navigationEntry.Metadata.Name);
 
-            if (!navigationEntry.Metadata.IsCollection
-                || navigationEntry.CurrentValue is null
-                || originalNavigationEntry.CurrentValue is null)
+            if (navigationEntry.CurrentValue is null || originalNavigationEntry.CurrentValue is null)
             {
+                continue;
+            }
+
+            if (!navigationEntry.Metadata.IsCollection)
+            {
+                var isTracked = dbContext.ChangeTracker
+                    .Entries()
+                    .Any(entry => entry.Entity.Equals(navigationEntry.CurrentValue));
+
+                if (!isTracked)
+                {
+                    dbContext.Attach(navigationEntry.CurrentValue);
+                    originalNavigationEntry.CurrentValue = navigationEntry.CurrentValue;
+                }
+
                 continue;
             }
 
