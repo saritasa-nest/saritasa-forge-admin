@@ -350,44 +350,13 @@ public class EfCoreDataService : IOrmDataService
     {
         var dbContext = GetDbContextThatContainsEntity(entityType);
 
-        AttachNavigationEntities(entity, dbContext);
-
-        dbContext.Add(entity);
+        // We use Attach instead of Add because
+        // EF will try to create new entity and create all navigations (even when they are exist in database).
+        // Attach resolves this problem by explicitly attaching navigations to EF change tracker.
+        dbContext.Attach(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
 
         dbContext.ChangeTracker.Clear();
-    }
-
-    /// <summary>
-    /// Attaches all related navigations to the <paramref name="entity"/>.
-    /// </summary>
-    /// <remarks>
-    /// Use case: We are trying to create new entity that contains some navigations.
-    /// By default, EF will try to create new entity and create all navigations (even when they are exist in database).
-    /// This method resolves this problem by explicitly attaching navigations to EF change tracker.
-    /// Also, this method will not work in case of creating navigations with entity at the same time.
-    /// </remarks>
-    private static void AttachNavigationEntities(object entity, DbContext dbContext)
-    {
-        foreach (var navigationEntry in dbContext.Entry(entity).Navigations)
-        {
-            var navigationInstance = navigationEntry.CurrentValue;
-
-            if (navigationInstance is not null)
-            {
-                if (navigationEntry.Metadata.IsCollection)
-                {
-                    foreach (var navigationCollectionElement in (IEnumerable<object>)navigationInstance)
-                    {
-                        dbContext.Attach(navigationCollectionElement);
-                    }
-                }
-                else
-                {
-                    dbContext.Attach(navigationInstance);
-                }
-            }
-        }
     }
 
     /// <inheritdoc />
