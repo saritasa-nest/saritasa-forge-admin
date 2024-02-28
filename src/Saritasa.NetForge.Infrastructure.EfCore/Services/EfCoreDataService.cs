@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System.Collections;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
@@ -398,6 +399,12 @@ public class EfCoreDataService : IOrmDataService
             }
 
             var navigationInstance = (IEnumerable<object>)navigationEntry.CurrentValue;
+
+            foreach (var element in navigationInstance)
+            {
+                dbContext.Attach(element);
+            }
+
             var originalNavigationInstance = (IEnumerable<object>)originalNavigationEntry.CurrentValue;
 
             var addedElements = navigationInstance.Except(originalNavigationInstance);
