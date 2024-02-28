@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
@@ -385,9 +384,7 @@ public class EfCoreDataService : IOrmDataService
 
             if (!navigationEntry.Metadata.IsCollection)
             {
-                var isTracked = dbContext.ChangeTracker
-                    .Entries()
-                    .Any(entry => entry.Entity.Equals(navigationEntry.CurrentValue));
+                var isTracked = dbContext.IsTracked(navigationEntry.CurrentValue);
 
                 if (!isTracked)
                 {
@@ -402,7 +399,12 @@ public class EfCoreDataService : IOrmDataService
 
             foreach (var element in navigationInstance)
             {
-                dbContext.Attach(element);
+                var isTracked = dbContext.IsTracked(element);
+
+                if (!isTracked)
+                {
+                    dbContext.Attach(element);
+                }
             }
 
             var originalNavigationInstance = (IEnumerable<object>)originalNavigationEntry.CurrentValue;
