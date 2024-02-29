@@ -124,4 +124,10 @@ internal class Product
     /// The category of the product.
     /// </summary>
     public Category Category { get; set; }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"{Id} - {Name}";
+    }
 }
