@@ -74,7 +74,7 @@ public class Shop
     }
 
     /// <inheritdoc />
-    public override bool Equals(object? obj) 
+    public override bool Equals(object? obj)
     {
         return obj?.ToString() == ToString();
     }

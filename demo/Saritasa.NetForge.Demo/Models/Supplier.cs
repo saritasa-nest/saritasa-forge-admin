@@ -31,13 +31,14 @@ public class Supplier
     /// </summary>
     public List<Shop> Shops { get; set; } = new();
 
+    /// <inheritdoc />
     public override string ToString()
     {
         return $"{Name}; {City}";
     }
 
     /// <inheritdoc />
-    public override bool Equals(object? obj) 
+    public override bool Equals(object? obj)
     {
         return obj?.ToString() == ToString();
     }
