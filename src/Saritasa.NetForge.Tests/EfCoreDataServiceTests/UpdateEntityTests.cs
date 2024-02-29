@@ -40,7 +40,7 @@ public class UpdateEntityTests : TestBed<NetForgeFixture>
     /// Update valid entity.
     /// </summary>
     [Fact]
-    public async Task UpdateEntity_ValidEntity_Success()
+    public async Task UpdateEntity_WithoutNavigations_ShouldUpdate()
     {
         // Arrange
         var updatedShop = await testDbContext.Shops.AsNoTracking().FirstAsync();
@@ -57,10 +57,10 @@ public class UpdateEntityTests : TestBed<NetForgeFixture>
     }
 
     /// <summary>
-    /// Update entity navigation reference.
+    /// Update entity navigation reference to a new one.
     /// </summary>
     [Fact]
-    public async Task UpdateEntity_NavigationReference_Success()
+    public async Task UpdateEntity_NewNavigationReference_ShouldCreateAndUpdate()
     {
         // Arrange
         var shops = testDbContext.Shops.Include(shop => shop.Address).AsNoTracking();
@@ -75,7 +75,32 @@ public class UpdateEntityTests : TestBed<NetForgeFixture>
         await efCoreDataService.UpdateAsync(updatedShop, originalShop, CancellationToken.None);
 
         // Assert
+        Assert.Contains(testDbContext.Addresses, address => address.Street.Equals(newAddress.Street));
         Assert.Contains(shops, shop => shop.Address!.Street.Equals(newAddress.Street));
+    }
+
+    /// <summary>
+    /// Update entity navigation reference to an existing one.
+    /// </summary>
+    [Fact]
+    public async Task UpdateEntity_ExistingNavigationReference_ShouldUpdate()
+    {
+        // Arrange
+        var shops = testDbContext.Shops.Include(shop => shop.Address).AsNoTracking();
+
+        var updatedShop = await shops.FirstAsync();
+        var originalShop = updatedShop.CloneJson()!;
+
+        var addressToUpdate = await testDbContext.Addresses
+            .AsNoTracking()
+            .FirstAsync(address => !updatedShop.Address!.Equals(address));
+        updatedShop.Address = addressToUpdate;
+
+        // Act
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(shops, shop => shop.Address!.Street.Equals(addressToUpdate.Street));
     }
 
     /// <summary>
@@ -103,7 +128,7 @@ public class UpdateEntityTests : TestBed<NetForgeFixture>
     /// Update entity with adding new element to navigation collection.
     /// </summary>
     [Fact]
-    public async Task UpdateEntity_AddNewElementToNavigationCollection_ElementShouldBeCreatedAndAdded()
+    public async Task UpdateEntity_AddNewElementToNavigationCollection_ShouldCreateAndAdd()
     {
         // Arrange
         var shops = testDbContext.Shops.Include(shop => shop.Products).AsNoTracking();
@@ -119,5 +144,52 @@ public class UpdateEntityTests : TestBed<NetForgeFixture>
 
         // Assert
         Assert.Contains(testDbContext.Products, product => product.Id == newProduct.Id);
+        Assert.Contains(newProduct, updatedShop.Products);
+    }
+
+    /// <summary>
+    /// Update entity with adding existing element to navigation collection.
+    /// </summary>
+    [Fact]
+    public async Task UpdateEntity_AddExistingElementToNavigationCollection_ShouldAdd()
+    {
+        // Arrange
+        var shops = testDbContext.Shops.Include(shop => shop.Products).AsNoTracking();
+
+        var updatedShop = await shops.FirstAsync();
+        var originalShop = updatedShop.CloneJson()!;
+
+        var productToAdd = await testDbContext.Products
+            .AsNoTracking()
+            .FirstAsync(product => !updatedShop.Products.Contains(product));
+        updatedShop.Products.Add(productToAdd);
+
+        // Act
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(productToAdd, updatedShop.Products);
+    }
+
+    /// <summary>
+    /// Update entity with removing element from navigation collection.
+    /// </summary>
+    [Fact]
+    public async Task UpdateEntity_RemoveElementFromNavigationCollection_ShouldRemove()
+    {
+        // Arrange
+        var shops = testDbContext.Shops.Include(shop => shop.Products).AsNoTracking();
+
+        var updatedShop = await shops.FirstAsync();
+        var originalShop = updatedShop.CloneJson()!;
+
+        var productToRemove = updatedShop.Products.First();
+        updatedShop.Products.Remove(productToRemove);
+
+        // Act
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, CancellationToken.None);
+
+        // Assert
+        Assert.DoesNotContain(productToRemove, updatedShop.Products);
     }
 }
