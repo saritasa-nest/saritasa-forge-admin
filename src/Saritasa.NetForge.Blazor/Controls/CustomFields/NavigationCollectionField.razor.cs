@@ -30,3 +30,23 @@ public partial class NavigationCollectionField<T> : CustomField
             .OrderBy(instance => instance);
     }
 }
+
+/// <summary>
+/// Comparer for select control.
+/// </summary>
+public class SelectComparer<T> : IEqualityComparer<T>
+{
+    /// <inheritdoc />
+    public bool Equals(T? x, T? y)
+    {
+        return x?.ToString() == y?.ToString();
+    }
+
+    /// <inheritdoc />
+    public int GetHashCode(T? obj)
+    {
+        return obj is null
+            ? 0
+            : obj.ToString()!.GetHashCode();
+    }
+}
