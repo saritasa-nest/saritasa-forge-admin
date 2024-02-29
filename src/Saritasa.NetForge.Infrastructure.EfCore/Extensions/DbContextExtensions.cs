@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Saritasa.NetForge.DomainServices.Comparers;
 
 namespace Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
@@ -40,6 +41,7 @@ public static class DbContextExtensions
     {
         return context.ChangeTracker
             .Entries()
-            .Any(entry => entry.Entity.Equals(entity));
+            .Select(entry => entry.Entity)
+            .Contains(entity, new ObjectComparer<object>());
     }
 }

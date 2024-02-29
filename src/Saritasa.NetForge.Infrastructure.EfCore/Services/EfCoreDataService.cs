@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Domain.Enums;
+using Saritasa.NetForge.DomainServices.Comparers;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
@@ -416,8 +417,13 @@ public class EfCoreDataService : IOrmDataService
 
             var originalNavigationCollectionInstance = (IEnumerable<object>)originalNavigationEntry.CurrentValue!;
 
-            var addedElements = navigationCollectionInstance.Except(originalNavigationCollectionInstance);
-            var removedElements = originalNavigationCollectionInstance.Except(navigationCollectionInstance);
+            var objectComparer = new ObjectComparer<object>();
+
+            var addedElements = navigationCollectionInstance
+                .Except(originalNavigationCollectionInstance, objectComparer);
+
+            var removedElements = originalNavigationCollectionInstance
+                .Except(navigationCollectionInstance, objectComparer);
 
             var actualElements = originalNavigationCollectionInstance
                 .Union(addedElements)
