@@ -23,7 +23,8 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     [Inject]
     private IDialogService DialogService { get; set; } = default!;
 
-    private readonly ILogger<EntityDetails> logger;
+    [Inject]
+    private ILogger<EntityDetails> Logger { get; set; } = default!;
 
     /// <summary>
     /// Entity id.
@@ -32,11 +33,6 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     public string StringId { get; set; } = null!;
 
     private readonly List<BreadcrumbItem> breadcrumbItems = new();
-
-    public EntityDetails(ILogger<EntityDetails> logger)
-    {
-        this.logger = logger;
-    }
 
     /// <inheritdoc/>
     protected override EntityDetailsViewModel CreateViewModel()
@@ -73,7 +69,7 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
             catch (Exception ex)
             {
                 Snackbar.Add($"Failed to delete record due to error: {ex.Message}", Severity.Error);
-                logger.LogError("Failed to delete record due to error: {ex.Message}", ex.Message);
+                Logger.LogError("Failed to delete record due to error: {ex.Message}", ex.Message);
                 throw;
             }
         }
