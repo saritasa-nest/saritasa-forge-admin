@@ -37,7 +37,7 @@ public class UpdateEntityTests : TestBed<NetForgeFixture>
     }
 
     /// <summary>
-    /// Update valid entity test.
+    /// Update valid entity.
     /// </summary>
     [Fact]
     public async Task UpdateEntity_ValidEntity_Success()
@@ -57,7 +57,7 @@ public class UpdateEntityTests : TestBed<NetForgeFixture>
     }
 
     /// <summary>
-    /// Update entity navigation reference test.
+    /// Update entity navigation reference.
     /// </summary>
     [Fact]
     public async Task UpdateEntity_NavigationReference_Success()
@@ -79,7 +79,7 @@ public class UpdateEntityTests : TestBed<NetForgeFixture>
     }
 
     /// <summary>
-    /// Update entity navigation reference to null value test.
+    /// Update entity navigation reference to null value.
     /// </summary>
     [Fact]
     public async Task UpdateEntity_NavigationReferenceToNull_Success()
@@ -97,5 +97,27 @@ public class UpdateEntityTests : TestBed<NetForgeFixture>
 
         // Assert
         Assert.Contains(shops, shop => shop.Address is null);
+    }
+
+    /// <summary>
+    /// Update entity with adding new element to navigation collection.
+    /// </summary>
+    [Fact]
+    public async Task UpdateEntity_AddNewElementToNavigationCollection_ElementShouldBeCreatedAndAdded()
+    {
+        // Arrange
+        var shops = testDbContext.Shops.Include(shop => shop.Products).AsNoTracking();
+
+        var updatedShop = await shops.FirstAsync();
+        var originalShop = updatedShop.CloneJson()!;
+
+        var newProduct = Fakers.ProductFaker.Generate();
+        updatedShop.Products.Add(newProduct);
+
+        // Act
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(testDbContext.Products, product => product.Id == newProduct.Id);
     }
 }
