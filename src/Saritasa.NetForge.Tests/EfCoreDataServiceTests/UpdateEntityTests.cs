@@ -29,30 +29,73 @@ public class UpdateEntityTests : TestBed<NetForgeFixture>
         testDbContext = _fixture.GetService<TestDbContext>(_testOutputHelper)!;
         efCoreDataService = _fixture.GetService<IOrmDataService>(_testOutputHelper)!;
 
-        var contacts = Fakers.ContactInfoFaker.Generate(2);
-        testDbContext.ContactInfos.AddRange(contacts);
+        var shops = Fakers.ShopFaker.Generate(2);
+        testDbContext.Shops.AddRange(shops);
         testDbContext.SaveChanges();
 
         testDbContext.ChangeTracker.Clear();
     }
 
     /// <summary>
-    /// Create valid entity test.
+    /// Update valid entity test.
     /// </summary>
     [Fact]
     public async Task UpdateEntity_ValidEntity_Success()
     {
         // Arrange
-        var contactInfo = await testDbContext.ContactInfos.AsNoTracking().FirstAsync();
-        var originalContactInfo = contactInfo.CloneJson()!;
+        var updatedShop = await testDbContext.Shops.AsNoTracking().FirstAsync();
+        var originalShop = updatedShop.CloneJson()!;
 
-        const string newEmail = "Test222@test.test";
-        contactInfo.Email = newEmail;
+        const string newName = "Test222";
+        updatedShop.Name = newName;
 
         // Act
-        await efCoreDataService.UpdateAsync(contactInfo, originalContactInfo, CancellationToken.None);
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, CancellationToken.None);
 
         // Assert
-        Assert.Contains(testDbContext.ContactInfos, contact => contact.Email.Equals(newEmail));
+        Assert.Contains(testDbContext.Shops, shop => shop.Name.Equals(newName));
+    }
+
+    /// <summary>
+    /// Update entity navigation reference test.
+    /// </summary>
+    [Fact]
+    public async Task UpdateEntity_NavigationReference_Success()
+    {
+        // Arrange
+        var shops = testDbContext.Shops.Include(shop => shop.Address).AsNoTracking();
+
+        var updatedShop = await shops.FirstAsync();
+        var originalShop = updatedShop.CloneJson()!;
+
+        var newAddress = Fakers.AddressFaker.Generate();
+        updatedShop.Address = newAddress;
+
+        // Act
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(shops, shop => shop.Address!.Street.Equals(newAddress.Street));
+    }
+
+    /// <summary>
+    /// Update entity navigation reference to null value test.
+    /// </summary>
+    [Fact]
+    public async Task UpdateEntity_NavigationReferenceToNull_Success()
+    {
+        // Arrange
+        var shops = testDbContext.Shops.Include(shop => shop.Address).AsNoTracking();
+
+        var updatedShop = await shops.FirstAsync();
+        var originalShop = updatedShop.CloneJson()!;
+
+        updatedShop.Address = null;
+
+        // Act
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(shops, shop => shop.Address is null);
     }
 }
