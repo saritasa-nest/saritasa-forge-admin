@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Tests.Domain;
 using Saritasa.NetForge.Tests.Fixtures;
@@ -31,6 +32,8 @@ public class UpdateEntityTests : TestBed<NetForgeFixture>
         var contacts = Fakers.ContactInfoFaker.Generate(2);
         testDbContext.ContactInfos.AddRange(contacts);
         testDbContext.SaveChanges();
+
+        testDbContext.ChangeTracker.Clear();
     }
 
     /// <summary>
@@ -40,13 +43,14 @@ public class UpdateEntityTests : TestBed<NetForgeFixture>
     public async Task UpdateEntity_ValidEntity_Success()
     {
         // Arrange
-        var contactInfo = await testDbContext.ContactInfos.FirstAsync();
+        var contactInfo = await testDbContext.ContactInfos.AsNoTracking().FirstAsync();
+        var originalContactInfo = contactInfo.CloneJson()!;
 
         const string newEmail = "Test222@test.test";
         contactInfo.Email = newEmail;
 
         // Act
-        await efCoreDataService.UpdateAsync(contactInfo, CancellationToken.None);
+        await efCoreDataService.UpdateAsync(contactInfo, originalContactInfo, CancellationToken.None);
 
         // Assert
         Assert.Contains(testDbContext.ContactInfos, contact => contact.Email.Equals(newEmail));
