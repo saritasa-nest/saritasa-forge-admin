@@ -61,4 +61,7 @@ public record PropertyMetadataDto
 
     /// <inheritdoc cref="PropertyMetadata.IsValueGeneratedOnUpdate"/>
     public bool IsValueGeneratedOnUpdate { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadataBase.IsNullable"/>
+    public bool IsNullable { get; set; }
 }

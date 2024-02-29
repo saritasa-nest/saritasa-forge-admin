@@ -6,11 +6,6 @@
 public class PropertyMetadata : PropertyMetadataBase
 {
     /// <summary>
-    /// Whether the property is nullable.
-    /// </summary>
-    public bool IsNullable { get; set; }
-
-    /// <summary>
     /// Whether the property is a primary key.
     /// </summary>
     public bool IsPrimaryKey { get; set; }

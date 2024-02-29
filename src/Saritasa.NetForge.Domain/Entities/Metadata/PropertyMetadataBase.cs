@@ -87,4 +87,9 @@ public abstract class PropertyMetadataBase
     /// Whether the property is rendered as HTML.
     /// </summary>
     public bool DisplayAsHtml { get; set; }
+
+    /// <summary>
+    /// Whether the property is nullable.
+    /// </summary>
+    public bool IsNullable { get; set; }
 }

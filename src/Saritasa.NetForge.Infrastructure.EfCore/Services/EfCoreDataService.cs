@@ -377,27 +377,34 @@ public class EfCoreDataService : IOrmDataService
                 .Entry(originalEntity)
                 .Navigation(navigationEntry.Metadata.Name);
 
-            if (navigationEntry.CurrentValue is null || originalNavigationEntry.CurrentValue is null)
+            if (navigationEntry.CurrentValue is null && originalNavigationEntry.CurrentValue is null)
             {
                 continue;
             }
 
             if (!navigationEntry.Metadata.IsCollection)
             {
-                var isTracked = dbContext.IsTracked(navigationEntry.CurrentValue);
-
-                if (!isTracked)
+                if (navigationEntry.CurrentValue is null && originalNavigationEntry.CurrentValue is not null)
                 {
-                    dbContext.Attach(navigationEntry.CurrentValue);
                     originalNavigationEntry.CurrentValue = navigationEntry.CurrentValue;
+                }
+                else
+                {
+                    var isTracked = dbContext.IsTracked(navigationEntry.CurrentValue!);
+
+                    if (!isTracked)
+                    {
+                        dbContext.Attach(navigationEntry.CurrentValue!);
+                        originalNavigationEntry.CurrentValue = navigationEntry.CurrentValue;
+                    }
                 }
 
                 continue;
             }
 
-            var navigationInstance = (IEnumerable<object>)navigationEntry.CurrentValue;
+            var navigationCollectionInstance = (IEnumerable<object>)navigationEntry.CurrentValue!;
 
-            foreach (var element in navigationInstance)
+            foreach (var element in navigationCollectionInstance)
             {
                 var isTracked = dbContext.IsTracked(element);
 
@@ -407,12 +414,12 @@ public class EfCoreDataService : IOrmDataService
                 }
             }
 
-            var originalNavigationInstance = (IEnumerable<object>)originalNavigationEntry.CurrentValue;
+            var originalNavigationCollectionInstance = (IEnumerable<object>)originalNavigationEntry.CurrentValue!;
 
-            var addedElements = navigationInstance.Except(originalNavigationInstance);
-            var removedElements = originalNavigationInstance.Except(navigationInstance);
+            var addedElements = navigationCollectionInstance.Except(originalNavigationCollectionInstance);
+            var removedElements = originalNavigationCollectionInstance.Except(navigationCollectionInstance);
 
-            var actualElements = originalNavigationInstance
+            var actualElements = originalNavigationCollectionInstance
                 .Union(addedElements)
                 .Except(removedElements);
 
