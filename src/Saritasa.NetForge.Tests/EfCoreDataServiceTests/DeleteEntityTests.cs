@@ -44,7 +44,7 @@ public class DeleteEntityTests : TestBed<NetForgeFixture>
         var contactInfo = Fakers.ContactInfoFaker.Generate();
 
         // Add the contactInfo to the database before attempting to delete it
-        await efCoreDataService.AddAsync(contactInfo, contactInfoType, CancellationToken.None);
+        testDbContext.Add(contactInfo);
 
         // Act
         await efCoreDataService.DeleteAsync(contactInfo, contactInfoType, CancellationToken.None);
