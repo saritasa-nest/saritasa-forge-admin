@@ -45,35 +45,13 @@ public void Configure(EntityOptionsBuilder<Shop> entityOptionsBuilder)
 }
 ```
 
-## Requirements to navigation entities
+## Displaying navigations
 
-### ToString
-
-To display friendly name of a navigation on create/edit entity pages override `ToString`.
+To display friendly name of a navigation on create/edit entity pages you need to override `ToString`.
 
 ```csharp
 public override string ToString()
 {
     return $"{Id}; {Name}";
-}
-```
-
-### Equals and GetHashCode
-
-We use `MudSelect` control from `MudBlazor` library to display navigations, and there are requirement when not primitive type was used.
-To compare custom types between each other you need to override `Equals` and `GetHashCode` methods on entities that used as navigations.
-It needs for displaying selected navigatons on the control.
-
-For example:
-
-```csharp
-public override bool Equals(object? obj) 
-{
-    return obj?.ToString() == ToString();
-}
-
-public override int GetHashCode()
-{
-    return ToString().GetHashCode();
 }
 ```
