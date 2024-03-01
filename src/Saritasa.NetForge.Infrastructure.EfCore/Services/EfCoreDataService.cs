@@ -385,6 +385,7 @@ public class EfCoreDataService : IOrmDataService
 
             if (!navigationEntry.Metadata.IsCollection)
             {
+                // Case when the user want to remove navigation value
                 if (navigationEntry.CurrentValue is null && originalNavigationEntry.CurrentValue is not null)
                 {
                     originalNavigationEntry.CurrentValue = navigationEntry.CurrentValue;
@@ -405,6 +406,7 @@ public class EfCoreDataService : IOrmDataService
 
             var navigationCollectionInstance = (IEnumerable<object>)navigationEntry.CurrentValue!;
 
+            // Track added elements
             foreach (var element in navigationCollectionInstance)
             {
                 var isTracked = dbContext.IsTracked(element);
@@ -431,12 +433,12 @@ public class EfCoreDataService : IOrmDataService
 
             var underlyingTypeOfCollection = navigationEntry.Metadata.TargetEntityType.ClrType;
 
-            var castedCollection = actualElements.Cast(underlyingTypeOfCollection);
+            var castCollection = actualElements.Cast(underlyingTypeOfCollection);
 
             var listCollection = typeof(Enumerable)
                 .GetMethod(nameof(Enumerable.ToList))!
                 .MakeGenericMethod(underlyingTypeOfCollection)
-                .Invoke(null, new object[] { castedCollection });
+                .Invoke(null, new object[] { castCollection });
 
             originalNavigationEntry.CurrentValue = listCollection;
         }
