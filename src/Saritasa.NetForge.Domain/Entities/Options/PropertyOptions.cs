@@ -50,8 +50,8 @@ public class PropertyOptions
     /// <inheritdoc cref="PropertyMetadataBase.DisplayAsHtml"/>
     public bool DisplayAsHtml { get; set; }
 
-    /// <inheritdoc cref="PropertyMetadata.IsPathToImage"/>
-    public bool IsPathToImage { get; set; }
+    /// <inheritdoc cref="PropertyMetadata.IsImagePath"/>
+    public bool IsImagePath { get; set; }
 
     /// <inheritdoc cref="PropertyMetadata.ImageFolder"/>
     public string ImageFolder { get; set; } = string.Empty;

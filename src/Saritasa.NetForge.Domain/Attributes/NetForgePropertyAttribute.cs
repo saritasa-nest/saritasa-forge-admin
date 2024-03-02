@@ -49,8 +49,8 @@ public class NetForgePropertyAttribute : Attribute
     /// <inheritdoc cref="PropertyMetadataBase.IsSortable"/>
     public bool IsSortable { get; set; }
 
-    /// <inheritdoc cref="PropertyMetadata.IsPathToImage"/>
-    public bool IsPathToImage { get; set; }
+    /// <inheritdoc cref="PropertyMetadata.IsImagePath"/>
+    public bool IsImagePath { get; set; }
 
     /// <inheritdoc cref="PropertyMetadata.ImageFolder"/>
     public string? ImageFolder { get; set; }

@@ -152,7 +152,7 @@ public static class EntityMetadataAttributesExtensions
 
         if (property is PropertyMetadata propertyMetadata)
         {
-            propertyMetadata.IsPathToImage = netForgePropertyAttribute.IsPathToImage;
+            propertyMetadata.IsImagePath = netForgePropertyAttribute.IsImagePath;
             propertyMetadata.ImageFolder = netForgePropertyAttribute.ImageFolder;
 
             propertyMetadata.IsBase64Image = netForgePropertyAttribute.IsBase64Image;

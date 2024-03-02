@@ -34,7 +34,7 @@ public class ProductAdminConfiguration : IEntityAdminConfiguration<Product>
                 })
                 .IncludeProperty(shop => shop.Logo, propertyOptionsBuilder =>
                 {
-                    propertyOptionsBuilder.SetIsPathToImage(true);
+                    propertyOptionsBuilder.SetIsImagePath(true);
                 })
                 .IncludeProperty(shop => shop.BuildingPhoto, propertyOptionsBuilder =>
                 {

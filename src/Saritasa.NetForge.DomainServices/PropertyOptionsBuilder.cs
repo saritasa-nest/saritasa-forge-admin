@@ -147,9 +147,9 @@ public class PropertyOptionsBuilder
     /// <summary>
     /// Marks this property as path to image.
     /// </summary>
-    public PropertyOptionsBuilder SetIsPathToImage(bool isPathToImage)
+    public PropertyOptionsBuilder SetIsImagePath(bool isImagePath)
     {
-        options.IsPathToImage = isPathToImage;
+        options.IsImagePath = isImagePath;
         return this;
     }
 

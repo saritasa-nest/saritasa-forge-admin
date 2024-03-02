@@ -51,7 +51,7 @@ public class PropertyMetadata : PropertyMetadataBase
     /// <summary>
     /// Whether this property is image path.
     /// </summary>
-    public bool IsPathToImage { get; set; }
+    public bool IsImagePath { get; set; }
 
     /// <summary>
     /// The folder where to save an image.

@@ -83,7 +83,7 @@ public partial class UploadImage : CustomField, IRecipient<EntitySubmittedMessag
 
             PropertyValue = $"data:{selectedFile!.ContentType};base64,{Convert.ToBase64String(selectedFileBytes)}";
 
-            if (Property.IsPathToImage)
+            if (Property.IsImagePath)
             {
                 WeakReferenceMessenger.Default.Register(this);
             }

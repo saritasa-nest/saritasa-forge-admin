@@ -23,7 +23,7 @@ public class MetadataMappingProfile : Profile
             .ForMember(dto => dto.IsCalculatedProperty, options => options.Ignore())
             .ForMember(dto => dto.IsValueGeneratedOnAdd, options => options.Ignore())
             .ForMember(dto => dto.IsValueGeneratedOnUpdate, options => options.Ignore())
-            .ForMember(dto => dto.IsPathToImage, options => options.Ignore())
+            .ForMember(dto => dto.IsImagePath, options => options.Ignore())
             .ForMember(dto => dto.ImageFolder, options => options.Ignore())
             .ForMember(dto => dto.IsBase64Image, options => options.Ignore());
     }
