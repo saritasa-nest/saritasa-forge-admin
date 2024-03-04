@@ -348,7 +348,7 @@ public class EfCoreDataService : IOrmDataService
         // create new instances of dbContext. However, the delete function does not have its own viewmodel.
         // Therefore, after adding a new model, we need to clear the tracking for the record so that the
         // delete operation can work.
-        dbContext.ChangeTracker.Clear();
+        dbContext.Entry(entity).State = EntityState.Detached;
     }
 
     /// <inheritdoc />
