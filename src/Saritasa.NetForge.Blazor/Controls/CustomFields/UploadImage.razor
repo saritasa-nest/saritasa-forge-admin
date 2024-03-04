@@ -3,13 +3,14 @@
 
 <MudGrid>
     <MudItem xs="4">
+        <MudText>@Property.Name.ToMeaningfulName()</MudText>
         <MudFileUpload T="IBrowserFile" Accept=".apng, .avif, .svg, .png, .jpg, .webp" FilesChanged="UploadImageAsync">
             <ButtonTemplate>
                 <MudStack>
                     <MudButton HtmlTag="label"
                                Variant="Variant.Filled"
                                Color="Color.Primary"
-                               StartIcon="@Icons.Material.Filled.CloudUpload"
+                               StartIcon="@Icons.Material.Filled.Image"
                                for="@context">
                         Upload @Property.Name.ToMeaningfulName()
                     </MudButton>
