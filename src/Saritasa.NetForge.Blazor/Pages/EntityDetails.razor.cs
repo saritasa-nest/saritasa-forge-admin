@@ -40,10 +40,22 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
         return ViewModelFactory.Create<EntityDetailsViewModel>(StringId);
     }
 
+    private Dictionary<string, object>? NonKeylessEntityDataGridAttributes { get; set; }
+
     /// <inheritdoc />
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
+
+        if (ViewModel.CanEdit)
+        {
+            NonKeylessEntityDataGridAttributes = new Dictionary<string, object>
+            {
+                { "Hover", true },
+                { "RowClass", "cursor-pointer" },
+                { "RowClick", EventCallback.Factory.Create<DataGridRowClickEventArgs<object>>(this, NavigateToEditing) }
+            };
+        }
 
         var adminPanelEndpoint = AdminOptions.AdminPanelEndpoint;
 
