@@ -71,10 +71,10 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
 
     private async void ShowDeleteEntityConfirmationAsync(object source)
     {
-        var parameters = new DialogParameters<ConfirmationDialog>();
-        parameters.Add(x => x.ContentText, "Are you sure you want to delete this record?");
-        parameters.Add(x => x.ButtonText, "Yes");
-        parameters.Add(x => x.Color, Color.Error);
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Are you sure you want to delete this record?");
+        parameters.Add("ButtonText", "Yes");
+        parameters.Add("Color", Color.Error);
 
         var result = await (await DialogService.ShowAsync<ConfirmationDialog>("Delete", parameters)).Result;
         if (!result.Canceled)
