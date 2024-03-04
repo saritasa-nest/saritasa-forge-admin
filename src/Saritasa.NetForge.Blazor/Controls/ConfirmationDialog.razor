@@ -1,9 +1,9 @@
 ﻿<MudDialog>
     <DialogContent>
-        Are you sure you want to delete this record ?
+        <MudText>@ContentText</MudText>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Secondary" OnClick="Submit">Ok</MudButton>
+        <MudButton Color="@Color" Variant="Variant.Filled" OnClick="Submit">@ButtonText</MudButton>
     </DialogActions>
 </MudDialog>

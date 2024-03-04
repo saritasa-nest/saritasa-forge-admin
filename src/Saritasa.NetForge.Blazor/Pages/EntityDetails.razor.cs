@@ -59,7 +59,14 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
 
     private async void ShowDeleteEntityConfirmationAsync(object source)
     {
-        var result = await DialogService.Show<ConfirmationDialog>(string.Empty).Result;
+        var parameters = new DialogParameters<ConfirmationDialog>
+        {
+            { x => x.ContentText, "Are you sure you want to delete this record?" },
+            { x => x.ButtonText, "Delete" },
+            { x => x.Color, Color.Error }
+        };
+
+        var result = await (await DialogService.ShowAsync<ConfirmationDialog>("Delete", parameters)).Result;
         if (!result.Canceled)
         {
             try
@@ -70,7 +77,6 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
             {
                 Snackbar.Add($"Failed to delete record due to error: {ex.Message}", Severity.Error);
                 Logger.LogError("Failed to delete record due to error: {ex.Message}", ex.Message);
-                throw;
             }
         }
     }
