@@ -35,7 +35,7 @@ public static class DbContextExtensions
     /// <param name="context">Database context.</param>
     /// <param name="entity">Entity type.</param>
     /// <returns>
-    /// When <paramref name="entity"/> tracked - <see langword="true"/>, otherwise <see langword="false"/>
+    /// When <paramref name="entity"/> tracked - <see langword="true"/>, otherwise <see langword="false"/>.
     /// </returns>
     public static bool IsTracked(this DbContext context, object entity)
     {
