@@ -6,5 +6,7 @@
               InputType="InputType.Text"
               HelperText="@Property.Description"
               Disabled="IsReadOnly"
-              @bind-Value="PropertyValue">
+              @bind-Value="PropertyValue"
+              Error="@ComponentErrorModel.IsError"
+              ErrorText="@ComponentErrorModel.ErrorMessage">
 </MudTextField>
