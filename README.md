@@ -497,13 +497,13 @@ Generated properties will not be displayed on the create or edit entity pages. E
 
 You can add properties that will be displayed as images.
 
-There are two types of images: `PathToImage` and `Base64Image`.
+There are two types of images: `ImagePath` and `Base64Image`.
 
 Both of them can be configured via `[NetForgeProperty]` and `Fluent API`.
 
-## Path to Image
+## Image path
 
-`PathToImage` represents path to image on your storage.
+`ImagePath` represents path to image on your storage.
 
 ### Configuring place to store media files
 
@@ -518,9 +518,6 @@ public int MaxImageSizeInMb { get; set; } = 10;
 ```
 
 So default path to media files - `wwwroot/media`.
-
-Also, you can set `ImageFolder` property of `PropertyMetadata` to store images in separate folder.
-For example, if `ImageFolder` of the selected property is `Shop images`, then images will be stored in that way: `wwwroot/media/Shop images`.
 
 ## Base 64 String
 
@@ -537,11 +534,14 @@ public string? BuildingPhoto { get; set; }
 
 ### Using Fluent API
 
+You can use `SetImageFolder` to store images in separate folder.
+For example, if you set image folder as `Shop images`, then images will be stored in that way: `wwwroot/media/Shop images`.
+
 ```csharp
 entityOptionsBuilder.ConfigureProperty(shop => shop.Logo, builder =>
 {
     builder
-        .SetIsPathToImage(true)
-        .ImageFolder("Shop images");
+        .SetIsImagePath(true)
+        .SetImageFolder("Shop images");
 });
 ```
