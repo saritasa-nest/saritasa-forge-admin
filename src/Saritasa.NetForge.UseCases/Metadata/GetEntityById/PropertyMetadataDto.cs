@@ -53,6 +53,9 @@ public record PropertyMetadataDto
     /// <inheritdoc cref="PropertyMetadataBase.IsHiddenFromDetails"/>
     public bool IsHiddenFromDetails { get; set; }
 
+    /// <inheritdoc cref="PropertyMetadataBase.IsExcludedFromQuery"/>
+    public bool IsExcludedFromQuery { get; set; }
+
     /// <inheritdoc cref="PropertyMetadataBase.DisplayAsHtml"/>
     public bool DisplayAsHtml { get; set; }
 
