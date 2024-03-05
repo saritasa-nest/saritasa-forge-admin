@@ -70,12 +70,9 @@ public class CreateEntityViewModel : BaseViewModel
     /// </summary>
     public async Task CreateEntityAsync()
     {
-        var message = WeakReferenceMessenger.Default.Send(new EntitySubmittedMessage());
+        var message = WeakReferenceMessenger.Default.Send(new UploadImageMessage());
 
-        if (!message.HasErrors)
-        {
-            await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
-            navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
-        }
+        await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
+        navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
     }
 }

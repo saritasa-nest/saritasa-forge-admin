@@ -4,13 +4,14 @@ using Microsoft.AspNetCore.Components.Forms;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Mvvm.ViewModels;
+using Saritasa.NetForge.UseCases.Common;
 
 namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
 
 /// <summary>
 /// Represents upload image control.
 /// </summary>
-public partial class UploadImage : CustomField, IRecipient<EntitySubmittedMessage>, IDisposable
+public partial class UploadImage : CustomField, IRecipient<UploadImageMessage>, IDisposable
 {
     private bool disposedValue;
     private readonly CancellationTokenSource cancellationTokenSource = new();
@@ -68,6 +69,14 @@ public partial class UploadImage : CustomField, IRecipient<EntitySubmittedMessag
 
     private string? error;
 
+    private string? selectedBase64Image;
+
+    /// <inheritdoc />
+    protected override void OnParametersSet()
+    {
+        selectedBase64Image = PropertyValue;
+    }
+
     private async Task UploadImageAsync(IBrowserFile file)
     {
         error = null;
@@ -80,11 +89,16 @@ public partial class UploadImage : CustomField, IRecipient<EntitySubmittedMessag
             var maxImageSize = 1024 * 1024 * AdminOptions.MaxImageSizeInMb;
             var stream = file.OpenReadStream(maxImageSize);
             selectedFileBytes = await FileService.GetFileBytesAsync(stream, CancellationToken);
+            selectedBase64Image =
+                $"data:{selectedFile!.ContentType};base64,{Convert.ToBase64String(selectedFileBytes)}";
 
-            PropertyValue = $"data:{selectedFile!.ContentType};base64,{Convert.ToBase64String(selectedFileBytes)}";
+            PropertyValue = selectedBase64Image;
 
             if (Property.IsImagePath)
             {
+                PropertyValue = Path.Combine(AdminOptions.MediaFolder, Property.ImageFolder, selectedFile!.Name);
+
+                WeakReferenceMessenger.Default.Unregister<UploadImageMessage>(this);
                 WeakReferenceMessenger.Default.Register(this);
             }
         }
@@ -100,6 +114,7 @@ public partial class UploadImage : CustomField, IRecipient<EntitySubmittedMessag
     {
         PropertyValue = null;
         selectedFile = null;
+        selectedBase64Image = null;
     }
 
     /// <summary>
@@ -110,26 +125,22 @@ public partial class UploadImage : CustomField, IRecipient<EntitySubmittedMessag
     /// <remarks>
     /// For example create entity case: upload file, submit, create entity in database and create file.
     /// </remarks>
-    public async void Receive(EntitySubmittedMessage message)
+    public void Receive(UploadImageMessage message)
     {
         if (selectedFile is not null)
         {
-            var filePath = Path.Combine(AdminOptions.MediaFolder, Property.ImageFolder, selectedFile!.Name);
-            PropertyValue = filePath;
-            var filePathToCreate = Path.Combine(AdminOptions.StaticFilesFolder, filePath);
+            var filePathToCreate = Path.Combine(
+                AdminOptions.StaticFilesFolder,
+                AdminOptions.MediaFolder,
+                Property.ImageFolder,
+                selectedFile!.Name);
 
-            try
+            message.ChangedFiles.Add(new ImageDto
             {
-                await FileService.CreateFileAsync(filePathToCreate, selectedFileBytes!, CancellationToken);
-            }
-            catch (Exception exception)
-            {
-                error = "Something went wrong with uploading the file.";
-                message.HasErrors = true;
-                PropertyValue = null;
-
-                Logger.LogError(exception, "Error encountered when file was saved.");
-            }
+                PropertyName = Property.Name,
+                PathToFile = filePathToCreate,
+                FileContent = selectedFileBytes!
+            });
         }
 
         WeakReferenceMessenger.Default.Reset();
