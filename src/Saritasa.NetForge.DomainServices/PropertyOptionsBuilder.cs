@@ -156,7 +156,7 @@ public class PropertyOptionsBuilder
     /// <summary>
     /// Sets the folder for storing the image.
     /// </summary>
-    public PropertyOptionsBuilder ImageFolder(string imageFolder)
+    public PropertyOptionsBuilder SetImageFolder(string imageFolder)
     {
         options.ImageFolder = imageFolder;
         return this;

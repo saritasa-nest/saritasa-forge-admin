@@ -56,7 +56,7 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
         {
             builder
                 .SetIsImagePath(true)
-                .ImageFolder("Shop images")
+                .SetImageFolder("Shop images")
                 .SetOrder(3);
         });
     }
