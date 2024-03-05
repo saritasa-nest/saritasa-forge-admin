@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Saritasa.NetForge.Mvvm.ViewModels;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
@@ -28,4 +29,11 @@ public abstract class CustomField : ComponentBase
     [Parameter]
     [EditorRequired]
     public bool IsReadOnly { get; init; }
+
+    /// <summary>
+    /// Error model to show error for component.
+    /// </summary>
+    [Parameter]
+    [EditorRequired]
+    public ComponentErrorModel ComponentErrorModel { get; init; } = null!;
 }

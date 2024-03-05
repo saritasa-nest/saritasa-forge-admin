@@ -1,7 +1,6 @@
-﻿@using Saritasa.NetForge.Blazor.Controls
-@using Saritasa.NetForge.Blazor.Extensions
+﻿@using Saritasa.NetForge.Blazor.Extensions
 @using Saritasa.NetForge.Blazor.Infrastructure.Helpers
-
+@using Saritasa.NetForge.Mvvm.ViewModels
 @inherits MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.CreateEntity.CreateEntityViewModel>
 
 @if (ViewModel.IsEntityExists)
@@ -18,11 +17,27 @@
                 <div class="d-flex flex-column flex-grow-1 gap-4">
                     @foreach (var property in ViewModel.Model.Properties)
                     {
+                        ComponentErrorModel componentErrorModel;
+                        if (ViewModel.ErrorViewModels.Count != ViewModel.Model.Properties.Count)
+                        {
+                            componentErrorModel = new ComponentErrorModel
+                            {
+                                Property = property
+                            };
+
+                            ViewModel.ErrorViewModels.Add(componentErrorModel);
+                        }
+                        else
+                        {
+                            componentErrorModel = ViewModel.ErrorViewModels.First(e => e.Property.Name == property.Name);
+                        }
+
                         var componentType = CustomFieldHelper.GetComponentType(property.ClrType!);
                         var parameters = new Dictionary<string, object>
                         {
                             { "Property", property },
-                            { "EntityInstance", ViewModel.Model.EntityInstance }
+                            { "EntityInstance", ViewModel.Model.EntityInstance },
+                            { "ComponentErrorModel", componentErrorModel }
                         };
 
                         <DynamicComponent Type="componentType" Parameters="parameters" />

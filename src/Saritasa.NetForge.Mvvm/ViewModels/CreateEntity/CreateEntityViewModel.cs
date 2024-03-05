@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.ComponentModel.DataAnnotations;
+using AutoMapper;
 using Saritasa.NetForge.Domain.Exceptions;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
@@ -65,11 +66,39 @@ public class CreateEntityViewModel : BaseViewModel
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    public List<ComponentErrorModel> ErrorViewModels { get; } = [];
+
+    /// <summary>
     /// Creates entity.
     /// </summary>
     public async Task CreateEntityAsync()
     {
-        await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
-        navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
+        var results = new List<ValidationResult>();
+        ValidationContext context = new ValidationContext(Model.EntityInstance, null, null);
+        if (Validator.TryValidateObject(Model.EntityInstance, context, results, true))
+        {
+            await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
+            navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
+        }
+        else
+        {
+            ErrorViewModels.ForEach(e => e.ErrorMessage = string.Empty);
+
+            foreach (var result in results)
+            {
+                foreach (var member in result.MemberNames)
+                {
+                    var property = ErrorViewModels.FirstOrDefault(e => e.Property.Name == member);
+                    if (property is null)
+                    {
+                        continue;
+                    }
+
+                    property.ErrorMessage = result.ErrorMessage!;
+                }
+            }
+        }
     }
 }
