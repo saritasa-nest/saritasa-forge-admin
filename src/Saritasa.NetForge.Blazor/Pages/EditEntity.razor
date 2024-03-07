@@ -19,12 +19,11 @@ else if (ViewModel.IsEntityExists)
 
     <MudGrid Justify="Justify.Center">
         <MudItem xs="6">
-            <EditForm EditContext="new EditContext(ViewModel.Model.EntityInstance)"
-                      OnValidSubmit="ViewModel.UpdateEntityAsync">
+            <EditForm Model="ViewModel.Model.EntityInstance" OnValidSubmit="ViewModel.UpdateEntityAsync">
                 <div class="d-flex flex-column flex-grow-1 gap-4">
                     @foreach (var property in ViewModel.Model.Properties)
                     {
-                        var componentType = CustomFieldHelper.GetComponentType(property.ClrType!);
+                        var componentType = CustomFieldHelper.GetComponentType(property);
                         var parameters = new Dictionary<string, object>
                         {
                             { "Property", property },

@@ -51,5 +51,13 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                             .SetSearchType(SearchType.ContainsCaseInsensitive);
                     });
             });
+
+        entityOptionsBuilder.ConfigureProperty(shop => shop.Logo, builder =>
+        {
+            builder
+                .SetIsImagePath(true)
+                .SetImageFolder("Shop images")
+                .SetOrder(3);
+        });
     }
 }

@@ -1,5 +1,7 @@
 ﻿using MudBlazor.Services;
 using Saritasa.NetForge.Blazor.Infrastructure.Navigation;
+using Saritasa.NetForge.Blazor.Infrastructure.Services;
+using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels;
 using Saritasa.NetForge.UseCases.Interfaces;
@@ -25,5 +27,6 @@ internal static class ApplicationModule
         services.AddMemoryCache();
         services.AddScoped<INavigationService, NavigationService>();
         services.AddScoped<IEntityService, EntityService>();
+        services.AddTransient<IFileService, FileService>();
     }
 }
