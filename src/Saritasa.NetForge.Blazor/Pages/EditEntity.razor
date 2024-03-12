@@ -28,7 +28,7 @@ else if (ViewModel.IsEntityExists)
                         {
                             { "Property", property },
                             { "EntityInstance", ViewModel.Model.EntityInstance },
-                            { "IsReadOnly", property.IsPrimaryKey }
+                            { "IsReadOnly", property.IsPrimaryKey || property.IsReadOnly }
                         };
 
                         <DynamicComponent Type="componentType" Parameters="parameters" />

@@ -22,7 +22,8 @@
                         var parameters = new Dictionary<string, object>
                         {
                             { "Property", property },
-                            { "EntityInstance", ViewModel.Model.EntityInstance }
+                            { "EntityInstance", ViewModel.Model.EntityInstance },
+                            { "IsReadOnly", property.IsReadOnly }
                         };
 
                         <DynamicComponent Type="componentType" Parameters="parameters" />
