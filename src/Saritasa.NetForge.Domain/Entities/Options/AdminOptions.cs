@@ -70,4 +70,9 @@ public class AdminOptions
     /// Maximum image size in megabytes.
     /// </summary>
     public int MaxImageSizeInMb { get; set; } = 10;
+
+    /// <summary>
+    /// Maximum number of characters. Excess characters will be truncated.
+    /// </summary>
+    public int MaxCharacters { get; set; } = 10;
 }
