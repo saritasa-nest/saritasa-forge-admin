@@ -61,7 +61,8 @@ public class CreateEntityViewModel : BaseViewModel
                     {
                         IsCalculatedProperty: false,
                         IsValueGeneratedOnAdd: false,
-                        IsValueGeneratedOnUpdate: false
+                        IsValueGeneratedOnUpdate: false,
+                        IsReadOnly: false
                     })
                     .ToList()
             };
