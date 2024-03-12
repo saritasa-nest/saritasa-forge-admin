@@ -87,4 +87,9 @@ public abstract class PropertyMetadataBase
     /// Whether the property is rendered as HTML.
     /// </summary>
     public bool DisplayAsHtml { get; set; }
+
+    /// <summary>
+    /// Whether the property is readonly.
+    /// </summary>
+    public bool IsReadOnly { get; set; }
 }

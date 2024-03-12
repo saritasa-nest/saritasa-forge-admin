@@ -92,6 +92,7 @@ public class Product
     /// <summary>
     /// The date and time when the product was created.
     /// </summary>
+    [NetForgeProperty(IsReadOnly = true)]
     public DateTime CreatedDate { get; set; }
 
     /// <summary>
