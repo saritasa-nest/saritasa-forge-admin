@@ -66,7 +66,7 @@ public class CreateEntityViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// 
+    /// List of <see cref="ComponentErrorModel"/> instances in the view model.
     /// </summary>
     public List<ComponentErrorModel> ErrorViewModels { get; } = [];
 
@@ -75,9 +75,9 @@ public class CreateEntityViewModel : BaseViewModel
     /// </summary>
     public async Task CreateEntityAsync()
     {
-        var results = new List<ValidationResult>();
-        ValidationContext context = new ValidationContext(Model.EntityInstance, null, null);
-        if (Validator.TryValidateObject(Model.EntityInstance, context, results, true))
+        var error = new List<ValidationResult>();
+
+        if (entityService.ValidateEntity(Model.EntityInstance, ref error))
         {
             await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
             navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
@@ -86,7 +86,7 @@ public class CreateEntityViewModel : BaseViewModel
         {
             ErrorViewModels.ForEach(e => e.ErrorMessage = string.Empty);
 
-            foreach (var result in results)
+            foreach (var result in error)
             {
                 foreach (var member in result.MemberNames)
                 {

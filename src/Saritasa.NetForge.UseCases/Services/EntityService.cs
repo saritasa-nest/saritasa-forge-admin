@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using AutoMapper;
 using Saritasa.NetForge.Domain.Dtos;
@@ -286,5 +287,13 @@ public class EntityService : IEntityService
     public async Task CreateEntityAsync(object entity, Type entityType, CancellationToken cancellationToken)
     {
         await dataService.AddAsync(entity, entityType, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public bool ValidateEntity(object instance, ref List<ValidationResult> errors)
+    {
+        var context = new ValidationContext(instance, null, null);
+
+        return Validator.TryValidateObject(instance, context, errors, true);
     }
 }
