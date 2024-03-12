@@ -89,7 +89,7 @@ public abstract class PropertyMetadataBase
     public bool DisplayAsHtml { get; set; }
 
     /// <summary>
-    /// Whether the property is readonly.
+    /// Whether the property is read only.
     /// </summary>
     public bool IsReadOnly { get; set; }
 }
