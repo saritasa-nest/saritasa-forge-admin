@@ -170,4 +170,13 @@ public class PropertyOptionsBuilder
         options.IsBase64Image = isBase64Image;
         return this;
     }
+
+    /// <summary>
+    /// Sets amount of max characters.
+    /// </summary>
+    public PropertyOptionsBuilder SetMaxCharacters(int maxCharacters)
+    {
+        options.MaxCharacters = maxCharacters;
+        return this;
+    }
 }

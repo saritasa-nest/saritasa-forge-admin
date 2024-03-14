@@ -113,6 +113,11 @@ public static class EntityMetadataOptionsExtensions
             property.EmptyValueDisplay = propertyOptions.EmptyValueDisplay;
         }
 
+        if (propertyOptions.MaxCharacters > 0)
+        {
+            property.MaxCharacters = propertyOptions.MaxCharacters;
+        }
+
         if (property is PropertyMetadata propertyMetadata)
         {
             propertyMetadata.IsImagePath = propertyOptions.IsImagePath;

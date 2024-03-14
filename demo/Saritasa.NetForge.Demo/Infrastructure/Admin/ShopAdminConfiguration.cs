@@ -59,5 +59,10 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                 .SetImageFolder("Shop images")
                 .SetOrder(3);
         });
+
+        entityOptionsBuilder.ConfigureProperty(shop => shop.Name, builder =>
+        {
+            builder.SetMaxCharacters(25);
+        });
     }
 }
