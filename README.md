@@ -507,17 +507,41 @@ Both of them can be configured via `[NetForgeProperty]` and `Fluent API`.
 
 ### Configuring place to store media files
 
-`AdminOptions` has properties related to storage of static files.
+You can configure these properties related to images:
+
+#### Static files folder
+
+Default value for static files folder is `wwwrooot`.
 
 ``` csharp
-public string StaticFilesFolder { get; set; } = "wwwroot";
-
-public string MediaFolder { get; set; } = "media";
-
-public int MaxImageSizeInMb { get; set; } = 10;
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetStaticFilesFolder("static")
+});
 ```
 
+#### Media folder
+
+Default value for media folder is `media`.
+
+``` csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetMediaFolder("media files");
+});
+```
 So default path to media files - `wwwroot/media`.
+
+#### Max image size
+
+Default value for max image size is 10 MB.
+
+``` csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetMaxImageSize(15);
+});
+```
 
 ## Base 64 String
 
