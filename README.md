@@ -545,3 +545,39 @@ entityOptionsBuilder.ConfigureProperty(shop => shop.Logo, builder =>
         .SetImageFolder("Shop images");
 });
 ```
+
+# String Truncate
+
+You can set the max characters amount for string properties.
+
+## Configuration
+
+### Global
+
+`AdminOptions` have property to set max characters for the all strings. Default value is 50.
+
+```csharp
+public class AdminOptions
+{
+    public int MaxCharacters { get; set; } = 50;
+}
+
+```
+
+### For the Property
+
+#### Using Attribute
+
+```csharp
+[NetForgeProperty(MaxCharacters = 20)]
+public string Name { get; set; }
+```
+
+#### Using Fluent API
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(shop => shop.Name, builder =>
+{
+    builder.SetMaxCharacters(25);
+});
+```
