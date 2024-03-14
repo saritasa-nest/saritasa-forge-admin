@@ -214,7 +214,11 @@ public class EntityDetailsViewModel : BaseViewModel
             var stringValue = value.ToString();
 
             var maxCharacters = property.MaxCharacters ?? adminOptions.MaxCharacters;
-            value = stringValue!.Truncate(maxCharacters);
+
+            if (maxCharacters != default)
+            {
+                value = stringValue!.Truncate(maxCharacters);
+            }
         }
 
         return value;
