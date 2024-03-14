@@ -26,7 +26,7 @@ public class SearchTests : TestBed<NetForgeFixture>
     public SearchTests(ITestOutputHelper testOutputHelper, NetForgeFixture netForgeFixture)
         : base(testOutputHelper, netForgeFixture)
     {
-        testDbContext = netForgeFixture.TestDbContext;
+        testDbContext = netForgeFixture.GetService<TestDbContext>(testOutputHelper)!;
         dataService = netForgeFixture.GetScopedService<IOrmDataService>(testOutputHelper)!;
 
         PopulateDatabaseWithTestData();
