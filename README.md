@@ -554,17 +554,27 @@ You can set the max characters amount for string properties.
 
 ### Global
 
-`AdminOptions` have property to set max characters for the all strings. Default value is 50.
+You can set max characters for the all strings. Default value is 50.
 
 ```csharp
-public class AdminOptions
+services.AddNetForge(optionsBuilder =>
 {
-    public int MaxCharacters { get; set; } = 50;
-}
+    optionsBuilder.SetMaxCharacters(60);
+});
+```
 
+To remove this behavior you can set max characters to 0.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetMaxCharacters(0);
+});
 ```
 
 ### For the Property
+
+You can set max characters to each property individually. Disabled by default because does not have default value.
 
 #### Using Attribute
 

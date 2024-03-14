@@ -198,4 +198,13 @@ public class AdminOptionsBuilder
         options.GroupHeadersExpanded = groupHeadersExpanded;
         return this;
     }
+
+    /// <summary>
+    /// Sets entity group headers to be expanded.
+    /// </summary>
+    public AdminOptionsBuilder SetMaxCharacters(int maxCharacters)
+    {
+        options.MaxCharacters = maxCharacters;
+        return this;
+    }
 }
