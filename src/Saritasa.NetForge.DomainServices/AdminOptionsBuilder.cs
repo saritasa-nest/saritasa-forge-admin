@@ -200,7 +200,7 @@ public class AdminOptionsBuilder
     }
 
     /// <summary>
-    /// Sets entity group headers to be expanded.
+    /// Sets amount of max characters to all string properties.
     /// </summary>
     public AdminOptionsBuilder SetMaxCharacters(int maxCharacters)
     {
