@@ -74,5 +74,5 @@ public class AdminOptions
     /// <summary>
     /// Maximum number of characters. Excess characters will be truncated.
     /// </summary>
-    public int MaxCharacters { get; set; } = 10;
+    public int MaxCharacters { get; set; } = 50;
 }
