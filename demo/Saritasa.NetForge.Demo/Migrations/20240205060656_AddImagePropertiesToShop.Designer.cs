@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Saritasa.NetForge.Demo;
@@ -11,9 +12,11 @@ using Saritasa.NetForge.Demo;
 namespace Saritasa.NetForge.Demo.Net7.Migrations
 {
     [DbContext(typeof(ShopDbContext))]
-    partial class ShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240205060656_AddImagePropertiesToShop")]
+    partial class AddImagePropertiesToShop
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -251,14 +254,6 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                         .IsUnicode(false)
                         .HasColumnType("text")
                         .HasColumnName("country");
-
-                    b.Property<string>("DisplayName")
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .IsUnicode(false)
-                        .HasColumnType("text")
-                        .HasColumnName("display_name")
-                        .HasComputedColumnSql("city || ', ' || street", true);
 
                     b.Property<double>("Latitude")
                         .HasColumnType("double precision")
@@ -537,22 +532,6 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.ToTable("shops", (string)null);
                 });
 
-            modelBuilder.Entity("Saritasa.NetForge.Demo.Models.ShopProductsCount", b =>
-                {
-                    b.Property<int>("ProductsCount")
-                        .HasColumnType("integer")
-                        .HasColumnName("products_count");
-
-                    b.Property<int>("ShopId")
-                        .HasColumnType("integer")
-                        .HasColumnName("shop_id");
-
-                    b.HasIndex("ShopId")
-                        .HasDatabaseName("ix_shop_products_counts_shop_id");
-
-                    b.ToTable("shop_products_counts", (string)null);
-                });
-
             modelBuilder.Entity("Saritasa.NetForge.Demo.Models.Supplier", b =>
                 {
                     b.Property<string>("Name")
@@ -813,18 +792,6 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.Navigation("Address");
 
                     b.Navigation("OwnerContact");
-                });
-
-            modelBuilder.Entity("Saritasa.NetForge.Demo.Models.ShopProductsCount", b =>
-                {
-                    b.HasOne("Saritasa.NetForge.Demo.Models.Shop", "Shop")
-                        .WithMany()
-                        .HasForeignKey("ShopId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("fk_shop_products_counts_shops_shop_id");
-
-                    b.Navigation("Shop");
                 });
 
             modelBuilder.Entity("ShopSupplier", b =>

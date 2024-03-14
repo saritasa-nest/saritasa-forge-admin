@@ -67,6 +67,20 @@ public class Shop
     /// </summary>
     public List<Supplier> Suppliers { get; set; } = new();
 
+    /// <summary>
+    /// Path to image file.
+    /// </summary>
+    public string? Logo { get; set; }
+
+    /// <summary>
+    /// Bytes that represents image.
+    /// </summary>
+    [NetForgeProperty(
+        IsBase64Image = true,
+        Order = 4, 
+        Description = "Photo of the shop from the outside.")]
+    public string? BuildingPhoto { get; set; }
+
     /// <inheritdoc />
     public override string ToString()
     {

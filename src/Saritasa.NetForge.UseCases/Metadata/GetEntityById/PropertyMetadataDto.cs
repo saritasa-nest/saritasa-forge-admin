@@ -53,6 +53,9 @@ public record PropertyMetadataDto
     /// <inheritdoc cref="PropertyMetadataBase.IsHiddenFromDetails"/>
     public bool IsHiddenFromDetails { get; set; }
 
+    /// <inheritdoc cref="PropertyMetadataBase.IsExcludedFromQuery"/>
+    public bool IsExcludedFromQuery { get; set; }
+
     /// <inheritdoc cref="PropertyMetadataBase.DisplayAsHtml"/>
     public bool DisplayAsHtml { get; set; }
 
@@ -61,6 +64,15 @@ public record PropertyMetadataDto
 
     /// <inheritdoc cref="PropertyMetadata.IsValueGeneratedOnUpdate"/>
     public bool IsValueGeneratedOnUpdate { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.IsImagePath"/>
+    public bool IsImagePath { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.ImageFolder"/>
+    public string ImageFolder { get; set; } = string.Empty;
+
+    /// <inheritdoc cref="PropertyMetadata.IsBase64Image"/>
+    public bool IsBase64Image { get; set; }
 
     /// <inheritdoc cref="PropertyMetadataBase.IsNullable"/>
     public bool IsNullable { get; set; }

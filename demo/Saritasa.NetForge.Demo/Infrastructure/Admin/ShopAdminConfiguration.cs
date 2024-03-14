@@ -67,5 +67,13 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                         propertyOptionsBuilder.SetDisplayName("Supplier City");
                     });
             });
+
+        entityOptionsBuilder.ConfigureProperty(shop => shop.Logo, builder =>
+        {
+            builder
+                .SetIsImagePath(true)
+                .SetImageFolder("Shop images")
+                .SetOrder(3);
+        });
     }
 }

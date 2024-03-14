@@ -452,7 +452,7 @@ You can explicitly control whether a property should be excluded from the data q
 optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
 {
     entityOptionsBuilder.ConfigureProperty(user => user.DateOfBirth,
-        propertyBuilder => propertyBuilder.SetIsExcludeFromQuery(true));
+        propertyBuilder => propertyBuilder.SetIsExcludedFromQuery(true));
 });
 ```
 
@@ -491,4 +491,57 @@ Generated properties will not be displayed on the create or edit entity pages. E
 ```csharp
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public DateTime CreatedAt { get; set; }
+```
+
+# Image Properties
+
+You can add properties that will be displayed as images.
+
+There are two types of images: `ImagePath` and `Base64Image`.
+
+Both of them can be configured via `[NetForgeProperty]` and `Fluent API`.
+
+## Image path
+
+`ImagePath` represents path to image on your storage.
+
+### Configuring place to store media files
+
+`AdminOptions` has properties related to storage of static files.
+
+``` csharp
+public string StaticFilesFolder { get; set; } = "wwwroot";
+
+public string MediaFolder { get; set; } = "media";
+
+public int MaxImageSizeInMb { get; set; } = 10;
+```
+
+So default path to media files - `wwwroot/media`.
+
+## Base 64 String
+
+`Base64Image` is base 64 string that looks like: `data:image/{MIME};base64,{bytes of image}`.
+
+## Configuration
+
+### Using Attribute
+
+```csharp
+[NetForgeProperty(IsBase64Image = true)]
+public string? BuildingPhoto { get; set; }
+```
+
+### Using Fluent API
+
+You can use `SetImageFolder` to store images in separate folder.
+For example, if you set image folder as `Shop images`, then images will be stored in that way: `wwwroot/media/Shop images`.
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(shop => shop.Logo, builder =>
+{
+    builder
+        .SetIsImagePath(true)
+        .SetImageFolder("Shop images");
+});
 ```

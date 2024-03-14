@@ -140,11 +140,6 @@ public static class EntityMetadataAttributesExtensions
             property.SearchType = netForgePropertyAttribute.SearchType;
         }
 
-        if (netForgePropertyAttribute.IsSortable)
-        {
-            property.IsSortable = netForgePropertyAttribute.IsSortable;
-        }
-
         if (!string.IsNullOrEmpty(netForgePropertyAttribute.EmptyValueDisplay))
         {
             property.EmptyValueDisplay = netForgePropertyAttribute.EmptyValueDisplay;
@@ -153,6 +148,14 @@ public static class EntityMetadataAttributesExtensions
         if (netForgePropertyAttribute.DisplayAsHtml)
         {
             property.DisplayAsHtml = netForgePropertyAttribute.DisplayAsHtml;
+        }
+
+        if (property is PropertyMetadata propertyMetadata)
+        {
+            propertyMetadata.IsImagePath = netForgePropertyAttribute.IsImagePath;
+            propertyMetadata.ImageFolder = netForgePropertyAttribute.ImageFolder;
+
+            propertyMetadata.IsBase64Image = netForgePropertyAttribute.IsBase64Image;
         }
     }
 }

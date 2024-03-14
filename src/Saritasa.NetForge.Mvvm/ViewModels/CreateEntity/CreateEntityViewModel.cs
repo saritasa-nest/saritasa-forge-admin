@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Saritasa.NetForge.Domain.Exceptions;
+using CommunityToolkit.Mvvm.Messaging;
+using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 using Saritasa.NetForge.UseCases.Interfaces;
@@ -19,18 +21,24 @@ public class CreateEntityViewModel : BaseViewModel
     private readonly IEntityService entityService;
     private readonly IMapper mapper;
     private readonly INavigationService navigationService;
+    private readonly IFileService fileService;
 
     /// <summary>
     /// Constructor.
     /// </summary>
     public CreateEntityViewModel(
-        string stringId, IEntityService entityService, IMapper mapper, INavigationService navigationService)
+        string stringId,
+        IEntityService entityService,
+        IMapper mapper,
+        INavigationService navigationService,
+        IFileService fileService)
     {
         Model = new CreateEntityModel { StringId = stringId };
 
         this.entityService = entityService;
         this.mapper = mapper;
         this.navigationService = navigationService;
+        this.fileService = fileService;
     }
 
     /// <summary>
@@ -69,6 +77,13 @@ public class CreateEntityViewModel : BaseViewModel
     /// </summary>
     public async Task CreateEntityAsync()
     {
+        var message = WeakReferenceMessenger.Default.Send(new UploadImageMessage());
+
+        foreach (var image in message.ChangedFiles)
+        {
+            await fileService.CreateFileAsync(image.PathToFile!, image.FileContent!, CancellationToken);
+        }
+
         await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
         navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
     }

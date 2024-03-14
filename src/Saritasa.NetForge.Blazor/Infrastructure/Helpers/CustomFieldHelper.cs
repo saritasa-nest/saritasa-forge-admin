@@ -52,6 +52,11 @@ public static class CustomFieldHelper
     /// </summary>
     public static Type GetComponentType(PropertyMetadataDto property)
     {
+        if (property.IsImagePath || property.IsBase64Image)
+        {
+            return typeof(UploadImage);
+        }
+
         if (property is NavigationMetadataDto navigation)
         {
             return navigation.IsCollection

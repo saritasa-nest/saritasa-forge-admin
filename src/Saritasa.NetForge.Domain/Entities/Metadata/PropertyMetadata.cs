@@ -1,4 +1,6 @@
-﻿namespace Saritasa.NetForge.Domain.Entities.Metadata;
+﻿using Saritasa.NetForge.Domain.Entities.Options;
+
+namespace Saritasa.NetForge.Domain.Entities.Metadata;
 
 /// <summary>
 /// Represents metadata about a property of an entity model.
@@ -40,4 +42,26 @@ public class PropertyMetadata : PropertyMetadataBase
     /// Whether this property is calculated.
     /// </summary>
     public bool IsCalculatedProperty { get; set; }
+
+    /// <summary>
+    /// Whether this property is image path.
+    /// </summary>
+    public bool IsImagePath { get; set; }
+
+    /// <summary>
+    /// The folder where to save an image.
+    /// </summary>
+    /// <remarks>
+    /// Use it when you need to store images in separate folder inside <see cref="AdminOptions.MediaFolder"/>.
+    /// </remarks>
+    public string? ImageFolder { get; set; }
+
+    /// <summary>
+    /// Whether this property is bytes image.
+    /// </summary>
+    /// <remarks>
+    /// Property will have this value:
+    /// <c>data:image/{MIME};base64,{bytes of image}</c>.
+    /// </remarks>
+    public bool IsBase64Image { get; set; }
 }

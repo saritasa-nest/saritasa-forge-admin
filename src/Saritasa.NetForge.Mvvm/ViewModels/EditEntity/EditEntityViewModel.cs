@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Saritasa.NetForge.Domain.Exceptions;
+using CommunityToolkit.Mvvm.Messaging;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Interfaces;
@@ -25,6 +26,7 @@ public class EditEntityViewModel : BaseViewModel
     private readonly IEntityService entityService;
     private readonly IMapper mapper;
     private readonly IOrmDataService dataService;
+    private readonly IFileService fileService;
 
     /// <summary>
     /// Constructor.
@@ -34,7 +36,8 @@ public class EditEntityViewModel : BaseViewModel
         string instancePrimaryKey,
         IEntityService entityService,
         IMapper mapper,
-        IOrmDataService dataService)
+        IOrmDataService dataService,
+        IFileService fileService)
     {
         Model = new EditEntityModel { StringId = stringId };
         InstancePrimaryKey = instancePrimaryKey;
@@ -42,6 +45,7 @@ public class EditEntityViewModel : BaseViewModel
         this.entityService = entityService;
         this.mapper = mapper;
         this.dataService = dataService;
+        this.fileService = fileService;
     }
 
     /// <summary>
@@ -94,7 +98,14 @@ public class EditEntityViewModel : BaseViewModel
     /// </summary>
     public async Task UpdateEntityAsync()
     {
-       await dataService.UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken);
-       IsUpdated = true;
+        var message = WeakReferenceMessenger.Default.Send(new UploadImageMessage());
+
+        foreach (var image in message.ChangedFiles)
+        {
+            await fileService.CreateFileAsync(image.PathToFile!, image.FileContent!, CancellationToken);
+        }
+
+        await dataService.UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken);
+        IsUpdated = true;
     }
 }
