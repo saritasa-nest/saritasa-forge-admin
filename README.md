@@ -563,7 +563,7 @@ services.AddNetForge(optionsBuilder =>
 });
 ```
 
-To remove this behavior you can set max characters to 0.
+You can remove this behavour by setting max characters to 0.
 
 ```csharp
 services.AddNetForge(optionsBuilder =>
