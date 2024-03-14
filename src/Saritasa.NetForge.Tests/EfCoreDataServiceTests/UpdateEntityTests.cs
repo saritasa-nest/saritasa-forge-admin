@@ -2,38 +2,60 @@
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Tests.Domain;
-using Saritasa.NetForge.Tests.Fixtures;
 using Saritasa.NetForge.Tests.Helpers;
 using Xunit;
-using Xunit.Abstractions;
-using Xunit.Microsoft.DependencyInjection.Abstracts;
 
 namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 
 /// <summary>
 /// Tests for <see cref="IOrmDataService.UpdateAsync"/>.
 /// </summary>
-public class UpdateEntityTests : TestBed<NetForgeFixture>
+public class UpdateEntityTests : IDisposable
 {
-#pragma warning disable CA2213
     private readonly TestDbContext testDbContext;
-#pragma warning restore CA2213
     private readonly IOrmDataService efCoreDataService;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public UpdateEntityTests(ITestOutputHelper testOutputHelper, NetForgeFixture netForgeFixture)
-        : base(testOutputHelper, netForgeFixture)
+    public UpdateEntityTests()
     {
-        testDbContext = _fixture.GetService<TestDbContext>(_testOutputHelper)!;
-        efCoreDataService = _fixture.GetService<IOrmDataService>(_testOutputHelper)!;
+        testDbContext = EfCoreHelper.CreateTestDbContext();
+        efCoreDataService = EfCoreHelper.CreateEfCoreDataService(testDbContext);
 
         var shops = Fakers.ShopFaker.Generate(2);
         testDbContext.Shops.AddRange(shops);
         testDbContext.SaveChanges();
 
         testDbContext.ChangeTracker.Clear();
+    }
+
+    private bool disposedValue;
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Deletes the database after one test is complete,
+    /// so it gives us the same state of the database for every test.
+    /// </summary>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposedValue)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            testDbContext.Dispose();
+        }
+
+        disposedValue = true;
     }
 
     /// <summary>
