@@ -87,4 +87,9 @@ public abstract class PropertyMetadataBase
     /// Whether the property is rendered as HTML.
     /// </summary>
     public bool DisplayAsHtml { get; set; }
+
+    /// <summary>
+    /// Maximum characters possible.
+    /// </summary>
+    public int? MaxCharacters { get; set; }
 }

@@ -150,6 +150,11 @@ public static class EntityMetadataAttributesExtensions
             property.DisplayAsHtml = netForgePropertyAttribute.DisplayAsHtml;
         }
 
+        if (netForgePropertyAttribute.MaxCharacters > 0)
+        {
+            property.MaxCharacters = netForgePropertyAttribute.MaxCharacters;
+        }
+
         if (property is PropertyMetadata propertyMetadata)
         {
             propertyMetadata.IsImagePath = netForgePropertyAttribute.IsImagePath;

@@ -57,4 +57,7 @@ public class NetForgePropertyAttribute : Attribute
 
     /// <inheritdoc cref="PropertyMetadata.IsBase64Image"/>
     public bool IsBase64Image { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadataBase.MaxCharacters"/>
+    public int MaxCharacters { get; set; }
 }
