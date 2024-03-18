@@ -98,6 +98,11 @@
                                 <CellTemplate Context="cell">
                                     @{
                                         var isNavigation = navigationName is not null;
+                                        var isNavigationCollection = false;
+                                        if (property is NavigationMetadataDto navigation)
+                                        {
+                                            isNavigationCollection = navigation.IsCollection;
+                                        }
 
                                         var instance = !isNavigation
                                             ? cell.Item
@@ -122,7 +127,7 @@
                                         {
                                             @((MarkupString)propertyValue!)
                                         }
-                                        else if (isNavigation && property.IsPrimaryKey)
+                                        else if ((isNavigation && property.IsPrimaryKey) || isNavigationCollection)
                                         {
                                             <MudButton @onclick="OpenDialog"
                                                        Variant="Variant.Text"
