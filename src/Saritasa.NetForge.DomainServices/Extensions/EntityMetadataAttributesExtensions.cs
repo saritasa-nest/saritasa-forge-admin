@@ -167,5 +167,25 @@ public static class EntityMetadataAttributesExtensions
 
             propertyMetadata.IsBase64Image = netForgePropertyAttribute.IsBase64Image;
         }
+
+        if (netForgePropertyAttribute.IsMultiline)
+        {
+            property.IsMultiline = netForgePropertyAttribute.IsMultiline;
+        }
+
+        if (netForgePropertyAttribute.Lines >= 0)
+        {
+            property.Lines = netForgePropertyAttribute.Lines;
+        }
+
+        if (netForgePropertyAttribute.MaxLines >= 0)
+        {
+            property.MaxLines = netForgePropertyAttribute.MaxLines;
+        }
+
+        if (netForgePropertyAttribute.IsAutoGrow)
+        {
+            property.IsAutoGrow = netForgePropertyAttribute.IsAutoGrow;
+        }
     }
 }
