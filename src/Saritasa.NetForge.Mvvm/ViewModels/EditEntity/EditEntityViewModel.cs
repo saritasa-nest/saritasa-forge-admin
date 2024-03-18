@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Saritasa.NetForge.Domain.Exceptions;
 using CommunityToolkit.Mvvm.Messaging;
+using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Interfaces;
+using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 
@@ -63,8 +65,6 @@ public class EditEntityViewModel : BaseViewModel
         {
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
             Model = mapper.Map<EditEntityModel>(entity);
-            Model.EntityInstance = await dataService
-                .GetInstanceAsync(InstancePrimaryKey, Model.ClrType!, CancellationToken);
             Model = Model with
             {
                 Properties = Model.Properties
@@ -73,10 +73,19 @@ public class EditEntityViewModel : BaseViewModel
                         IsCalculatedProperty: false,
                         IsValueGeneratedOnAdd: false,
                         IsValueGeneratedOnUpdate: false,
-                        IsHiddenFromListView: false
+                        IsHiddenFromListView: false,
                     })
                     .ToList()
             };
+
+            var includedNavigationNames = Model.Properties
+                .Where(property => property is NavigationMetadataDto)
+                .Select(property => property.Name);
+
+            Model.EntityInstance = await dataService
+                .GetInstanceAsync(InstancePrimaryKey, Model.ClrType!, includedNavigationNames, CancellationToken);
+
+            Model.OriginalEntityInstance = Model.EntityInstance.CloneJson();
         }
         catch (NotFoundException)
         {
@@ -96,7 +105,7 @@ public class EditEntityViewModel : BaseViewModel
             await fileService.CreateFileAsync(image.PathToFile!, image.FileContent!, CancellationToken);
         }
 
-        await dataService.UpdateAsync(Model.EntityInstance!, CancellationToken);
+        await dataService.UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken);
         IsUpdated = true;
     }
 }

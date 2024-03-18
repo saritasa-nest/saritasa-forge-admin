@@ -57,4 +57,10 @@ internal class Address
     /// The contact phone number associated with the address.
     /// </summary>
     public string ContactPhone { get; set; } = string.Empty;
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"{Street} - {City}";
+    }
 }

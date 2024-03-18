@@ -30,4 +30,10 @@ public class Supplier
     /// The list of shops which this supplier works with.
     /// </summary>
     public List<Shop> Shops { get; set; } = new();
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"{Name}; {City}";
+    }
 }

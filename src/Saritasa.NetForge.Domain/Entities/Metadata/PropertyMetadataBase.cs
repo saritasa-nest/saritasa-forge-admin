@@ -97,4 +97,9 @@ public abstract class PropertyMetadataBase
     /// Maximum characters to display.
     /// </summary>
     public int? TruncationMaxCharacters { get; set; }
+
+    /// <summary>
+    /// Whether the property is nullable.
+    /// </summary>
+    public bool IsNullable { get; set; }
 }

@@ -35,5 +35,11 @@ public class ContactInfo
     /// </summary>
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public DateTime CreatedAt { get; set; }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"{FullName} - {Email}";
+    }
 }
 

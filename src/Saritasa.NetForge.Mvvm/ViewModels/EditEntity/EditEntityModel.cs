@@ -27,4 +27,9 @@ public record EditEntityModel
     /// Entity instance.
     /// </summary>
     public object? EntityInstance { get; set; }
+
+    /// <summary>
+    /// Original unchanged entity instance.
+    /// </summary>
+    public object? OriginalEntityInstance { get; set; }
 }

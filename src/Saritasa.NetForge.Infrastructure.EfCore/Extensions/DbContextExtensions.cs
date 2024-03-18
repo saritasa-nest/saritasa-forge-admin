@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Saritasa.NetForge.DomainServices.Comparers;
 
 namespace Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
@@ -26,5 +27,21 @@ public static class DbContextExtensions
         setMethod = setMethod.MakeGenericMethod(entityType);
 
         return (setMethod.Invoke(context, null) as IQueryable)!;
+    }
+
+    /// <summary>
+    /// Determine is <paramref name="entity"/> tracked by <see cref="DbContext.ChangeTracker"/>.
+    /// </summary>
+    /// <param name="context">Database context.</param>
+    /// <param name="entity">Entity type.</param>
+    /// <returns>
+    /// When <paramref name="entity"/> tracked - <see langword="true"/>, otherwise <see langword="false"/>.
+    /// </returns>
+    public static bool IsTracked(this DbContext context, object entity)
+    {
+        return context.ChangeTracker
+            .Entries()
+            .Select(entry => entry.Entity)
+            .Contains(entity, new ObjectComparer<object>());
     }
 }

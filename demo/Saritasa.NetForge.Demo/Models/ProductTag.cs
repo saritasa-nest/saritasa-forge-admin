@@ -24,5 +24,11 @@ public class ProductTag
     /// List of products associated with this tag.
     /// </summary>
     public List<Product> Products { get; set; } = new();
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"{Id} - {Name}";
+    }
 }
 

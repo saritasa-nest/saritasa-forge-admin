@@ -57,6 +57,13 @@ public static class CustomFieldHelper
             return typeof(UploadImage);
         }
 
+        if (property is NavigationMetadataDto navigation)
+        {
+            return navigation.IsCollection
+                ? typeof(NavigationCollectionField<>).MakeGenericType(property.ClrType!.GetGenericArguments().First())
+                : typeof(NavigationField);
+        }
+
         foreach (var (types, inputType) in TypeMappingDictionary)
         {
             if (types.Contains(property.ClrType!))

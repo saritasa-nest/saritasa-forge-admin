@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Domain.Enums;
+using Saritasa.NetForge.DomainServices.Comparers;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
@@ -33,11 +34,15 @@ public class EfCoreDataService : IOrmDataService
     public IQueryable<object> GetQuery(Type clrType)
     {
         var dbContext = GetDbContextThatContainsEntity(clrType);
-        return dbContext.Set(clrType).OfType<object>();
+        return dbContext.Set(clrType).OfType<object>().AsNoTracking();
     }
 
     /// <inheritdoc />
-    public async Task<object> GetInstanceAsync(string primaryKey, Type entityType, CancellationToken cancellationToken)
+    public async Task<object> GetInstanceAsync(
+        string primaryKey,
+        Type entityType,
+        IEnumerable<string> includedNavigationNames,
+        CancellationToken cancellationToken)
     {
         var dbContext = GetDbContextThatContainsEntity(entityType);
         var type = dbContext.Model.FindEntityType(entityType)!;
@@ -77,6 +82,14 @@ public class EfCoreDataService : IOrmDataService
         // entity => ((entityType)entity).propertyName1.StartsWith(constant1)
         // && ((entityType)entity).propertyName2.StartsWith(constant2)
         var lambda = Expression.Lambda<Func<object, bool>>(primaryKeyExpression!, entity);
+
+        foreach (var navigationName in includedNavigationNames)
+        {
+            var navigationExpression = ExpressionExtensions.GetPropertyExpression(convertedEntity, navigationName);
+            var navigationLambda = Expression.Lambda<Func<object, object>>(navigationExpression, entity);
+
+            query = query.Include(navigationLambda);
+        }
 
         return await query.FirstAsync(lambda, cancellationToken);
     }
@@ -338,7 +351,10 @@ public class EfCoreDataService : IOrmDataService
     {
         var dbContext = GetDbContextThatContainsEntity(entityType);
 
-        dbContext.Add(entity);
+        // We use Attach instead of Add because
+        // EF will try to create new entity and create all navigations (even when they are exist in database).
+        // Attach resolves this problem by explicitly attaching navigations to EF change tracker.
+        dbContext.Attach(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
         // Since we use different dbContext instances for operations, an error can occur if a dbContext
         // instance is used before the last dbContext instance is disposed. For example: If a user creates
@@ -358,17 +374,96 @@ public class EfCoreDataService : IOrmDataService
 
         dbContext.Remove(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
+
+        dbContext.ChangeTracker.Clear();
     }
 
     /// <inheritdoc />
-    public async Task UpdateAsync(object entity, CancellationToken cancellationToken)
+    public async Task UpdateAsync(object entity, object originalEntity, CancellationToken cancellationToken)
     {
         var entityType = entity.GetType();
         var dbContext = GetDbContextThatContainsEntity(entityType);
 
-        dbContext.Update(entity);
+        dbContext.Attach(originalEntity);
+
+        // By default, EF does not track removed items from navigation collections
+        // when you just change reference to another collection.
+        // We use this foreach to explicitly remove items from navigation collection
+        // to give EF opportunity to track these changes.
+        foreach (var navigationEntry in dbContext.Entry(entity).Navigations)
+        {
+            var originalNavigationEntry = dbContext
+                .Entry(originalEntity)
+                .Navigation(navigationEntry.Metadata.Name);
+
+            if (navigationEntry.CurrentValue is null && originalNavigationEntry.CurrentValue is null)
+            {
+                continue;
+            }
+
+            if (!navigationEntry.Metadata.IsCollection)
+            {
+                // Case when the user want to remove navigation value
+                if (navigationEntry.CurrentValue is null && originalNavigationEntry.CurrentValue is not null)
+                {
+                    originalNavigationEntry.CurrentValue = navigationEntry.CurrentValue;
+                }
+                else
+                {
+                    var isTracked = dbContext.IsTracked(navigationEntry.CurrentValue!);
+
+                    if (!isTracked)
+                    {
+                        dbContext.Attach(navigationEntry.CurrentValue!);
+                        originalNavigationEntry.CurrentValue = navigationEntry.CurrentValue;
+                    }
+                }
+
+                continue;
+            }
+
+            var navigationCollectionInstance = (IEnumerable<object>)navigationEntry.CurrentValue!;
+
+            // Track added elements
+            foreach (var element in navigationCollectionInstance)
+            {
+                var isTracked = dbContext.IsTracked(element);
+
+                if (!isTracked)
+                {
+                    dbContext.Attach(element);
+                }
+            }
+
+            var originalNavigationCollectionInstance = (IEnumerable<object>)originalNavigationEntry.CurrentValue!;
+
+            var objectComparer = new ObjectComparer<object>();
+
+            var addedElements = navigationCollectionInstance
+                .Except(originalNavigationCollectionInstance, objectComparer);
+
+            var removedElements = originalNavigationCollectionInstance
+                .Except(navigationCollectionInstance, objectComparer);
+
+            var actualElements = originalNavigationCollectionInstance
+                .Union(addedElements)
+                .Except(removedElements);
+
+            var underlyingTypeOfCollection = navigationEntry.Metadata.TargetEntityType.ClrType;
+
+            var castCollection = actualElements.Cast(underlyingTypeOfCollection);
+
+            var listCollection = typeof(Enumerable)
+                .GetMethod(nameof(Enumerable.ToList))!
+                .MakeGenericMethod(underlyingTypeOfCollection)
+                .Invoke(null, new object[] { castCollection });
+
+            originalNavigationEntry.CurrentValue = listCollection;
+        }
+
+        dbContext.Entry(originalEntity).CurrentValues.SetValues(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        dbContext.Entry(entity).State = EntityState.Detached;
+        dbContext.ChangeTracker.Clear();
     }
 }

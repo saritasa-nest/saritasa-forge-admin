@@ -1,0 +1,18 @@
+﻿@using Saritasa.NetForge.DomainServices.Comparers
+
+@inherits CustomField
+
+@typeparam T
+
+<MudSelect @bind-SelectedValues="PropertyValue"
+           Label="@Property.Name"
+           Variant="Variant.Outlined"
+           HelperText="@Property.Description"
+           Disabled="IsReadOnly"
+           MultiSelection="true"
+           Comparer="new ObjectComparer<T>()">
+    @foreach (var instance in NavigationInstances)
+    {
+        <MudSelectItem Value="instance" />
+    }
+</MudSelect>
