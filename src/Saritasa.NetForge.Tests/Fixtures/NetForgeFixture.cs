@@ -14,27 +14,10 @@ namespace Saritasa.NetForge.Tests.Fixtures;
 /// </summary>
 public class NetForgeFixture : TestBedFixture
 {
-    internal TestDbContext TestDbContext { get; }
-
-    /// <summary>
-    /// Constructor. This code executes before tests.
-    /// </summary>
-    public NetForgeFixture()
-    {
-        var dbOptions = new DbContextOptionsBuilder<TestDbContext>()
-            .UseInMemoryDatabase("NetForgeTest")
-            .Options;
-
-        var testDbContext = new TestDbContext(dbOptions);
-        testDbContext.Database.EnsureCreated();
-
-        TestDbContext = testDbContext;
-    }
-
     /// <inheritdoc />
     protected override ValueTask DisposeAsyncCore()
     {
-        return TestDbContext.DisposeAsync();
+        return ValueTask.CompletedTask;
     }
 
     /// <inheritdoc />
