@@ -569,3 +569,25 @@ entityOptionsBuilder.ConfigureProperty(shop => shop.Logo, builder =>
         .SetImageFolder("Shop images");
 });
 ```
+
+# Read only property
+
+You can mark a property as read only. Such property cannot be changed on create and edit pages.
+
+## Configuration
+
+### Using Fluent API
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(product => product.UpdatedDate, builder =>
+{
+    builder.SetIsReadOnly(true);
+});
+```
+
+### Using Attribute
+
+```csharp
+[NetForgeProperty(IsReadOnly = true)]
+public string Property { get; set; }
+```

@@ -170,4 +170,13 @@ public class PropertyOptionsBuilder
         options.IsBase64Image = isBase64Image;
         return this;
     }
+
+    /// <summary>
+    /// Marks this property as read only.
+    /// </summary>
+    public PropertyOptionsBuilder SetIsReadOnly(bool isReadOnly)
+    {
+        options.IsReadOnly = isReadOnly;
+        return this;
+    }
 }

@@ -113,6 +113,11 @@ public static class EntityMetadataOptionsExtensions
             property.EmptyValueDisplay = propertyOptions.EmptyValueDisplay;
         }
 
+        if (propertyOptions.IsReadOnly)
+        {
+            property.IsReadOnly = propertyOptions.IsReadOnly;
+        }
+
         if (property is PropertyMetadata propertyMetadata)
         {
             propertyMetadata.IsImagePath = propertyOptions.IsImagePath;

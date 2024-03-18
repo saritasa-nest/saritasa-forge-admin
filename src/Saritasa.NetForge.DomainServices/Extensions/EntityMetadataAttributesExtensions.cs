@@ -150,6 +150,11 @@ public static class EntityMetadataAttributesExtensions
             property.DisplayAsHtml = netForgePropertyAttribute.DisplayAsHtml;
         }
 
+        if (netForgePropertyAttribute.IsReadOnly)
+        {
+            property.IsReadOnly = netForgePropertyAttribute.IsReadOnly;
+        }
+
         if (property is PropertyMetadata propertyMetadata)
         {
             propertyMetadata.IsImagePath = netForgePropertyAttribute.IsImagePath;
