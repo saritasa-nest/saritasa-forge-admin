@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Saritasa.NetForge.Blazor.Controls;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
 using Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
@@ -15,6 +16,15 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
 {
     [Inject]
     private INavigationService NavigationService { get; set; } = null!;
+
+    [Inject]
+    private ISnackbar Snackbar { get; set; } = default!;
+
+    [Inject]
+    private IDialogService DialogService { get; set; } = default!;
+
+    [Inject]
+    private ILogger<EntityDetails> Logger { get; set; } = default!;
 
     /// <summary>
     /// Entity id.
@@ -57,6 +67,28 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     private void NavigateToCreation()
     {
         NavigationService.NavigateTo<CreateEntityViewModel>(parameters: StringId);
+    }
+
+    private async void ShowDeleteEntityConfirmationAsync(object source)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add(nameof(ConfirmationDialog.ContentText), "Are you sure you want to delete this record?");
+        parameters.Add(nameof(ConfirmationDialog.ButtonText), "Yes");
+        parameters.Add(nameof(ConfirmationDialog.Color), Color.Error);
+
+        var result = await (await DialogService.ShowAsync<ConfirmationDialog>("Delete", parameters)).Result;
+        if (!result.Canceled)
+        {
+            try
+            {
+                await ViewModel.DeleteEntityAsync(source, CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Failed to delete record due to error: {ex.Message}", Severity.Error);
+                Logger.LogError("Failed to delete record due to error: {ex.Message}", ex.Message);
+            }
+        }
     }
 
     private void NavigateToEditing(DataGridRowClickEventArgs<object> row)

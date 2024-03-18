@@ -285,4 +285,13 @@ public class EntityDetailsViewModel : BaseViewModel
     {
         DataGrid?.ReloadServerData();
     }
+
+    /// <summary>
+    /// Delete entity.
+    /// </summary>
+    public async Task DeleteEntityAsync(object entity, CancellationToken cancellationToken)
+    {
+        await entityService.DeleteEntityAsync(entity, entity.GetType(), cancellationToken);
+        DataGrid?.ReloadServerData();
+    }
 }

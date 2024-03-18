@@ -172,6 +172,15 @@ public class PropertyOptionsBuilder
     }
 
     /// <summary>
+    /// Marks this property as read only.
+    /// </summary>
+    public PropertyOptionsBuilder SetIsReadOnly(bool isReadOnly)
+    {
+        options.IsReadOnly = isReadOnly;
+        return this;
+    }
+
+    /// <summary>
     /// Sets amount of max characters.
     /// </summary>
     public PropertyOptionsBuilder SetTruncationMaxCharacters(int truncationMaxCharacters)

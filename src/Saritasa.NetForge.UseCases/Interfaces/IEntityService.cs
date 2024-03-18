@@ -46,4 +46,12 @@ public interface IEntityService
     /// <param name="entityType">Entity type.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     Task CreateEntityAsync(object entity, Type entityType, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Deletes entity.
+    /// </summary>
+    /// <param name="entity">Entity to delete.</param>
+    /// <param name="entityType">Entity type.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    Task DeleteEntityAsync(object entity, Type entityType, CancellationToken cancellationToken);
 }

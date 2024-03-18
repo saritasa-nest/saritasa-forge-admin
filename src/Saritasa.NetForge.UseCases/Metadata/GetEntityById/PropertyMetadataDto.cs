@@ -74,6 +74,9 @@ public record PropertyMetadataDto
     /// <inheritdoc cref="PropertyMetadata.IsBase64Image"/>
     public bool IsBase64Image { get; set; }
 
+    /// <inheritdoc cref="PropertyMetadataBase.IsReadOnly"/>
+    public bool IsReadOnly { get; set; }
+
     /// <inheritdoc cref="PropertyMetadataBase.TruncationMaxCharacters"/>
     public int? TruncationMaxCharacters { get; set; }
 }

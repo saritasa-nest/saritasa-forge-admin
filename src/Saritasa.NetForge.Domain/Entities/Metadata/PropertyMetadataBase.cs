@@ -89,6 +89,11 @@ public abstract class PropertyMetadataBase
     public bool DisplayAsHtml { get; set; }
 
     /// <summary>
+    /// Whether the property is read only.
+    /// </summary>
+    public bool IsReadOnly { get; set; }
+
+    /// <summary>
     /// Maximum characters to display.
     /// </summary>
     public int? TruncationMaxCharacters { get; set; }

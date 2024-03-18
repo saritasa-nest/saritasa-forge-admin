@@ -507,17 +507,41 @@ Both of them can be configured via `[NetForgeProperty]` and `Fluent API`.
 
 ### Configuring place to store media files
 
-`AdminOptions` has properties related to storage of static files.
+You can configure these properties related to images:
+
+#### Static files folder
+
+Default value for static files folder is `wwwrooot`.
 
 ``` csharp
-public string StaticFilesFolder { get; set; } = "wwwroot";
-
-public string MediaFolder { get; set; } = "media";
-
-public int MaxImageSizeInMb { get; set; } = 10;
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetStaticFilesFolder("static")
+});
 ```
 
+#### Media folder
+
+Default value for media folder is `media`.
+
+``` csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetMediaFolder("media files");
+});
+```
 So default path to media files - `wwwroot/media`.
+
+#### Max image size
+
+Default value for max image size is 10 MB.
+
+``` csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetMaxImageSize(15);
+});
+```
 
 ## Base 64 String
 
@@ -546,6 +570,28 @@ entityOptionsBuilder.ConfigureProperty(shop => shop.Logo, builder =>
 });
 ```
 
+# Read only property
+
+You can mark a property as read only. Such property cannot be changed on create and edit pages.
+
+## Configuration
+
+### Using Fluent API
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(product => product.UpdatedDate, builder =>
+{
+    builder.SetIsReadOnly(true);
+});
+```
+
+### Using Attribute
+
+```csharp
+[NetForgeProperty(IsReadOnly = true)]
+public string Property { get; set; }
+```
+
 # String Truncate
 
 You can set the max characters amount for string properties.
@@ -559,7 +605,7 @@ You can set max characters for the all strings. Default value is 50.
 ```csharp
 services.AddNetForge(optionsBuilder =>
 {
-    optionsBuilder.SetMaxCharacters(60);
+    optionsBuilder.SetTruncationMaxCharacters(60);
 });
 ```
 
@@ -579,7 +625,7 @@ You can set max characters to each property individually. Disabled by default be
 #### Using Attribute
 
 ```csharp
-[NetForgeProperty(MaxCharacters = 20)]
+[NetForgeProperty(TruncationMaxCharacters = 20)]
 public string Name { get; set; }
 ```
 
@@ -588,6 +634,6 @@ public string Name { get; set; }
 ```csharp
 entityOptionsBuilder.ConfigureProperty(shop => shop.Name, builder =>
 {
-    builder.SetMaxCharacters(25);
+    builder.SetTruncationMaxCharacters(25);
 });
 ```

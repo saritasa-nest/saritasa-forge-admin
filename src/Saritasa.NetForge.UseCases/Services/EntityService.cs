@@ -287,4 +287,10 @@ public class EntityService : IEntityService
     {
         await dataService.AddAsync(entity, entityType, cancellationToken);
     }
+
+    /// <inheritdoc />
+    public Task DeleteEntityAsync(object entity, Type entityType, CancellationToken cancellationToken)
+    {
+        return dataService.DeleteAsync(entity, entityType, cancellationToken);
+    }
 }

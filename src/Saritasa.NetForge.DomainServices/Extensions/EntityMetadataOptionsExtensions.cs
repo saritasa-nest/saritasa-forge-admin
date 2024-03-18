@@ -113,6 +113,11 @@ public static class EntityMetadataOptionsExtensions
             property.EmptyValueDisplay = propertyOptions.EmptyValueDisplay;
         }
 
+        if (propertyOptions.IsReadOnly)
+        {
+            property.IsReadOnly = propertyOptions.IsReadOnly;
+        }
+
         if (propertyOptions.TruncationMaxCharacters > 0)
         {
             property.TruncationMaxCharacters = propertyOptions.TruncationMaxCharacters;
