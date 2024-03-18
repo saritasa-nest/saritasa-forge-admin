@@ -41,5 +41,10 @@ public class ProductAdminConfiguration : IEntityAdminConfiguration<Product>
                     propertyOptionsBuilder.SetIsBase64Image(true);
                 });
         });
+
+        entityOptionsBuilder.ConfigureProperty(product => product.UpdatedDate, builder =>
+        {
+            builder.SetIsReadOnly(true);
+        });
     }
 }

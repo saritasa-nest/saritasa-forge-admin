@@ -356,6 +356,24 @@ public class EfCoreDataService : IOrmDataService
         // Attach resolves this problem by explicitly attaching navigations to EF change tracker.
         dbContext.Attach(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
+        // Since we use different dbContext instances for operations, an error can occur if a dbContext
+        // instance is used before the last dbContext instance is disposed. For example: If a user creates
+        // a record and deletes it immediately, there will be an error because within the same viewmodel
+        // lifecycle, there are two instances of dbContext modifying the same record. Create and update
+        // operations are not affected by this because they have their own viewmodels, allowing them to
+        // create new instances of dbContext. However, the delete function does not have its own viewmodel.
+        // Therefore, after adding a new model, we need to clear the tracking for the record so that the
+        // delete operation can work.
+        dbContext.Entry(entity).State = EntityState.Detached;
+    }
+
+    /// <inheritdoc />
+    public async Task DeleteAsync(object entity, Type entityType, CancellationToken cancellationToken)
+    {
+        var dbContext = GetDbContextThatContainsEntity(entityType);
+
+        dbContext.Remove(entity);
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         dbContext.ChangeTracker.Clear();
     }
