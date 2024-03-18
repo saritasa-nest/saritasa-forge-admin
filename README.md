@@ -563,12 +563,12 @@ services.AddNetForge(optionsBuilder =>
 });
 ```
 
-You can remove this behavior by setting max characters to 0.
+You can disable this behavior in this way:
 
 ```csharp
 services.AddNetForge(optionsBuilder =>
 {
-    optionsBuilder.SetMaxCharacters(0);
+    optionsBuilder.DisableCharactersTruncation();
 });
 ```
 

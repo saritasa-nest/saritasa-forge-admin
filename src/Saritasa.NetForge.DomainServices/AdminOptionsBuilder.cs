@@ -207,4 +207,13 @@ public class AdminOptionsBuilder
         options.MaxCharacters = maxCharacters;
         return this;
     }
+
+    /// <summary>
+    /// Disables global characters truncation.
+    /// </summary>
+    public AdminOptionsBuilder DisableCharactersTruncation()
+    {
+        options.MaxCharacters = default;
+        return this;
+    }
 }
