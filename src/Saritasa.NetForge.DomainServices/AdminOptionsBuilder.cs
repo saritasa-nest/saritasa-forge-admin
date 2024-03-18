@@ -198,4 +198,32 @@ public class AdminOptionsBuilder
         options.GroupHeadersExpanded = groupHeadersExpanded;
         return this;
     }
+
+    /// <summary>
+    /// Sets static files folder location.
+    /// </summary>
+    public AdminOptionsBuilder SetStaticFilesFolder(string staticFilesFolder)
+    {
+        options.StaticFilesFolder = staticFilesFolder;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets media files folder location.
+    /// </summary>
+    public AdminOptionsBuilder SetMediaFolder(string mediaFolder)
+    {
+        options.MediaFolder = mediaFolder;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets max image size.
+    /// </summary>
+    /// <param name="maxImageSize">Max image size in megabytes.</param>
+    public AdminOptionsBuilder SetMaxImageSize(int maxImageSize)
+    {
+        options.MaxImageSizeInMb = maxImageSize;
+        return this;
+    }
 }
