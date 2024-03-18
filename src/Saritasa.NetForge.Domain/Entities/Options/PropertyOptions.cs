@@ -64,4 +64,16 @@ public class PropertyOptions
 
     /// <inheritdoc cref="PropertyMetadataBase.TruncationMaxCharacters"/>
     public int TruncationMaxCharacters { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadataBase.IsMultiline"/>
+    public bool IsMultiline { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadataBase.Lines"/>
+    public int Lines { get; set; } = 5;
+
+    /// <inheritdoc cref="PropertyMetadataBase.MaxLines"/>
+    public int MaxLines { get; set; } = 5;
+
+    /// <inheritdoc cref="PropertyMetadataBase.IsAutoGrow"/>
+    public bool IsAutoGrow { get; set; }
 }

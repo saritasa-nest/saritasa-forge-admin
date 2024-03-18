@@ -188,4 +188,40 @@ public class PropertyOptionsBuilder
         options.TruncationMaxCharacters = truncationMaxCharacters;
         return this;
     }
+
+    /// <summary>
+    /// Marks this property as multiline.
+    /// </summary>
+    public PropertyOptionsBuilder SetIsMultiline(bool isMultiline)
+    {
+        options.IsMultiline = isMultiline;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets default amount of lines.
+    /// </summary>
+    public PropertyOptionsBuilder SetLines(int lines)
+    {
+        options.Lines = lines;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets amount of max lines.
+    /// </summary>
+    public PropertyOptionsBuilder SetMaxLines(int maxLines)
+    {
+        options.MaxLines = maxLines;
+        return this;
+    }
+
+    /// <summary>
+    /// Marks this property as auto grow.
+    /// </summary>
+    public PropertyOptionsBuilder SetIsAutoGrow(bool isAutoGrow)
+    {
+        options.IsAutoGrow = isAutoGrow;
+        return this;
+    }
 }
