@@ -64,7 +64,11 @@
 
                         void RenderPropertyColumn(PropertyMetadataDto property, string? navigationName = null)
                         {
-                            <TemplateColumn Title="@property.Name" Sortable="property.IsSortable" NavigationName="@navigationName">
+                            <TemplateColumn Title="@property.Name"
+                                            Sortable="property.IsSortable"
+                                            NavigationName="@navigationName"
+                                            @onclick="OpenDialog">
+
                                 <HeaderTemplate>
                                     @{
                                         var displayName = ViewModel.GetPropertyDisplayName(property);
@@ -85,8 +89,8 @@
                                                 </ChildContent>
                                                 <TooltipContent>
                                                     <MudText Typo="@Typo.body2">@property.Description</MudText>
-                                                    </TooltipContent>
-                                                </MudTooltip>
+                                                </TooltipContent>
+                                            </MudTooltip>
                                         }
                                     }
                                 </HeaderTemplate>
@@ -95,9 +99,9 @@
                                     @{
                                         var isNavigation = navigationName is not null;
 
-                                        var instance = navigationName is null
-                                        ? cell.Item
-                                        : cell.Item.GetType().GetProperty(navigationName)?.GetValue(cell.Item);
+                                        var instance = !isNavigation
+                                            ? cell.Item
+                                            : cell.Item.GetType().GetProperty(navigationName)?.GetValue(cell.Item);
 
                                         var propertyValue = ViewModel.GetPropertyValue(instance, property).ToString();
 
@@ -118,18 +122,17 @@
                                         {
                                             @((MarkupString)propertyValue!)
                                         }
+                                        else if (isNavigation && property.IsPrimaryKey)
+                                        {
+                                            <MudButton @onclick="OpenDialog"
+                                                       Variant="Variant.Text"
+                                                       Color="Color.Primary">
+                                                @propertyValue
+                                            </MudButton>
+                                        }
                                         else
                                         {
                                             @propertyValue
-
-                                            if (isNavigation)
-                                            {
-                                                <MudButton @onclick="OpenDialog"
-                                                           Variant="Variant.Filled"
-                                                           Color="Color.Primary">
-                                                    Open Simple Dialog
-                                                </MudButton>
-                                            }
                                         }
                                     }
                                 </CellTemplate>

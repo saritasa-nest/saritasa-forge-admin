@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using Saritasa.NetForge.Blazor.Controls;
 using Saritasa.NetForge.Mvvm.Navigation;
@@ -101,7 +102,7 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
             parameters: new[] { StringId, string.Join("--", primaryKeyValues) });
     }
 
-    private void OpenDialog()
+    private void OpenDialog(MouseEventArgs obj)
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<NavigationDialog>("Simple Dialog", options);
