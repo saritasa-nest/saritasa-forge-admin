@@ -563,7 +563,7 @@ services.AddNetForge(optionsBuilder =>
 });
 ```
 
-You can remove this behavour by setting max characters to 0.
+You can remove this behavior by setting max characters to 0.
 
 ```csharp
 services.AddNetForge(optionsBuilder =>
@@ -574,7 +574,7 @@ services.AddNetForge(optionsBuilder =>
 
 ### For the Property
 
-You can set max characters to each property individually. Disabled by default because does not have default value.
+You can set max characters to each property individually. Disabled by default because property does not have default value.
 
 #### Using Attribute
 
