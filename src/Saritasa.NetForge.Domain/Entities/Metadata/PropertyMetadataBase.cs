@@ -89,7 +89,7 @@ public abstract class PropertyMetadataBase
     public bool DisplayAsHtml { get; set; }
 
     /// <summary>
-    /// Maximum characters possible.
+    /// Maximum characters to display.
     /// </summary>
-    public int? MaxCharacters { get; set; }
+    public int? TruncationMaxCharacters { get; set; }
 }

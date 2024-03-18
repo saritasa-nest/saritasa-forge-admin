@@ -72,7 +72,7 @@ public class AdminOptions
     public int MaxImageSizeInMb { get; set; } = 10;
 
     /// <summary>
-    /// Maximum number of characters. Excess characters will be truncated.
+    /// Maximum number of characters. Exceeded characters will be truncated.
     /// </summary>
-    public int MaxCharacters { get; set; } = 50;
+    public int TruncationMaxCharacters { get; set; } = 50;
 }

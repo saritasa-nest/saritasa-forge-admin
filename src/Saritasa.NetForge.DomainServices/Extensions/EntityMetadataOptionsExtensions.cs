@@ -113,9 +113,9 @@ public static class EntityMetadataOptionsExtensions
             property.EmptyValueDisplay = propertyOptions.EmptyValueDisplay;
         }
 
-        if (propertyOptions.MaxCharacters > 0)
+        if (propertyOptions.TruncationMaxCharacters > 0)
         {
-            property.MaxCharacters = propertyOptions.MaxCharacters;
+            property.TruncationMaxCharacters = propertyOptions.TruncationMaxCharacters;
         }
 
         if (property is PropertyMetadata propertyMetadata)

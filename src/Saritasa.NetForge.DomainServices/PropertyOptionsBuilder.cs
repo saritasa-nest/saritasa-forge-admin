@@ -174,9 +174,9 @@ public class PropertyOptionsBuilder
     /// <summary>
     /// Sets amount of max characters.
     /// </summary>
-    public PropertyOptionsBuilder SetMaxCharacters(int maxCharacters)
+    public PropertyOptionsBuilder SetTruncationMaxCharacters(int truncationMaxCharacters)
     {
-        options.MaxCharacters = maxCharacters;
+        options.TruncationMaxCharacters = truncationMaxCharacters;
         return this;
     }
 }

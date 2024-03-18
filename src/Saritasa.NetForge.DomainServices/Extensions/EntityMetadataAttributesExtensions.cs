@@ -150,9 +150,9 @@ public static class EntityMetadataAttributesExtensions
             property.DisplayAsHtml = netForgePropertyAttribute.DisplayAsHtml;
         }
 
-        if (netForgePropertyAttribute.MaxCharacters > 0)
+        if (netForgePropertyAttribute.TruncationMaxCharacters > 0)
         {
-            property.MaxCharacters = netForgePropertyAttribute.MaxCharacters;
+            property.TruncationMaxCharacters = netForgePropertyAttribute.TruncationMaxCharacters;
         }
 
         if (property is PropertyMetadata propertyMetadata)

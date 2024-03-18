@@ -19,7 +19,7 @@ public class Product
     /// <summary>
     /// The name of the product.
     /// </summary>
-    [NetForgeProperty(MaxCharacters = 20)]
+    [NetForgeProperty(TruncationMaxCharacters = 20)]
     public required string Name { get; set; }
 
     /// <summary>

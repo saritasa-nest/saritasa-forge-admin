@@ -62,7 +62,7 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
 
         entityOptionsBuilder.ConfigureProperty(shop => shop.Name, builder =>
         {
-            builder.SetMaxCharacters(25);
+            builder.SetTruncationMaxCharacters(25);
         });
     }
 }

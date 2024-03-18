@@ -200,11 +200,11 @@ public class AdminOptionsBuilder
     }
 
     /// <summary>
-    /// Sets amount of max characters to all string properties.
+    /// Sets amount of max characters to all string properties, exceeded characters will be truncated.
     /// </summary>
-    public AdminOptionsBuilder SetMaxCharacters(int maxCharacters)
+    public AdminOptionsBuilder SetTruncationMaxCharacters(int truncationMaxCharacters)
     {
-        options.MaxCharacters = maxCharacters;
+        options.TruncationMaxCharacters = truncationMaxCharacters;
         return this;
     }
 
@@ -213,7 +213,7 @@ public class AdminOptionsBuilder
     /// </summary>
     public AdminOptionsBuilder DisableCharactersTruncation()
     {
-        options.MaxCharacters = default;
+        options.TruncationMaxCharacters = default;
         return this;
     }
 }

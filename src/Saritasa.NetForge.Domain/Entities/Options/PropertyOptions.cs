@@ -59,6 +59,6 @@ public class PropertyOptions
     /// <inheritdoc cref="PropertyMetadata.IsBase64Image"/>
     public bool IsBase64Image { get; set; }
 
-    /// <inheritdoc cref="PropertyMetadataBase.MaxCharacters"/>
-    public int MaxCharacters { get; set; }
+    /// <inheritdoc cref="PropertyMetadataBase.TruncationMaxCharacters"/>
+    public int TruncationMaxCharacters { get; set; }
 }
