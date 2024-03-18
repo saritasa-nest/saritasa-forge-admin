@@ -181,7 +181,7 @@ public class PropertyOptionsBuilder
     }
 
     /// <summary>
-    /// Sets amount of max characters.
+    /// Sets amount of max characters. Exceeded characters will be truncated.
     /// </summary>
     public PropertyOptionsBuilder SetTruncationMaxCharacters(int truncationMaxCharacters)
     {
