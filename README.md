@@ -591,3 +591,49 @@ entityOptionsBuilder.ConfigureProperty(product => product.UpdatedDate, builder =
 [NetForgeProperty(IsReadOnly = true)]
 public string Property { get; set; }
 ```
+
+# String Truncate
+
+You can set the max characters amount for string properties.
+
+## Configuration
+
+### Global
+
+You can set max characters for the all strings. Default value is 50.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetTruncationMaxCharacters(60);
+});
+```
+
+You can disable this behavior in this way:
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.DisableCharactersTruncation();
+});
+```
+
+### For the Property
+
+You can set max characters to each property individually. Disabled by default because property does not have default value.
+
+#### Using Attribute
+
+```csharp
+[NetForgeProperty(TruncationMaxCharacters = 20)]
+public string Name { get; set; }
+```
+
+#### Using Fluent API
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(shop => shop.Name, builder =>
+{
+    builder.SetTruncationMaxCharacters(25);
+});
+```

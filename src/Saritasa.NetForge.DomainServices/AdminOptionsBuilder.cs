@@ -226,4 +226,22 @@ public class AdminOptionsBuilder
         options.MaxImageSizeInMb = maxImageSize;
         return this;
     }
+
+    /// <summary>
+    /// Sets amount of max characters to all string properties, exceeded characters will be truncated.
+    /// </summary>
+    public AdminOptionsBuilder SetTruncationMaxCharacters(int truncationMaxCharacters)
+    {
+        options.TruncationMaxCharacters = truncationMaxCharacters;
+        return this;
+    }
+
+    /// <summary>
+    /// Disables global characters truncation.
+    /// </summary>
+    public AdminOptionsBuilder DisableCharactersTruncation()
+    {
+        options.TruncationMaxCharacters = default;
+        return this;
+    }
 }

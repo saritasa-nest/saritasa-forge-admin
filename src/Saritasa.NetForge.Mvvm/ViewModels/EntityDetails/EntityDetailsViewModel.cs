@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using AutoMapper;
 using MudBlazor;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Domain.Exceptions;
+using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Mvvm.Utils;
 using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Constants;
@@ -23,16 +25,19 @@ public class EntityDetailsViewModel : BaseViewModel
 
     private readonly IEntityService entityService;
     private readonly IMapper mapper;
+    private readonly AdminOptions adminOptions;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public EntityDetailsViewModel(string stringId, IMapper mapper, IEntityService entityService)
+    public EntityDetailsViewModel(
+        string stringId, IMapper mapper, IEntityService entityService, AdminOptions adminOptions)
     {
         Model = new EntityDetailsModel { StringId = stringId };
 
         this.mapper = mapper;
         this.entityService = entityService;
+        this.adminOptions = adminOptions;
     }
 
     /// <summary>
@@ -203,6 +208,18 @@ public class EntityDetailsViewModel : BaseViewModel
         }
 
         value = FormatValue(value, property.Name);
+
+        if (property.ClrType == typeof(string))
+        {
+            var stringValue = value.ToString();
+
+            var maxCharacters = property.TruncationMaxCharacters ?? adminOptions.TruncationMaxCharacters;
+
+            if (maxCharacters != default)
+            {
+                value = stringValue!.Truncate(maxCharacters);
+            }
+        }
 
         return value;
     }

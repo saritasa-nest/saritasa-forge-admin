@@ -19,6 +19,7 @@ public class Product
     /// <summary>
     /// The name of the product.
     /// </summary>
+    [NetForgeProperty(TruncationMaxCharacters = 20)]
     public required string Name { get; set; }
 
     /// <summary>
@@ -83,7 +84,7 @@ public class Product
     /// </summary>
     [NetForgeProperty(Description = "The product still in sale.")]
     public bool IsAvailable { get; set; }
-    
+
     /// <summary>
     /// Whether sales of the product was ended.
     /// </summary>

@@ -76,4 +76,7 @@ public record PropertyMetadataDto
 
     /// <inheritdoc cref="PropertyMetadataBase.IsReadOnly"/>
     public bool IsReadOnly { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadataBase.TruncationMaxCharacters"/>
+    public int? TruncationMaxCharacters { get; set; }
 }

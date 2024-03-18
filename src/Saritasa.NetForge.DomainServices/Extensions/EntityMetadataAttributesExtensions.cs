@@ -155,6 +155,11 @@ public static class EntityMetadataAttributesExtensions
             property.IsReadOnly = netForgePropertyAttribute.IsReadOnly;
         }
 
+        if (netForgePropertyAttribute.TruncationMaxCharacters > 0)
+        {
+            property.TruncationMaxCharacters = netForgePropertyAttribute.TruncationMaxCharacters;
+        }
+
         if (property is PropertyMetadata propertyMetadata)
         {
             propertyMetadata.IsImagePath = netForgePropertyAttribute.IsImagePath;

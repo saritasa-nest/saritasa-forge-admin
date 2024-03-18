@@ -118,6 +118,11 @@ public static class EntityMetadataOptionsExtensions
             property.IsReadOnly = propertyOptions.IsReadOnly;
         }
 
+        if (propertyOptions.TruncationMaxCharacters > 0)
+        {
+            property.TruncationMaxCharacters = propertyOptions.TruncationMaxCharacters;
+        }
+
         if (property is PropertyMetadata propertyMetadata)
         {
             propertyMetadata.IsImagePath = propertyOptions.IsImagePath;

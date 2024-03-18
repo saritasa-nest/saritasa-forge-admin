@@ -179,4 +179,13 @@ public class PropertyOptionsBuilder
         options.IsReadOnly = isReadOnly;
         return this;
     }
+
+    /// <summary>
+    /// Sets amount of max characters. Exceeded characters will be truncated.
+    /// </summary>
+    public PropertyOptionsBuilder SetTruncationMaxCharacters(int truncationMaxCharacters)
+    {
+        options.TruncationMaxCharacters = truncationMaxCharacters;
+        return this;
+    }
 }
