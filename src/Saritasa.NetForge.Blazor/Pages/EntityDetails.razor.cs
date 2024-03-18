@@ -6,6 +6,7 @@ using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
 using Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
+using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.Blazor.Pages;
 
@@ -102,9 +103,15 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
             parameters: new[] { StringId, string.Join("--", primaryKeyValues) });
     }
 
-    private void OpenDialog(MouseEventArgs obj)
+    private void OpenDialog(object navigationInstance, NavigationMetadataDto navigationMetadata)
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<NavigationDialog>("Simple Dialog", options);
+        var parameters = new DialogParameters
+        {
+            { nameof(navigationInstance), navigationInstance },
+            { nameof(navigationMetadata), navigationMetadata },
+            { nameof(StringId), StringId }
+        };
+        DialogService.Show<NavigationDialog>("Simple Dialog", parameters, options);
     }
 }

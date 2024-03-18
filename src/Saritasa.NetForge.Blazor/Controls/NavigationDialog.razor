@@ -1,6 +1,10 @@
-﻿<MudDialog>
+﻿@using Saritasa.NetForge.DomainServices.Extensions
+<MudDialog>
     <DialogContent>
-        Dialog Content
+        @foreach (var property in Properties)
+        {
+            <MudText>@property.Name - @NavigationInstance.GetPropertyValue(property.Name)</MudText>
+        }
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>

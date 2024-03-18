@@ -86,6 +86,23 @@ public class EntityService : IEntityService
     }
 
     /// <inheritdoc />
+    public Task<GetEntityByIdDto> GetEntityByTypeAsync(Type entityType, CancellationToken cancellationToken)
+    {
+        var metadata = adminMetadataService
+            .GetMetadata()
+            .FirstOrDefault(entityMetadata => entityMetadata.ClrType == entityType);
+
+        if (metadata is null)
+        {
+            throw new NotFoundException("Metadata for entity was not found.");
+        }
+
+        var metadataDto = mapper.Map<GetEntityByIdDto>(metadata);
+
+        return Task.FromResult(metadataDto);
+    }
+
+    /// <inheritdoc />
     public Task<PagedListMetadataDto<object>> SearchDataForEntityAsync(
         Type? entityType,
         ICollection<PropertyMetadataDto> properties,

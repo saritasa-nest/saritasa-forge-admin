@@ -66,8 +66,7 @@
                         {
                             <TemplateColumn Title="@property.Name"
                                             Sortable="property.IsSortable"
-                                            NavigationName="@navigationName"
-                                            @onclick="OpenDialog">
+                                            NavigationName="@navigationName">
 
                                 <HeaderTemplate>
                                     @{
@@ -129,7 +128,17 @@
                                         }
                                         else if ((isNavigation && property.IsPrimaryKey) || isNavigationCollection)
                                         {
-                                            <MudButton @onclick="OpenDialog"
+                                            var propertyMetadata = property;
+
+                                            if (navigationName is not null)
+                                            {
+                                                propertyMetadata = ViewModel.Model.Properties
+                                                    .First(propertyMetadata => propertyMetadata.Name == navigationName);
+                                            }
+
+                                            var navigationMetadata = propertyMetadata as NavigationMetadataDto;
+
+                                            <MudButton @onclick="() => OpenDialog(instance, navigationMetadata)"
                                                        Variant="Variant.Text"
                                                        Color="Color.Primary">
                                                 @propertyValue

@@ -24,6 +24,8 @@ public interface IEntityService
     /// <param name="cancellationToken">Token for cancelling async operation.</param>
     Task<GetEntityByIdDto> GetEntityByIdAsync(string stringId, CancellationToken cancellationToken);
 
+    Task<GetEntityByIdDto> GetEntityByTypeAsync(Type entityType, CancellationToken cancellationToken);
+
     /// <summary>
     /// Get the data for the specific entity type.
     /// </summary>
