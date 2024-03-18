@@ -46,7 +46,7 @@ public class CreateEntityTests : TestBed<NetForgeFixture>
         await efCoreDataService.AddAsync(contactInfo, contactInfoType, CancellationToken.None);
 
         // Assert
-        Assert.Contains(contactInfo, testDbContext.ContactInfos);
+        Assert.Contains(testDbContext.ContactInfos, item => item.Id == contactInfo.Id);
     }
 
     /// <summary>
@@ -57,15 +57,12 @@ public class CreateEntityTests : TestBed<NetForgeFixture>
     public async Task CreateEntity_AlreadyExistingEntity_Error()
     {
         // Arrange
-        var contactInfos = Fakers.ContactInfoFaker.Generate(2);
-        testDbContext.ContactInfos.AddRange(contactInfos);
-        await testDbContext.SaveChangesAsync(CancellationToken.None);
-        var contactInfoType = typeof(ContactInfo);
         var contactInfo = Fakers.ContactInfoFaker.Generate();
-        contactInfo.Id = 1;
+        testDbContext.ContactInfos.Add(contactInfo);
+        await testDbContext.SaveChangesAsync(CancellationToken.None);
 
         // Act
-        async Task Act() => await efCoreDataService.AddAsync(contactInfo, contactInfoType, CancellationToken.None);
+        async Task Act() => await efCoreDataService.AddAsync(contactInfo, typeof(ContactInfo), CancellationToken.None);
 
         // Assert
         await Assert.ThrowsAnyAsync<Exception>(Act);
