@@ -78,9 +78,11 @@ public class CreateEntityTests : IDisposable
         var contactInfo = Fakers.ContactInfoFaker.Generate();
         testDbContext.ContactInfos.Add(contactInfo);
         await testDbContext.SaveChangesAsync(CancellationToken.None);
+        var contactInfo2 = Fakers.ContactInfoFaker.Generate();
+        contactInfo2.Id = contactInfo.Id;
 
         // Act
-        async Task Act() => await efCoreDataService.AddAsync(contactInfo, typeof(ContactInfo), CancellationToken.None);
+        async Task Act() => await efCoreDataService.AddAsync(contactInfo2, typeof(ContactInfo), CancellationToken.None);
 
         // Assert
         await Assert.ThrowsAnyAsync<Exception>(Act);
