@@ -93,6 +93,8 @@
 
                                 <CellTemplate Context="cell">
                                     @{
+                                        var isNavigation = navigationName is not null;
+
                                         var instance = navigationName is null
                                         ? cell.Item
                                         : cell.Item.GetType().GetProperty(navigationName)?.GetValue(cell.Item);
@@ -119,6 +121,15 @@
                                         else
                                         {
                                             @propertyValue
+
+                                            if (isNavigation)
+                                            {
+                                                <MudButton @onclick="OpenDialog"
+                                                           Variant="Variant.Filled"
+                                                           Color="Color.Primary">
+                                                    Open Simple Dialog
+                                                </MudButton>
+                                            }
                                         }
                                     }
                                 </CellTemplate>

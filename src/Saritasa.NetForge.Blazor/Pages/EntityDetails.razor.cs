@@ -100,4 +100,10 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
         NavigationService.NavigateTo<EditEntityViewModel>(
             parameters: new[] { StringId, string.Join("--", primaryKeyValues) });
     }
+
+    private void OpenDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<NavigationDialog>("Simple Dialog", options);
+    }
 }
