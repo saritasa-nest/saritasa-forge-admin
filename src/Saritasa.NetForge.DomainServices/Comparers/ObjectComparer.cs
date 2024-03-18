@@ -1,8 +1,11 @@
 ﻿namespace Saritasa.NetForge.DomainServices.Comparers;
 
 /// <summary>
-/// Comparer for select control.
+/// Comparer for objects. Uses their <see cref="object.ToString()"/> methods.
 /// </summary>
+/// <remarks>
+/// Useful to compare objects when they have <see cref="object.ToString()"/> overridden.
+/// </remarks>
 public class ObjectComparer<T> : IEqualityComparer<T>
 {
     /// <inheritdoc />
