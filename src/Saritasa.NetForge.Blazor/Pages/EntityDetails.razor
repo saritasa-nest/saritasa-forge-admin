@@ -49,21 +49,21 @@
                     @{
                         foreach (var property in ViewModel.Model.Properties)
                         {
+                            RenderPropertyColumn(property);
+                        }
+
+                        void RenderPropertyColumn(PropertyMetadataDto property, string? navigationName = null)
+                        {
                             if (property is NavigationMetadataDto { IsCollection: false } navigation)
                             {
                                 foreach (var targetProperty in navigation.TargetEntityProperties)
                                 {
                                     RenderPropertyColumn(targetProperty, navigation.Name);
                                 }
-                            }
-                            else
-                            {
-                                RenderPropertyColumn(property);
-                            }
-                        }
 
-                        void RenderPropertyColumn(PropertyMetadataDto property, string? navigationName = null)
-                        {
+                                return;
+                            }
+
                             <TemplateColumn Title="@property.Name"
                                             Sortable="property.IsSortable"
                                             NavigationName="@navigationName">
