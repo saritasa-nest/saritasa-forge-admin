@@ -109,9 +109,8 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
         var parameters = new DialogParameters
         {
             { nameof(navigationInstance), navigationInstance },
-            { nameof(navigationMetadata), navigationMetadata },
-            { nameof(StringId), StringId }
+            { nameof(navigationMetadata), navigationMetadata }
         };
-        DialogService.Show<NavigationDialog>("Simple Dialog", parameters, options);
+        DialogService.Show<NavigationDialog>("Related data", parameters, options);
     }
 }

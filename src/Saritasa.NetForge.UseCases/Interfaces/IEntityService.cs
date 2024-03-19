@@ -24,6 +24,12 @@ public interface IEntityService
     /// <param name="cancellationToken">Token for cancelling async operation.</param>
     Task<GetEntityByIdDto> GetEntityByIdAsync(string stringId, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Get <see cref="EntityMetadata"/> by <see cref="EntityMetadata.ClrType"/>.
+    /// </summary>
+    /// <param name="entityType">Entity type.</param>
+    /// <param name="cancellationToken">Token for cancelling async operation.</param>
+    /// <returns>Entity DTO.</returns>
     Task<GetEntityByIdDto> GetEntityByTypeAsync(Type entityType, CancellationToken cancellationToken);
 
     /// <summary>

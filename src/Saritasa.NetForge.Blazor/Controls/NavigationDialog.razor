@@ -4,7 +4,7 @@
         @{
             if (NavigationMetadata.IsCollection)
             {
-                var navigationCollection = NavigationInstance as IEnumerable<object>;
+                var navigationCollection = (IEnumerable<object>)NavigationInstance;
 
                 foreach (var element in navigationCollection)
                 {
@@ -22,10 +22,9 @@
                 }
             }
         }
-
     </DialogContent>
+
     <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+        <MudButton OnClick="Close">Close</MudButton>
     </DialogActions>
 </MudDialog>
