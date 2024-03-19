@@ -108,6 +108,7 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
         var options = new DialogOptions
         {
             CloseOnEscapeKey = true,
+            CloseButton = true,
             FullWidth = true,
             MaxWidth = MaxWidth.ExtraLarge
         };
