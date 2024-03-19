@@ -28,7 +28,10 @@ public partial class NavigationDialog : ComponentBase
     {
         await base.SetParametersAsync(parameters);
 
-        var entity = await EntityService.GetEntityByTypeAsync(NavigationMetadata.ClrType, CancellationToken.None);
+        var entityType = NavigationMetadata.ClrType!.GetGenericArguments().FirstOrDefault()
+                         ?? NavigationMetadata.ClrType;
+
+        var entity = await EntityService.GetEntityByTypeAsync(entityType, CancellationToken.None);
         Properties = entity.Properties;
     }
 

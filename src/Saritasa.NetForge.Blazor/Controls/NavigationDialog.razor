@@ -1,10 +1,28 @@
 ﻿@using Saritasa.NetForge.DomainServices.Extensions
 <MudDialog>
     <DialogContent>
-        @foreach (var property in Properties)
-        {
-            <MudText>@property.Name - @NavigationInstance.GetPropertyValue(property.Name)</MudText>
+        @{
+            if (NavigationMetadata.IsCollection)
+            {
+                var navigationCollection = NavigationInstance as IEnumerable<object>;
+
+                foreach (var element in navigationCollection)
+                {
+                    foreach (var property in Properties)
+                    {
+                        <MudText>@property.Name - @element.GetPropertyValue(property.Name)</MudText>
+                    }
+                }
+            }
+            else
+            {
+                foreach (var property in Properties)
+                {
+                    <MudText>@property.Name - @NavigationInstance.GetPropertyValue(property.Name)</MudText>
+                }
+            }
         }
+
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
