@@ -1,26 +1,34 @@
 ﻿@using Saritasa.NetForge.DomainServices.Extensions
+
 <MudDialog>
     <DialogContent>
         @{
+            IEnumerable<object> collection;
+
             if (NavigationMetadata.IsCollection)
             {
-                var navigationCollection = (IEnumerable<object>)NavigationInstance;
-
-                foreach (var element in navigationCollection)
-                {
-                    foreach (var property in Properties)
-                    {
-                        <MudText>@property.Name - @element.GetPropertyValue(property.Name)</MudText>
-                    }
-                }
+                collection = (IEnumerable<object>)NavigationInstance;
             }
             else
             {
-                foreach (var property in Properties)
+                collection = new List<object>
                 {
-                    <MudText>@property.Name - @NavigationInstance.GetPropertyValue(property.Name)</MudText>
-                }
+                    NavigationInstance
+                };
             }
+
+            <MudDataGrid Items="collection">
+                <Columns>
+                    @foreach (var property in Properties)
+                    {
+                        <TemplateColumn Title="@property.Name">
+                            <CellTemplate Context="cell">
+                                @cell.Item.GetPropertyValue(property.Name)
+                            </CellTemplate>
+                        </TemplateColumn>
+                    }
+                </Columns>
+            </MudDataGrid>
         }
     </DialogContent>
 

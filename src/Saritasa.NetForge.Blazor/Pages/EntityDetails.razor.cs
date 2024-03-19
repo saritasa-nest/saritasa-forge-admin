@@ -105,7 +105,13 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
 
     private void OpenDialog(object navigationInstance, NavigationMetadataDto navigationMetadata)
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            FullWidth = true,
+            MaxWidth = MaxWidth.ExtraLarge
+        };
+
         var parameters = new DialogParameters
         {
             { nameof(navigationInstance), navigationInstance },
