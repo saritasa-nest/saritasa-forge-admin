@@ -12,4 +12,7 @@ public record NavigationMetadataDto : PropertyMetadataDto
 
     /// <inheritdoc cref="NavigationMetadata.TargetEntityProperties"/>
     public List<PropertyMetadataDto> TargetEntityProperties { get; set; } = new();
+
+    /// <inheritdoc cref="NavigationMetadata.IsDisplayDetails"/>
+    public bool IsDisplayDetails { get; set; }
 }

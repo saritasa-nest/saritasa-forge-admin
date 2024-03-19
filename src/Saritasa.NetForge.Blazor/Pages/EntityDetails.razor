@@ -98,9 +98,11 @@
                                     @{
                                         var isNavigation = navigationName is not null;
                                         var isNavigationCollection = false;
+                                        var isDisplayDetails = false;
                                         if (property is NavigationMetadataDto navigation)
                                         {
                                             isNavigationCollection = navigation.IsCollection;
+                                            isDisplayDetails = navigation.IsDisplayDetails;
                                         }
 
                                         var instance = !isNavigation
@@ -126,7 +128,8 @@
                                         {
                                             @((MarkupString)propertyValue!)
                                         }
-                                        else if ((isNavigation && property.IsPrimaryKey) || isNavigationCollection)
+                                        else if ((isDisplayDetails && isNavigation && property.IsPrimaryKey)
+                                                 || isNavigationCollection)
                                         {
                                             var propertyMetadata = property;
 

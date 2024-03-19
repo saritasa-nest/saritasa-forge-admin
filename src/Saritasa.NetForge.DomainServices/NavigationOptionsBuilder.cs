@@ -56,4 +56,10 @@ public class NavigationOptionsBuilder<TEntity>
         options.Order = order;
         return this;
     }
+
+    public NavigationOptionsBuilder<TEntity> SetIsDisplayDetails(bool isDisplayDetails)
+    {
+        options.IsDisplayDetails = isDisplayDetails;
+        return this;
+    }
 }

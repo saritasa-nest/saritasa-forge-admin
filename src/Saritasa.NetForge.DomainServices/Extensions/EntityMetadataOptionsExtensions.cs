@@ -154,5 +154,7 @@ public static class EntityMetadataOptionsExtensions
 
             property?.ApplyPropertyOptions(propertyOptions);
         }
+
+        navigation.IsDisplayDetails = navigationOptions.IsDisplayDetails;
     }
 }

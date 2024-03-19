@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using Saritasa.NetForge.Blazor.Controls;
 using Saritasa.NetForge.Mvvm.Navigation;
