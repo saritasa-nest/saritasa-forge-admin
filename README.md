@@ -637,3 +637,80 @@ entityOptionsBuilder.ConfigureProperty(shop => shop.Name, builder =>
     builder.SetTruncationMaxCharacters(25);
 });
 ```
+
+# Multiline Text Field property
+You can mark a property as multiline text field. Is allows inpur text in the several text rows. Disabled by default.
+
+## Configuration
+
+### Using Fluent API
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
+{
+    builder.SetIsMultiline(true);
+});
+```
+
+### Using Attribute
+
+```csharp
+[NetForgeProperty(IsMultiline = true)]
+public required string Street { get; set; }
+```
+
+Also, there are some auxalary additional properties that are used in the multiple text field
+
+## Lines property is the number of lines of the multiline text field. This is equal to 5 by default.
+### Using Fluent API
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
+{
+    builder.SetIsMultiline(true);
+    builder.SetLines(15); // sets the lines value as 15
+});
+```
+
+### Using Attribute
+
+```csharp
+[NetForgeProperty(IsMultiline = true, Lines = 15)]
+public required string Street { get; set; }
+```
+
+## MaxLines property is the max. number of lines of the multiline text field. This is equal to 5 by default.
+### Using Fluent API
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
+{
+    builder.SetIsMultiline(true);
+    builder.SetMaxLines(15); // sets the max lines value as 15
+});
+```
+
+### Using Attribute
+
+```csharp
+[NetForgeProperty(IsMultiline = true, MaxLines = 15)]
+public required string Street { get; set; }
+```
+
+## IsAutoGrow property identifies whether the height of the text field automatically changes with the number of lines of text.
+### Using Fluent API
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
+{
+    builder.SetIsMultiline(true);
+    builder.SetIsAutoGrow(true);
+});
+```
+
+### Using Attribute
+
+```csharp
+[NetForgeProperty(IsMultiline = true, IsAutoGrow = true)]
+public required string Street { get; set; }
+```

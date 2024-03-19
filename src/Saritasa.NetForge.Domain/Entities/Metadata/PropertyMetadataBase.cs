@@ -104,22 +104,22 @@ public abstract class PropertyMetadataBase
     public bool IsNullable { get; set; }
 
     /// <summary>
-    /// Whether the property is multiline.
+    /// Whether the property is multiline text field.
     /// </summary>
     public bool IsMultiline { get; set; }
 
     /// <summary>
-    /// Default number of lines of the text field.
+    /// Default number of lines of the multiline text field.
     /// </summary>
     public int Lines { get; set; } = 5;
 
     /// <summary>
-    /// Max number of lines of the text field.
+    /// Max number of lines of the multiline text field.
     /// </summary>
     public int MaxLines { get; set; } = 5;
 
     /// <summary>
-    /// Whether the property height of the text field automatically changes with the number of lines of text.
+    /// Property identifies whether the height of the text field automatically changes with the number of lines of text.
     /// </summary>
     public bool IsAutoGrow { get; set; }
 }
