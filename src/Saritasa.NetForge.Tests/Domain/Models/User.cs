@@ -31,4 +31,10 @@ internal class User : IdentityUser
     /// Gets the age of the user.
     /// </summary>
     public int? Age => DateOfBirth == null ? null : DateTime.Now.Subtract((DateTime)DateOfBirth).Days / 364;
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return FullName;
+    }
 }

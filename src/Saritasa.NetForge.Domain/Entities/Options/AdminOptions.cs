@@ -55,4 +55,24 @@ public class AdminOptions
     /// Whether entity group header should be expanded.
     /// </summary>
     public bool GroupHeadersExpanded { get; set; } = true;
+
+    /// <summary>
+    /// Path to folder that contains static files.
+    /// </summary>
+    public string StaticFilesFolder { get; set; } = "wwwroot";
+
+    /// <summary>
+    /// Path to folder where to store media files.
+    /// </summary>
+    public string MediaFolder { get; set; } = "media";
+
+    /// <summary>
+    /// Maximum image size in megabytes.
+    /// </summary>
+    public int MaxImageSizeInMb { get; set; } = 10;
+
+    /// <summary>
+    /// Maximum number of characters. Exceeded characters will be truncated.
+    /// </summary>
+    public int TruncationMaxCharacters { get; set; } = 50;
 }

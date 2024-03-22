@@ -49,4 +49,10 @@ internal class Shop
     /// The list of suppliers.
     /// </summary>
     public List<Supplier> Suppliers { get; set; } = new();
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"{Id}; {Name}";
+    }
 }

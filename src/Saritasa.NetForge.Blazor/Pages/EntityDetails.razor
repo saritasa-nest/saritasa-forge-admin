@@ -1,8 +1,8 @@
 ﻿@using Saritasa.NetForge.Blazor.Controls
-@using Saritasa.NetForge.Domain.Enums
 @using Saritasa.NetForge.Domain.Entities.Options
 @using Saritasa.NetForge.Blazor.Extensions
 @using Saritasa.NetForge.UseCases.Metadata.GetEntityById
+@using Saritasa.NetForge.UseCases.Constants
 @inject AdminOptions AdminOptions
 @inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.EntityDetails.EntityDetailsViewModel>
 
@@ -16,11 +16,14 @@
             <MudText Typo="Typo.body1">@ViewModel.Model.Description</MudText>
         </MudItem>
 
-        <MudItem xs="12">
-            <MudButton Variant="Variant.Outlined" OnClick="@NavigateToCreation">
-                Add @ViewModel.Model.DisplayName.ToMeaningfulName()
-            </MudButton>
-        </MudItem>
+        @if (ViewModel.CanAdd)
+        {
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Outlined" OnClick="@NavigateToCreation">
+                    Add @ViewModel.Model.DisplayName.ToMeaningfulName()
+                </MudButton>
+            </MudItem>
+        }
 
         @if (ViewModel.IsDisplaySearchInput)
         {
@@ -40,8 +43,8 @@
 
         <MudItem xs="12">
             <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true"
-                         @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple" RowClick="NavigateToEditing"
-                         Hover RowClass="cursor-pointer">
+                         @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple"
+                         @attributes="NonKeylessEntityDataGridAttributes">
                 <Columns>
                     @{
                         foreach (var property in ViewModel.Model.Properties)
@@ -95,7 +98,21 @@
                                         : cell.Item.GetType().GetProperty(navigationName)?.GetValue(cell.Item);
 
                                         var propertyValue = ViewModel.GetPropertyValue(instance, property).ToString();
-                                        if (property.DisplayAsHtml)
+
+                                        if (propertyValue!.Equals(property.EmptyValueDisplay)
+                                            || propertyValue.Equals(DefaultValueConstants.DefaultEmptyPropertyValueDisplay))
+                                        {
+                                            @propertyValue
+                                        }
+                                        else if (property.IsImagePath || property.IsBase64Image)
+                                        {
+                                            <div>
+                                                <MudImage Src="@propertyValue"
+                                                          Elevation="25"
+                                                          Class="rounded-lg property-image" />
+                                            </div>
+                                        }
+                                        else if (property.DisplayAsHtml)
                                         {
                                             @((MarkupString)propertyValue!)
                                         }
@@ -108,6 +125,11 @@
                             </TemplateColumn>
                         }
                     }
+                    <TemplateColumn>
+                        <CellTemplate>
+                            <MudButton Size="@Size.Small" Variant="Variant.Text" Color="Color.Secondary" OnClick="@(()=>ShowDeleteEntityConfirmationAsync(context.Item))">Delete</MudButton>
+                        </CellTemplate>
+                    </TemplateColumn>
                 </Columns>
 
                 <PagerContent>

@@ -493,9 +493,19 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("address_id");
 
+                    b.Property<string>("BuildingPhoto")
+                        .IsUnicode(false)
+                        .HasColumnType("text")
+                        .HasColumnName("building_photo");
+
                     b.Property<bool>("IsOpen")
                         .HasColumnType("boolean")
                         .HasColumnName("is_open");
+
+                    b.Property<string>("Logo")
+                        .IsUnicode(false)
+                        .HasColumnType("text")
+                        .HasColumnName("logo");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -525,6 +535,22 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                         .HasDatabaseName("ix_shops_owner_contact_id");
 
                     b.ToTable("shops", (string)null);
+                });
+
+            modelBuilder.Entity("Saritasa.NetForge.Demo.Models.ShopProductsCount", b =>
+                {
+                    b.Property<int>("ProductsCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("products_count");
+
+                    b.Property<int>("ShopId")
+                        .HasColumnType("integer")
+                        .HasColumnName("shop_id");
+
+                    b.HasIndex("ShopId")
+                        .HasDatabaseName("ix_shop_products_counts_shop_id");
+
+                    b.ToTable("shop_products_counts", (string)null);
                 });
 
             modelBuilder.Entity("Saritasa.NetForge.Demo.Models.Supplier", b =>
@@ -787,6 +813,18 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.Navigation("Address");
 
                     b.Navigation("OwnerContact");
+                });
+
+            modelBuilder.Entity("Saritasa.NetForge.Demo.Models.ShopProductsCount", b =>
+                {
+                    b.HasOne("Saritasa.NetForge.Demo.Models.Shop", "Shop")
+                        .WithMany()
+                        .HasForeignKey("ShopId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_shop_products_counts_shops_shop_id");
+
+                    b.Navigation("Shop");
                 });
 
             modelBuilder.Entity("ShopSupplier", b =>

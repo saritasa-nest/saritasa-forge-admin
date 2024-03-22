@@ -50,6 +50,35 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                             .SetIsSortable(true)
                             .SetSearchType(SearchType.ContainsCaseInsensitive);
                     });
+            })
+            .IncludeNavigation<Product>(shop => shop.Products, navigationOptionsBuilder =>
+            {
+                navigationOptionsBuilder.IncludeProperty(product => product.Id);
+            })
+            .IncludeNavigation<Supplier>(shop => shop.Suppliers, navigationOptionsBuilder =>
+            {
+                navigationOptionsBuilder
+                    .IncludeProperty(supplier => supplier.Name, propertyOptionsBuilder =>
+                    {
+                        propertyOptionsBuilder.SetDisplayName("Supplier Name");
+                    })
+                    .IncludeProperty(supplier => supplier.City, propertyOptionsBuilder =>
+                    {
+                        propertyOptionsBuilder.SetDisplayName("Supplier City");
+                    });
             });
+
+        entityOptionsBuilder.ConfigureProperty(shop => shop.Logo, builder =>
+        {
+            builder
+                .SetIsImagePath(true)
+                .SetImageFolder("Shop images")
+                .SetOrder(3);
+        });
+
+        entityOptionsBuilder.ConfigureProperty(shop => shop.Name, builder =>
+        {
+            builder.SetTruncationMaxCharacters(25);
+        });
     }
 }

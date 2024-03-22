@@ -19,6 +19,7 @@ public class Product
     /// <summary>
     /// The name of the product.
     /// </summary>
+    [NetForgeProperty(TruncationMaxCharacters = 20)]
     public required string Name { get; set; }
 
     /// <summary>
@@ -84,7 +85,7 @@ public class Product
     /// </summary>
     [NetForgeProperty(Description = "The product still in sale.")]
     public bool IsAvailable { get; set; }
-    
+
     /// <summary>
     /// Whether sales of the product was ended.
     /// </summary>
@@ -93,6 +94,7 @@ public class Product
     /// <summary>
     /// The date and time when the product was created.
     /// </summary>
+    [NetForgeProperty(IsReadOnly = true)]
     public DateTime CreatedDate { get; set; }
 
     /// <summary>
@@ -140,4 +142,10 @@ public class Product
     /// The shop where this product can be bought.
     /// </summary>
     public Shop? Shop { get; set; }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"{Id} - {Name}";
+    }
 }

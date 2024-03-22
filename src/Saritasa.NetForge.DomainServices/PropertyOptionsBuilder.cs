@@ -150,6 +150,49 @@ public class PropertyOptionsBuilder
     public PropertyOptionsBuilder SetIsRichTextField(bool isRichTextField)
     {
         options.IsRichTextField = isRichTextField;
+    }
+
+    /// Marks this property as path to image.
+    /// </summary>
+    public PropertyOptionsBuilder SetIsImagePath(bool isImagePath)
+    {
+        options.IsImagePath = isImagePath;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the folder for storing the image.
+    /// </summary>
+    public PropertyOptionsBuilder SetImageFolder(string imageFolder)
+    {
+        options.ImageFolder = imageFolder;
+        return this;
+    }
+
+    /// <summary>
+    /// Marks this property as base 64 image.
+    /// </summary>
+    public PropertyOptionsBuilder SetIsBase64Image(bool isBase64Image)
+    {
+        options.IsBase64Image = isBase64Image;
+        return this;
+    }
+
+    /// <summary>
+    /// Marks this property as read only.
+    /// </summary>
+    public PropertyOptionsBuilder SetIsReadOnly(bool isReadOnly)
+    {
+        options.IsReadOnly = isReadOnly;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets amount of max characters. Exceeded characters will be truncated.
+    /// </summary>
+    public PropertyOptionsBuilder SetTruncationMaxCharacters(int truncationMaxCharacters)
+    {
+        options.TruncationMaxCharacters = truncationMaxCharacters;
         return this;
     }
 }

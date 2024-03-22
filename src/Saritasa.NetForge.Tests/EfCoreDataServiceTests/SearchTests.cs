@@ -17,7 +17,9 @@ namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 [CollectionDefinition(Constants.DependencyInjection)]
 public class SearchTests : TestBed<NetForgeFixture>
 {
+#pragma warning disable CA2213
     private readonly TestDbContext testDbContext;
+#pragma warning restore CA2213
     private readonly IOrmDataService dataService;
 
     /// <summary>
@@ -26,7 +28,7 @@ public class SearchTests : TestBed<NetForgeFixture>
     public SearchTests(ITestOutputHelper testOutputHelper, NetForgeFixture netForgeFixture)
         : base(testOutputHelper, netForgeFixture)
     {
-        testDbContext = netForgeFixture.TestDbContext;
+        testDbContext = netForgeFixture.GetService<TestDbContext>(testOutputHelper)!;
         dataService = netForgeFixture.GetScopedService<IOrmDataService>(testOutputHelper)!;
 
         PopulateDatabaseWithTestData();

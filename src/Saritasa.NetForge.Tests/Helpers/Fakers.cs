@@ -61,8 +61,7 @@ internal static class Fakers
     /// </summary>
     public static readonly Faker<ProductTag> ProductTagFaker = new Faker<ProductTag>()
         .RuleFor(pt => pt.Name, f => f.Random.Word())
-        .RuleFor(pt => pt.Description, f => f.Lorem.Paragraph())
-        .RuleFor(pt => pt.Products, f => f.Make(3, () => ProductFaker.Generate()));
+        .RuleFor(pt => pt.Description, f => f.Lorem.Paragraph());
 
     /// <summary>
     /// Shop faker.
@@ -83,8 +82,7 @@ internal static class Fakers
     public static readonly Faker<Supplier> SupplierFaker = new Faker<Supplier>()
         .RuleFor(s => s.Name, f => f.Company.CompanyName())
         .RuleFor(s => s.City, f => f.Address.City())
-        .RuleFor(s => s.IsActive, f => f.Random.Bool())
-        .RuleFor(s => s.Shops, (f, s) => f.Make(3, () => ShopFaker.Generate()));
+        .RuleFor(s => s.IsActive, f => f.Random.Bool());
 
     /// <summary>
     /// User faker.

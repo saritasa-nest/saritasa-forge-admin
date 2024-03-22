@@ -24,4 +24,10 @@ internal class ContactInfo
     /// The phone number of the contact person.
     /// </summary>
     public string PhoneNumber { get; set; } = string.Empty;
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"{FullName} - {Email}";
+    }
 }

@@ -63,4 +63,10 @@ public class Address
     /// The contact phone number associated with the address.
     /// </summary>
     public required string ContactPhone { get; set; }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return DisplayName;
+    }
 }

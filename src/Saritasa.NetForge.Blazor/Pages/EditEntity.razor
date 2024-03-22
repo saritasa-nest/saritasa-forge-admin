@@ -19,8 +19,7 @@ else if (ViewModel.IsEntityExists)
 
     <MudGrid Justify="Justify.Center">
         <MudItem xs="6">
-            <EditForm EditContext="new EditContext(ViewModel.Model.EntityInstance)"
-                      OnValidSubmit="ViewModel.UpdateEntityAsync">
+            <EditForm Model="ViewModel.Model.EntityInstance" OnValidSubmit="ViewModel.UpdateEntityAsync">
                 <div class="d-flex flex-column flex-grow-1 gap-4">
                     @foreach (var property in ViewModel.Model.Properties)
                     {
@@ -29,18 +28,18 @@ else if (ViewModel.IsEntityExists)
                         {
                             { "Property", property },
                             { "EntityInstance", ViewModel.Model.EntityInstance },
-                            { "IsReadOnly", property.IsPrimaryKey }
+                            { "IsReadOnly", property.IsPrimaryKey || property.IsReadOnly }
                         };
 
                         <DynamicComponent Type="componentType" Parameters="parameters" />
                     }
 
                     <div class="d-flex flex-row gap-4 pt-4">
-                        <MudButton Variant="Variant.Outlined" Color="Color.Success" ButtonType="ButtonType.Submit">
-                            Save
-                        </MudButton>
                         <MudButton Variant="Variant.Outlined" OnClick="NavigateToEntityDetails">
                             Cancel
+                        </MudButton>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Success" ButtonType="ButtonType.Submit">
+                            Save
                         </MudButton>
                     </div>
 

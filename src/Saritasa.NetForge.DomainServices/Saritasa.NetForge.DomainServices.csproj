@@ -5,6 +5,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <OutputType>Library</OutputType>
     </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Saritasa.NetForge.Infrastructure.Abstractions\Saritasa.NetForge.Infrastructure.Abstractions.csproj" />

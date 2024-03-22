@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using Saritasa.NetForge.Domain.Exceptions;
+using CommunityToolkit.Mvvm.Messaging;
+using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Interfaces;
+using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 
@@ -23,6 +26,7 @@ public class EditEntityViewModel : BaseViewModel
     private readonly IEntityService entityService;
     private readonly IMapper mapper;
     private readonly IOrmDataService dataService;
+    private readonly IFileService fileService;
 
     /// <summary>
     /// Constructor.
@@ -32,7 +36,8 @@ public class EditEntityViewModel : BaseViewModel
         string instancePrimaryKey,
         IEntityService entityService,
         IMapper mapper,
-        IOrmDataService dataService)
+        IOrmDataService dataService,
+        IFileService fileService)
     {
         Model = new EditEntityModel { StringId = stringId };
         InstancePrimaryKey = instancePrimaryKey;
@@ -40,6 +45,7 @@ public class EditEntityViewModel : BaseViewModel
         this.entityService = entityService;
         this.mapper = mapper;
         this.dataService = dataService;
+        this.fileService = fileService;
     }
 
     /// <summary>
@@ -59,8 +65,6 @@ public class EditEntityViewModel : BaseViewModel
         {
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
             Model = mapper.Map<EditEntityModel>(entity);
-            Model.EntityInstance = await dataService
-                .GetInstanceAsync(InstancePrimaryKey, Model.ClrType!, CancellationToken);
             Model = Model with
             {
                 Properties = Model.Properties
@@ -69,10 +73,19 @@ public class EditEntityViewModel : BaseViewModel
                         IsCalculatedProperty: false,
                         IsValueGeneratedOnAdd: false,
                         IsValueGeneratedOnUpdate: false,
-                        IsHiddenFromListView: false
+                        IsHiddenFromListView: false,
                     })
                     .ToList()
             };
+
+            var includedNavigationNames = Model.Properties
+                .Where(property => property is NavigationMetadataDto)
+                .Select(property => property.Name);
+
+            Model.EntityInstance = await dataService
+                .GetInstanceAsync(InstancePrimaryKey, Model.ClrType!, includedNavigationNames, CancellationToken);
+
+            Model.OriginalEntityInstance = Model.EntityInstance.CloneJson();
         }
         catch (NotFoundException)
         {
@@ -85,7 +98,14 @@ public class EditEntityViewModel : BaseViewModel
     /// </summary>
     public async Task UpdateEntityAsync()
     {
-       await dataService.UpdateAsync(Model.EntityInstance!, CancellationToken);
-       IsUpdated = true;
+        var message = WeakReferenceMessenger.Default.Send(new UploadImageMessage());
+
+        foreach (var image in message.ChangedFiles)
+        {
+            await fileService.CreateFileAsync(image.PathToFile!, image.FileContent!, CancellationToken);
+        }
+
+        await dataService.UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken);
+        IsUpdated = true;
     }
 }

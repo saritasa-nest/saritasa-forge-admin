@@ -1,4 +1,5 @@
-﻿@inherits CustomField
+﻿@using Saritasa.NetForge.Blazor.Extensions
+@inherits CustomField
 
 @{
     var propertyType = Property.ClrType;
@@ -6,7 +7,7 @@
     if (propertyType == typeof(DateTime) || propertyType == typeof(DateTime?)
          || propertyType == typeof(DateTimeOffset) || propertyType == typeof(DateTimeOffset?))
     {
-        <MudTextField Label="@Property.Name"
+        <MudTextField Label="@Property.Name.ToMeaningfulName()"
                       Variant="Variant.Outlined"
                       InputType="InputType.DateTimeLocal"
                       Format="s"
@@ -17,7 +18,7 @@
     }
     else if (propertyType == typeof(DateOnly) || propertyType == typeof(DateOnly?))
     {
-        <MudDatePicker Label="@Property.Name"
+        <MudDatePicker Label="@Property.Name.ToMeaningfulName()"
                        Variant="Variant.Outlined"
                        Editable="true"
                        HelperText="@Property.Description"

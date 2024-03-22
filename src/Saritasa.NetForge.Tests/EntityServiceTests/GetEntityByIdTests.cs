@@ -106,7 +106,7 @@ public class GetEntityByIdTests : IDisposable
     /// Test for case when property excluded from query via Fluent API.
     /// </summary>
     [Fact]
-    public async Task GetEntityByIdAsync_WithExcludedFromQueryPropertyViaFluentApi_ShouldNotContainExcludedProperty()
+    public async Task GetEntityByIdAsync_WithExcludedFromQueryPropertyViaFluentApi_PropertyShouldBeExcluded()
     {
         // Arrange
         adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
@@ -115,29 +115,24 @@ public class GetEntityByIdTests : IDisposable
                 .ConfigureProperty(shop => shop.IsOpen, optionsBuilder => optionsBuilder.SetIsExcludedFromQuery(true));
         });
 
-        const string excludedPropertyName = nameof(Shop.IsOpen);
-
         // Act
         var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
 
         // Assert
-        Assert.DoesNotContain(entity.Properties, property => property.Name.Equals(excludedPropertyName));
+        Assert.Contains(entity.Properties, property => property.IsExcludedFromQuery);
     }
 
     /// <summary>
     /// Test for case when property excluded from query via <see cref="NetForgePropertyAttribute"/>.
     /// </summary>
     [Fact]
-    public async Task GetEntityByIdAsync_WithExcludedFromQueryPropertyViaAttribute_ShouldNotContainExcludedProperty()
+    public async Task GetEntityByIdAsync_WithExcludedFromQueryPropertyViaAttribute_PropertyShouldBeExcluded()
     {
-        // Arrange
-        const string excludedPropertyName = nameof(Address.PostalCode);
-
         // Act
         var entity = await entityService.GetEntityByIdAsync(AttributeTestEntityId, CancellationToken.None);
 
         // Assert
-        Assert.DoesNotContain(entity.Properties, property => property.Name.Equals(excludedPropertyName));
+        Assert.Contains(entity.Properties, property => property.IsExcludedFromQuery);
     }
 
     /// <summary>

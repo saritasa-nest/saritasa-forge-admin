@@ -452,7 +452,7 @@ You can explicitly control whether a property should be excluded from the data q
 optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
 {
     entityOptionsBuilder.ConfigureProperty(user => user.DateOfBirth,
-        propertyBuilder => propertyBuilder.SetIsExcludeFromQuery(true));
+        propertyBuilder => propertyBuilder.SetIsExcludedFromQuery(true));
 });
 ```
 
@@ -512,5 +512,151 @@ optionsBuilder.ConfigureEntity<Product>(entityOptionsBuilder =>
 {
     entityOptionsBuilder.ConfigureProperty(product => product.Description,
         propertyBuilder => propertyBuilder.SetIsRichTextField(true));
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public DateTime CreatedAt { get; set; }
+```
+
+# Image Properties
+
+You can add properties that will be displayed as images.
+
+There are two types of images: `ImagePath` and `Base64Image`.
+
+Both of them can be configured via `[NetForgeProperty]` and `Fluent API`.
+
+## Image path
+
+`ImagePath` represents path to image on your storage.
+
+### Configuring place to store media files
+
+You can configure these properties related to images:
+
+#### Static files folder
+
+Default value for static files folder is `wwwrooot`.
+
+``` csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetStaticFilesFolder("static")
+});
+```
+
+#### Media folder
+
+Default value for media folder is `media`.
+
+``` csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetMediaFolder("media files");
+});
+```
+So default path to media files - `wwwroot/media`.
+
+#### Max image size
+
+Default value for max image size is 10 MB.
+
+``` csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetMaxImageSize(15);
+});
+```
+
+## Base 64 String
+
+`Base64Image` is base 64 string that looks like: `data:image/{MIME};base64,{bytes of image}`.
+
+## Configuration
+
+### Using Attribute
+
+```csharp
+[NetForgeProperty(IsBase64Image = true)]
+public string? BuildingPhoto { get; set; }
+```
+
+### Using Fluent API
+
+You can use `SetImageFolder` to store images in separate folder.
+For example, if you set image folder as `Shop images`, then images will be stored in that way: `wwwroot/media/Shop images`.
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(shop => shop.Logo, builder =>
+{
+    builder
+        .SetIsImagePath(true)
+        .SetImageFolder("Shop images");
+});
+```
+
+# Read only property
+
+You can mark a property as read only. Such property cannot be changed on create and edit pages.
+
+## Configuration
+
+### Using Fluent API
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(product => product.UpdatedDate, builder =>
+{
+    builder.SetIsReadOnly(true);
+});
+```
+
+### Using Attribute
+
+```csharp
+[NetForgeProperty(IsReadOnly = true)]
+public string Property { get; set; }
+```
+
+# String Truncate
+
+You can set the max characters amount for string properties.
+
+## Configuration
+
+### Global
+
+You can set max characters for the all strings. Default value is 50.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetTruncationMaxCharacters(60);
+});
+```
+
+You can disable this behavior in this way:
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.DisableCharactersTruncation();
+});
+```
+
+### For the Property
+
+You can set max characters to each property individually. Disabled by default because property does not have default value.
+
+#### Using Attribute
+
+```csharp
+[NetForgeProperty(TruncationMaxCharacters = 20)]
+public string Name { get; set; }
+```
+
+#### Using Fluent API
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(shop => shop.Name, builder =>
+{
+    builder.SetTruncationMaxCharacters(25);
 });
 ```

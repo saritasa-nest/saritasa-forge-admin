@@ -69,7 +69,8 @@ internal class EfCoreMetadataService : IOrmMetadataService
             Description = entityType.GetComment() ?? string.Empty,
             IsHidden = entityType.IsPropertyBag,
             Properties = propertiesMetadata.ToList(),
-            Navigations = navigationsMetadata.ToList()
+            Navigations = navigationsMetadata.ToList(),
+            IsKeyless = entityType.FindPrimaryKey() is null
         };
 
         return entityMetadata;
@@ -106,13 +107,24 @@ internal class EfCoreMetadataService : IOrmMetadataService
     /// <returns>A <see cref="PropertyMetadata"/> object containing metadata information for the navigation.</returns>
     private static NavigationMetadata GetNavigationMetadata(IReadOnlyNavigationBase navigation)
     {
+        var isNullable = false;
+        if (navigation is IReadOnlySkipNavigation { ForeignKey: not null } skipNavigation)
+        {
+            isNullable = !(skipNavigation.ForeignKey.IsRequired || skipNavigation.ForeignKey.IsRequiredDependent);
+        }
+        else if (navigation is IReadOnlyNavigation readOnlyNavigation)
+        {
+            isNullable = !(readOnlyNavigation.ForeignKey.IsRequired || readOnlyNavigation.ForeignKey.IsRequiredDependent);
+        }
+
         var navigationMetadata = new NavigationMetadata
         {
             Name = navigation.Name,
             IsCollection = navigation.IsCollection,
             TargetEntityProperties = navigation.TargetEntityType.GetProperties().Select(GetPropertyMetadata).ToList(),
             PropertyInformation = navigation.PropertyInfo,
-            ClrType = navigation.ClrType
+            ClrType = navigation.ClrType,
+            IsNullable = isNullable
         };
 
         return navigationMetadata;

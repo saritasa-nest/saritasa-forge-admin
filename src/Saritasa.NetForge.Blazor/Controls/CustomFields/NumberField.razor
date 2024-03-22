@@ -1,8 +1,9 @@
-﻿@inherits CustomField
+﻿@using Saritasa.NetForge.Blazor.Extensions
+@inherits CustomField
 
 @typeparam T
 
-<MudNumericField Label="@Property.Name"
+<MudNumericField Label="@Property.Name.ToMeaningfulName()"
                  Variant="Variant.Outlined"
                  HideSpinButtons="true"
                  HelperText="@Property.Description"

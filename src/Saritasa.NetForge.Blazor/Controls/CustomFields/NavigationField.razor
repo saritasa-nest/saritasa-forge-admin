@@ -1,0 +1,13 @@
+﻿@inherits CustomField
+
+<MudSelect @bind-Value="PropertyValue"
+           Label="@Property.Name"
+           Variant="Variant.Outlined"
+           HelperText="@Property.Description"
+           Disabled="IsReadOnly"
+           Clearable="Property.IsNullable">
+    @foreach (var instance in NavigationInstances)
+    {
+        <MudSelectItem Value="instance" />
+    }
+</MudSelect>

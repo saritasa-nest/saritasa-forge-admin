@@ -28,6 +28,7 @@ public class Shop
     /// <summary>
     /// The address of the shop.
     /// </summary>
+    [NetForgeProperty(Description = "Represents address of the shop.")]
     public Address? Address { get; set; }
 
     /// <summary>
@@ -65,5 +66,24 @@ public class Shop
     /// The list of suppliers.
     /// </summary>
     public List<Supplier> Suppliers { get; set; } = new();
-}
 
+    /// <summary>
+    /// Path to image file.
+    /// </summary>
+    public string? Logo { get; set; }
+
+    /// <summary>
+    /// Bytes that represents image.
+    /// </summary>
+    [NetForgeProperty(
+        IsBase64Image = true,
+        Order = 4, 
+        Description = "Photo of the shop from the outside.")]
+    public string? BuildingPhoto { get; set; }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"{Id}; {Name}";
+    }
+}

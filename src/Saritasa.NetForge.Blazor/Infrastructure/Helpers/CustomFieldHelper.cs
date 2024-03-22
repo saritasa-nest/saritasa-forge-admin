@@ -48,26 +48,36 @@ public static class CustomFieldHelper
         };
 
     /// <summary>
-    /// Gets custom field <see cref="Type"/> depending on <see cref="PropertyMetadataDto.ClrType"/>.
+    /// Gets custom field <see cref="Type"/> depending on <paramref name="property"/>.
     /// </summary>
-    public static Type GetComponentType(PropertyMetadataDto propertyMetadata)
+    public static Type GetComponentType(PropertyMetadataDto property)
     {
+        if (property.IsImagePath || property.IsBase64Image)
+        {
+            return typeof(UploadImage);
+        }
+
         if (propertyMetadata.IsRichTextField)
         {
             return typeof(CkEditorField);
         }
 
-        var propertyType = propertyMetadata.ClrType!;
+        if (property is NavigationMetadataDto navigation)
+        {
+            return navigation.IsCollection
+                ? typeof(NavigationCollectionField<>).MakeGenericType(property.ClrType!.GetGenericArguments().First())
+                : typeof(NavigationField);
+        }
 
         foreach (var (types, inputType) in TypeMappingDictionary)
         {
-            if (types.Contains(propertyType))
+            if (types.Contains(property.ClrType!))
             {
-                return inputType.IsGenericType ? inputType.MakeGenericType(propertyType) : inputType;
+                return inputType.IsGenericType ? inputType.MakeGenericType(property.ClrType!) : inputType;
             }
         }
 
         // Text field is a default one.
-        return propertyType.IsEnum ? typeof(EnumField) : typeof(TextField);
+        return property.ClrType!.IsEnum ? typeof(EnumField) : typeof(TextField);
     }
 }

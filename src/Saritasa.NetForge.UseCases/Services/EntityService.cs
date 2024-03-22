@@ -61,13 +61,13 @@ public class EntityService : IEntityService
         }
 
         var displayableProperties = metadata.Properties
-            .Where(property => property is { IsForeignKey: false, IsExcludedFromQuery: false });
+            .Where(property => property is { IsForeignKey: false });
 
         var propertyDtos = mapper
             .Map<IEnumerable<PropertyMetadata>, IEnumerable<PropertyMetadataDto>>(displayableProperties);
 
         var displayableNavigations = metadata.Navigations
-            .Where(navigation => navigation is { IsExcludedFromQuery: false, IsIncluded: true });
+            .Where(navigation => navigation is { IsIncluded: true });
 
         var navigationDtos = mapper
             .Map<IEnumerable<NavigationMetadata>, IEnumerable<NavigationMetadataDto>>(displayableNavigations);
@@ -100,7 +100,7 @@ public class EntityService : IEntityService
 
         var query = dataService.GetQuery(entityType);
 
-        query = SelectProperties(query, entityType, properties.Where(property => !property.IsCalculatedProperty));
+        query = SelectProperties(query, entityType, properties.Where(property => property is { IsCalculatedProperty: false, IsExcludedFromQuery: false }));
 
         query = ApplyCustomQuery(query, customQueryFunction);
 
@@ -286,5 +286,11 @@ public class EntityService : IEntityService
     public async Task CreateEntityAsync(object entity, Type entityType, CancellationToken cancellationToken)
     {
         await dataService.AddAsync(entity, entityType, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public Task DeleteEntityAsync(object entity, Type entityType, CancellationToken cancellationToken)
+    {
+        return dataService.DeleteAsync(entity, entityType, cancellationToken);
     }
 }

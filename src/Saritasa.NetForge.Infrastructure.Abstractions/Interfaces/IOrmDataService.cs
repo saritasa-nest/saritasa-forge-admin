@@ -22,9 +22,14 @@ public interface IOrmDataService
     /// In case of composite primary key, they have to be separated by "--".
     /// </param>
     /// <param name="entityType">Type to get instance of.</param>
+    /// <param name="includedNavigationNames">Included navigation names.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>Instance.</returns>
-    Task<object> GetInstanceAsync(string primaryKey, Type entityType, CancellationToken cancellationToken);
+    Task<object> GetInstanceAsync(
+        string primaryKey,
+        Type entityType,
+        IEnumerable<string> includedNavigationNames,
+        CancellationToken cancellationToken);
 
     /// <summary>
     /// Performs search.
@@ -49,9 +54,18 @@ public interface IOrmDataService
     Task AddAsync(object entity, Type entityType, CancellationToken cancellationToken);
 
     /// <summary>
+    /// Deletes entity in the database.
+    /// </summary>
+    /// <param name="entity">Entity to delete.</param>
+    /// <param name="entityType">Entity type.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    Task DeleteAsync(object entity, Type entityType, CancellationToken cancellationToken);
+
+    /// <summary>
     /// Updates entity in the database.
     /// </summary>
     /// <param name="entity">Entity to update.</param>
+    /// <param name="originalEntity">Entity that contains initial unchanged values.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    Task UpdateAsync(object entity, CancellationToken cancellationToken);
+    Task UpdateAsync(object entity, object originalEntity, CancellationToken cancellationToken);
 }

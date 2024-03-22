@@ -53,6 +53,9 @@ public record PropertyMetadataDto
     /// <inheritdoc cref="PropertyMetadataBase.IsHiddenFromDetails"/>
     public bool IsHiddenFromDetails { get; set; }
 
+    /// <inheritdoc cref="PropertyMetadataBase.IsExcludedFromQuery"/>
+    public bool IsExcludedFromQuery { get; set; }
+
     /// <inheritdoc cref="PropertyMetadataBase.DisplayAsHtml"/>
     public bool DisplayAsHtml { get; set; }
 
@@ -64,4 +67,22 @@ public record PropertyMetadataDto
 
     /// <inheritdoc cref="PropertyMetadataBase.IsRichTextField"/>
     public bool IsRichTextField { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.IsImagePath"/>
+    public bool IsImagePath { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.ImageFolder"/>
+    public string ImageFolder { get; set; } = string.Empty;
+
+    /// <inheritdoc cref="PropertyMetadata.IsBase64Image"/>
+    public bool IsBase64Image { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadataBase.IsReadOnly"/>
+    public bool IsReadOnly { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadataBase.TruncationMaxCharacters"/>
+    public int? TruncationMaxCharacters { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadataBase.IsNullable"/>
+    public bool IsNullable { get; set; }
 }

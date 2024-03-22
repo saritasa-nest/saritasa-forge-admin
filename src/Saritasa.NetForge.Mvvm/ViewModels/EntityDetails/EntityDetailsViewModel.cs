@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using AutoMapper;
 using MudBlazor;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Domain.Exceptions;
+using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Mvvm.Utils;
 using Saritasa.NetForge.UseCases.Common;
+using Saritasa.NetForge.UseCases.Constants;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
@@ -15,8 +18,6 @@ namespace Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 /// </summary>
 public class EntityDetailsViewModel : BaseViewModel
 {
-    private const string DefaultEmptyValueDisplay = "-";
-
     /// <summary>
     /// Entity details model.
     /// </summary>
@@ -24,16 +25,19 @@ public class EntityDetailsViewModel : BaseViewModel
 
     private readonly IEntityService entityService;
     private readonly IMapper mapper;
+    private readonly AdminOptions adminOptions;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public EntityDetailsViewModel(string stringId, IMapper mapper, IEntityService entityService)
+    public EntityDetailsViewModel(
+        string stringId, IMapper mapper, IEntityService entityService, AdminOptions adminOptions)
     {
         Model = new EntityDetailsModel { StringId = stringId };
 
         this.mapper = mapper;
         this.entityService = entityService;
+        this.adminOptions = adminOptions;
     }
 
     /// <summary>
@@ -55,6 +59,16 @@ public class EntityDetailsViewModel : BaseViewModel
     /// Whether display search input.
     /// </summary>
     public bool IsDisplaySearchInput { get; set; }
+
+    /// <summary>
+    /// Whether instance of the entity can be added.
+    /// </summary>
+    public bool CanAdd { get; set; }
+
+    /// <summary>
+    /// Whether instance of the entity can be edited.
+    /// </summary>
+    public bool CanEdit { get; set; }
 
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
@@ -93,6 +107,9 @@ public class EntityDetailsViewModel : BaseViewModel
                                        return property.SearchType != SearchType.None;
                                    })
                                    || Model.SearchFunction is not null;
+
+            CanAdd = !Model.IsKeyless;
+            CanEdit = !Model.IsKeyless;
         }
         catch (NotFoundException)
         {
@@ -182,7 +199,7 @@ public class EntityDetailsViewModel : BaseViewModel
         {
             return !string.IsNullOrEmpty(property.EmptyValueDisplay)
                 ? property.EmptyValueDisplay
-                : DefaultEmptyValueDisplay;
+                : DefaultValueConstants.DefaultEmptyPropertyValueDisplay;
         }
 
         if (property is NavigationMetadataDto navigation)
@@ -191,6 +208,18 @@ public class EntityDetailsViewModel : BaseViewModel
         }
 
         value = FormatValue(value, property.Name);
+
+        if (property.ClrType == typeof(string))
+        {
+            var stringValue = value.ToString();
+
+            var maxCharacters = property.TruncationMaxCharacters ?? adminOptions.TruncationMaxCharacters;
+
+            if (maxCharacters != default)
+            {
+                value = stringValue!.Truncate(maxCharacters);
+            }
+        }
 
         return value;
     }
@@ -254,6 +283,15 @@ public class EntityDetailsViewModel : BaseViewModel
     /// </summary>
     public void Search()
     {
+        DataGrid?.ReloadServerData();
+    }
+
+    /// <summary>
+    /// Delete entity.
+    /// </summary>
+    public async Task DeleteEntityAsync(object entity, CancellationToken cancellationToken)
+    {
+        await entityService.DeleteEntityAsync(entity, entity.GetType(), cancellationToken);
         DataGrid?.ReloadServerData();
     }
 }

@@ -92,4 +92,18 @@ public abstract class PropertyMetadataBase
     /// Whether the property should be displayed in the rich text field.
     /// </summary>
     public bool IsRichTextField { get; set; }
+
+    /// Whether the property is read only.
+    /// </summary>
+    public bool IsReadOnly { get; set; }
+
+    /// <summary>
+    /// Maximum characters to display.
+    /// </summary>
+    public int? TruncationMaxCharacters { get; set; }
+
+    /// <summary>
+    /// Whether the property is nullable.
+    /// </summary>
+    public bool IsNullable { get; set; }
 }

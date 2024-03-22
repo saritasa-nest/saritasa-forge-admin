@@ -113,6 +113,24 @@ public static class EntityMetadataOptionsExtensions
         {
             property.EmptyValueDisplay = propertyOptions.EmptyValueDisplay;
         }
+
+        if (propertyOptions.IsReadOnly)
+        {
+            property.IsReadOnly = propertyOptions.IsReadOnly;
+        }
+
+        if (propertyOptions.TruncationMaxCharacters > 0)
+        {
+            property.TruncationMaxCharacters = propertyOptions.TruncationMaxCharacters;
+        }
+
+        if (property is PropertyMetadata propertyMetadata)
+        {
+            propertyMetadata.IsImagePath = propertyOptions.IsImagePath;
+            propertyMetadata.ImageFolder = propertyOptions.ImageFolder;
+
+            propertyMetadata.IsBase64Image = propertyOptions.IsBase64Image;
+        }
     }
 
     private static void ApplyNavigationOptions(
