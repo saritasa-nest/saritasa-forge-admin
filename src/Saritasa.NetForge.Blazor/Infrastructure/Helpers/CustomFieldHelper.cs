@@ -57,7 +57,7 @@ public static class CustomFieldHelper
             return typeof(UploadImage);
         }
 
-        if (propertyMetadata.IsRichTextField)
+        if (property.IsRichTextField)
         {
             return typeof(CkEditorField);
         }

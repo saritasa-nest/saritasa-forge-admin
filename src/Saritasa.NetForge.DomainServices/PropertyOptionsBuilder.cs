@@ -150,8 +150,10 @@ public class PropertyOptionsBuilder
     public PropertyOptionsBuilder SetIsRichTextField(bool isRichTextField)
     {
         options.IsRichTextField = isRichTextField;
+        return this;
     }
 
+    /// <summary>
     /// Marks this property as path to image.
     /// </summary>
     public PropertyOptionsBuilder SetIsImagePath(bool isImagePath)
