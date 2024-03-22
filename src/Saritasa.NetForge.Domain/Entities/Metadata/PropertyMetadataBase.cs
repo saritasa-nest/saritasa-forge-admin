@@ -93,6 +93,7 @@ public abstract class PropertyMetadataBase
     /// </summary>
     public bool IsRichTextField { get; set; }
 
+    /// <summary>
     /// Whether the property is read only.
     /// </summary>
     public bool IsReadOnly { get; set; }
