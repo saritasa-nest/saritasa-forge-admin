@@ -11,13 +11,19 @@ public partial class CkEditorField : CustomField, IAsyncDisposable
     private IJSObjectReference? jsModule;
     private ElementReference editor;
 
+    /// <summary>
+    /// JS runtime.
+    /// </summary>
+    [Inject]
+    public IJSRuntime? JsRuntime { get; set; }
+
     /// <inheritdoc />
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
-            jsModule = await JsRuntime.InvokeAsync<IJSObjectReference>("import",
+            jsModule = await JsRuntime!.InvokeAsync<IJSObjectReference>("import",
                 "./_content/NetForgeBlazor/Controls/CustomFields/CkEditorField.razor.js");
             var editorId = Guid.NewGuid().ToString();
             var dotnetReference = DotNetObjectReference.Create(this);
