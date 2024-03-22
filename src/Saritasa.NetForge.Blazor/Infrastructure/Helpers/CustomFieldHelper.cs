@@ -54,7 +54,7 @@ public static class CustomFieldHelper
     {
         if (propertyMetadata.IsRichTextField)
         {
-            return typeof(CKEditorField);
+            return typeof(CkEditorField);
         }
 
         var propertyType = propertyMetadata.ClrType!;

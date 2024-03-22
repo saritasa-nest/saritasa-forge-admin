@@ -6,7 +6,7 @@ namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
 /// <summary>
 /// Represents CKEditor field.
 /// </summary>
-public partial class CKEditorField : CustomField, IAsyncDisposable
+public partial class CkEditorField : CustomField, IAsyncDisposable
 {
     private IJSObjectReference? jsModule;
     private ElementReference editor;
@@ -18,7 +18,7 @@ public partial class CKEditorField : CustomField, IAsyncDisposable
         {
             await base.OnAfterRenderAsync(firstRender);
             jsModule = await JsRuntime.InvokeAsync<IJSObjectReference>("import",
-                "./_content/NetForgeBlazor/Controls/CustomFields/CKEditorField.razor.js");
+                "./_content/NetForgeBlazor/Controls/CustomFields/CkEditorField.razor.js");
             var editorId = Guid.NewGuid().ToString();
             var dotnetReference = DotNetObjectReference.Create(this);
             await jsModule.InvokeVoidAsync("InitCKEditor", editor, editorId, IsReadOnly,
