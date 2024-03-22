@@ -57,13 +57,14 @@ public partial class CkEditorField : CustomField, IAsyncDisposable
     /// </summary>
     /// <param name="editorText">Text from the editor.</param>
     [JSInvokable]
-    public Task UpdateText(string editorText)
+    public async Task UpdateTextAsync(string editorText)
     {
-        if (PropertyValue != editorText)
+        await Task.Run(() =>
         {
-            PropertyValue = editorText;
-        }
-
-        return Task.CompletedTask;
+            if (PropertyValue != editorText)
+            {
+                PropertyValue = editorText;
+            }
+        });
     }
 }

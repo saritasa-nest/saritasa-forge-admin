@@ -58,7 +58,7 @@ export function InitCKEditor(element, id, isReadOnly, dotnetReference) {
 
                 // Update the text after a delay.
                 timeouts[id] = setTimeout(() => {
-                    dotnetReference.invokeMethodAsync('UpdateText', editor.getData());
+                    dotnetReference.invokeMethodAsync('UpdateTextAsync', editor.getData());
                 }, 50);
             });
         }
