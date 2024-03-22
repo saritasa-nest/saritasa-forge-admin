@@ -65,6 +65,9 @@ public record PropertyMetadataDto
     /// <inheritdoc cref="PropertyMetadata.IsValueGeneratedOnUpdate"/>
     public bool IsValueGeneratedOnUpdate { get; set; }
 
+    /// <inheritdoc cref="PropertyMetadataBase.IsRichTextField"/>
+    public bool IsRichTextField { get; set; }
+
     /// <inheritdoc cref="PropertyMetadata.IsImagePath"/>
     public bool IsImagePath { get; set; }
 
