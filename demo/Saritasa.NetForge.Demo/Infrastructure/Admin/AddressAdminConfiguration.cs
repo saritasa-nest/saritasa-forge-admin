@@ -31,6 +31,9 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
         }).ConfigureProperty(address => address.City, propertyBuilder =>
         {
             propertyBuilder.SetDisplayName("Town");
+        }).ConfigureProperty(address => address.Street, propertyBuilder =>
+        {
+            propertyBuilder.SetIsMultiline(autoGrow: true, maxLines: 10);
         }).ConfigureProperty(address => address.Longitude, propertyBuilder =>
         {
             propertyBuilder
