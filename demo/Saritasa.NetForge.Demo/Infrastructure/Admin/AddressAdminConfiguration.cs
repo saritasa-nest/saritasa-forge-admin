@@ -33,8 +33,7 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
             propertyBuilder.SetDisplayName("Town");
         }).ConfigureProperty(address => address.Street, propertyBuilder =>
         {
-            propertyBuilder.SetIsMultiline(true);
-            propertyBuilder.SetIsAutoGrow(true);
+            propertyBuilder.SetIsMultiline(autoGrow: true, maxLines: 10);
         }).ConfigureProperty(address => address.Longitude, propertyBuilder =>
         {
             propertyBuilder

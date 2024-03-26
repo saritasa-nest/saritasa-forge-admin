@@ -69,10 +69,10 @@ public class PropertyOptions
     public bool IsMultiline { get; set; }
 
     /// <inheritdoc cref="PropertyMetadataBase.Lines"/>
-    public int Lines { get; set; } = 5;
+    public int Lines { get; set; }
 
     /// <inheritdoc cref="PropertyMetadataBase.MaxLines"/>
-    public int MaxLines { get; set; } = 5;
+    public int MaxLines { get; set; }
 
     /// <inheritdoc cref="PropertyMetadataBase.IsAutoGrow"/>
     public bool IsAutoGrow { get; set; }

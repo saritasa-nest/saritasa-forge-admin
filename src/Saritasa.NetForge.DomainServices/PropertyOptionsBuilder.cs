@@ -190,38 +190,22 @@ public class PropertyOptionsBuilder
     }
 
     /// <summary>
-    /// Marks this property as multiline.
+    /// Marks this property as multiline and sets properties that are used with the multiple text field.
+    /// Such as auto grow, lines and max lines.
     /// </summary>
-    public PropertyOptionsBuilder SetIsMultiline(bool isMultiline)
+    /// <param name="autoGrow">
+    /// Auto grow flag that identifies whether the height of the text field automatically changes with the number of lines of text.
+    /// </param>
+    /// <param name="lines">Amount of lines.</param>
+    /// <param name="maxLines">Amount of max lines.</param>
+    public PropertyOptionsBuilder SetIsMultiline(bool autoGrow = false, int lines = 5, int maxLines = 5)
     {
-        options.IsMultiline = isMultiline;
-        return this;
-    }
+        options.IsMultiline = true;
 
-    /// <summary>
-    /// Sets default amount of lines.
-    /// </summary>
-    public PropertyOptionsBuilder SetLines(int lines)
-    {
-        options.Lines = lines;
-        return this;
-    }
-
-    /// <summary>
-    /// Sets amount of max lines.
-    /// </summary>
-    public PropertyOptionsBuilder SetMaxLines(int maxLines)
-    {
+        options.IsAutoGrow = autoGrow;
         options.MaxLines = maxLines;
-        return this;
-    }
+        options.Lines = lines;
 
-    /// <summary>
-    /// Marks this property as auto grow.
-    /// </summary>
-    public PropertyOptionsBuilder SetIsAutoGrow(bool isAutoGrow)
-    {
-        options.IsAutoGrow = isAutoGrow;
         return this;
     }
 }

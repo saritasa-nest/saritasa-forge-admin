@@ -90,6 +90,8 @@ public static class EntityMetadataAttributesExtensions
             property.DisplayName = displayNameAttribute.DisplayName;
         }
 
+        property.TryApplyMultilineTextAttributeValues();
+
         var netForgePropertyAttribute = property.PropertyInformation?
             .GetCustomAttribute<NetForgePropertyAttribute>();
 
@@ -167,25 +169,35 @@ public static class EntityMetadataAttributesExtensions
 
             propertyMetadata.IsBase64Image = netForgePropertyAttribute.IsBase64Image;
         }
+    }
 
-        if (netForgePropertyAttribute.IsMultiline)
+    private static bool TryApplyMultilineTextAttributeValues(this PropertyMetadataBase property)
+    {
+        var multilineTextAttribute = property.PropertyInformation?
+            .GetCustomAttribute<MultilineTextAttribute>();
+
+        if (multilineTextAttribute is null)
         {
-            property.IsMultiline = netForgePropertyAttribute.IsMultiline;
+            return false;
         }
 
-        if (netForgePropertyAttribute.Lines >= 0)
+        property.IsMultiline = true;
+
+        if (multilineTextAttribute.Lines >= 0)
         {
-            property.Lines = netForgePropertyAttribute.Lines;
+            property.Lines = multilineTextAttribute.Lines;
         }
 
-        if (netForgePropertyAttribute.MaxLines >= 0)
+        if (multilineTextAttribute.MaxLines >= 0)
         {
-            property.MaxLines = netForgePropertyAttribute.MaxLines;
+            property.MaxLines = multilineTextAttribute.MaxLines;
         }
 
-        if (netForgePropertyAttribute.IsAutoGrow)
+        if (multilineTextAttribute.IsAutoGrow)
         {
-            property.IsAutoGrow = netForgePropertyAttribute.IsAutoGrow;
+            property.IsAutoGrow = multilineTextAttribute.IsAutoGrow;
         }
+
+        return true;
     }
 }
