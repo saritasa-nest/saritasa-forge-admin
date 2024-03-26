@@ -102,14 +102,15 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
             parameters: new[] { StringId, string.Join("--", primaryKeyValues) });
     }
 
-    private void OpenDialog(object navigationInstance, NavigationMetadataDto navigationMetadata)
+    private async Task OpenDialogAsync(object navigationInstance, NavigationMetadataDto navigationMetadata)
     {
         var options = new DialogOptions
         {
             CloseOnEscapeKey = true,
             CloseButton = true,
             FullWidth = true,
-            MaxWidth = MaxWidth.ExtraLarge
+            MaxWidth = MaxWidth.ExtraLarge,
+            NoHeader = true
         };
 
         var parameters = new DialogParameters
@@ -117,6 +118,6 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
             { nameof(navigationInstance), navigationInstance },
             { nameof(navigationMetadata), navigationMetadata }
         };
-        DialogService.Show<NavigationDialog>("Related data", parameters, options);
+        await DialogService.ShowAsync<NavigationDialog>(title: string.Empty, parameters, options);
     }
 }

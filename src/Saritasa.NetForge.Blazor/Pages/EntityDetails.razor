@@ -136,7 +136,7 @@
                                                      || navigation.IsCollection))
                                         {
                                             var navigationInstance = cell.Item.GetPropertyValue(navigation.Name);
-                                            <MudButton @onclick="() => OpenDialog(navigationInstance, navigation)"
+                                            <MudButton @onclick="() => OpenDialogAsync(navigationInstance, navigation)"
                                                        Variant="Variant.Text"
                                                        Color="Color.Primary">
                                                 @propertyValue
