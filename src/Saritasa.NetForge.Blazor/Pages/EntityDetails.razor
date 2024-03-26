@@ -1,6 +1,7 @@
 ﻿@using Saritasa.NetForge.Blazor.Controls
 @using Saritasa.NetForge.Domain.Entities.Options
 @using Saritasa.NetForge.Blazor.Extensions
+@using Saritasa.NetForge.DomainServices.Extensions
 @using Saritasa.NetForge.UseCases.Metadata.GetEntityById
 @using Saritasa.NetForge.UseCases.Constants
 @inject AdminOptions AdminOptions
@@ -49,24 +50,31 @@
                     @{
                         foreach (var property in ViewModel.Model.Properties)
                         {
-                            RenderPropertyColumn(property);
-                        }
-
-                        void RenderPropertyColumn(PropertyMetadataDto property, string? navigationName = null)
-                        {
-                            if (property is NavigationMetadataDto { IsCollection: false } navigation)
+                            if (property is NavigationMetadataDto navigation)
                             {
-                                foreach (var targetProperty in navigation.TargetEntityProperties)
+                                if (!navigation.IsCollection)
                                 {
-                                    RenderPropertyColumn(targetProperty, navigation.Name);
+                                    foreach (var targetProperty in navigation.TargetEntityProperties)
+                                    {
+                                        RenderPropertyColumn(targetProperty, navigation);
+                                    }
+                                }
+                                else
+                                {
+                                    RenderPropertyColumn(property, navigation);
                                 }
 
-                                return;
                             }
+                            else
+                            {
+                                RenderPropertyColumn(property);
+                            }
+                        }
 
-                            <TemplateColumn Title="@property.Name"
-                                            Sortable="property.IsSortable"
-                                            NavigationName="@navigationName">
+                        void RenderPropertyColumn(
+                            PropertyMetadataDto property, NavigationMetadataDto? navigation = null)
+                        {
+                            <TemplateColumn Title="@property.Name" Sortable="property.IsSortable">
 
                                 <HeaderTemplate>
                                     @{
@@ -96,20 +104,15 @@
 
                                 <CellTemplate Context="cell">
                                     @{
-                                        var isNavigation = navigationName is not null;
-                                        var isNavigationCollection = false;
-                                        var isDisplayDetails = false;
-                                        if (property is NavigationMetadataDto navigation)
+                                        var propertyValue = ViewModel.GetPropertyValue(cell.Item, property).ToString();
+
+                                        if (navigation is not null && !navigation.IsCollection)
                                         {
-                                            isNavigationCollection = navigation.IsCollection;
-                                            isDisplayDetails = navigation.IsDisplayDetails;
+                                            var navigationInstance = cell.Item.GetPropertyValue(navigation.Name);
+                                            propertyValue = ViewModel
+                                                .GetPropertyValue(navigationInstance, property)
+                                                .ToString();
                                         }
-
-                                        var instance = !isNavigation
-                                            ? cell.Item
-                                            : cell.Item.GetType().GetProperty(navigationName)?.GetValue(cell.Item);
-
-                                        var propertyValue = ViewModel.GetPropertyValue(instance, property).ToString();
 
                                         if (propertyValue!.Equals(property.EmptyValueDisplay)
                                             || propertyValue.Equals(DefaultValueConstants.DefaultEmptyPropertyValueDisplay))
@@ -128,28 +131,12 @@
                                         {
                                             @((MarkupString)propertyValue!)
                                         }
-                                        else if ((isDisplayDetails && isNavigation && property.IsPrimaryKey)
-                                                 || isNavigationCollection)
+                                        else if (navigation is not null
+                                                 && (navigation.IsDisplayDetails && property.IsPrimaryKey
+                                                     || navigation.IsCollection))
                                         {
-                                            var propertyMetadata = property;
-
-                                            if (navigationName is not null)
-                                            {
-                                                propertyMetadata = ViewModel.Model.Properties
-                                                    .First(propertyMetadata => propertyMetadata.Name == navigationName);
-                                            }
-
-                                            var navigationMetadata = propertyMetadata as NavigationMetadataDto;
-
-                                            if (isNavigationCollection)
-                                            {
-                                                instance = cell.Item
-                                                    .GetType()
-                                                    .GetProperty(navigationMetadata.Name)?
-                                                    .GetValue(cell.Item);
-                                            }
-
-                                            <MudButton @onclick="() => OpenDialog(instance, navigationMetadata)"
+                                            var navigationInstance = cell.Item.GetPropertyValue(navigation.Name);
+                                            <MudButton @onclick="() => OpenDialog(navigationInstance, navigation)"
                                                        Variant="Variant.Text"
                                                        Color="Color.Primary">
                                                 @propertyValue
