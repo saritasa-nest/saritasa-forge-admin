@@ -639,7 +639,7 @@ entityOptionsBuilder.ConfigureProperty(shop => shop.Name, builder =>
 ```
 
 # Multiline Text Field property
-You can mark a property as multiline text field. Is allows inpur text in the several text rows. Disabled by default.
+You can mark a property as multiline text field. It allows input of text in several text rows. Disabled by default.
 
 ## Configuration
 
@@ -648,18 +648,18 @@ You can mark a property as multiline text field. Is allows inpur text in the sev
 ```csharp
 entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
 {
-    builder.SetIsMultiline(true);
+    builder.SetIsMultiline();
 });
 ```
 
 ### Using Attribute
 
 ```csharp
-[NetForgeProperty(IsMultiline = true)]
+[MultilineText]
 public required string Street { get; set; }
 ```
 
-Also, there are some auxalary additional properties that are used in the multiple text field
+Also, there are some auxiliary properties that are used in the multiple text field.
 
 ## Lines property is the number of lines of the multiline text field. This is equal to 5 by default.
 ### Using Fluent API
@@ -667,15 +667,14 @@ Also, there are some auxalary additional properties that are used in the multipl
 ```csharp
 entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
 {
-    builder.SetIsMultiline(true);
-    builder.SetLines(15); // sets the lines value as 15
+    builder.SetIsMultiline(lines: 15); // sets the lines value as 15
 });
 ```
 
 ### Using Attribute
 
 ```csharp
-[NetForgeProperty(IsMultiline = true, Lines = 15)]
+[MultilineText(Lines = 15)]
 public required string Street { get; set; }
 ```
 
@@ -685,15 +684,14 @@ public required string Street { get; set; }
 ```csharp
 entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
 {
-    builder.SetIsMultiline(true);
-    builder.SetMaxLines(15); // sets the max lines value as 15
+	builder.SetIsMultiline(maxLines: 15); // sets the max lines value as 15
 });
 ```
 
 ### Using Attribute
 
 ```csharp
-[NetForgeProperty(IsMultiline = true, MaxLines = 15)]
+[MultilineText(MaxLines = 15)]
 public required string Street { get; set; }
 ```
 
@@ -703,14 +701,13 @@ public required string Street { get; set; }
 ```csharp
 entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
 {
-    builder.SetIsMultiline(true);
-    builder.SetIsAutoGrow(true);
+    builder.SetIsMultiline(autoGrow: true);
 });
 ```
 
 ### Using Attribute
 
 ```csharp
-[NetForgeProperty(IsMultiline = true, IsAutoGrow = true)]
+[MultilineText(IsAutoGrow = true)]
 public required string Street { get; set; }
 ```
