@@ -50,6 +50,9 @@ public class PropertyOptions
     /// <inheritdoc cref="PropertyMetadataBase.DisplayAsHtml"/>
     public bool DisplayAsHtml { get; set; }
 
+    /// <inheritdoc cref="PropertyMetadataBase.IsRichTextField"/>
+    public bool IsRichTextField { get; set; }
+
     /// <inheritdoc cref="PropertyMetadata.IsImagePath"/>
     public bool IsImagePath { get; set; }
 

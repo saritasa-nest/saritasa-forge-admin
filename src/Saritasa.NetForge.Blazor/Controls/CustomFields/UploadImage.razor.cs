@@ -11,7 +11,7 @@ namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
 /// <summary>
 /// Represents upload image control.
 /// </summary>
-public partial class UploadImage : CustomField, IRecipient<UploadImageMessage>, IDisposable
+public partial class UploadImage : CustomField, IRecipient<UploadImageMessage>
 {
     private bool disposedValue;
     private readonly CancellationTokenSource cancellationTokenSource = new();
@@ -24,8 +24,10 @@ public partial class UploadImage : CustomField, IRecipient<UploadImageMessage>, 
     /// <summary>
     /// Disposes resources of the view model.
     /// </summary>
-    protected virtual void Dispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
+        base.Dispose(disposing);
+
         if (!disposedValue)
         {
             if (disposing)
@@ -36,13 +38,6 @@ public partial class UploadImage : CustomField, IRecipient<UploadImageMessage>, 
 
             disposedValue = true;
         }
-    }
-
-    /// <inheritdoc />
-    public void Dispose()
-    {
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
     }
 
     [Inject]

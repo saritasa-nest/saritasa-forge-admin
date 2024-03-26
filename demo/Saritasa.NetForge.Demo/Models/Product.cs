@@ -26,6 +26,7 @@ public class Product
     /// The description of the product.
     /// </summary>
     [MultilineText(Lines = 5, MaxLines = 10, IsAutoGrow = true)]
+    [NetForgeProperty(IsRichTextField = true, Description = "The description of the Product.")]
     public required string Description { get; set; }
 
     /// <summary>
