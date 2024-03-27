@@ -140,6 +140,11 @@ public static class EntityMetadataAttributesExtensions
             property.SearchType = netForgePropertyAttribute.SearchType;
         }
 
+        if (netForgePropertyAttribute.IsSortable)
+        {
+            property.IsSortable = netForgePropertyAttribute.IsSortable;
+        }
+
         if (!string.IsNullOrEmpty(netForgePropertyAttribute.EmptyValueDisplay))
         {
             property.EmptyValueDisplay = netForgePropertyAttribute.EmptyValueDisplay;

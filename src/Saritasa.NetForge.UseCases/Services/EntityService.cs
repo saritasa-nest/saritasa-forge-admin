@@ -97,7 +97,27 @@ public class EntityService : IEntityService
             throw new NotFoundException("Metadata for entity was not found.");
         }
 
-        var metadataDto = mapper.Map<GetEntityByIdDto>(metadata);
+        var displayableProperties = metadata.Properties
+            .Where(property => property is { IsForeignKey: false });
+
+        var propertyDtos = mapper
+            .Map<IEnumerable<PropertyMetadata>, IEnumerable<PropertyMetadataDto>>(displayableProperties);
+
+        var displayableNavigations = metadata.Navigations
+            .Where(navigation => navigation is { IsIncluded: true });
+
+        var navigationDtos = mapper
+            .Map<IEnumerable<NavigationMetadata>, IEnumerable<NavigationMetadataDto>>(displayableNavigations);
+
+        propertyDtos = propertyDtos.Union(navigationDtos);
+
+        var orderedProperties = propertyDtos
+            .OrderByDescending(property => property is { IsPrimaryKey: true, Order: null })
+            .ThenByDescending(property => property.Order.HasValue)
+            .ThenBy(property => property.Order)
+            .ToList();
+
+        var metadataDto = mapper.Map<GetEntityByIdDto>(metadata) with { Properties = orderedProperties };
 
         return Task.FromResult(metadataDto);
     }

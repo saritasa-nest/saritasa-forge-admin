@@ -1,6 +1,4 @@
-﻿@using Saritasa.NetForge.DomainServices.Extensions
-
-<MudDialog DefaultFocus="DefaultFocus.LastChild">
+﻿<MudDialog DefaultFocus="DefaultFocus.LastChild">
     <DialogContent>
         @{
             IEnumerable<object> collection;
@@ -19,14 +17,7 @@
 
             <MudDataGrid Items="collection">
                 <Columns>
-                    @foreach (var property in Properties)
-                    {
-                        <TemplateColumn Title="@property.Name">
-                            <CellTemplate Context="cell">
-                                @cell.Item.GetPropertyValue(property.Name)
-                            </CellTemplate>
-                        </TemplateColumn>
-                    }
+                    <EntityPropertyColumns Properties="Properties" />
                 </Columns>
             </MudDataGrid>
         }

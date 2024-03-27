@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Saritasa.NetForge.Blazor.Controls;
+using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
 using Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
-using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.Blazor.Pages;
 
@@ -96,28 +96,9 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     {
         var primaryKeyValues = ViewModel.Model.Properties
             .Where(property => property.IsPrimaryKey)
-            .Select(primaryKey => ViewModel.GetPropertyValue(row.Item, primaryKey).ToString()!);
+            .Select(primaryKey => row.Item.GetPropertyValue(primaryKey.Name)!.ToString()!);
 
         NavigationService.NavigateTo<EditEntityViewModel>(
             parameters: new[] { StringId, string.Join("--", primaryKeyValues) });
-    }
-
-    private async Task OpenDialogAsync(object navigationInstance, NavigationMetadataDto navigationMetadata)
-    {
-        var options = new DialogOptions
-        {
-            CloseOnEscapeKey = true,
-            CloseButton = true,
-            FullWidth = true,
-            MaxWidth = MaxWidth.ExtraLarge,
-            NoHeader = true
-        };
-
-        var parameters = new DialogParameters
-        {
-            { nameof(navigationInstance), navigationInstance },
-            { nameof(navigationMetadata), navigationMetadata }
-        };
-        await DialogService.ShowAsync<NavigationDialog>(title: string.Empty, parameters, options);
     }
 }

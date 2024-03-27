@@ -57,6 +57,9 @@ public class NavigationOptionsBuilder<TEntity>
         return this;
     }
 
+    /// <summary>
+    /// Sets whether display navigation entity details.
+    /// </summary>
     public NavigationOptionsBuilder<TEntity> SetIsDisplayDetails(bool isDisplayDetails)
     {
         options.IsDisplayDetails = isDisplayDetails;

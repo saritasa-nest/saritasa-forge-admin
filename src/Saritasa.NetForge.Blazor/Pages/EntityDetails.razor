@@ -1,9 +1,6 @@
 ﻿@using Saritasa.NetForge.Blazor.Controls
 @using Saritasa.NetForge.Domain.Entities.Options
 @using Saritasa.NetForge.Blazor.Extensions
-@using Saritasa.NetForge.DomainServices.Extensions
-@using Saritasa.NetForge.UseCases.Metadata.GetEntityById
-@using Saritasa.NetForge.UseCases.Constants
 @inject AdminOptions AdminOptions
 @inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.EntityDetails.EntityDetailsViewModel>
 
@@ -47,113 +44,17 @@
                          @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple"
                          @attributes="NonKeylessEntityDataGridAttributes">
                 <Columns>
-                    @{
-                        foreach (var property in ViewModel.Model.Properties)
-                        {
-                            if (property is NavigationMetadataDto navigation)
-                            {
-                                if (!navigation.IsCollection)
-                                {
-                                    foreach (var targetProperty in navigation.TargetEntityProperties)
-                                    {
-                                        RenderPropertyColumn(targetProperty, navigation);
-                                    }
-                                }
-                                else
-                                {
-                                    RenderPropertyColumn(property, navigation);
-                                }
-
-                            }
-                            else
-                            {
-                                RenderPropertyColumn(property);
-                            }
-                        }
-
-                        void RenderPropertyColumn(
-                            PropertyMetadataDto property, NavigationMetadataDto? navigation = null)
-                        {
-                            <TemplateColumn Title="@property.Name" Sortable="property.IsSortable">
-
-                                <HeaderTemplate>
-                                    @{
-                                        var displayName = ViewModel.GetPropertyDisplayName(property);
-                                        if (AdminOptions.TitleCaseProperties)
-                                        {
-                                            displayName = displayName.ToMeaningfulName();
-                                        }
-
-                                        if (string.IsNullOrEmpty(property.Description))
-                                        {
-                                            @displayName
-                                        }
-                                        else
-                                        {
-                                            <MudTooltip Arrow="true" Placement="@Placement.Top">
-                                                <ChildContent>
-                                                    @displayName
-                                                </ChildContent>
-                                                <TooltipContent>
-                                                    <MudText Typo="@Typo.body2">@property.Description</MudText>
-                                                </TooltipContent>
-                                            </MudTooltip>
-                                        }
-                                    }
-                                </HeaderTemplate>
-
-                                <CellTemplate Context="cell">
-                                    @{
-                                        var propertyValue = ViewModel.GetPropertyValue(cell.Item, property).ToString();
-
-                                        if (navigation is not null && !navigation.IsCollection)
-                                        {
-                                            var navigationInstance = cell.Item.GetPropertyValue(navigation.Name);
-                                            propertyValue = ViewModel
-                                                .GetPropertyValue(navigationInstance, property)
-                                                .ToString();
-                                        }
-
-                                        if (propertyValue!.Equals(property.EmptyValueDisplay)
-                                            || propertyValue.Equals(DefaultValueConstants.DefaultEmptyPropertyValueDisplay))
-                                        {
-                                            @propertyValue
-                                        }
-                                        else if (property.IsImagePath || property.IsBase64Image)
-                                        {
-                                            <div>
-                                                <MudImage Src="@propertyValue"
-                                                          Elevation="25"
-                                                          Class="rounded-lg property-image" />
-                                            </div>
-                                        }
-                                        else if (property.DisplayAsHtml)
-                                        {
-                                            @((MarkupString)propertyValue!)
-                                        }
-                                        else if (navigation is not null
-                                                 && (navigation.IsDisplayDetails && property.IsPrimaryKey
-                                                     || navigation.IsCollection))
-                                        {
-                                            var navigationInstance = cell.Item.GetPropertyValue(navigation.Name)!;
-                                            <MudButton @onclick="() => OpenDialogAsync(navigationInstance, navigation)"
-                                                       Variant="Variant.Text"
-                                                       Color="Color.Primary">
-                                                @propertyValue
-                                            </MudButton>
-                                        }
-                                        else
-                                        {
-                                            @propertyValue
-                                        }
-                                    }
-                                </CellTemplate>
-                            </TemplateColumn>
-                        }
-                    }
                     <TemplateColumn>
                         <CellTemplate>
                             <MudButton Size="@Size.Small" Variant="Variant.Text" Color="Color.Secondary" OnClick="@(()=>ShowDeleteEntityConfirmationAsync(context.Item))">Delete</MudButton>
+                        </CellTemplate>
+                    </TemplateColumn>
+
+                    <EntityPropertyColumns Properties="ViewModel.Model.Properties"/>
+
+                    <TemplateColumn>
+                        <CellTemplate>
+                            <MudButton Size="@Size.Small" Variant="Variant.Text" Color="Color.Secondary" OnClick="@(() => ShowDeleteEntityConfirmationAsync(context.Item))">Delete</MudButton>
                         </CellTemplate>
                     </TemplateColumn>
                 </Columns>

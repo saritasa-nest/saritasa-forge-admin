@@ -39,7 +39,8 @@ public class ProductAdminConfiguration : IEntityAdminConfiguration<Product>
                 .IncludeProperty(shop => shop.BuildingPhoto, propertyOptionsBuilder =>
                 {
                     propertyOptionsBuilder.SetIsBase64Image(true);
-                });
+                })
+                .SetIsDisplayDetails(true);
         });
 
         entityOptionsBuilder.ConfigureProperty(product => product.UpdatedDate, builder =>
