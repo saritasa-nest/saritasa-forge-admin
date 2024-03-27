@@ -135,7 +135,7 @@
                                                  && (navigation.IsDisplayDetails && property.IsPrimaryKey
                                                      || navigation.IsCollection))
                                         {
-                                            var navigationInstance = cell.Item.GetPropertyValue(navigation.Name);
+                                            var navigationInstance = cell.Item.GetPropertyValue(navigation.Name)!;
                                             <MudButton @onclick="() => OpenDialogAsync(navigationInstance, navigation)"
                                                        Variant="Variant.Text"
                                                        Color="Color.Primary">
