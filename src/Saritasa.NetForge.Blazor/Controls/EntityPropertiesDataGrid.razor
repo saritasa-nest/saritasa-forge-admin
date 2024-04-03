@@ -1,0 +1,24 @@
+﻿<MudDataGrid T="object" ServerData="LoadEntityGridDataAsync" DragDropColumnReordering="true"
+             @ref="DataGrid" SortMode="SortMode.Multiple"
+             @attributes="NonKeylessEntityDataGridAttributes">
+    <Columns>
+
+        <TemplateColumn>
+            <CellTemplate>
+                <MudButton Size="@Size.Small" Variant="Variant.Text" Color="Color.Secondary" OnClick="@(() => ShowDeleteEntityConfirmationAsync(context.Item))">Delete</MudButton>
+            </CellTemplate>
+        </TemplateColumn>
+
+        <EntityPropertyColumns Properties="Model.Properties" />
+
+        <TemplateColumn>
+            <CellTemplate>
+                <MudButton Size="@Size.Small" Variant="Variant.Text" Color="Color.Secondary" OnClick="@(() => ShowDeleteEntityConfirmationAsync(context.Item))">Delete</MudButton>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+
+    <PagerContent>
+        <MudDataGridPager T="object"/>
+    </PagerContent>
+</MudDataGrid>
