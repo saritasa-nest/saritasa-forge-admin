@@ -44,19 +44,7 @@
                          @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple"
                          @attributes="NonKeylessEntityDataGridAttributes">
                 <Columns>
-                    <TemplateColumn>
-                        <CellTemplate>
-                            <MudButton Size="@Size.Small" Variant="Variant.Text" Color="Color.Secondary" OnClick="@(()=>ShowDeleteEntityConfirmationAsync(context.Item))">Delete</MudButton>
-                        </CellTemplate>
-                    </TemplateColumn>
-
                     <EntityPropertyColumns Properties="ViewModel.Model.Properties"/>
-
-                    <TemplateColumn>
-                        <CellTemplate>
-                            <MudButton Size="@Size.Small" Variant="Variant.Text" Color="Color.Secondary" OnClick="@(() => ShowDeleteEntityConfirmationAsync(context.Item))">Delete</MudButton>
-                        </CellTemplate>
-                    </TemplateColumn>
                 </Columns>
 
                 <PagerContent>

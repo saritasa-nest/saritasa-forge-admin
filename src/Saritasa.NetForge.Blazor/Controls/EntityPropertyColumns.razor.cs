@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Logging;
 using MudBlazor;
+using Saritasa.NetForge.Blazor.Pages;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Mvvm.Utils;
 using Saritasa.NetForge.UseCases.Constants;
+using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.Blazor.Controls;
@@ -18,7 +21,16 @@ public partial class EntityPropertyColumns : ComponentBase
     private AdminOptions AdminOptions { get; set; } = null!;
 
     [Inject]
+    private ISnackbar Snackbar { get; set; } = default!;
+
+    [Inject]
     private IDialogService DialogService { get; set; } = default!;
+
+    [Inject]
+    private ILogger<EntityPropertyColumns> Logger { get; set; } = default!;
+
+    [Inject]
+    private IEntityService EntityService { get; set; } = null!;
 
     /// <summary>
     /// Properties of the entity.
@@ -26,6 +38,15 @@ public partial class EntityPropertyColumns : ComponentBase
     [Parameter]
     [EditorRequired]
     public IEnumerable<PropertyMetadataDto> Properties { get; set; } = null!;
+
+    /// <summary>
+    /// Data grid that contains these columns. Used for reloading data grid data.
+    /// </summary>
+    [Parameter]
+    public MudDataGrid<object>? DataGrid { get; set; }
+
+    [Parameter]
+    public bool IsNavigationEntity { get; set; }
 
     /// <summary>
     /// Gets property's display name.
@@ -149,5 +170,40 @@ public partial class EntityPropertyColumns : ComponentBase
             { nameof(navigationMetadata), navigationMetadata }
         };
         await DialogService.ShowAsync<NavigationDialog>(title: string.Empty, parameters, options);
+    }
+
+    /// <summary>
+    /// Delete entity.
+    /// </summary>
+    private async Task DeleteEntityAsync(object entity, CancellationToken cancellationToken)
+    {
+        await EntityService.DeleteEntityAsync(entity, entity.GetType(), cancellationToken);
+
+        if (DataGrid is not null)
+        {
+            await DataGrid.ReloadServerData();
+        }
+    }
+
+    private async void ShowDeleteEntityConfirmationAsync(object source)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add(nameof(ConfirmationDialog.ContentText), "Are you sure you want to delete this record?");
+        parameters.Add(nameof(ConfirmationDialog.ButtonText), "Yes");
+        parameters.Add(nameof(ConfirmationDialog.Color), Color.Error);
+
+        var result = await (await DialogService.ShowAsync<ConfirmationDialog>("Delete", parameters)).Result;
+        if (!result.Canceled)
+        {
+            try
+            {
+                await DeleteEntityAsync(source, CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Failed to delete record due to error: {ex.Message}", Severity.Error);
+                Logger.LogError("Failed to delete record due to error: {ex.Message}", ex.Message);
+            }
+        }
     }
 }
