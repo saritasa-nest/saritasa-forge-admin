@@ -9,6 +9,11 @@
     {
         if (property is NavigationMetadataDto navigation)
         {
+            if (IsNavigationEntity)
+            {
+                break;
+            }
+
             if (!navigation.IsCollection)
             {
                 foreach (var targetProperty in navigation.TargetEntityProperties)

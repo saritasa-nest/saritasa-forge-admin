@@ -45,6 +45,14 @@ public partial class EntityPropertyColumns : ComponentBase
     [Parameter]
     public MudDataGrid<object>? DataGrid { get; set; }
 
+    /// <summary>
+    /// Whether the entity is navigation.
+    /// </summary>
+    /// <remarks>
+    /// For example, <c>Shop</c> has <c>Products</c>. And <c>Products</c> have <c>Supplier</c>.
+    /// If the entity is <c>Shop</c> then this method will contain <see langword="false"/>.
+    /// Otherwise, <see langword="true"/>.
+    /// </remarks>
     [Parameter]
     public bool IsNavigationEntity { get; set; }
 
