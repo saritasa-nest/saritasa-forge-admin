@@ -22,7 +22,8 @@ public class ProductAdminConfiguration : IEntityAdminConfiguration<Product>
                 .IncludeProperty(supplier => supplier.City, propertyOptionsBuilder =>
                 {
                     propertyOptionsBuilder.SetDisplayName("Supplier City");
-                });
+                })
+                .SetIsDisplayDetails(true);
         });
 
         entityOptionsBuilder.IncludeNavigation<Shop>(product => product.Shop, navigationOptionsBuilder =>
