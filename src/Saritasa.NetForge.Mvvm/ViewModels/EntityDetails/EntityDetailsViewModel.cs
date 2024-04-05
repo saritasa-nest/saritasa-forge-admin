@@ -306,9 +306,9 @@ public class EntityDetailsViewModel : BaseViewModel
     public async Task DeleteSelectedEntitiesAsync(CancellationToken cancellationToken)
     {
         await entityService.DeleteEntitiesAsync(
-            SelectedEntities, SelectedEntities.First().GetType(), cancellationToken);
+            SelectedEntities!, SelectedEntities!.First().GetType(), cancellationToken);
 
         DataGrid?.ReloadServerData();
-        SelectedEntities.Clear();
+        SelectedEntities!.Clear();
     }
 }
