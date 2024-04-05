@@ -42,10 +42,18 @@
         }
 
         <MudItem xs="12">
+            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="ViewModel.DeleteSelectedEntitiesAsync">
+                Bulk Delete
+            </MudButton>
+        </MudItem>
+
+        <MudItem xs="12">
             <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true"
+                         MultiSelection="true" @bind-SelectedItems="ViewModel.SelectedEntities"
                          @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple"
                          @attributes="NonKeylessEntityDataGridAttributes">
                 <Columns>
+                    <SelectColumn T="object" ShowInFooter="false" />
                     @{
                         foreach (var property in ViewModel.Model.Properties)
                         {
@@ -85,8 +93,8 @@
                                                 </ChildContent>
                                                 <TooltipContent>
                                                     <MudText Typo="@Typo.body2">@property.Description</MudText>
-                                                    </TooltipContent>
-                                                </MudTooltip>
+                                                </TooltipContent>
+                                            </MudTooltip>
                                         }
                                     }
                                 </HeaderTemplate>
@@ -94,8 +102,8 @@
                                 <CellTemplate Context="cell">
                                     @{
                                         var instance = navigationName is null
-                                        ? cell.Item
-                                        : cell.Item.GetType().GetProperty(navigationName)?.GetValue(cell.Item);
+                                            ? cell.Item
+                                            : cell.Item.GetType().GetProperty(navigationName)?.GetValue(cell.Item);
 
                                         var propertyValue = ViewModel.GetPropertyValue(instance, property).ToString();
 
@@ -109,7 +117,7 @@
                                             <div>
                                                 <MudImage Src="@propertyValue"
                                                           Elevation="25"
-                                                          Class="rounded-lg property-image" />
+                                                          Class="rounded-lg property-image"/>
                                             </div>
                                         }
                                         else if (property.DisplayAsHtml)
@@ -127,7 +135,7 @@
                     }
                     <TemplateColumn>
                         <CellTemplate>
-                            <MudButton Size="@Size.Small" Variant="Variant.Text" Color="Color.Secondary" OnClick="@(()=>ShowDeleteEntityConfirmationAsync(context.Item))">Delete</MudButton>
+                            <MudButton Size="@Size.Small" Variant="Variant.Text" Color="Color.Secondary" OnClick="@(() => ShowDeleteEntityConfirmationAsync(context.Item))">Delete</MudButton>
                         </CellTemplate>
                     </TemplateColumn>
                 </Columns>
