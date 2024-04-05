@@ -62,7 +62,7 @@ You can click on the navigation on the entity details to see navigation data in 
 
 ### Reference
 
-For reference navigation you need to configure it via Fluent API. Note that only primary key of the entity is clickable to see navigation data.
+For reference navigation you need to configure it via `Fluent API`. Note that only primary key of the entity is clickable to see navigation data.
 
 ```csharp
 public void Configure(EntityOptionsBuilder<Shop> entityOptionsBuilder)
