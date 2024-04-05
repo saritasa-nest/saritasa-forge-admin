@@ -14,7 +14,6 @@ public class MetadataMappingProfile : Profile
     /// </summary>
     public MetadataMappingProfile()
     {
-        CreateMap<EntityMetadata, GetEntityByIdDto>();
         CreateMap<PropertyMetadata, PropertyMetadataDto>();
         CreateMap<NavigationMetadata, NavigationMetadataDto>()
             .ForMember(dto => dto.IsPrimaryKey, options => options.Ignore())

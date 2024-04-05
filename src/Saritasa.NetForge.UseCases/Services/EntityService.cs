@@ -94,9 +94,25 @@ public class EntityService : IEntityService
             .ThenBy(property => property.Order)
             .ToList();
 
-        var metadataDto = mapper.Map<GetEntityByIdDto>(metadata) with { Properties = orderedProperties };
+        var metadataDto = MapGetEntityById(metadata) with { Properties = orderedProperties };
 
         return Task.FromResult(metadataDto);
+    }
+
+    private static GetEntityByIdDto MapGetEntityById(EntityMetadata entity)
+    {
+        return new GetEntityByIdDto
+        {
+            Id = entity.Id,
+            DisplayName = entity.DisplayName,
+            PluralName = entity.PluralName,
+            StringId = entity.StringId,
+            Description = entity.Description,
+            ClrType = entity.ClrType,
+            SearchFunction = entity.SearchFunction,
+            CustomQueryFunction = entity.CustomQueryFunction,
+            IsKeyless = entity.IsKeyless
+        };
     }
 
     /// <inheritdoc />
