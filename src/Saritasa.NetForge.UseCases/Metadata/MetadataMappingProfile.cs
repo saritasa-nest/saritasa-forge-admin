@@ -2,7 +2,6 @@
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.UseCases.Metadata.DTOs;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
-using EntityMetadataDto = Saritasa.NetForge.UseCases.Metadata.GetEntityById.EntityMetadataDto;
 
 namespace Saritasa.NetForge.UseCases.Metadata;
 
@@ -16,8 +15,8 @@ public class MetadataMappingProfile : Profile
     /// </summary>
     public MetadataMappingProfile()
     {
-        CreateMap<EntityMetadata, DTOs.EntityMetadataDto>();
         CreateMap<EntityMetadata, EntityMetadataDto>();
+        CreateMap<EntityMetadata, GetEntityDto>();
         CreateMap<PropertyMetadata, PropertyMetadataDto>();
         CreateMap<NavigationMetadata, NavigationMetadataDto>()
             .ForMember(dto => dto.IsPrimaryKey, options => options.Ignore())
