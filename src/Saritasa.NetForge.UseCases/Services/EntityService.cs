@@ -293,4 +293,11 @@ public class EntityService : IEntityService
     {
         return dataService.DeleteAsync(entity, entityType, cancellationToken);
     }
+
+    /// <inheritdoc />
+    public Task DeleteEntitiesAsync(
+        IEnumerable<object> entities, Type entityType, CancellationToken cancellationToken)
+    {
+        return dataService.BulkDeleteAsync(entities, entityType, cancellationToken);
+    }
 }

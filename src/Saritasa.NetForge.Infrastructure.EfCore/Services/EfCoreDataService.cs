@@ -379,6 +379,21 @@ public class EfCoreDataService : IOrmDataService
     }
 
     /// <inheritdoc />
+    public async Task BulkDeleteAsync(
+        IEnumerable<object> entities, Type entityType, CancellationToken cancellationToken)
+    {
+        var dbContext = GetDbContextThatContainsEntity(entityType);
+
+        foreach (var entity in entities)
+        {
+            dbContext.Remove(entity);
+        }
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        dbContext.ChangeTracker.Clear();
+    }
+
+    /// <inheritdoc />
     public async Task UpdateAsync(object entity, object originalEntity, CancellationToken cancellationToken)
     {
         var entityType = entity.GetType();

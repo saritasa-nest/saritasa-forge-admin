@@ -73,7 +73,7 @@ public class EntityDetailsViewModel : BaseViewModel
     /// <summary>
     /// Selected entities.
     /// </summary>
-    public HashSet<object> SelectedEntities { get; set; } = null!;
+    public HashSet<object>? SelectedEntities { get; set; }
 
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
@@ -305,10 +305,8 @@ public class EntityDetailsViewModel : BaseViewModel
     /// </summary>
     public async Task DeleteSelectedEntitiesAsync(CancellationToken cancellationToken)
     {
-        foreach (var entity in SelectedEntities)
-        {
-            await entityService.DeleteEntityAsync(entity, entity.GetType(), cancellationToken);
-        }
+        await entityService.DeleteEntitiesAsync(
+            SelectedEntities, SelectedEntities.First().GetType(), cancellationToken);
 
         DataGrid?.ReloadServerData();
         SelectedEntities.Clear();
