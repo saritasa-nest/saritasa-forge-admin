@@ -60,10 +60,6 @@ public override string ToString()
 
 You can click on the navigation on the entity details to see navigation data in dialog.
 
-### Collection
-
-Collection navigations have this behavior by default.
-
 ### Reference
 
 For reference navigation you need to configure it via Fluent API. Note that only primary key of the entity is clickable to see navigation data.
@@ -83,3 +79,7 @@ public void Configure(EntityOptionsBuilder<Shop> entityOptionsBuilder)
         })
 }
 ```
+
+### Collection
+
+Collection navigations have this behavior by default.
