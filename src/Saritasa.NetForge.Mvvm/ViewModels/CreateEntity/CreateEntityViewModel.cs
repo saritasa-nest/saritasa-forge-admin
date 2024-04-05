@@ -1,10 +1,10 @@
-﻿using AutoMapper;
-using Saritasa.NetForge.Domain.Exceptions;
+﻿using Saritasa.NetForge.Domain.Exceptions;
 using CommunityToolkit.Mvvm.Messaging;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 using Saritasa.NetForge.UseCases.Interfaces;
+using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
 
@@ -19,7 +19,6 @@ public class CreateEntityViewModel : BaseViewModel
     public CreateEntityModel Model { get; private set; }
 
     private readonly IEntityService entityService;
-    private readonly IMapper mapper;
     private readonly INavigationService navigationService;
     private readonly IFileService fileService;
 
@@ -29,14 +28,12 @@ public class CreateEntityViewModel : BaseViewModel
     public CreateEntityViewModel(
         string stringId,
         IEntityService entityService,
-        IMapper mapper,
         INavigationService navigationService,
         IFileService fileService)
     {
         Model = new CreateEntityModel { StringId = stringId };
 
         this.entityService = entityService;
-        this.mapper = mapper;
         this.navigationService = navigationService;
         this.fileService = fileService;
     }
@@ -52,7 +49,7 @@ public class CreateEntityViewModel : BaseViewModel
         try
         {
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
-            Model = mapper.Map<CreateEntityModel>(entity);
+            Model = MapModel(entity);
             Model.EntityInstance = Activator.CreateInstance(Model.ClrType!)!;
             Model = Model with
             {
@@ -71,6 +68,17 @@ public class CreateEntityViewModel : BaseViewModel
         {
             IsEntityExists = false;
         }
+    }
+
+    private CreateEntityModel MapModel(GetEntityByIdDto entity)
+    {
+        return Model with
+        {
+            DisplayName = entity.DisplayName,
+            PluralName = entity.PluralName,
+            ClrType = entity.ClrType,
+            Properties = entity.Properties,
+        };
     }
 
     /// <summary>
