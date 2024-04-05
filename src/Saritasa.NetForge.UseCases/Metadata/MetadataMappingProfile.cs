@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Saritasa.NetForge.Domain.Entities.Metadata;
-using Saritasa.NetForge.UseCases.Metadata.DTOs;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.UseCases.Metadata;
@@ -15,7 +14,6 @@ public class MetadataMappingProfile : Profile
     /// </summary>
     public MetadataMappingProfile()
     {
-        CreateMap<EntityMetadata, EntityMetadataDto>();
         CreateMap<EntityMetadata, GetEntityByIdDto>();
         CreateMap<PropertyMetadata, PropertyMetadataDto>();
         CreateMap<NavigationMetadata, NavigationMetadataDto>()

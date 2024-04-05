@@ -45,7 +45,21 @@ public class EntityService : IEntityService
     {
         var metadata = adminMetadataService.GetMetadata()
             .Where(entityMetadata => !entityMetadata.IsHidden);
-        return Task.FromResult(mapper.Map<IEnumerable<EntityMetadataDto>>(metadata));
+        return Task.FromResult(MapEntityMetadata(metadata));
+    }
+
+    private static IEnumerable<EntityMetadataDto> MapEntityMetadata(IEnumerable<EntityMetadata> metadata)
+    {
+        return metadata.Select(entityMetadata => new EntityMetadataDto
+        {
+            DisplayName = entityMetadata.DisplayName,
+            PluralName = entityMetadata.PluralName,
+            Description = entityMetadata.Description,
+            IsEditable = entityMetadata.IsEditable,
+            Id = entityMetadata.Id,
+            Group = entityMetadata.Group,
+            StringId = entityMetadata.StringId
+        });
     }
 
     /// <inheritdoc />
