@@ -55,3 +55,31 @@ public override string ToString()
     return $"{Id}; {Name}";
 }
 ```
+
+## Display navigation data on the entity details page
+
+You can click on the navigation on the entity details to see navigation data in dialog.
+
+### Collection
+
+Collection navigations have this behavior by default.
+
+### Reference
+
+For reference navigation you need to configure it via Fluent API. Note that only primary key of the entity is clickable to see navigation data.
+
+```csharp
+public void Configure(EntityOptionsBuilder<Shop> entityOptionsBuilder)
+{
+    entityOptionsBuilder
+        .IncludeNavigation<Address>(shop => shop.Address, navigationOptionsBuilder =>
+        {
+            navigationOptionsBuilder
+                .IncludeProperty(address => address.Id, builder =>
+                {
+                    builder.SetDisplayName("Address Id");
+                })
+                .SetIsDisplayDetails(true);
+        })
+}
+```
