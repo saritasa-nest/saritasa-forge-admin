@@ -9,11 +9,11 @@ using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Interfaces;
-using Saritasa.NetForge.UseCases.Metadata.DTOs;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.UseCases.Metadata.Services;
 using Saritasa.Tools.Common.Pagination;
 using Saritasa.Tools.Common.Utils;
+using EntityMetadataDto = Saritasa.NetForge.UseCases.Metadata.GetEntityById.EntityMetadataDto;
 
 namespace Saritasa.NetForge.UseCases.Services;
 
@@ -41,15 +41,15 @@ public class EntityService : IEntityService
     }
 
     /// <inheritdoc />
-    public Task<IEnumerable<EntityMetadataDto>> SearchEntitiesAsync(CancellationToken cancellationToken)
+    public Task<IEnumerable<Metadata.DTOs.EntityMetadataDto>> SearchEntitiesAsync(CancellationToken cancellationToken)
     {
         var metadata = adminMetadataService.GetMetadata()
             .Where(entityMetadata => !entityMetadata.IsHidden);
-        return Task.FromResult(mapper.Map<IEnumerable<EntityMetadataDto>>(metadata));
+        return Task.FromResult(mapper.Map<IEnumerable<Metadata.DTOs.EntityMetadataDto>>(metadata));
     }
 
     /// <inheritdoc />
-    public Task<GetEntityByIdDto> GetEntityByIdAsync(string stringId, CancellationToken cancellationToken)
+    public Task<EntityMetadataDto> GetEntityByIdAsync(string stringId, CancellationToken cancellationToken)
     {
         var metadata = adminMetadataService
             .GetMetadata()
@@ -60,33 +60,13 @@ public class EntityService : IEntityService
             throw new NotFoundException("Metadata for entity was not found.");
         }
 
-        var displayableProperties = metadata.Properties
-            .Where(property => property is { IsForeignKey: false });
-
-        var propertyDtos = mapper
-            .Map<IEnumerable<PropertyMetadata>, IEnumerable<PropertyMetadataDto>>(displayableProperties);
-
-        var displayableNavigations = metadata.Navigations
-            .Where(navigation => navigation is { IsIncluded: true });
-
-        var navigationDtos = mapper
-            .Map<IEnumerable<NavigationMetadata>, IEnumerable<NavigationMetadataDto>>(displayableNavigations);
-
-        propertyDtos = propertyDtos.Union(navigationDtos);
-
-        var orderedProperties = propertyDtos
-            .OrderByDescending(property => property is { IsPrimaryKey: true, Order: null })
-            .ThenByDescending(property => property.Order.HasValue)
-            .ThenBy(property => property.Order)
-            .ToList();
-
-        var metadataDto = mapper.Map<GetEntityByIdDto>(metadata) with { Properties = orderedProperties };
+        var metadataDto = GetEntityMetadataDto(metadata);
 
         return Task.FromResult(metadataDto);
     }
 
     /// <inheritdoc />
-    public Task<GetEntityByIdDto> GetEntityByTypeAsync(Type entityType, CancellationToken cancellationToken)
+    public Task<EntityMetadataDto> GetEntityByTypeAsync(Type entityType, CancellationToken cancellationToken)
     {
         var metadata = adminMetadataService
             .GetMetadata()
@@ -97,6 +77,13 @@ public class EntityService : IEntityService
             throw new NotFoundException("Metadata for entity was not found.");
         }
 
+        var metadataDto = GetEntityMetadataDto(metadata);
+
+        return Task.FromResult(metadataDto);
+    }
+
+    private EntityMetadataDto GetEntityMetadataDto(EntityMetadata metadata)
+    {
         var displayableProperties = metadata.Properties
             .Where(property => property is { IsForeignKey: false });
 
@@ -117,9 +104,7 @@ public class EntityService : IEntityService
             .ThenBy(property => property.Order)
             .ToList();
 
-        var metadataDto = mapper.Map<GetEntityByIdDto>(metadata) with { Properties = orderedProperties };
-
-        return Task.FromResult(metadataDto);
+        return mapper.Map<EntityMetadataDto>(metadata) with { Properties = orderedProperties };
     }
 
     /// <inheritdoc />

@@ -16,12 +16,12 @@ internal class EntityMappingProfile : Profile
     /// </summary>
     public EntityMappingProfile()
     {
-        CreateMap<GetEntityByIdDto, EntityDetailsModel>()
+        CreateMap<EntityMetadataDto, EntityDetailsModel>()
             .ForMember(model => model.StringId, options => options.Ignore())
             .ForMember(model => model.Navigations, options => options.Ignore());
-        CreateMap<GetEntityByIdDto, CreateEntityModel>()
+        CreateMap<EntityMetadataDto, CreateEntityModel>()
             .ForMember(model => model.EntityInstance, options => options.Ignore());
-        CreateMap<GetEntityByIdDto, EditEntityModel>()
+        CreateMap<EntityMetadataDto, EditEntityModel>()
             .ForMember(model => model.EntityInstance, options => options.Ignore())
             .ForMember(model => model.OriginalEntityInstance, options => options.Ignore());
     }

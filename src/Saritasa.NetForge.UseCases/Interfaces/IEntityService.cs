@@ -3,6 +3,7 @@ using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Metadata.DTOs;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using Saritasa.Tools.Common.Pagination;
+using EntityMetadataDto = Saritasa.NetForge.UseCases.Metadata.GetEntityById.EntityMetadataDto;
 
 namespace Saritasa.NetForge.UseCases.Interfaces;
 
@@ -15,14 +16,14 @@ public interface IEntityService
     /// Search for entities metadata.
     /// </summary>
     /// <param name="cancellationToken">Token for cancelling async operation.</param>
-    Task<IEnumerable<EntityMetadataDto>> SearchEntitiesAsync(CancellationToken cancellationToken);
+    Task<IEnumerable<Metadata.DTOs.EntityMetadataDto>> SearchEntitiesAsync(CancellationToken cancellationToken);
 
     /// <summary>
     /// Get <see cref="EntityMetadata"/> by <see cref="EntityMetadata.Id"/>.
     /// </summary>
     /// <param name="stringId">Entity string identifier.</param>
     /// <param name="cancellationToken">Token for cancelling async operation.</param>
-    Task<GetEntityByIdDto> GetEntityByIdAsync(string stringId, CancellationToken cancellationToken);
+    Task<EntityMetadataDto> GetEntityByIdAsync(string stringId, CancellationToken cancellationToken);
 
     /// <summary>
     /// Get <see cref="EntityMetadata"/> by <see cref="EntityMetadata.ClrType"/>.
@@ -30,7 +31,7 @@ public interface IEntityService
     /// <param name="entityType">Entity type.</param>
     /// <param name="cancellationToken">Token for cancelling async operation.</param>
     /// <returns>Entity DTO.</returns>
-    Task<GetEntityByIdDto> GetEntityByTypeAsync(Type entityType, CancellationToken cancellationToken);
+    Task<EntityMetadataDto> GetEntityByTypeAsync(Type entityType, CancellationToken cancellationToken);
 
     /// <summary>
     /// Get the data for the specific entity type.

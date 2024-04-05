@@ -5,7 +5,7 @@ namespace Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 /// <summary>
 /// DTO for <see cref="EntityMetadata"/>.
 /// </summary>
-public record GetEntityByIdDto
+public record EntityMetadataDto
 {
     /// <inheritdoc cref="EntityMetadata.Id"/>
     public Guid Id { get; set; }
