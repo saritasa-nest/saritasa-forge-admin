@@ -125,11 +125,15 @@
                             </TemplateColumn>
                         }
                     }
-                    <TemplateColumn>
-                        <CellTemplate>
-                            <MudButton Size="@Size.Small" Variant="Variant.Text" Color="Color.Secondary" OnClick="@(()=>ShowDeleteEntityConfirmationAsync(context.Item))">Delete</MudButton>
-                        </CellTemplate>
-                    </TemplateColumn>
+
+                    @if (!ViewModel.Model.IsKeyless)
+                    {
+                        <TemplateColumn>
+                            <CellTemplate>
+                                <MudButton Size="@Size.Small" Variant="Variant.Text" Color="Color.Secondary" OnClick="@(()=>ShowDeleteEntityConfirmationAsync(context.Item))">Delete</MudButton>
+                            </CellTemplate>
+                        </TemplateColumn>
+                    }
                 </Columns>
 
                 <PagerContent>
