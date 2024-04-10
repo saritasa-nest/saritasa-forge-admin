@@ -19,7 +19,7 @@ public class UploadBase64FileStrategy : IUploadFileStrategy
         const int maxImageSizeInMb = 10;
 
         var maxImageSize = 1024 * 1024 * maxImageSizeInMb;
-        var stream = file.OpenReadStream(maxImageSize);
+        var stream = file.OpenReadStream(maxImageSize, cancellationToken);
         var selectedFileBytes = await GetFileBytesAsync(stream, cancellationToken);
 
         return $"data:{file.ContentType};base64,{Convert.ToBase64String(selectedFileBytes)}";

@@ -78,12 +78,7 @@ public class CreateEntityViewModel : BaseViewModel
     /// </summary>
     public async Task CreateEntityAsync()
     {
-        var message = WeakReferenceMessenger.Default.Send(new UploadImageMessage());
-
-        foreach (var image in message.ChangedFiles)
-        {
-            await fileService.CreateFileAsync(image.PathToFile!, image.FileContent!, CancellationToken);
-        }
+        await WeakReferenceMessenger.Default.Send(new UploadImageMessage());
 
         await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
         navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);

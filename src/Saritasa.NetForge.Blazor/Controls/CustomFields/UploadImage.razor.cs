@@ -4,14 +4,13 @@ using Microsoft.AspNetCore.Components.Forms;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Mvvm.ViewModels;
-using Saritasa.NetForge.UseCases.Common;
 
 namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
 
 /// <summary>
 /// Represents upload image control.
 /// </summary>
-public partial class UploadImage : CustomField, IRecipient<UploadImageMessage>
+public partial class UploadImage : CustomField
 {
     private bool disposedValue;
     private readonly CancellationTokenSource cancellationTokenSource = new();
@@ -89,19 +88,30 @@ public partial class UploadImage : CustomField, IRecipient<UploadImageMessage>
 
             PropertyValue = selectedBase64Image;
 
-            if (Property.IsImagePath)
+            WeakReferenceMessenger.Default.Unregister<UploadImageMessage>(this);
+            WeakReferenceMessenger.Default.Register<UploadImageMessage>(this, async (recipient, message) =>
             {
-                PropertyValue = Path.Combine(AdminOptions.MediaFolder, Property.ImageFolder, selectedFile!.Name);
+                async Task ReceiveAsync()
+                {
+                    if (selectedFile is not null)
+                    {
+                        PropertyValue = await Property.UploadFileStrategy!.UploadFileAsync(selectedFile!, CancellationToken);
+                    }
 
-                WeakReferenceMessenger.Default.Unregister<UploadImageMessage>(this);
-                WeakReferenceMessenger.Default.Register(this);
-            }
+                    WeakReferenceMessenger.Default.Reset();
+                }
+
+                message.Reply(ReceiveAsync());
+            });
         }
         catch (IOException exception)
         {
             error = $"Uploaded file exceeds the maximum file size of {AdminOptions.MaxImageSizeInMb} MB.";
 
-            Logger.LogInformation(exception, "Uploaded file exceeds the maximum file size");
+            Logger.LogInformation(
+                exception,
+                "Uploaded file exceeds the maximum file size of {MaxImageSize} MB.",
+                AdminOptions.MaxImageSizeInMb);
         }
     }
 
@@ -120,24 +130,13 @@ public partial class UploadImage : CustomField, IRecipient<UploadImageMessage>
     /// <remarks>
     /// For example create entity case: upload file, submit, create entity in database and create file.
     /// </remarks>
-    public void Receive(UploadImageMessage message)
-    {
-        if (selectedFile is not null)
-        {
-            var filePathToCreate = Path.Combine(
-                AdminOptions.StaticFilesFolder,
-                AdminOptions.MediaFolder,
-                Property.ImageFolder,
-                selectedFile!.Name);
+    //public async void Receive(UploadImageMessage message)
+    //{
+    //    if (selectedFile is not null)
+    //    {
+    //        PropertyValue = await Property.UploadFileStrategy!.UploadFileAsync(selectedFile!, CancellationToken);
+    //    }
 
-            message.ChangedFiles.Add(new ImageDto
-            {
-                PropertyName = Property.Name,
-                PathToFile = filePathToCreate,
-                FileContent = selectedFileBytes!
-            });
-        }
-
-        WeakReferenceMessenger.Default.Reset();
-    }
+    //    WeakReferenceMessenger.Default.Reset();
+    //}
 }
