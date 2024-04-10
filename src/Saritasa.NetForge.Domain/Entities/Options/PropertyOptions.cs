@@ -67,4 +67,7 @@ public class PropertyOptions
 
     /// <inheritdoc cref="PropertyMetadataBase.TruncationMaxCharacters"/>
     public int TruncationMaxCharacters { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.UploadFileStrategy"/>
+    public IUploadFileStrategy? UploadFileStrategy { get; set; }
 }

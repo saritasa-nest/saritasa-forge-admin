@@ -1,4 +1,5 @@
-﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+﻿using Saritasa.NetForge.Domain;
+using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.UseCases.Metadata.GetEntityById;
@@ -85,4 +86,7 @@ public record PropertyMetadataDto
 
     /// <inheritdoc cref="PropertyMetadataBase.IsNullable"/>
     public bool IsNullable { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.UploadFileStrategy"/>
+    public IUploadFileStrategy? UploadFileStrategy { get; set; }
 }

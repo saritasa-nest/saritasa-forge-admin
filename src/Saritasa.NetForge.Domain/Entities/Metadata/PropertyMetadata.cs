@@ -64,4 +64,9 @@ public class PropertyMetadata : PropertyMetadataBase
     /// <c>data:image/{MIME};base64,{bytes of image}</c>.
     /// </remarks>
     public bool IsBase64Image { get; set; }
+
+    /// <summary>
+    /// Upload file strategy.
+    /// </summary>
+    public IUploadFileStrategy? UploadFileStrategy { get; set; }
 }

@@ -1,4 +1,5 @@
-﻿using Saritasa.NetForge.Demo.Models;
+﻿using Saritasa.NetForge.Demo.Infrastructure.UploadFiles;
+using Saritasa.NetForge.Demo.Models;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.DomainServices;
 using Saritasa.NetForge.DomainServices.Interfaces;
@@ -74,6 +75,11 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                 .SetIsImagePath(true)
                 .SetImageFolder("Shop images")
                 .SetOrder(3);
+        });
+
+        entityOptionsBuilder.ConfigureProperty(shop => shop.BuildingPhoto, builder =>
+        {
+            builder.SetUploadFileStrategy(new UploadBase64FileStrategy());
         });
 
         entityOptionsBuilder.ConfigureProperty(shop => shop.Name, builder =>

@@ -1,4 +1,5 @@
-﻿using Saritasa.NetForge.Domain.Entities.Options;
+﻿using Saritasa.NetForge.Domain;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.DomainServices;
@@ -195,6 +196,15 @@ public class PropertyOptionsBuilder
     public PropertyOptionsBuilder SetTruncationMaxCharacters(int truncationMaxCharacters)
     {
         options.TruncationMaxCharacters = truncationMaxCharacters;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets upload file strategy.
+    /// </summary>
+    public PropertyOptionsBuilder SetUploadFileStrategy(IUploadFileStrategy uploadFileStrategy)
+    {
+        options.UploadFileStrategy = uploadFileStrategy;
         return this;
     }
 }
