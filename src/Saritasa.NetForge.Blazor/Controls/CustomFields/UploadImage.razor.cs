@@ -89,19 +89,9 @@ public partial class UploadImage : CustomField
             PropertyValue = selectedBase64Image;
 
             WeakReferenceMessenger.Default.Unregister<UploadImageMessage>(this);
-            WeakReferenceMessenger.Default.Register<UploadImageMessage>(this, async (recipient, message) =>
+            WeakReferenceMessenger.Default.Register<UploadImage, UploadImageMessage>(this, (recipient, message) =>
             {
-                async Task ReceiveAsync()
-                {
-                    if (selectedFile is not null)
-                    {
-                        PropertyValue = await Property.UploadFileStrategy!.UploadFileAsync(selectedFile!, CancellationToken);
-                    }
-
-                    WeakReferenceMessenger.Default.Reset();
-                }
-
-                message.Reply(ReceiveAsync());
+                message.Reply(recipient.ReceiveAsync());
             });
         }
         catch (IOException exception)
@@ -130,13 +120,13 @@ public partial class UploadImage : CustomField
     /// <remarks>
     /// For example create entity case: upload file, submit, create entity in database and create file.
     /// </remarks>
-    //public async void Receive(UploadImageMessage message)
-    //{
-    //    if (selectedFile is not null)
-    //    {
-    //        PropertyValue = await Property.UploadFileStrategy!.UploadFileAsync(selectedFile!, CancellationToken);
-    //    }
+    private async Task ReceiveAsync()
+    {
+        if (selectedFile is not null)
+        {
+            PropertyValue = await Property.UploadFileStrategy!.UploadFileAsync(selectedFile, CancellationToken);
+        }
 
-    //    WeakReferenceMessenger.Default.Reset();
-    //}
+        WeakReferenceMessenger.Default.Reset();
+    }
 }
