@@ -12,4 +12,12 @@ public static class ReflectionExtensions
     {
         return obj?.GetType().GetProperty(propertyName)?.GetValue(obj);
     }
+
+    /// <summary>
+    /// Sets value of <paramref name="obj"/> property with given name.
+    /// </summary>
+    public static void SetPropertyValue(this object? obj, string propertyName, object value)
+    {
+        obj?.GetType().GetProperty(propertyName)?.SetValue(obj, value);
+    }
 }

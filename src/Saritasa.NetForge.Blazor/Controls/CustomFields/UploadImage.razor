@@ -24,14 +24,14 @@
             </MudFileUpload>
         </MudItem>
 
-        @if (selectedBase64Image is not null)
+        @if (imagePreviewSource is not null)
         {
             <MudItem xs="8">
                 <MudBadge OnClick="@RemoveImage"
                           Icon="@Icons.Material.Filled.Close"
                           Overlap="true">
                     <div>
-                        <MudImage Src="@selectedBase64Image"
+                        <MudImage Src="@imagePreviewSource"
                                   Elevation="25"
                                   Class="rounded-lg property-image" />
                     </div>
