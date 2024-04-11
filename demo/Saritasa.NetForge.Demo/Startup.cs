@@ -50,7 +50,7 @@ public class Startup
         services.Configure<IdentityOptions>(new IdentityOptionsSetup().Setup);
         
         // Add NetForge admin panel.
-        Infrastructure.DependencyInjection.NetForgeModule.Register(services);
+        Infrastructure.DependencyInjection.NetForgeModule.Register(services, configuration);
     }
 
     /// <summary>

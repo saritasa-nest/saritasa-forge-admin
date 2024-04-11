@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="7.1.0" />
+        <PackageReference Include="AWSSDK.S3" Version="3.7.307.14" />
         <PackageReference Include="Bogus" Version="35.0.1" />
         <PackageReference Include="EFCore.NamingConventions" Version="8.0.0-rc.2" />
         <PackageReference Include="Extensions.Hosting.AsyncInitialization" Version="3.0.0" />
@@ -21,8 +22,10 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="MimeTypeMapOfficial" Version="1.0.17" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
         <PackageReference Include="Saritasa.Tools.Common" Version="5.0.0" />
+        <PackageReference Include="Saritasa.Tools.Domain" Version="0.8.2" />
     </ItemGroup>
     
     <ItemGroup>
