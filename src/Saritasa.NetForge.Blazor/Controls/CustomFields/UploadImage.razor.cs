@@ -89,9 +89,9 @@ public partial class UploadImage : CustomField
             PropertyValue = selectedBase64Image;
 
             WeakReferenceMessenger.Default.Unregister<UploadImageMessage>(this);
-            WeakReferenceMessenger.Default.Register<UploadImage, UploadImageMessage>(this, (recipient, message) =>
+            WeakReferenceMessenger.Default.Register<UploadImageMessage>(this, (_, message) =>
             {
-                message.Reply(recipient.ReceiveAsync());
+                message.Reply(ReceiveAsync(message));
             });
         }
         catch (IOException exception)
@@ -120,7 +120,7 @@ public partial class UploadImage : CustomField
     /// <remarks>
     /// For example create entity case: upload file, submit, create entity in database and create file.
     /// </remarks>
-    private async Task ReceiveAsync()
+    private async Task<UploadImageMessage> ReceiveAsync(UploadImageMessage message)
     {
         if (selectedFile is not null)
         {
@@ -128,5 +128,6 @@ public partial class UploadImage : CustomField
         }
 
         WeakReferenceMessenger.Default.Reset();
+        return message;
     }
 }

@@ -5,4 +5,4 @@ namespace Saritasa.NetForge.Mvvm.ViewModels;
 /// <summary>
 /// Message about uploading image.
 /// </summary>
-public class UploadImageMessage : AsyncRequestMessage<Task>;
+public class UploadImageMessage : AsyncRequestMessage<UploadImageMessage>;

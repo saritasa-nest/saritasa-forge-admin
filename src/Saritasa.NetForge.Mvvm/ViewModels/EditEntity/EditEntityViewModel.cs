@@ -98,12 +98,7 @@ public class EditEntityViewModel : BaseViewModel
     /// </summary>
     public async Task UpdateEntityAsync()
     {
-        await WeakReferenceMessenger.Default.Send(new UploadImageMessage());
-
-        //foreach (var image in message.ChangedFiles)
-        //{
-        //    await fileService.CreateFileAsync(image.PathToFile!, image.FileContent!, CancellationToken);
-        //}
+        WeakReferenceMessenger.Default.Send(new UploadImageMessage());
 
         await dataService.UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken);
         IsUpdated = true;
