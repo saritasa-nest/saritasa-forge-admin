@@ -14,7 +14,7 @@ public class UploadBase64FileStrategy : IUploadFileStrategy
     /// <param name="file">File to upload.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>File as base 64 string.</returns>
-    public async Task<string> UploadFileAsync(IBrowserFile file, CancellationToken cancellationToken)
+    public async Task<object> UploadFileAsync(IBrowserFile file, CancellationToken cancellationToken)
     {
         const int maxImageSizeInMb = 10;
 

@@ -12,6 +12,6 @@ public interface IUploadFileStrategy
     /// </summary>
     /// <param name="file">File to upload.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>String that represents file.</returns>
-    Task<string> UploadFileAsync(IBrowserFile file, CancellationToken cancellationToken);
+    /// <returns>File related object.</returns>
+    Task<object> UploadFileAsync(IBrowserFile file, CancellationToken cancellationToken);
 }

@@ -25,7 +25,7 @@ public class UploadFileToFileSystemStrategy : IUploadFileStrategy
     /// <param name="file">File to upload.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>Relative path to uploaded file.</returns>
-    public async Task<string> UploadFileAsync(IBrowserFile file, CancellationToken cancellationToken)
+    public async Task<object> UploadFileAsync(IBrowserFile file, CancellationToken cancellationToken)
     {
         var path = Path.Combine(adminOptions.MediaFolder, file.Name);
         var pathToCreate = Path.Combine(adminOptions.StaticFilesFolder, path);
