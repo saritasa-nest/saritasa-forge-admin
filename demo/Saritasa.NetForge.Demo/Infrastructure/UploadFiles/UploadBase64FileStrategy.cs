@@ -16,10 +16,7 @@ public class UploadBase64FileStrategy : IUploadFileStrategy
     /// <returns>File as base 64 string.</returns>
     public async Task<object> UploadFileAsync(IBrowserFile file, CancellationToken cancellationToken)
     {
-        const int maxImageSizeInMb = 10;
-
-        var maxImageSize = 1024 * 1024 * maxImageSizeInMb;
-        var stream = file.OpenReadStream(maxImageSize, cancellationToken);
+        var stream = file.OpenReadStream(cancellationToken: cancellationToken);
         var selectedFileBytes = await GetFileBytesAsync(stream, cancellationToken);
 
         return $"data:{file.ContentType};base64,{Convert.ToBase64String(selectedFileBytes)}";
