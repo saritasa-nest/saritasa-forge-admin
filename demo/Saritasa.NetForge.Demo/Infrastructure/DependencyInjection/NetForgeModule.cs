@@ -20,11 +20,6 @@ internal static class NetForgeModule
     /// </summary>
     public static void Register(IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<S3Settings>(configuration.GetSection("S3Settings"));
-
-        services.AddScoped<IBlobStorageService, S3StorageService>();
-        services.AddScoped<ICloudBlobStorageService, S3StorageService>();
-
         services.AddNetForge(optionsBuilder =>
         {
             optionsBuilder.ConfigureAuth(serviceProvider =>
