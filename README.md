@@ -617,3 +617,77 @@ entityOptionsBuilder.ConfigureProperty(shop => shop.Name, builder =>
     builder.SetTruncationMaxCharacters(25);
 });
 ```
+
+# Multiline Text Field property
+You can mark a property as multiline text field. It allows input of text in several text rows. Disabled by default.
+
+## Configuration
+
+### Using Fluent API
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
+{
+    builder.SetIsMultiline();
+});
+```
+
+### Using Attribute
+
+```csharp
+[MultilineText]
+public required string Street { get; set; }
+```
+
+Also, there are some auxiliary properties that are used in the multiple text field.
+
+## Lines property is the number of lines of the multiline text field. This is equal to 5 by default.
+### Using Fluent API
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
+{
+    builder.SetIsMultiline(lines: 15); // sets the lines value as 15
+});
+```
+
+### Using Attribute
+
+```csharp
+[MultilineText(Lines = 15)]
+public required string Street { get; set; }
+```
+
+## MaxLines property is the max. number of lines of the multiline text field. This is equal to 5 by default.
+### Using Fluent API
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
+{
+	builder.SetIsMultiline(maxLines: 15); // sets the max lines value as 15
+});
+```
+
+### Using Attribute
+
+```csharp
+[MultilineText(MaxLines = 15)]
+public required string Street { get; set; }
+```
+
+## IsAutoGrow property identifies whether the height of the text field automatically changes with the number of lines of text.
+### Using Fluent API
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
+{
+    builder.SetIsMultiline(autoGrow: true);
+});
+```
+
+### Using Attribute
+
+```csharp
+[MultilineText(IsAutoGrow = true)]
+public required string Street { get; set; }
+```

@@ -90,6 +90,8 @@ public static class EntityMetadataAttributesExtensions
             property.DisplayName = displayNameAttribute.DisplayName;
         }
 
+        property.TryApplyMultilineTextAttributeValues();
+
         var netForgePropertyAttribute = property.PropertyInformation?
             .GetCustomAttribute<NetForgePropertyAttribute>();
 
@@ -164,5 +166,35 @@ public static class EntityMetadataAttributesExtensions
         {
             property.TruncationMaxCharacters = netForgePropertyAttribute.TruncationMaxCharacters;
         }
+    }
+
+    private static bool TryApplyMultilineTextAttributeValues(this PropertyMetadataBase property)
+    {
+        var multilineTextAttribute = property.PropertyInformation?
+            .GetCustomAttribute<MultilineTextAttribute>();
+
+        if (multilineTextAttribute is null)
+        {
+            return false;
+        }
+
+        property.IsMultiline = true;
+
+        if (multilineTextAttribute.Lines >= 0)
+        {
+            property.Lines = multilineTextAttribute.Lines;
+        }
+
+        if (multilineTextAttribute.MaxLines >= 0)
+        {
+            property.MaxLines = multilineTextAttribute.MaxLines;
+        }
+
+        if (multilineTextAttribute.IsAutoGrow)
+        {
+            property.IsAutoGrow = multilineTextAttribute.IsAutoGrow;
+        }
+
+        return true;
     }
 }

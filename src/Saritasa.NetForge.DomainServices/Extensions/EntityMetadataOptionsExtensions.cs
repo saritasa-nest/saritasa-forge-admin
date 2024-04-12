@@ -129,6 +129,26 @@ public static class EntityMetadataOptionsExtensions
             propertyMetadata.IsImage = propertyOptions.IsImage;
             propertyMetadata.UploadFileStrategy = propertyOptions.UploadFileStrategy;
         }
+
+        if (propertyOptions.IsMultiline)
+        {
+            property.IsMultiline = propertyOptions.IsMultiline;
+        }
+
+        if (propertyOptions.Lines >= 0)
+        {
+            property.Lines = propertyOptions.Lines;
+        }
+
+        if (propertyOptions.MaxLines >= 0)
+        {
+            property.MaxLines = propertyOptions.MaxLines;
+        }
+
+        if (propertyOptions.IsAutoGrow)
+        {
+            property.IsAutoGrow = propertyOptions.IsAutoGrow;
+        }
     }
 
     private static void ApplyNavigationOptions(
