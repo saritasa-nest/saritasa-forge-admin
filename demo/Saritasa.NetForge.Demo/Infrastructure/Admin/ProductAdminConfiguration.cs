@@ -1,6 +1,8 @@
-﻿using Saritasa.NetForge.Demo.Models;
+﻿using Saritasa.NetForge.Demo.Infrastructure.UploadFiles;
+using Saritasa.NetForge.Demo.Models;
 using Saritasa.NetForge.DomainServices.Interfaces;
 using Saritasa.NetForge.DomainServices;
+using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.Admin;
 
@@ -9,6 +11,16 @@ namespace Saritasa.NetForge.Demo.Infrastructure.Admin;
 /// </summary>
 public class ProductAdminConfiguration : IEntityAdminConfiguration<Product>
 {
+    private readonly ServiceProvider serviceProvider;
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    public ProductAdminConfiguration(IServiceCollection services)
+    {
+        serviceProvider = services.BuildServiceProvider();
+    }
+
     /// <inheritdoc />
     public void Configure(EntityOptionsBuilder<Product> entityOptionsBuilder)
     {
@@ -34,11 +46,17 @@ public class ProductAdminConfiguration : IEntityAdminConfiguration<Product>
                 })
                 .IncludeProperty(shop => shop.Logo, propertyOptionsBuilder =>
                 {
-                    propertyOptionsBuilder.SetIsImagePath(true);
+                    var s3Storage = serviceProvider.GetRequiredService<IBlobStorageService>();
+                    var cloudStorage = serviceProvider.GetRequiredService<ICloudBlobStorageService>();
+                    propertyOptionsBuilder
+                        .SetIsImage(true)
+                        .SetUploadFileStrategy(new UploadFileToS3Strategy(s3Storage, cloudStorage));
                 })
                 .IncludeProperty(shop => shop.BuildingPhoto, propertyOptionsBuilder =>
                 {
-                    propertyOptionsBuilder.SetIsBase64Image(true);
+                    propertyOptionsBuilder
+                        .SetIsImage(true)
+                        .SetUploadFileStrategy(new UploadBase64FileStrategy());
                 });
         });
 

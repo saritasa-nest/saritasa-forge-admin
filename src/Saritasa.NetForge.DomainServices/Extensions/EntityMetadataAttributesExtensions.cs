@@ -164,13 +164,5 @@ public static class EntityMetadataAttributesExtensions
         {
             property.TruncationMaxCharacters = netForgePropertyAttribute.TruncationMaxCharacters;
         }
-
-        if (property is PropertyMetadata propertyMetadata)
-        {
-            propertyMetadata.IsImagePath = netForgePropertyAttribute.IsImagePath;
-            propertyMetadata.ImageFolder = netForgePropertyAttribute.ImageFolder;
-
-            propertyMetadata.IsBase64Image = netForgePropertyAttribute.IsBase64Image;
-        }
     }
 }

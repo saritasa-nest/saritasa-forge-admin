@@ -209,8 +209,7 @@ public class EntityDetailsViewModel : BaseViewModel
 
         value = FormatValue(value, property.Name);
 
-        var isImageProperty = property.IsBase64Image || property.IsImagePath;
-        if (property.ClrType == typeof(string) && !isImageProperty)
+        if (property.ClrType == typeof(string) && !property.IsImage)
         {
             var stringValue = value.ToString();
 

@@ -47,7 +47,7 @@ internal static class NetForgeModule
                 }).AddIdentityGroup()
                 .ConfigureEntity(new UserAdminConfiguration())
                 .ConfigureEntity(new AddressAdminConfiguration())
-                .ConfigureEntity(new ProductAdminConfiguration())
+                .ConfigureEntity(new ProductAdminConfiguration(services))
                 .ConfigureEntity<ShopProductsCount>(entityOptionsBuilder =>
                 {
                     entityOptionsBuilder.IncludeNavigation<Shop>(

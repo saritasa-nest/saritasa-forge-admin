@@ -104,7 +104,7 @@
                                         {
                                             @propertyValue
                                         }
-                                        else if (property.IsImagePath || property.IsBase64Image)
+                                        else if (property.IsImage)
                                         {
                                             <div>
                                                 <MudImage Src="@property.UploadFileStrategy!.GetFileSource(propertyValue)"

@@ -155,29 +155,11 @@ public class PropertyOptionsBuilder
     }
 
     /// <summary>
-    /// Marks this property as path to image.
+    /// Marks this property as image.
     /// </summary>
-    public PropertyOptionsBuilder SetIsImagePath(bool isImagePath)
+    public PropertyOptionsBuilder SetIsImage(bool isImage)
     {
-        options.IsImagePath = isImagePath;
-        return this;
-    }
-
-    /// <summary>
-    /// Sets the folder for storing the image.
-    /// </summary>
-    public PropertyOptionsBuilder SetImageFolder(string imageFolder)
-    {
-        options.ImageFolder = imageFolder;
-        return this;
-    }
-
-    /// <summary>
-    /// Marks this property as base 64 image.
-    /// </summary>
-    public PropertyOptionsBuilder SetIsBase64Image(bool isBase64Image)
-    {
-        options.IsBase64Image = isBase64Image;
+        options.IsImage = isImage;
         return this;
     }
 

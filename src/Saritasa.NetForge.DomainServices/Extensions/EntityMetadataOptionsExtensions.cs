@@ -126,10 +126,7 @@ public static class EntityMetadataOptionsExtensions
 
         if (property is PropertyMetadata propertyMetadata)
         {
-            propertyMetadata.IsImagePath = propertyOptions.IsImagePath;
-            propertyMetadata.ImageFolder = propertyOptions.ImageFolder;
-
-            propertyMetadata.IsBase64Image = propertyOptions.IsBase64Image;
+            propertyMetadata.IsImage = propertyOptions.IsImage;
             propertyMetadata.UploadFileStrategy = propertyOptions.UploadFileStrategy;
         }
     }

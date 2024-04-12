@@ -85,15 +85,16 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             var s3Storage = serviceProvider.GetRequiredService<IBlobStorageService>();
             var cloudStorage = serviceProvider.GetRequiredService<ICloudBlobStorageService>();
             builder
-                .SetIsImagePath(true)
-                .SetImageFolder("Shop images")
+                .SetIsImage(true)
                 .SetOrder(3)
                 .SetUploadFileStrategy(new UploadFileToS3Strategy(s3Storage, cloudStorage));
         });
 
         entityOptionsBuilder.ConfigureProperty(shop => shop.BuildingPhoto, builder =>
         {
-            builder.SetUploadFileStrategy(new UploadBase64FileStrategy());
+            builder
+                .SetIsImage(true)
+                .SetUploadFileStrategy(new UploadBase64FileStrategy());
         });
 
         entityOptionsBuilder.ConfigureProperty(shop => shop.Name, builder =>

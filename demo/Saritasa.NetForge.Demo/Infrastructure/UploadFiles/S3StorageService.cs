@@ -132,7 +132,7 @@ public class S3StorageService : IBlobStorageService, ICloudBlobStorageService, I
         };
         var preSignedUrl = s3Client.GetPreSignedURL(preSignedUrlRequest);
 
-        logger.LogInformation("Pre-signed URL for the file '{key}' is received successfully.", key);
+        logger.LogInformation("Pre-signed URL for the file '{key}' was received successfully.", key);
         return preSignedUrl;
     }
 
