@@ -13,6 +13,10 @@ namespace Saritasa.NetForge.Demo.Infrastructure.Admin;
 public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
 {
     private readonly ServiceProvider serviceProvider;
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
     public ShopAdminConfiguration(IServiceCollection services)
     {
         serviceProvider = services.BuildServiceProvider();
@@ -78,17 +82,17 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
 
         entityOptionsBuilder.ConfigureProperty(shop => shop.Logo, builder =>
         {
+            var s3Storage = serviceProvider.GetRequiredService<IBlobStorageService>();
             builder
                 .SetIsImagePath(true)
                 .SetImageFolder("Shop images")
                 .SetOrder(3)
-                .SetUploadFileStrategy(new UploadFileToFileSystemStrategy());
+                .SetUploadFileStrategy(new UploadFileToS3Strategy(s3Storage));
         });
 
         entityOptionsBuilder.ConfigureProperty(shop => shop.BuildingPhoto, builder =>
         {
-            var s3Storage = serviceProvider.GetService<IBlobStorageService>();
-            builder.SetUploadFileStrategy(new UploadFileToS3Strategy(s3Storage));
+            builder.SetUploadFileStrategy(new UploadBase64FileStrategy());
         });
 
         entityOptionsBuilder.ConfigureProperty(shop => shop.Name, builder =>
