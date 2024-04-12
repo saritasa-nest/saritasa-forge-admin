@@ -10,7 +10,7 @@ using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.Tools.Domain.Exceptions;
 using NotFoundException = Saritasa.NetForge.Domain.Exceptions.NotFoundException;
 
-namespace Saritasa.NetForge.Demo.Infrastructure.UploadFiles;
+namespace Saritasa.NetForge.Demo.Infrastructure.UploadFiles.S3Storage;
 
 /// <summary>
 /// Contains methods for interacting with S3 storage.

@@ -1,4 +1,4 @@
-﻿namespace Saritasa.NetForge.Demo.Infrastructure.UploadFiles;
+﻿namespace Saritasa.NetForge.Demo.Infrastructure.UploadFiles.S3Storage;
 
 /// <summary>
 /// Settings for S3 service.

@@ -1,6 +1,6 @@
 ﻿using MimeTypes;
 
-namespace Saritasa.NetForge.Demo.Infrastructure.UploadFiles;
+namespace Saritasa.NetForge.Demo.Infrastructure.UploadFiles.S3Storage;
 
 /// <summary>
 /// Contains methods for creating content URI

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using Saritasa.NetForge.Domain;
 
-namespace Saritasa.NetForge.Demo.Infrastructure.UploadFiles;
+namespace Saritasa.NetForge.Demo.Infrastructure.UploadFiles.Strategies;
 
 /// <summary>
 /// Strategy when uploaded file converts to base 64 string.
