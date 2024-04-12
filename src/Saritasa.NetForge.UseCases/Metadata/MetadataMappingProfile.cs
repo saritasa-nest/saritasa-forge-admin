@@ -23,6 +23,7 @@ public class MetadataMappingProfile : Profile
             .ForMember(dto => dto.IsCalculatedProperty, options => options.Ignore())
             .ForMember(dto => dto.IsValueGeneratedOnAdd, options => options.Ignore())
             .ForMember(dto => dto.IsValueGeneratedOnUpdate, options => options.Ignore())
-            .ForMember(dto => dto.IsImage, options => options.Ignore());
+            .ForMember(dto => dto.IsImage, options => options.Ignore())
+            .ForMember(dto => dto.UploadFileStrategy, options => options.Ignore());
     }
 }
