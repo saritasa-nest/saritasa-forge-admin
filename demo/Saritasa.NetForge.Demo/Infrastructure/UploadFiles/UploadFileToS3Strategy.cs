@@ -10,13 +10,16 @@ namespace Saritasa.NetForge.Demo.Infrastructure.UploadFiles;
 public class UploadFileToS3Strategy : IUploadFileStrategy
 {
     private readonly IBlobStorageService blobStorageService;
+    private readonly ICloudBlobStorageService cloudBlobStorageService;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public UploadFileToS3Strategy(IBlobStorageService blobStorageService)
+    public UploadFileToS3Strategy(
+        IBlobStorageService blobStorageService, ICloudBlobStorageService cloudBlobStorageService)
     {
         this.blobStorageService = blobStorageService;
+        this.cloudBlobStorageService = cloudBlobStorageService;
     }
 
     /// <summary>
@@ -32,5 +35,16 @@ public class UploadFileToS3Strategy : IUploadFileStrategy
         await blobStorageService.UploadAsync(fileUri, fileContent, cancellationToken);
 
         return fileUri;
+    }
+
+    /// <summary>
+    /// Gets pre signed URL to the file from S3.
+    /// </summary>
+    /// <param name="fileString">File content URI.</param>
+    /// <returns>Pre signed URL.</returns>
+    public string GetFileSource(string fileString)
+    {
+        var expiresAt = DateTime.UtcNow.AddMinutes(10);
+        return cloudBlobStorageService.GetPreSignedUrl(fileString, expiresAt);
     }
 }

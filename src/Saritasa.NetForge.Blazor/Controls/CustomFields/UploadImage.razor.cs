@@ -71,7 +71,10 @@ public partial class UploadImage : CustomField
     /// <inheritdoc />
     protected override void OnParametersSet()
     {
-        imagePreviewSource = PropertyValue;
+        if (PropertyValue is not null)
+        {
+            imagePreviewSource = Property.UploadFileStrategy!.GetFileSource(PropertyValue);
+        }
     }
 
     private async Task UploadImageAsync(IBrowserFile file)

@@ -25,4 +25,14 @@ public class UploadFileToFileSystemStrategy : IUploadFileStrategy
 
         return path;
     }
+
+    /// <summary>
+    /// Returns path to file as <paramref name="fileString"/> as it is.
+    /// </summary>
+    /// <param name="fileString"></param>
+    /// <returns></returns>
+    public string GetFileSource(string fileString)
+    {
+        return fileString;
+    }
 }

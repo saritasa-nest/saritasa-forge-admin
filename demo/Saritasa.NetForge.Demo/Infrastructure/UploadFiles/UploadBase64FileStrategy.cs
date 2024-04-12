@@ -28,4 +28,12 @@ public class UploadBase64FileStrategy : IUploadFileStrategy
         await stream.CopyToAsync(memoryStream, cancellationToken);
         return memoryStream.ToArray();
     }
+
+    /// <summary>
+    /// Returns base 64 <paramref name="fileString"/> as it is.
+    /// </summary>
+    public string GetFileSource(string fileString)
+    {
+        return fileString;
+    }
 }
