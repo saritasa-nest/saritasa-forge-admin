@@ -520,44 +520,11 @@ optionsBuilder.ConfigureEntity<Product>(entityOptionsBuilder =>
 
 You can add properties that will be displayed as images.
 
-There are two types of images: `ImagePath` and `Base64Image`.
+Both of them can be configured via `Fluent API`.
 
-Both of them can be configured via `[NetForgeProperty]` and `Fluent API`.
+## Max image size
 
-## Image path
-
-`ImagePath` represents path to image on your storage.
-
-### Configuring place to store media files
-
-You can configure these properties related to images:
-
-#### Static files folder
-
-Default value for static files folder is `wwwrooot`.
-
-``` csharp
-services.AddNetForge(optionsBuilder =>
-{
-    optionsBuilder.SetStaticFilesFolder("static")
-});
-```
-
-#### Media folder
-
-Default value for media folder is `media`.
-
-``` csharp
-services.AddNetForge(optionsBuilder =>
-{
-    optionsBuilder.SetMediaFolder("media files");
-});
-```
-So default path to media files - `wwwroot/media`.
-
-#### Max image size
-
-Default value for max image size is 10 MB.
+You can set max image size in the application. Default value for max image size is 10 MB.
 
 ``` csharp
 services.AddNetForge(optionsBuilder =>
@@ -566,30 +533,22 @@ services.AddNetForge(optionsBuilder =>
 });
 ```
 
-## Base 64 String
-
-`Base64Image` is base 64 string that looks like: `data:image/{MIME};base64,{bytes of image}`.
-
 ## Configuration
-
-### Using Attribute
-
-```csharp
-[NetForgeProperty(IsBase64Image = true)]
-public string? BuildingPhoto { get; set; }
-```
 
 ### Using Fluent API
 
-You can use `SetImageFolder` to store images in separate folder.
-For example, if you set image folder as `Shop images`, then images will be stored in that way: `wwwroot/media/Shop images`.
+You can create your own implementaion of `IUploadFileStrategy` interface and pass it to `SetUploadFileStrategy` method.
+
+This interface has methods `UploadFileAsync` that is calling when file is uploaded and `GetFileSource` that is calling when file should be displayed.
+
+We have some examples of strategies [here](demo\Saritasa.NetForge.Demo\Infrastructure\UploadFiles\Strategies\).
 
 ```csharp
-entityOptionsBuilder.ConfigureProperty(shop => shop.Logo, builder =>
+entityOptionsBuilder.ConfigureProperty(shop => shop.BuildingPhoto, builder =>
 {
     builder
-        .SetIsImagePath(true)
-        .SetImageFolder("Shop images");
+        .SetIsImage(true)
+        .SetUploadFileStrategy(new UploadBase64FileStrategy());
 });
 ```
 
