@@ -34,7 +34,6 @@ public static class AdminExtensions
         services.Configure<AuthorizationOptions>(new AuthorizationOptionsSetup(adminOptions).Setup);
         services.AddScoped<IAuthorizationHandler, CustomAuthFunctionHandler>();
 
-        Infrastructure.DependencyInjection.AutoMapperModule.Register(services);
         Infrastructure.DependencyInjection.ApplicationModule.Register(services);
     }
 
