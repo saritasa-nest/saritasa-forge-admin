@@ -79,17 +79,19 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
         };
 
         var result = await (await DialogService.ShowAsync<ConfirmationDialog>("Delete", parameters)).Result;
-        if (!result.Canceled)
+        if (result.Canceled)
         {
-            try
-            {
-                await ViewModel.DeleteEntityAsync(source, CancellationToken.None);
-            }
-            catch (Exception ex)
-            {
-                Snackbar.Add($"Failed to delete record due to error: {ex.Message}", Severity.Error);
-                Logger.LogError("Failed to delete record due to error: {ex.Message}", ex.Message);
-            }
+            return;
+        }
+
+        try
+        {
+            await ViewModel.DeleteEntityAsync(source, CancellationToken.None);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to delete record due to error: {ex.Message}", Severity.Error);
+            Logger.LogError("Failed to delete record due to error: {ex.Message}", ex.Message);
         }
     }
 
@@ -103,17 +105,19 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
         };
 
         var result = await (await DialogService.ShowAsync<ConfirmationDialog>("Bulk Delete", parameters)).Result;
-        if (!result.Canceled)
+        if (result.Canceled)
         {
-            try
-            {
-                await ViewModel.DeleteSelectedEntitiesAsync(CancellationToken);
-            }
-            catch (Exception ex)
-            {
-                Snackbar.Add($"Failed to delete selected records due to error: {ex.Message}", Severity.Error);
-                Logger.LogError("Failed to delete selected records due to error: {ex.Message}", ex.Message);
-            }
+            return;
+        }
+
+        try
+        {
+            await ViewModel.DeleteSelectedEntitiesAsync(CancellationToken);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to delete selected records due to error: {ex.Message}", Severity.Error);
+            Logger.LogError("Failed to delete selected records due to error: {ex.Message}", ex.Message);
         }
     }
 
