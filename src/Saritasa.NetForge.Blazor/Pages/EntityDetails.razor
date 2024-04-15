@@ -27,7 +27,8 @@
 
         <MudItem xs="12">
             <MudButton Variant="Variant.Outlined" Color="Color.Secondary"
-                       OnClick="ShowBulkDeleteEntitiesConfirmationAsync">
+                       OnClick="ShowBulkDeleteEntitiesConfirmationAsync"
+                       Disabled="!ViewModel.SelectedEntities.Any()">
                 Bulk Delete
             </MudButton>
         </MudItem>

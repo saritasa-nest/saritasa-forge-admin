@@ -95,12 +95,6 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
 
     private async Task ShowBulkDeleteEntitiesConfirmationAsync()
     {
-        if (ViewModel.SelectedEntities is null || !ViewModel.SelectedEntities.Any())
-        {
-            Snackbar.Add("No records were selected.", Severity.Warning);
-            return;
-        }
-
         var parameters = new DialogParameters
         {
             { nameof(ConfirmationDialog.ContentText), "Are you sure you want to delete these records?" },
