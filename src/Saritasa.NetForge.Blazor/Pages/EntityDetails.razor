@@ -25,13 +25,16 @@
             </MudItem>
         }
 
-        <MudItem xs="12">
-            <MudButton Variant="Variant.Outlined" Color="Color.Secondary"
-                       OnClick="ShowBulkDeleteEntitiesConfirmationAsync"
-                       Disabled="!ViewModel.SelectedEntities.Any()">
-                Bulk Delete
-            </MudButton>
-        </MudItem>
+        @if (!ViewModel.Model.IsKeyless)
+        {
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Outlined" Color="Color.Secondary"
+                           OnClick="ShowBulkDeleteEntitiesConfirmationAsync"
+                           Disabled="!ViewModel.SelectedEntities.Any()">
+                    Bulk Delete
+                </MudButton>
+            </MudItem>
+        }
 
         @if (ViewModel.IsDisplaySearchInput)
         {
