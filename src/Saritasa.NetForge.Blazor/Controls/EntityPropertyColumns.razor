@@ -90,7 +90,7 @@
                         @((MarkupString)propertyValue!)
                     }
                     else if (navigation is not null
-                             && (navigation.IsDisplayDetails && property.IsPrimaryKey
+                             && (navigation.DisplayDetails && property.IsPrimaryKey
                                  || navigation.IsCollection))
                     {
                         var navigationInstance = cell.Item.GetPropertyValue(navigation.Name)!;

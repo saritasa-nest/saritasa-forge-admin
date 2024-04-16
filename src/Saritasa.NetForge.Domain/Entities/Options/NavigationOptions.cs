@@ -18,6 +18,6 @@ public class NavigationOptions
     /// </summary>
     public ICollection<PropertyOptions> PropertyOptions { get; set; } = new List<PropertyOptions>();
 
-    /// <inheritdoc cref="NavigationMetadata.IsDisplayDetails"/>
-    public bool IsDisplayDetails { get; set; }
+    /// <inheritdoc cref="NavigationMetadata.DisplayDetails"/>
+    public bool DisplayDetails { get; set; }
 }

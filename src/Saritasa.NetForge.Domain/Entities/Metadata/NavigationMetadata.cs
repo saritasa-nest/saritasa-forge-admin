@@ -23,5 +23,5 @@ public class NavigationMetadata : PropertyMetadataBase
     /// <summary>
     /// Whether display details of navigation's data.
     /// </summary>
-    public bool IsDisplayDetails { get; set; }
+    public bool DisplayDetails { get; set; }
 }
