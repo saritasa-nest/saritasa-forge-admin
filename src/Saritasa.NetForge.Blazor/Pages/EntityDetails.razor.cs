@@ -69,25 +69,55 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
         NavigationService.NavigateTo<CreateEntityViewModel>(parameters: StringId);
     }
 
-    private async void ShowDeleteEntityConfirmationAsync(object source)
+    private async Task ShowDeleteEntityConfirmationAsync(object source)
     {
-        var parameters = new DialogParameters();
-        parameters.Add(nameof(ConfirmationDialog.ContentText), "Are you sure you want to delete this record?");
-        parameters.Add(nameof(ConfirmationDialog.ButtonText), "Yes");
-        parameters.Add(nameof(ConfirmationDialog.Color), Color.Error);
+        var parameters = new DialogParameters
+        {
+            { nameof(ConfirmationDialog.ContentText), "Are you sure you want to delete this record?" },
+            { nameof(ConfirmationDialog.ButtonText), "Yes" },
+            { nameof(ConfirmationDialog.Color), Color.Error }
+        };
 
         var result = await (await DialogService.ShowAsync<ConfirmationDialog>("Delete", parameters)).Result;
-        if (!result.Canceled)
+        if (result.Canceled)
         {
-            try
-            {
-                await ViewModel.DeleteEntityAsync(source, CancellationToken.None);
-            }
-            catch (Exception ex)
-            {
-                Snackbar.Add($"Failed to delete record due to error: {ex.Message}", Severity.Error);
-                Logger.LogError("Failed to delete record due to error: {ex.Message}", ex.Message);
-            }
+            return;
+        }
+
+        try
+        {
+            await ViewModel.DeleteEntityAsync(source, CancellationToken.None);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to delete record due to error: {ex.Message}", Severity.Error);
+            Logger.LogError("Failed to delete record due to error: {ex.Message}", ex.Message);
+        }
+    }
+
+    private async Task ShowBulkDeleteEntitiesConfirmationAsync()
+    {
+        var parameters = new DialogParameters
+        {
+            { nameof(ConfirmationDialog.ContentText), "Are you sure you want to delete these records?" },
+            { nameof(ConfirmationDialog.ButtonText), "Yes" },
+            { nameof(ConfirmationDialog.Color), Color.Error }
+        };
+
+        var result = await (await DialogService.ShowAsync<ConfirmationDialog>("Bulk Delete", parameters)).Result;
+        if (result.Canceled)
+        {
+            return;
+        }
+
+        try
+        {
+            await ViewModel.DeleteSelectedEntitiesAsync(CancellationToken);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to delete selected records due to error: {ex.Message}", Severity.Error);
+            Logger.LogError("Failed to delete selected records due to error: {ex.Message}", ex.Message);
         }
     }
 
