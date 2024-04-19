@@ -41,6 +41,7 @@ public partial class EntityPropertyColumns : ComponentBase
     /// Data grid that contains these columns. Used for reloading data grid data.
     /// </summary>
     [Parameter]
+    [EditorRequired]
     public MudDataGrid<object>? DataGrid { get; set; }
 
     /// <summary>
@@ -191,10 +192,7 @@ public partial class EntityPropertyColumns : ComponentBase
     {
         await EntityService.DeleteEntityAsync(entity, entity.GetType(), cancellationToken);
 
-        if (DataGrid is not null)
-        {
-            await DataGrid.ReloadServerData();
-        }
+        DataGrid?.ReloadServerData();
     }
 
     private async Task ShowDeleteEntityConfirmationAsync(object source)

@@ -56,7 +56,9 @@
                          @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple"
                          @attributes="NonKeylessEntityDataGridAttributes">
                 <Columns>
-                    <EntityPropertyColumns Properties="ViewModel.Model.Properties" CanDelete="ViewModel.CanDelete"/>
+                    <EntityPropertyColumns Properties="ViewModel.Model.Properties"
+                                           DataGrid="ViewModel.DataGrid"
+                                           CanDelete="ViewModel.CanDelete"/>
                 </Columns>
 
                 <PagerContent>

@@ -36,6 +36,11 @@ public partial class NavigationDialog : ComponentBase
     /// </summary>
     public IEnumerable<PropertyMetadataDto> Properties { get; set; } = null!;
 
+    /// <summary>
+    /// Data grid reference.
+    /// </summary>
+    public MudDataGrid<object>? DataGrid { get; set; }
+
     /// <inheritdoc />
     public override async Task SetParametersAsync(ParameterView parameters)
     {

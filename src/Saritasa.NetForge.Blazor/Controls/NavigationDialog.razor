@@ -15,9 +15,9 @@
                 };
             }
 
-            <MudDataGrid Items="collection">
+            <MudDataGrid Items="collection" @ref="DataGrid">
                 <Columns>
-                    <EntityPropertyColumns Properties="Properties" />
+                    <EntityPropertyColumns Properties="Properties" DataGrid="DataGrid" />
                 </Columns>
             </MudDataGrid>
         }
