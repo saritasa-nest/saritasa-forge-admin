@@ -4,7 +4,11 @@
 @using Saritasa.NetForge.Blazor.Extensions
 @using Saritasa.NetForge.DomainServices.Extensions
 
-<SelectColumn T="object" ShowInFooter="false" />
+@if (CanDelete)
+{
+    <SelectColumn T="object" ShowInFooter="false" />
+}
+
 @{
     foreach (var property in Properties)
     {
