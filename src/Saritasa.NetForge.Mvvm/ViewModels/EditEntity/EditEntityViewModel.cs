@@ -107,7 +107,7 @@ public class EditEntityViewModel : BaseViewModel
             return;
         }
 
-        filesToUpload.Add(property, file);
+        filesToUpload[property] = file;
     }
 
     /// <summary>
