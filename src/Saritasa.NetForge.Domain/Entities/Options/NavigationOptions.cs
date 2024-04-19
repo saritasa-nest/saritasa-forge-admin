@@ -17,4 +17,7 @@ public class NavigationOptions
     /// Property options for the navigation properties.
     /// </summary>
     public ICollection<PropertyOptions> PropertyOptions { get; set; } = new List<PropertyOptions>();
+
+    /// <inheritdoc cref="NavigationMetadata.DisplayDetails"/>
+    public bool DisplayDetails { get; set; }
 }

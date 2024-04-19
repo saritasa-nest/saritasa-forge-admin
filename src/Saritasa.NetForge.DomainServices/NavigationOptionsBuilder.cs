@@ -56,4 +56,13 @@ public class NavigationOptionsBuilder<TEntity>
         options.Order = order;
         return this;
     }
+
+    /// <summary>
+    /// Sets whether display navigation entity details.
+    /// </summary>
+    public NavigationOptionsBuilder<TEntity> SetDisplayDetails(bool displayDetails)
+    {
+        options.DisplayDetails = displayDetails;
+        return this;
+    }
 }

@@ -89,7 +89,7 @@ public class EditEntityViewModel : BaseViewModel
         }
     }
 
-    private EditEntityModel MapModel(GetEntityByIdDto entity)
+    private EditEntityModel MapModel(GetEntityDto entity)
     {
         return Model with
         {

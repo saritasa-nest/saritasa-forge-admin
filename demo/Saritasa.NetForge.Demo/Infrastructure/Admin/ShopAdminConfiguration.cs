@@ -49,7 +49,8 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                             .SetEmptyValueDisplay("N/A")
                             .SetIsSortable(true)
                             .SetSearchType(SearchType.ContainsCaseInsensitive);
-                    });
+                    })
+                    .SetDisplayDetails(true);
             })
             .IncludeNavigation<Product>(shop => shop.Products, navigationOptionsBuilder =>
             {

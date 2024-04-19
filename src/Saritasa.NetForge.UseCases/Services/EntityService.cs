@@ -57,7 +57,7 @@ public class EntityService : IEntityService
     }
 
     /// <inheritdoc />
-    public Task<GetEntityByIdDto> GetEntityByIdAsync(string stringId, CancellationToken cancellationToken)
+    public Task<GetEntityDto> GetEntityByIdAsync(string stringId, CancellationToken cancellationToken)
     {
         var metadata = adminMetadataService
             .GetMetadata()
@@ -68,6 +68,30 @@ public class EntityService : IEntityService
             throw new NotFoundException("Metadata for entity was not found.");
         }
 
+        var metadataDto = GetEntityMetadataDto(metadata);
+
+        return Task.FromResult(metadataDto);
+    }
+
+    /// <inheritdoc />
+    public Task<GetEntityDto> GetEntityByTypeAsync(Type entityType, CancellationToken cancellationToken)
+    {
+        var metadata = adminMetadataService
+            .GetMetadata()
+            .FirstOrDefault(entityMetadata => entityMetadata.ClrType == entityType);
+
+        if (metadata is null)
+        {
+            throw new NotFoundException("Metadata for entity was not found.");
+        }
+
+        var metadataDto = GetEntityMetadataDto(metadata);
+
+        return Task.FromResult(metadataDto);
+    }
+
+    private static GetEntityDto GetEntityMetadataDto(EntityMetadata metadata)
+    {
         var displayableProperties = metadata.Properties
             .Where(property => property is { IsForeignKey: false });
 
@@ -86,9 +110,7 @@ public class EntityService : IEntityService
             .ThenBy(property => property.Order)
             .ToList();
 
-        var metadataDto = MapGetEntityById(metadata) with { Properties = orderedProperties };
-
-        return Task.FromResult(metadataDto);
+        return MapGetEntityDto(metadata) with { Properties = orderedProperties };
     }
 
     private static PropertyMetadataDto MapProperty(PropertyMetadata property)
@@ -160,9 +182,9 @@ public class EntityService : IEntityService
         };
     }
 
-    private static GetEntityByIdDto MapGetEntityById(EntityMetadata entity)
+    private static GetEntityDto MapGetEntityDto(EntityMetadata entity)
     {
-        return new GetEntityByIdDto
+        return new GetEntityDto
         {
             Id = entity.Id,
             DisplayName = entity.DisplayName,

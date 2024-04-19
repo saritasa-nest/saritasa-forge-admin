@@ -1,0 +1,29 @@
+﻿<MudDialog DefaultFocus="DefaultFocus.LastChild">
+    <DialogContent>
+        @{
+            IEnumerable<object> collection;
+
+            if (NavigationMetadata.IsCollection)
+            {
+                collection = (IEnumerable<object>)NavigationInstance;
+            }
+            else
+            {
+                collection = new List<object>
+                {
+                    NavigationInstance
+                };
+            }
+
+            <MudDataGrid Items="collection" @ref="DataGrid">
+                <Columns>
+                    <EntityPropertyColumns Properties="Properties" DataGrid="DataGrid" />
+                </Columns>
+            </MudDataGrid>
+        }
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="Close">Close</MudButton>
+    </DialogActions>
+</MudDialog>

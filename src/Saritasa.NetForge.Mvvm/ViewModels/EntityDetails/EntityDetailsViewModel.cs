@@ -1,12 +1,7 @@
-﻿using System.Collections;
-using MudBlazor;
-using Saritasa.NetForge.Domain.Entities.Options;
+﻿using MudBlazor;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Domain.Exceptions;
-using Saritasa.NetForge.DomainServices.Extensions;
-using Saritasa.NetForge.Mvvm.Utils;
 using Saritasa.NetForge.UseCases.Common;
-using Saritasa.NetForge.UseCases.Constants;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
@@ -23,17 +18,15 @@ public class EntityDetailsViewModel : BaseViewModel
     public EntityDetailsModel Model { get; private set; }
 
     private readonly IEntityService entityService;
-    private readonly AdminOptions adminOptions;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public EntityDetailsViewModel(string stringId, IEntityService entityService, AdminOptions adminOptions)
+    public EntityDetailsViewModel(string stringId, IEntityService entityService)
     {
         Model = new EntityDetailsModel { StringId = stringId };
 
         this.entityService = entityService;
-        this.adminOptions = adminOptions;
     }
 
     /// <summary>
@@ -65,6 +58,11 @@ public class EntityDetailsViewModel : BaseViewModel
     /// Whether instance of the entity can be edited.
     /// </summary>
     public bool CanEdit { get; set; }
+
+    /// <summary>
+    /// Whether instance of the entity can be deleted.
+    /// </summary>
+    public bool CanDelete { get; set; }
 
     /// <summary>
     /// Selected entities.
@@ -111,6 +109,7 @@ public class EntityDetailsViewModel : BaseViewModel
 
             CanAdd = !Model.IsKeyless;
             CanEdit = !Model.IsKeyless;
+            CanDelete = !Model.IsKeyless;
         }
         catch (NotFoundException)
         {
@@ -118,7 +117,7 @@ public class EntityDetailsViewModel : BaseViewModel
         }
     }
 
-    private EntityDetailsModel MapModel(GetEntityByIdDto entity)
+    private EntityDetailsModel MapModel(GetEntityDto entity)
     {
         return Model with
         {
@@ -190,125 +189,10 @@ public class EntityDetailsViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// Gets property's display name.
-    /// </summary>
-    /// <param name="property">Property.</param>
-    /// <returns>Display name.</returns>
-    public string GetPropertyDisplayName(PropertyMetadataDto property)
-    {
-        return !string.IsNullOrEmpty(property.DisplayName)
-            ? property.DisplayName
-            : property.Name;
-    }
-
-    /// <summary>
-    /// Gets property value via <c>Reflection</c>.
-    /// </summary>
-    /// <param name="source">Source object.</param>
-    /// <param name="property">Property metadata.</param>
-    /// <returns>Property value.</returns>
-    public object GetPropertyValue(object? source, PropertyMetadataDto property)
-    {
-        var propertyInfo = source?.GetType().GetProperty(property.Name);
-        var value = propertyInfo?.GetValue(source);
-
-        if (value is null || value.ToString() == string.Empty)
-        {
-            return !string.IsNullOrEmpty(property.EmptyValueDisplay)
-                ? property.EmptyValueDisplay
-                : DefaultValueConstants.DefaultEmptyPropertyValueDisplay;
-        }
-
-        if (property is NavigationMetadataDto navigation)
-        {
-            value = GetNavigationValue(value, navigation);
-        }
-
-        value = FormatValue(value, property.Name);
-
-        if (property.ClrType == typeof(string))
-        {
-            var stringValue = value.ToString();
-
-            var maxCharacters = property.TruncationMaxCharacters ?? adminOptions.TruncationMaxCharacters;
-
-            if (maxCharacters != default)
-            {
-                value = stringValue!.Truncate(maxCharacters);
-            }
-        }
-
-        return value;
-    }
-
-    private static object GetNavigationValue(object navigation, NavigationMetadataDto navigationMetadata)
-    {
-        var primaryKeys = navigationMetadata.TargetEntityProperties
-            .Where(targetProperty => targetProperty.IsPrimaryKey)
-            .ToList();
-
-        if (!primaryKeys.Any())
-        {
-            return navigation;
-        }
-
-        if (!navigationMetadata.IsCollection)
-        {
-            if (primaryKeys.Count == 1)
-            {
-                return navigation.GetType().GetProperty(primaryKeys[0].Name)!.GetValue(navigation)!;
-            }
-
-            return JoinPrimaryKeys(primaryKeys, navigation);
-        }
-
-        var primaryKeyValues = new List<object?>();
-
-        foreach (var item in (navigation as IEnumerable)!)
-        {
-            if (primaryKeys.Count == 1)
-            {
-                primaryKeyValues.Add(item.GetType().GetProperty(primaryKeys[0].Name)!.GetValue(item));
-            }
-            else
-            {
-                primaryKeyValues.Add($"{{ {JoinPrimaryKeys(primaryKeys, item)} }}");
-            }
-        }
-
-        return $"[ {string.Join(", ", primaryKeyValues)} ]";
-    }
-
-    private static string JoinPrimaryKeys(IEnumerable<PropertyMetadataDto> primaryKeys, object navigation)
-    {
-        var primaryKeyValues = primaryKeys
-            .Select(primaryKey => primaryKey.Name)
-            .Select(primaryKeyName => navigation.GetType().GetProperty(primaryKeyName)!.GetValue(navigation));
-
-        return string.Join("; ", primaryKeyValues);
-    }
-
-    private string FormatValue(object value, string propertyName)
-    {
-        var propertyMetadata = Model.Properties.FirstOrDefault(property => property.Name == propertyName);
-        return DataFormatUtils.GetFormattedValue(value, propertyMetadata?.DisplayFormat,
-            propertyMetadata?.FormatProvider);
-    }
-
-    /// <summary>
     /// Searches data by search string.
     /// </summary>
     public void Search()
     {
-        DataGrid?.ReloadServerData();
-    }
-
-    /// <summary>
-    /// Delete entity.
-    /// </summary>
-    public async Task DeleteEntityAsync(object entity, CancellationToken cancellationToken)
-    {
-        await entityService.DeleteEntityAsync(entity, entity.GetType(), cancellationToken);
         DataGrid?.ReloadServerData();
     }
 

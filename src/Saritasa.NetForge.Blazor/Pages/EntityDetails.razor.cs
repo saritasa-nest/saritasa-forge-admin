@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Saritasa.NetForge.Blazor.Controls;
+using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
 using Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
@@ -69,32 +70,6 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
         NavigationService.NavigateTo<CreateEntityViewModel>(parameters: StringId);
     }
 
-    private async Task ShowDeleteEntityConfirmationAsync(object source)
-    {
-        var parameters = new DialogParameters
-        {
-            { nameof(ConfirmationDialog.ContentText), "Are you sure you want to delete this record?" },
-            { nameof(ConfirmationDialog.ButtonText), "Yes" },
-            { nameof(ConfirmationDialog.Color), Color.Error }
-        };
-
-        var result = await (await DialogService.ShowAsync<ConfirmationDialog>("Delete", parameters)).Result;
-        if (result.Canceled)
-        {
-            return;
-        }
-
-        try
-        {
-            await ViewModel.DeleteEntityAsync(source, CancellationToken.None);
-        }
-        catch (Exception ex)
-        {
-            Snackbar.Add($"Failed to delete record due to error: {ex.Message}", Severity.Error);
-            Logger.LogError("Failed to delete record due to error: {ex.Message}", ex.Message);
-        }
-    }
-
     private async Task ShowBulkDeleteEntitiesConfirmationAsync()
     {
         var parameters = new DialogParameters
@@ -125,7 +100,7 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     {
         var primaryKeyValues = ViewModel.Model.Properties
             .Where(property => property.IsPrimaryKey)
-            .Select(primaryKey => ViewModel.GetPropertyValue(row.Item, primaryKey).ToString()!);
+            .Select(primaryKey => row.Item.GetPropertyValue(primaryKey.Name)!.ToString()!);
 
         NavigationService.NavigateTo<EditEntityViewModel>(
             parameters: new[] { StringId, string.Join("--", primaryKeyValues) });

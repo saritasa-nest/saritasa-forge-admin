@@ -1,0 +1,128 @@
+﻿@using Saritasa.NetForge.UseCases.Metadata.GetEntityById
+@using Saritasa.NetForge.Domain.Entities.Options
+@using Saritasa.NetForge.UseCases.Constants
+@using Saritasa.NetForge.Blazor.Extensions
+@using Saritasa.NetForge.DomainServices.Extensions
+
+@if (CanDelete)
+{
+    <SelectColumn T="object" ShowInFooter="false" />
+}
+
+@{
+    foreach (var property in Properties)
+    {
+        if (property is NavigationMetadataDto navigation)
+        {
+            if (IsNavigationEntity)
+            {
+                continue;
+            }
+
+            if (!navigation.IsCollection)
+            {
+                foreach (var targetProperty in navigation.TargetEntityProperties)
+                {
+                    RenderPropertyColumn(targetProperty, navigation);
+                }
+            }
+            else
+            {
+                RenderPropertyColumn(property, navigation);
+            }
+
+        }
+        else
+        {
+            RenderPropertyColumn(property);
+        }
+    }
+
+    void RenderPropertyColumn(PropertyMetadataDto property, NavigationMetadataDto? navigation = null)
+    {
+        <TemplateColumn T="object" Title="@property.Name" Sortable="property.IsSortable" NavigationName="@navigation?.Name">
+            <HeaderTemplate>
+                @{
+                    var displayName = GetPropertyDisplayName(property);
+                    if (AdminOptions.TitleCaseProperties)
+                    {
+                        displayName = displayName.ToMeaningfulName();
+                    }
+
+                    if (string.IsNullOrEmpty(property.Description))
+                    {
+                        @displayName
+                    }
+                    else
+                    {
+                        <MudTooltip Arrow="true" Placement="@Placement.Top">
+                            <ChildContent>
+                                @displayName
+                            </ChildContent>
+                            <TooltipContent>
+                                <MudText Typo="@Typo.body2">@property.Description</MudText>
+                            </TooltipContent>
+                        </MudTooltip>
+                    }
+                }
+            </HeaderTemplate>
+
+            <CellTemplate Context="cell">
+                @{
+                    var propertyValue = GetPropertyValue(cell.Item, property).ToString();
+
+                    if (navigation is not null && !navigation.IsCollection)
+                    {
+                        var navigationInstance = cell.Item.GetPropertyValue(navigation.Name);
+                        propertyValue = GetPropertyValue(navigationInstance, property).ToString();
+                    }
+
+                    if (propertyValue!.Equals(property.EmptyValueDisplay)
+                    || propertyValue.Equals(DefaultValueConstants.DefaultEmptyPropertyValueDisplay))
+                    {
+                        @propertyValue
+                    }
+                    else if (property.IsImagePath || property.IsBase64Image)
+                    {
+                        <div>
+                            <MudImage Src="@propertyValue"
+                                      Elevation="25"
+                                      Class="rounded-lg property-image" />
+                        </div>
+                    }
+                    else if (property.DisplayAsHtml)
+                    {
+                        @((MarkupString)propertyValue!)
+                    }
+                    else if (navigation is not null
+                             && (navigation.DisplayDetails && property.IsPrimaryKey
+                                 || navigation.IsCollection))
+                    {
+                        var navigationInstance = cell.Item.GetPropertyValue(navigation.Name)!;
+                        <MudButton @onclick="() => OpenDialogAsync(navigationInstance, navigation)"
+                                   Variant="Variant.Text"
+                                   Color="Color.Primary">
+                            @propertyValue
+                        </MudButton>
+                    }
+                    else
+                    {
+                        @propertyValue
+                    }
+                }
+            </CellTemplate>
+        </TemplateColumn>
+    }
+}
+
+@if (CanDelete)
+{
+    <TemplateColumn T="object">
+        <CellTemplate>
+            <MudButton Size="@Size.Small" Variant="Variant.Text" Color="Color.Secondary"
+                       OnClick="@(() => ShowDeleteEntityConfirmationAsync(context.Item))">
+                Delete
+            </MudButton>
+        </CellTemplate>
+    </TemplateColumn>
+}
