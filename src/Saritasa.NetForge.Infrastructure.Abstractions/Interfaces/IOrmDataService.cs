@@ -62,6 +62,14 @@ public interface IOrmDataService
     Task DeleteAsync(object entity, Type entityType, CancellationToken cancellationToken);
 
     /// <summary>
+    /// Deletes all provided entities in the database.
+    /// </summary>
+    /// <param name="entities">Entities to delete.</param>
+    /// <param name="entityType">Entity type.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    Task BulkDeleteAsync(IEnumerable<object> entities, Type entityType, CancellationToken cancellationToken);
+
+    /// <summary>
     /// Updates entity in the database.
     /// </summary>
     /// <param name="entity">Entity to update.</param>

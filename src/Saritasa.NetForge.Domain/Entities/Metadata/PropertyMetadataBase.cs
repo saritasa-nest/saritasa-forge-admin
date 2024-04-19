@@ -89,6 +89,11 @@ public abstract class PropertyMetadataBase
     public bool DisplayAsHtml { get; set; }
 
     /// <summary>
+    /// Whether the property should be displayed in the rich text field.
+    /// </summary>
+    public bool IsRichTextField { get; set; }
+
+    /// <summary>
     /// Whether the property is read only.
     /// </summary>
     public bool IsReadOnly { get; set; }
@@ -102,4 +107,24 @@ public abstract class PropertyMetadataBase
     /// Whether the property is nullable.
     /// </summary>
     public bool IsNullable { get; set; }
+
+    /// <summary>
+    /// Whether the property is multiline text field.
+    /// </summary>
+    public bool IsMultiline { get; set; }
+
+    /// <summary>
+    /// Default number of lines of the multiline text field.
+    /// </summary>
+    public int Lines { get; set; } = 5;
+
+    /// <summary>
+    /// Max number of lines of the multiline text field.
+    /// </summary>
+    public int MaxLines { get; set; } = 5;
+
+    /// <summary>
+    /// Property identifies whether the height of the text field automatically changes with the number of lines of text.
+    /// </summary>
+    public bool IsAutoGrow { get; set; }
 }

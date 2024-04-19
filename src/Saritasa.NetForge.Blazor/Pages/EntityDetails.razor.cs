@@ -61,6 +61,32 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
         NavigationService.NavigateTo<CreateEntityViewModel>(parameters: StringId);
     }
 
+    private async Task ShowBulkDeleteEntitiesConfirmationAsync()
+    {
+        var parameters = new DialogParameters
+        {
+            { nameof(ConfirmationDialog.ContentText), "Are you sure you want to delete these records?" },
+            { nameof(ConfirmationDialog.ButtonText), "Yes" },
+            { nameof(ConfirmationDialog.Color), Color.Error }
+        };
+
+        var result = await (await DialogService.ShowAsync<ConfirmationDialog>("Bulk Delete", parameters)).Result;
+        if (result.Canceled)
+        {
+            return;
+        }
+
+        try
+        {
+            await ViewModel.DeleteSelectedEntitiesAsync(CancellationToken);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to delete selected records due to error: {ex.Message}", Severity.Error);
+            Logger.LogError("Failed to delete selected records due to error: {ex.Message}", ex.Message);
+        }
+    }
+
     private void NavigateToEditing(DataGridRowClickEventArgs<object> row)
     {
         var primaryKeyValues = ViewModel.Model.Properties

@@ -484,11 +484,34 @@ optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
 public string Property { get; set; }
 ```
 
-# Generated Properties
+## Generated Properties
 
 Generated properties will not be displayed on the create or edit entity pages. Entity framework example of generated property:
 
 ```csharp
+[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+public DateTime CreatedAt { get; set; }
+```
+
+## Rich Text Field
+
+RTF provides some common text formatting options like paragraphs, links, tables, etc.
+The [ClassicEditor of CKEditor 5](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/classic-editor.html) is used by the admin panel.
+
+The configuration is the following:
+
+### Using Attribute
+```csharp
+[NetForgeProperty(IsRichTextField = true)]
+public required string Description { get; set; }
+```
+
+### Using Fluent API
+```csharp
+optionsBuilder.ConfigureEntity<Product>(entityOptionsBuilder =>
+{
+    entityOptionsBuilder.ConfigureProperty(product => product.Description,
+        propertyBuilder => propertyBuilder.SetIsRichTextField(true));
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public DateTime CreatedAt { get; set; }
 ```
@@ -636,4 +659,78 @@ entityOptionsBuilder.ConfigureProperty(shop => shop.Name, builder =>
 {
     builder.SetTruncationMaxCharacters(25);
 });
+```
+
+# Multiline Text Field property
+You can mark a property as multiline text field. It allows input of text in several text rows. Disabled by default.
+
+## Configuration
+
+### Using Fluent API
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
+{
+    builder.SetIsMultiline();
+});
+```
+
+### Using Attribute
+
+```csharp
+[MultilineText]
+public required string Street { get; set; }
+```
+
+Also, there are some auxiliary properties that are used in the multiple text field.
+
+## Lines property is the number of lines of the multiline text field. This is equal to 5 by default.
+### Using Fluent API
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
+{
+    builder.SetIsMultiline(lines: 15); // sets the lines value as 15
+});
+```
+
+### Using Attribute
+
+```csharp
+[MultilineText(Lines = 15)]
+public required string Street { get; set; }
+```
+
+## MaxLines property is the max. number of lines of the multiline text field. This is equal to 5 by default.
+### Using Fluent API
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
+{
+	builder.SetIsMultiline(maxLines: 15); // sets the max lines value as 15
+});
+```
+
+### Using Attribute
+
+```csharp
+[MultilineText(MaxLines = 15)]
+public required string Street { get; set; }
+```
+
+## IsAutoGrow property identifies whether the height of the text field automatically changes with the number of lines of text.
+### Using Fluent API
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
+{
+    builder.SetIsMultiline(autoGrow: true);
+});
+```
+
+### Using Attribute
+
+```csharp
+[MultilineText(IsAutoGrow = true)]
+public required string Street { get; set; }
 ```

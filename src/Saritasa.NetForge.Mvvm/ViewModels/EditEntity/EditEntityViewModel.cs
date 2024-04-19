@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Saritasa.NetForge.Domain.Exceptions;
+﻿using Saritasa.NetForge.Domain.Exceptions;
 using CommunityToolkit.Mvvm.Messaging;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
@@ -24,7 +23,6 @@ public class EditEntityViewModel : BaseViewModel
     public string InstancePrimaryKey { get; set; }
 
     private readonly IEntityService entityService;
-    private readonly IMapper mapper;
     private readonly IOrmDataService dataService;
     private readonly IFileService fileService;
 
@@ -35,7 +33,6 @@ public class EditEntityViewModel : BaseViewModel
         string stringId,
         string instancePrimaryKey,
         IEntityService entityService,
-        IMapper mapper,
         IOrmDataService dataService,
         IFileService fileService)
     {
@@ -43,7 +40,6 @@ public class EditEntityViewModel : BaseViewModel
         InstancePrimaryKey = instancePrimaryKey;
 
         this.entityService = entityService;
-        this.mapper = mapper;
         this.dataService = dataService;
         this.fileService = fileService;
     }
@@ -64,7 +60,7 @@ public class EditEntityViewModel : BaseViewModel
         try
         {
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
-            Model = mapper.Map<EditEntityModel>(entity);
+            Model = MapModel(entity);
             Model = Model with
             {
                 Properties = Model.Properties
@@ -91,6 +87,17 @@ public class EditEntityViewModel : BaseViewModel
         {
             IsEntityExists = false;
         }
+    }
+
+    private EditEntityModel MapModel(GetEntityByIdDto entity)
+    {
+        return Model with
+        {
+            DisplayName = entity.DisplayName,
+            PluralName = entity.PluralName,
+            ClrType = entity.ClrType,
+            Properties = entity.Properties
+        };
     }
 
     /// <summary>

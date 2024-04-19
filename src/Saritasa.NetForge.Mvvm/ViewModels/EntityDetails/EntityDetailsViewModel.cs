@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿using System.Collections;
 using MudBlazor;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Domain.Exceptions;
@@ -19,16 +19,15 @@ public class EntityDetailsViewModel : BaseViewModel
     public EntityDetailsModel Model { get; private set; }
 
     private readonly IEntityService entityService;
-    private readonly IMapper mapper;
+    private readonly AdminOptions adminOptions;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public EntityDetailsViewModel(string stringId, IMapper mapper, IEntityService entityService)
+    public EntityDetailsViewModel(string stringId, IEntityService entityService, AdminOptions adminOptions)
     {
         Model = new EntityDetailsModel { StringId = stringId };
 
-        this.mapper = mapper;
         this.entityService = entityService;
     }
 
@@ -62,13 +61,18 @@ public class EntityDetailsViewModel : BaseViewModel
     /// </summary>
     public bool CanEdit { get; set; }
 
+    /// <summary>
+    /// Selected entities.
+    /// </summary>
+    public HashSet<object> SelectedEntities { get; set; } = new();
+
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
     {
         try
         {
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
-            Model = mapper.Map<EntityDetailsModel>(entity);
+            Model = MapModel(entity);
 
             Model = Model with
             {
@@ -107,6 +111,22 @@ public class EntityDetailsViewModel : BaseViewModel
         {
             IsEntityExists = false;
         }
+    }
+
+    private EntityDetailsModel MapModel(GetEntityByIdDto entity)
+    {
+        return Model with
+        {
+            Id = entity.Id,
+            DisplayName = entity.DisplayName,
+            PluralName = entity.PluralName,
+            Description = entity.Description,
+            ClrType = entity.ClrType,
+            Properties = entity.Properties,
+            SearchFunction = entity.SearchFunction,
+            CustomQueryFunction = entity.CustomQueryFunction,
+            IsKeyless = entity.IsKeyless
+        };
     }
 
     /// <summary>
@@ -170,5 +190,17 @@ public class EntityDetailsViewModel : BaseViewModel
     public void Search()
     {
         DataGrid?.ReloadServerData();
+    }
+
+    /// <summary>
+    /// Deletes all selected entities.
+    /// </summary>
+    public async Task DeleteSelectedEntitiesAsync(CancellationToken cancellationToken)
+    {
+        await entityService.DeleteEntitiesAsync(
+            SelectedEntities, SelectedEntities.First().GetType(), cancellationToken);
+
+        DataGrid?.ReloadServerData();
+        SelectedEntities.Clear();
     }
 }

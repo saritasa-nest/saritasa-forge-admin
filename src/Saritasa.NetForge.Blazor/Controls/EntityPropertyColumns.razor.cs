@@ -191,12 +191,14 @@ public partial class EntityPropertyColumns : ComponentBase
         }
     }
 
-    private async void ShowDeleteEntityConfirmationAsync(object source)
+    private async Task ShowDeleteEntityConfirmationAsync(object source)
     {
-        var parameters = new DialogParameters();
-        parameters.Add(nameof(ConfirmationDialog.ContentText), "Are you sure you want to delete this record?");
-        parameters.Add(nameof(ConfirmationDialog.ButtonText), "Yes");
-        parameters.Add(nameof(ConfirmationDialog.Color), Color.Error);
+        var parameters = new DialogParameters
+        {
+            { nameof(ConfirmationDialog.ContentText), "Are you sure you want to delete this record?" },
+            { nameof(ConfirmationDialog.ButtonText), "Yes" },
+            { nameof(ConfirmationDialog.Color), Color.Error }
+        };
 
         var result = await (await DialogService.ShowAsync<ConfirmationDialog>("Delete", parameters)).Result;
         if (!result.Canceled)

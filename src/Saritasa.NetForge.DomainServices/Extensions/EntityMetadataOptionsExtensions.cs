@@ -82,6 +82,7 @@ public static class EntityMetadataOptionsExtensions
         property.IsHiddenFromListView = propertyOptions.IsHiddenFromListView;
         property.IsHiddenFromDetails = propertyOptions.IsHiddenFromDetails;
         property.IsExcludedFromQuery = propertyOptions.IsExcludedFromQuery;
+        property.IsRichTextField = propertyOptions.IsRichTextField;
 
         if (!string.IsNullOrEmpty(propertyOptions.DisplayName))
         {
@@ -129,6 +130,26 @@ public static class EntityMetadataOptionsExtensions
             propertyMetadata.ImageFolder = propertyOptions.ImageFolder;
 
             propertyMetadata.IsBase64Image = propertyOptions.IsBase64Image;
+        }
+
+        if (propertyOptions.IsMultiline)
+        {
+            property.IsMultiline = propertyOptions.IsMultiline;
+        }
+
+        if (propertyOptions.Lines >= 0)
+        {
+            property.Lines = propertyOptions.Lines;
+        }
+
+        if (propertyOptions.MaxLines >= 0)
+        {
+            property.MaxLines = propertyOptions.MaxLines;
+        }
+
+        if (propertyOptions.IsAutoGrow)
+        {
+            property.IsAutoGrow = propertyOptions.IsAutoGrow;
         }
     }
 

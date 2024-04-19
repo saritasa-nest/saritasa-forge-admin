@@ -57,6 +57,11 @@ public static class CustomFieldHelper
             return typeof(UploadImage);
         }
 
+        if (property.IsRichTextField)
+        {
+            return typeof(CkEditorField);
+        }
+
         if (property is NavigationMetadataDto navigation)
         {
             return navigation.IsCollection

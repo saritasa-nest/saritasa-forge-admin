@@ -145,6 +145,15 @@ public class PropertyOptionsBuilder
     }
 
     /// <summary>
+    /// Sets whether the field is a rich text field.
+    /// </summary>
+    public PropertyOptionsBuilder SetIsRichTextField(bool isRichTextField)
+    {
+        options.IsRichTextField = isRichTextField;
+        return this;
+    }
+
+    /// <summary>
     /// Marks this property as path to image.
     /// </summary>
     public PropertyOptionsBuilder SetIsImagePath(bool isImagePath)
@@ -186,6 +195,26 @@ public class PropertyOptionsBuilder
     public PropertyOptionsBuilder SetTruncationMaxCharacters(int truncationMaxCharacters)
     {
         options.TruncationMaxCharacters = truncationMaxCharacters;
+        return this;
+    }
+
+    /// <summary>
+    /// Marks this property as multiline and sets properties that are used with the multiple text field.
+    /// Such as auto grow, lines and max lines.
+    /// </summary>
+    /// <param name="autoGrow">
+    /// Auto grow flag that identifies whether the height of the text field automatically changes with the number of lines of text.
+    /// </param>
+    /// <param name="lines">Amount of lines.</param>
+    /// <param name="maxLines">Amount of max lines.</param>
+    public PropertyOptionsBuilder SetIsMultiline(bool autoGrow = false, int lines = 5, int maxLines = 5)
+    {
+        options.IsMultiline = true;
+
+        options.IsAutoGrow = autoGrow;
+        options.MaxLines = maxLines;
+        options.Lines = lines;
+
         return this;
     }
 }

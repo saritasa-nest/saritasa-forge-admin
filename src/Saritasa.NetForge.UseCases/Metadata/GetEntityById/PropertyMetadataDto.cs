@@ -65,6 +65,9 @@ public record PropertyMetadataDto
     /// <inheritdoc cref="PropertyMetadata.IsValueGeneratedOnUpdate"/>
     public bool IsValueGeneratedOnUpdate { get; set; }
 
+    /// <inheritdoc cref="PropertyMetadataBase.IsRichTextField"/>
+    public bool IsRichTextField { get; set; }
+
     /// <inheritdoc cref="PropertyMetadata.IsImagePath"/>
     public bool IsImagePath { get; set; }
 
@@ -82,4 +85,16 @@ public record PropertyMetadataDto
 
     /// <inheritdoc cref="PropertyMetadataBase.IsNullable"/>
     public bool IsNullable { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadataBase.IsMultiline"/>
+    public bool IsMultiline { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadataBase.Lines"/>
+    public int Lines { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadataBase.MaxLines"/>
+    public int MaxLines { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadataBase.IsAutoGrow"/>
+    public bool IsAutoGrow { get; set; }
 }

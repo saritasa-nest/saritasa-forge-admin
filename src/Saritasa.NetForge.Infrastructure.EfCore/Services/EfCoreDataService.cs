@@ -355,6 +355,7 @@ public class EfCoreDataService : IOrmDataService
         // EF will try to create new entity and create all navigations (even when they are exist in database).
         // Attach resolves this problem by explicitly attaching navigations to EF change tracker.
         dbContext.Attach(entity);
+        dbContext.Add(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
         // Since we use different dbContext instances for operations, an error can occur if a dbContext
         // instance is used before the last dbContext instance is disposed. For example: If a user creates
@@ -364,7 +365,7 @@ public class EfCoreDataService : IOrmDataService
         // create new instances of dbContext. However, the delete function does not have its own viewmodel.
         // Therefore, after adding a new model, we need to clear the tracking for the record so that the
         // delete operation can work.
-        dbContext.Entry(entity).State = EntityState.Detached;
+        dbContext.ChangeTracker.Clear();
     }
 
     /// <inheritdoc />
@@ -373,6 +374,21 @@ public class EfCoreDataService : IOrmDataService
         var dbContext = GetDbContextThatContainsEntity(entityType);
 
         dbContext.Remove(entity);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        dbContext.ChangeTracker.Clear();
+    }
+
+    /// <inheritdoc />
+    public async Task BulkDeleteAsync(
+        IEnumerable<object> entities, Type entityType, CancellationToken cancellationToken)
+    {
+        var dbContext = GetDbContextThatContainsEntity(entityType);
+
+        foreach (var entity in entities)
+        {
+            dbContext.Remove(entity);
+        }
         await dbContext.SaveChangesAsync(cancellationToken);
 
         dbContext.ChangeTracker.Clear();

@@ -110,7 +110,7 @@
     }
 }
 
-@if (!IsNavigationEntity)
+@if (!IsNavigationEntity && !ModelIsKeyless)
 {
     <TemplateColumn T="object">
         <CellTemplate>

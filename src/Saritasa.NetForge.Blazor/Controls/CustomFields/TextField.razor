@@ -1,10 +1,16 @@
-﻿@inherits CustomField
+﻿@using Saritasa.NetForge.Blazor.Extensions
+@inherits CustomField
 
 <MudTextField T="string"
-              Label="@Property.Name"
+              Label="@Property.Name.ToMeaningfulName()"
               Variant="Variant.Outlined"
               InputType="InputType.Text"
               HelperText="@Property.Description"
               Disabled="IsReadOnly"
-              @bind-Value="PropertyValue">
+              @bind-Value="PropertyValue"
+              Lines="Lines"
+              MaxLines="MaxLines"
+              AutoGrow="IsAutoGrow">
 </MudTextField>
+
+

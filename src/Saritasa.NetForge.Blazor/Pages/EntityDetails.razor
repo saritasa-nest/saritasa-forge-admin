@@ -23,6 +23,17 @@
             </MudItem>
         }
 
+        @if (!ViewModel.Model.IsKeyless)
+        {
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Outlined" Color="Color.Secondary"
+                           OnClick="ShowBulkDeleteEntitiesConfirmationAsync"
+                           Disabled="!ViewModel.SelectedEntities.Any()">
+                    Bulk Delete
+                </MudButton>
+            </MudItem>
+        }
+
         @if (ViewModel.IsDisplaySearchInput)
         {
             const int debounceInterval = 250;
@@ -41,6 +52,7 @@
 
         <MudItem xs="12">
             <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true"
+                         MultiSelection="true" @bind-SelectedItems="ViewModel.SelectedEntities"
                          @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple"
                          @attributes="NonKeylessEntityDataGridAttributes">
                 <Columns>
