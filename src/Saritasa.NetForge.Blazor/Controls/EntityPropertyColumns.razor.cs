@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Logging;
 using MudBlazor;
-using Saritasa.NetForge.Blazor.Pages;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Mvvm.Utils;

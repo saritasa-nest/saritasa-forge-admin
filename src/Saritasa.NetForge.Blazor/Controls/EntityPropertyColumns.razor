@@ -35,7 +35,7 @@
 
     void RenderPropertyColumn(PropertyMetadataDto property, NavigationMetadataDto? navigation = null)
     {
-        <TemplateColumn T="object" Title="@property.Name" Sortable="property.IsSortable">
+        <TemplateColumn T="object" Title="@property.Name" Sortable="property.IsSortable" NavigationName="@navigation?.Name">
             <HeaderTemplate>
                 @{
                     var displayName = GetPropertyDisplayName(property);
