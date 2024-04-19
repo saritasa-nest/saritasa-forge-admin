@@ -90,7 +90,7 @@ public class EntityService : IEntityService
         return Task.FromResult(metadataDto);
     }
 
-    private GetEntityDto GetEntityMetadataDto(EntityMetadata metadata)
+    private static GetEntityDto GetEntityMetadataDto(EntityMetadata metadata)
     {
         var displayableProperties = metadata.Properties
             .Where(property => property is { IsForeignKey: false });
@@ -110,9 +110,7 @@ public class EntityService : IEntityService
             .ThenBy(property => property.Order)
             .ToList();
 
-        var metadataDto = MapGetEntityById(metadata) with { Properties = orderedProperties };
-
-        return Task.FromResult(metadataDto);
+        return MapGetEntityDto(metadata) with { Properties = orderedProperties };
     }
 
     private static PropertyMetadataDto MapProperty(PropertyMetadata property)
@@ -184,9 +182,9 @@ public class EntityService : IEntityService
         };
     }
 
-    private static GetEntityByIdDto MapGetEntityById(EntityMetadata entity)
+    private static GetEntityDto MapGetEntityDto(EntityMetadata entity)
     {
-        return new GetEntityByIdDto
+        return new GetEntityDto
         {
             Id = entity.Id,
             DisplayName = entity.DisplayName,

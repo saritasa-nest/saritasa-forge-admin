@@ -70,7 +70,7 @@ public class CreateEntityViewModel : BaseViewModel
         }
     }
 
-    private CreateEntityModel MapModel(GetEntityByIdDto entity)
+    private CreateEntityModel MapModel(GetEntityDto entity)
     {
         return Model with
         {

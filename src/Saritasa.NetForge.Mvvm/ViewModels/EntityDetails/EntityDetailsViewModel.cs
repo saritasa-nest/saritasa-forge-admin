@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using MudBlazor;
+﻿using MudBlazor;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Domain.Exceptions;
 using Saritasa.NetForge.UseCases.Common;
@@ -19,12 +18,11 @@ public class EntityDetailsViewModel : BaseViewModel
     public EntityDetailsModel Model { get; private set; }
 
     private readonly IEntityService entityService;
-    private readonly AdminOptions adminOptions;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public EntityDetailsViewModel(string stringId, IEntityService entityService, AdminOptions adminOptions)
+    public EntityDetailsViewModel(string stringId, IEntityService entityService)
     {
         Model = new EntityDetailsModel { StringId = stringId };
 
@@ -60,6 +58,11 @@ public class EntityDetailsViewModel : BaseViewModel
     /// Whether instance of the entity can be edited.
     /// </summary>
     public bool CanEdit { get; set; }
+
+    /// <summary>
+    /// Whether instance of the entity can be deleted.
+    /// </summary>
+    public bool CanDelete { get; set; }
 
     /// <summary>
     /// Selected entities.
@@ -106,6 +109,7 @@ public class EntityDetailsViewModel : BaseViewModel
 
             CanAdd = !Model.IsKeyless;
             CanEdit = !Model.IsKeyless;
+            CanDelete = !Model.IsKeyless;
         }
         catch (NotFoundException)
         {
@@ -113,7 +117,7 @@ public class EntityDetailsViewModel : BaseViewModel
         }
     }
 
-    private EntityDetailsModel MapModel(GetEntityByIdDto entity)
+    private EntityDetailsModel MapModel(GetEntityDto entity)
     {
         return Model with
         {

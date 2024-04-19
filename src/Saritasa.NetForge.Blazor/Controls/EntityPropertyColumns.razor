@@ -4,6 +4,7 @@
 @using Saritasa.NetForge.Blazor.Extensions
 @using Saritasa.NetForge.DomainServices.Extensions
 
+<SelectColumn T="object" ShowInFooter="false" />
 @{
     foreach (var property in Properties)
     {
@@ -110,7 +111,7 @@
     }
 }
 
-@if (!IsNavigationEntity && !ModelIsKeyless)
+@if (CanDelete)
 {
     <TemplateColumn T="object">
         <CellTemplate>

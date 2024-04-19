@@ -55,6 +55,12 @@ public partial class EntityPropertyColumns : ComponentBase
     public bool IsNavigationEntity { get; set; }
 
     /// <summary>
+    /// Whether instance of the entity can be deleted.
+    /// </summary>
+    [Parameter]
+    public bool CanDelete { get; set; }
+
+    /// <summary>
     /// Gets property's display name.
     /// </summary>
     /// <param name="property">Property.</param>

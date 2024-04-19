@@ -23,7 +23,7 @@
             </MudItem>
         }
 
-        @if (!ViewModel.Model.IsKeyless)
+        @if (ViewModel.CanDelete)
         {
             <MudItem xs="12">
                 <MudButton Variant="Variant.Outlined" Color="Color.Secondary"
@@ -56,7 +56,7 @@
                          @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple"
                          @attributes="NonKeylessEntityDataGridAttributes">
                 <Columns>
-                    <EntityPropertyColumns Properties="ViewModel.Model.Properties"/>
+                    <EntityPropertyColumns Properties="ViewModel.Model.Properties" CanDelete="ViewModel.CanDelete"/>
                 </Columns>
 
                 <PagerContent>

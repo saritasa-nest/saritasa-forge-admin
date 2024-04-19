@@ -18,6 +18,15 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     [Inject]
     private INavigationService NavigationService { get; set; } = null!;
 
+    [Inject]
+    private ISnackbar Snackbar { get; set; } = default!;
+
+    [Inject]
+    private IDialogService DialogService { get; set; } = default!;
+
+    [Inject]
+    private ILogger<EntityDetails> Logger { get; set; } = default!;
+
     /// <summary>
     /// Entity id.
     /// </summary>
