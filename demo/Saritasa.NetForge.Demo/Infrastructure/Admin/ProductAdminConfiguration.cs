@@ -1,4 +1,4 @@
-﻿using Saritasa.NetForge.Demo.Infrastructure.UploadFiles;
+﻿using Saritasa.NetForge.Demo.Infrastructure.UploadFiles.Strategies;
 using Saritasa.NetForge.Demo.Models;
 using Saritasa.NetForge.DomainServices.Interfaces;
 using Saritasa.NetForge.DomainServices;
