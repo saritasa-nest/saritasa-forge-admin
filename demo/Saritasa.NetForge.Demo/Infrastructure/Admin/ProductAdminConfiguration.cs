@@ -34,7 +34,8 @@ public class ProductAdminConfiguration : IEntityAdminConfiguration<Product>
                 .IncludeProperty(supplier => supplier.City, propertyOptionsBuilder =>
                 {
                     propertyOptionsBuilder.SetDisplayName("Supplier City");
-                });
+                })
+                .SetDisplayDetails(true);
         });
 
         entityOptionsBuilder.IncludeNavigation<Shop>(product => product.Shop, navigationOptionsBuilder =>
@@ -57,7 +58,8 @@ public class ProductAdminConfiguration : IEntityAdminConfiguration<Product>
                     propertyOptionsBuilder
                         .SetIsImage(true)
                         .SetUploadFileStrategy(new UploadBase64FileStrategy());
-                });
+                })
+                .SetDisplayDetails(true);
         });
 
         entityOptionsBuilder.ConfigureProperty(product => product.UpdatedDate, builder =>

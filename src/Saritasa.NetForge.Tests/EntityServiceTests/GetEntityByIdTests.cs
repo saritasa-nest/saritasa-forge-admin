@@ -40,9 +40,7 @@ public class GetEntityByIdTests : IDisposable
             adminOptionsBuilder.Create(),
             MemoryCacheHelper.CreateMemoryCache());
 
-        entityService = new EntityService(
-            AutomapperHelper.CreateAutomapper(),
-            adminMetadataService,
+        entityService = new EntityService(adminMetadataService,
             EfCoreHelper.CreateEfCoreDataService(testDbContext),
             new Mock<IServiceProvider>().Object);
     }

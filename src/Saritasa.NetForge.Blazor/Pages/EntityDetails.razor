@@ -1,8 +1,6 @@
 ﻿@using Saritasa.NetForge.Blazor.Controls
 @using Saritasa.NetForge.Domain.Entities.Options
 @using Saritasa.NetForge.Blazor.Extensions
-@using Saritasa.NetForge.UseCases.Metadata.GetEntityById
-@using Saritasa.NetForge.UseCases.Constants
 @inject AdminOptions AdminOptions
 @inherits Saritasa.NetForge.Blazor.Pages.MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.EntityDetails.EntityDetailsViewModel>
 
@@ -25,6 +23,17 @@
             </MudItem>
         }
 
+        @if (ViewModel.CanDelete)
+        {
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Outlined" Color="Color.Secondary"
+                           OnClick="ShowBulkDeleteEntitiesConfirmationAsync"
+                           Disabled="!ViewModel.SelectedEntities.Any()">
+                    Bulk Delete
+                </MudButton>
+            </MudItem>
+        }
+
         @if (ViewModel.IsDisplaySearchInput)
         {
             const int debounceInterval = 250;
@@ -43,93 +52,13 @@
 
         <MudItem xs="12">
             <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true"
+                         MultiSelection="true" @bind-SelectedItems="ViewModel.SelectedEntities"
                          @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple"
                          @attributes="NonKeylessEntityDataGridAttributes">
                 <Columns>
-                    @{
-                        foreach (var property in ViewModel.Model.Properties)
-                        {
-                            if (property is NavigationMetadataDto { IsCollection: false } navigation)
-                            {
-                                foreach (var targetProperty in navigation.TargetEntityProperties)
-                                {
-                                    RenderPropertyColumn(targetProperty, navigation.Name);
-                                }
-                            }
-                            else
-                            {
-                                RenderPropertyColumn(property);
-                            }
-                        }
-
-                        void RenderPropertyColumn(PropertyMetadataDto property, string? navigationName = null)
-                        {
-                            <TemplateColumn Title="@property.Name" Sortable="property.IsSortable" NavigationName="@navigationName">
-                                <HeaderTemplate>
-                                    @{
-                                        var displayName = ViewModel.GetPropertyDisplayName(property);
-                                        if (AdminOptions.TitleCaseProperties)
-                                        {
-                                            displayName = displayName.ToMeaningfulName();
-                                        }
-
-                                        if (string.IsNullOrEmpty(property.Description))
-                                        {
-                                            @displayName
-                                        }
-                                        else
-                                        {
-                                            <MudTooltip Arrow="true" Placement="@Placement.Top">
-                                                <ChildContent>
-                                                    @displayName
-                                                </ChildContent>
-                                                <TooltipContent>
-                                                    <MudText Typo="@Typo.body2">@property.Description</MudText>
-                                                    </TooltipContent>
-                                                </MudTooltip>
-                                        }
-                                    }
-                                </HeaderTemplate>
-
-                                <CellTemplate Context="cell">
-                                    @{
-                                        var instance = navigationName is null
-                                        ? cell.Item
-                                        : cell.Item.GetType().GetProperty(navigationName)?.GetValue(cell.Item);
-
-                                        var propertyValue = ViewModel.GetPropertyValue(instance, property).ToString();
-
-                                        if (propertyValue!.Equals(property.EmptyValueDisplay)
-                                            || propertyValue.Equals(DefaultValueConstants.DefaultEmptyPropertyValueDisplay))
-                                        {
-                                            @propertyValue
-                                        }
-                                        else if (property.IsImage)
-                                        {
-                                            <div>
-                                                <MudImage Src="@property.UploadFileStrategy!.GetFileSource(propertyValue)"
-                                                          Elevation="25"
-                                                          Class="rounded-lg property-image" />
-                                            </div>
-                                        }
-                                        else if (property.DisplayAsHtml)
-                                        {
-                                            @((MarkupString)propertyValue!)
-                                        }
-                                        else
-                                        {
-                                            @propertyValue
-                                        }
-                                    }
-                                </CellTemplate>
-                            </TemplateColumn>
-                        }
-                    }
-                    <TemplateColumn>
-                        <CellTemplate>
-                            <MudButton Size="@Size.Small" Variant="Variant.Text" Color="Color.Secondary" OnClick="@(()=>ShowDeleteEntityConfirmationAsync(context.Item))">Delete</MudButton>
-                        </CellTemplate>
-                    </TemplateColumn>
+                    <EntityPropertyColumns Properties="ViewModel.Model.Properties"
+                                           DataGrid="ViewModel.DataGrid"
+                                           CanDelete="ViewModel.CanDelete"/>
                 </Columns>
 
                 <PagerContent>

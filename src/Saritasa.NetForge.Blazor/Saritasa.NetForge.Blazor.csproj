@@ -9,11 +9,6 @@
     <StaticWebAssetBasePath>_content/$(PackageId)</StaticWebAssetBasePath>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.0" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
-  </ItemGroup>
-
   <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <PackageReference Include="MudBlazor" Version="6.2.0" />
   </ItemGroup>

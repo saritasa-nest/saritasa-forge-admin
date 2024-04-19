@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Linq.Expressions;
-using AutoMapper;
 using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Enums;
@@ -20,7 +19,6 @@ namespace Saritasa.NetForge.UseCases.Services;
 /// <inheritdoc />
 public class EntityService : IEntityService
 {
-    private readonly IMapper mapper;
     private readonly AdminMetadataService adminMetadataService;
     private readonly IOrmDataService dataService;
     private readonly IServiceProvider serviceProvider;
@@ -29,12 +27,8 @@ public class EntityService : IEntityService
     /// Constructor for <see cref="EntityService"/>.
     /// </summary>
     public EntityService(
-        IMapper mapper,
-        AdminMetadataService adminMetadataService,
-        IOrmDataService dataService,
-        IServiceProvider serviceProvider)
+        AdminMetadataService adminMetadataService, IOrmDataService dataService, IServiceProvider serviceProvider)
     {
-        this.mapper = mapper;
         this.adminMetadataService = adminMetadataService;
         this.dataService = dataService;
         this.serviceProvider = serviceProvider;
@@ -45,11 +39,25 @@ public class EntityService : IEntityService
     {
         var metadata = adminMetadataService.GetMetadata()
             .Where(entityMetadata => !entityMetadata.IsHidden);
-        return Task.FromResult(mapper.Map<IEnumerable<EntityMetadataDto>>(metadata));
+        return Task.FromResult(MapEntityMetadata(metadata));
+    }
+
+    private static IEnumerable<EntityMetadataDto> MapEntityMetadata(IEnumerable<EntityMetadata> metadata)
+    {
+        return metadata.Select(entityMetadata => new EntityMetadataDto
+        {
+            DisplayName = entityMetadata.DisplayName,
+            PluralName = entityMetadata.PluralName,
+            Description = entityMetadata.Description,
+            IsEditable = entityMetadata.IsEditable,
+            Id = entityMetadata.Id,
+            Group = entityMetadata.Group,
+            StringId = entityMetadata.StringId
+        });
     }
 
     /// <inheritdoc />
-    public Task<GetEntityByIdDto> GetEntityByIdAsync(string stringId, CancellationToken cancellationToken)
+    public Task<GetEntityDto> GetEntityByIdAsync(string stringId, CancellationToken cancellationToken)
     {
         var metadata = adminMetadataService
             .GetMetadata()
@@ -60,17 +68,39 @@ public class EntityService : IEntityService
             throw new NotFoundException("Metadata for entity was not found.");
         }
 
+        var metadataDto = GetEntityMetadataDto(metadata);
+
+        return Task.FromResult(metadataDto);
+    }
+
+    /// <inheritdoc />
+    public Task<GetEntityDto> GetEntityByTypeAsync(Type entityType, CancellationToken cancellationToken)
+    {
+        var metadata = adminMetadataService
+            .GetMetadata()
+            .FirstOrDefault(entityMetadata => entityMetadata.ClrType == entityType);
+
+        if (metadata is null)
+        {
+            throw new NotFoundException("Metadata for entity was not found.");
+        }
+
+        var metadataDto = GetEntityMetadataDto(metadata);
+
+        return Task.FromResult(metadataDto);
+    }
+
+    private static GetEntityDto GetEntityMetadataDto(EntityMetadata metadata)
+    {
         var displayableProperties = metadata.Properties
             .Where(property => property is { IsForeignKey: false });
 
-        var propertyDtos = mapper
-            .Map<IEnumerable<PropertyMetadata>, IEnumerable<PropertyMetadataDto>>(displayableProperties);
+        var propertyDtos = displayableProperties.Select(MapProperty);
 
         var displayableNavigations = metadata.Navigations
             .Where(navigation => navigation is { IsIncluded: true });
 
-        var navigationDtos = mapper
-            .Map<IEnumerable<NavigationMetadata>, IEnumerable<NavigationMetadataDto>>(displayableNavigations);
+        var navigationDtos = displayableNavigations.Select(MapNavigation);
 
         propertyDtos = propertyDtos.Union(navigationDtos);
 
@@ -80,9 +110,91 @@ public class EntityService : IEntityService
             .ThenBy(property => property.Order)
             .ToList();
 
-        var metadataDto = mapper.Map<GetEntityByIdDto>(metadata) with { Properties = orderedProperties };
+        return MapGetEntityDto(metadata) with { Properties = orderedProperties };
+    }
 
-        return Task.FromResult(metadataDto);
+    private static PropertyMetadataDto MapProperty(PropertyMetadata property)
+    {
+        return new PropertyMetadataDto
+        {
+            Name = property.Name,
+            DisplayName = property.DisplayName,
+            Description = property.Description,
+            IsPrimaryKey = property.IsPrimaryKey,
+            ClrType = property.ClrType,
+            SearchType = property.SearchType,
+            Order = property.Order,
+            DisplayFormat = property.DisplayFormat,
+            FormatProvider = property.FormatProvider,
+            IsCalculatedProperty = property.IsCalculatedProperty,
+            IsSortable = property.IsSortable,
+            EmptyValueDisplay = property.EmptyValueDisplay,
+            IsHidden = property.IsHidden,
+            IsHiddenFromListView = property.IsHiddenFromListView,
+            IsHiddenFromDetails = property.IsHiddenFromDetails,
+            IsExcludedFromQuery = property.IsExcludedFromQuery,
+            DisplayAsHtml = property.DisplayAsHtml,
+            IsValueGeneratedOnAdd = property.IsValueGeneratedOnAdd,
+            IsValueGeneratedOnUpdate = property.IsValueGeneratedOnUpdate,
+            IsRichTextField = property.IsRichTextField,
+            IsImage = property.IsImage,
+            UploadFileStrategy = property.UploadFileStrategy,
+            IsReadOnly = property.IsReadOnly,
+            TruncationMaxCharacters = property.TruncationMaxCharacters,
+            IsNullable = property.IsNullable,
+            IsMultiline = property.IsMultiline,
+            Lines = property.Lines,
+            MaxLines = property.MaxLines,
+            IsAutoGrow = property.IsAutoGrow
+        };
+    }
+
+    private static NavigationMetadataDto MapNavigation(NavigationMetadata navigation)
+    {
+        return new NavigationMetadataDto
+        {
+            IsCollection = navigation.IsCollection,
+            TargetEntityProperties = navigation.TargetEntityProperties.ConvertAll(MapProperty),
+            Name = navigation.Name,
+            DisplayName = navigation.DisplayName,
+            Description = navigation.Description,
+            ClrType = navigation.ClrType,
+            SearchType = navigation.SearchType,
+            Order = navigation.Order,
+            DisplayFormat = navigation.DisplayFormat,
+            FormatProvider = navigation.FormatProvider,
+            IsSortable = navigation.IsSortable,
+            EmptyValueDisplay = navigation.EmptyValueDisplay,
+            IsHidden = navigation.IsHidden,
+            IsHiddenFromListView = navigation.IsHiddenFromListView,
+            IsHiddenFromDetails = navigation.IsHiddenFromDetails,
+            IsExcludedFromQuery = navigation.IsExcludedFromQuery,
+            DisplayAsHtml = navigation.DisplayAsHtml,
+            IsRichTextField = navigation.IsRichTextField,
+            IsReadOnly = navigation.IsReadOnly,
+            TruncationMaxCharacters = navigation.TruncationMaxCharacters,
+            IsNullable = navigation.IsNullable,
+            IsMultiline = navigation.IsMultiline,
+            Lines = navigation.Lines,
+            MaxLines = navigation.MaxLines,
+            IsAutoGrow = navigation.IsAutoGrow
+        };
+    }
+
+    private static GetEntityDto MapGetEntityDto(EntityMetadata entity)
+    {
+        return new GetEntityDto
+        {
+            Id = entity.Id,
+            DisplayName = entity.DisplayName,
+            PluralName = entity.PluralName,
+            StringId = entity.StringId,
+            Description = entity.Description,
+            ClrType = entity.ClrType,
+            SearchFunction = entity.SearchFunction,
+            CustomQueryFunction = entity.CustomQueryFunction,
+            IsKeyless = entity.IsKeyless
+        };
     }
 
     /// <inheritdoc />
@@ -292,5 +404,12 @@ public class EntityService : IEntityService
     public Task DeleteEntityAsync(object entity, Type entityType, CancellationToken cancellationToken)
     {
         return dataService.DeleteAsync(entity, entityType, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public Task DeleteEntitiesAsync(
+        IEnumerable<object> entities, Type entityType, CancellationToken cancellationToken)
+    {
+        return dataService.BulkDeleteAsync(entities, entityType, cancellationToken);
     }
 }

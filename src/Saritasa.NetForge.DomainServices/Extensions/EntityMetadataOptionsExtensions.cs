@@ -173,5 +173,7 @@ public static class EntityMetadataOptionsExtensions
 
             property?.ApplyPropertyOptions(propertyOptions);
         }
+
+        navigation.DisplayDetails = navigationOptions.DisplayDetails;
     }
 }

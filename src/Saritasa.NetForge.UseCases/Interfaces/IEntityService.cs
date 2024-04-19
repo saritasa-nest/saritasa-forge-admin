@@ -22,7 +22,15 @@ public interface IEntityService
     /// </summary>
     /// <param name="stringId">Entity string identifier.</param>
     /// <param name="cancellationToken">Token for cancelling async operation.</param>
-    Task<GetEntityByIdDto> GetEntityByIdAsync(string stringId, CancellationToken cancellationToken);
+    Task<GetEntityDto> GetEntityByIdAsync(string stringId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Get <see cref="EntityMetadata"/> by <see cref="EntityMetadata.ClrType"/>.
+    /// </summary>
+    /// <param name="entityType">Entity type.</param>
+    /// <param name="cancellationToken">Token for cancelling async operation.</param>
+    /// <returns>Entity DTO.</returns>
+    Task<GetEntityDto> GetEntityByTypeAsync(Type entityType, CancellationToken cancellationToken);
 
     /// <summary>
     /// Get the data for the specific entity type.
@@ -54,4 +62,12 @@ public interface IEntityService
     /// <param name="entityType">Entity type.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     Task DeleteEntityAsync(object entity, Type entityType, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Deletes all provided entities.
+    /// </summary>
+    /// <param name="entities">Entities to delete.</param>
+    /// <param name="entityType">Entity type.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    Task DeleteEntitiesAsync(IEnumerable<object> entities, Type entityType, CancellationToken cancellationToken);
 }

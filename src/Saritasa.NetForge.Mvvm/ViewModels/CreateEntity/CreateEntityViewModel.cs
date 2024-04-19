@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Saritasa.NetForge.Domain.Exceptions;
+﻿using Saritasa.NetForge.Domain.Exceptions;
 using Microsoft.AspNetCore.Components.Forms;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Mvvm.Navigation;
@@ -20,7 +19,6 @@ public class CreateEntityViewModel : BaseViewModel
     public CreateEntityModel Model { get; private set; }
 
     private readonly IEntityService entityService;
-    private readonly IMapper mapper;
     private readonly INavigationService navigationService;
 
     /// <summary>
@@ -29,13 +27,11 @@ public class CreateEntityViewModel : BaseViewModel
     public CreateEntityViewModel(
         string stringId,
         IEntityService entityService,
-        IMapper mapper,
         INavigationService navigationService)
     {
         Model = new CreateEntityModel { StringId = stringId };
 
         this.entityService = entityService;
-        this.mapper = mapper;
         this.navigationService = navigationService;
     }
 
@@ -50,7 +46,7 @@ public class CreateEntityViewModel : BaseViewModel
         try
         {
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
-            Model = mapper.Map<CreateEntityModel>(entity);
+            Model = MapModel(entity);
             Model.EntityInstance = Activator.CreateInstance(Model.ClrType!)!;
             Model = Model with
             {
@@ -88,6 +84,17 @@ public class CreateEntityViewModel : BaseViewModel
         }
 
         filesToUpload.Add(property, file);
+    }
+
+    private CreateEntityModel MapModel(GetEntityDto entity)
+    {
+        return Model with
+        {
+            DisplayName = entity.DisplayName,
+            PluralName = entity.PluralName,
+            ClrType = entity.ClrType,
+            Properties = entity.Properties,
+        };
     }
 
     /// <summary>
