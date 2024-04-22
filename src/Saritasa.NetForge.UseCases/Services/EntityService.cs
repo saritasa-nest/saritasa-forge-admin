@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Domain.Entities.Metadata;
@@ -412,5 +413,13 @@ public class EntityService : IEntityService
         IEnumerable<object> entities, Type entityType, CancellationToken cancellationToken)
     {
         return dataService.BulkDeleteAsync(entities, entityType, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public bool ValidateEntity(object instance, ref List<ValidationResult> errors)
+    {
+        var context = new ValidationContext(instance, null, null);
+
+        return Validator.TryValidateObject(instance, context, errors, true);
     }
 }
