@@ -4,6 +4,7 @@ using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
+using System.ComponentModel.DataAnnotations;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 
@@ -101,6 +102,11 @@ public class EditEntityViewModel : BaseViewModel
     }
 
     /// <summary>
+    /// List of <see cref="ComponentErrorModel"/> instances in the view model.
+    /// </summary>
+    public List<ComponentErrorModel> ErrorViewModels { get; } = [];
+
+    /// <summary>
     /// Updates entity.
     /// </summary>
     public async Task UpdateEntityAsync()
@@ -112,7 +118,30 @@ public class EditEntityViewModel : BaseViewModel
             await fileService.CreateFileAsync(image.PathToFile!, image.FileContent!, CancellationToken);
         }
 
-        await dataService.UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken);
-        IsUpdated = true;
+        var error = new List<ValidationResult>();
+
+        if (entityService.ValidateEntity(Model.EntityInstance!, ref error))
+        {
+            await dataService.UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken);
+            IsUpdated = true;
+        }
+        else
+        {
+            ErrorViewModels.ForEach(e => e.ErrorMessage = string.Empty);
+
+            foreach (var result in error)
+            {
+                foreach (var member in result.MemberNames)
+                {
+                    var property = ErrorViewModels.FirstOrDefault(e => e.Property.Name == member);
+                    if (property is null)
+                    {
+                        continue;
+                    }
+
+                    property.ErrorMessage = result.ErrorMessage!;
+                }
+            }
+        }
     }
 }
