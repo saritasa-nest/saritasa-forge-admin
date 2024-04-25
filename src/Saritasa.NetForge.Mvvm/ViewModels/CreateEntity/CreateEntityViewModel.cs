@@ -99,28 +99,29 @@ public class CreateEntityViewModel : BaseViewModel
             await fileService.CreateFileAsync(image.PathToFile!, image.FileContent!, CancellationToken);
         }
 
-        var error = new List<ValidationResult>();
+        var errors = new List<ValidationResult>();
 
-        if (entityService.ValidateEntity(Model.EntityInstance, ref error))
+        if (entityService.ValidateEntity(Model.EntityInstance, ref errors))
         {
             await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
             navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
         }
         else
         {
+            // Clear the error on the previous validation.
             ErrorViewModels.ForEach(e => e.ErrorMessage = string.Empty);
 
-            foreach (var result in error)
+            foreach (var result in errors)
             {
                 foreach (var member in result.MemberNames)
                 {
-                    var property = ErrorViewModels.FirstOrDefault(e => e.Property.Name == member);
-                    if (property is null)
+                    var errorViewModel = ErrorViewModels.FirstOrDefault(e => e.Property.Name == member);
+                    if (errorViewModel is null)
                     {
                         continue;
                     }
 
-                    property.ErrorMessage = result.ErrorMessage!;
+                    errorViewModel.ErrorMessage = result.ErrorMessage!;
                 }
             }
         }

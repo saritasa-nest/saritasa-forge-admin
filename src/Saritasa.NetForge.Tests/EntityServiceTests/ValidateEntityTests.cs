@@ -283,7 +283,7 @@ public class ValidateEntityTests
     [Fact]
     public void ValidateEntity_CustomValidationAttribute_ShouldHaveError()
     {
-        var property = "Phone";
+        const string property = "Phone";
 
         // Prepare
         var instance = new Dummy

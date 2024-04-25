@@ -5,16 +5,15 @@ namespace Saritasa.NetForge.Tests;
 
 /// <summary>
 /// Validated as a phone number with a specific mask pattern.
+/// <b>Note:</b> It only use for the test custom validation only, not using on anywhere.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
 internal class PhoneMaskAttribute : ValidationAttribute
 {
-    // Internal field to hold the maskPattern value.
-
     /// <summary>
     /// Mask pattern for the phone number validation.
     /// </summary>
-    public string Mask { get; }
+    private readonly string mask;
 
     /// <summary>
     /// Constructor
@@ -22,19 +21,26 @@ internal class PhoneMaskAttribute : ValidationAttribute
     /// <param name="mask">The mask pattern to be used for phone number validation.</param>
     public PhoneMaskAttribute(string mask)
     {
-        Mask = mask;
+        this.mask = mask;
     }
 
     /// <inheritdoc />
     public override bool IsValid(object? value)
     {
-        var phoneNumber = (string)value!;
-        var result = MatchesMask(Mask, phoneNumber);
+        if (value == null)
+        {
+            return false;
+        }
+
+        var phoneNumber = (string)value;
+        var result = MatchesMask(mask, phoneNumber);
         return result;
     }
 
-    // Checks if the entered phone number matches the maskPattern.
-    internal bool MatchesMask(string maskPattern, string phoneNumber)
+    /// <summary>
+    /// Checks if the entered phone number matches the <paramref name="maskPattern"/>.
+    /// </summary>
+    private bool MatchesMask(string maskPattern, string phoneNumber)
     {
         if (maskPattern.Length != phoneNumber.Trim().Length)
         {
@@ -43,7 +49,7 @@ internal class PhoneMaskAttribute : ValidationAttribute
         }
         for (var i = 0; i < maskPattern.Length; i++)
         {
-            if (maskPattern[i] == 'd' && char.IsDigit(phoneNumber[i]) == false)
+            if (maskPattern[i] == 'd' && !char.IsDigit(phoneNumber[i]))
             {
                 // Digit expected at this position.
                 return false;
@@ -60,6 +66,6 @@ internal class PhoneMaskAttribute : ValidationAttribute
     /// <inheritdoc />
     public override string FormatErrorMessage(string name)
     {
-        return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name, Mask);
+        return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name, mask);
     }
 }

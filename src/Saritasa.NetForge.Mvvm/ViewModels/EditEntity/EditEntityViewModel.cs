@@ -127,19 +127,20 @@ public class EditEntityViewModel : BaseViewModel
         }
         else
         {
+            // Clear the error on the previous validation.
             ErrorViewModels.ForEach(e => e.ErrorMessage = string.Empty);
 
             foreach (var result in error)
             {
                 foreach (var member in result.MemberNames)
                 {
-                    var property = ErrorViewModels.FirstOrDefault(e => e.Property.Name == member);
-                    if (property is null)
+                    var errorViewModel = ErrorViewModels.FirstOrDefault(e => e.Property.Name == member);
+                    if (errorViewModel is null)
                     {
                         continue;
                     }
 
-                    property.ErrorMessage = result.ErrorMessage!;
+                    errorViewModel.ErrorMessage = result.ErrorMessage!;
                 }
             }
         }

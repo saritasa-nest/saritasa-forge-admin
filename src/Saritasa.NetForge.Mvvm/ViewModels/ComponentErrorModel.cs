@@ -10,7 +10,7 @@ public class ComponentErrorModel
     /// <summary>
     /// Metadata information about the property associated with the error.
     /// </summary>
-    public PropertyMetadataDto Property { get; set; }
+    public PropertyMetadataDto Property { get; set; } = null!;
 
     /// <summary>
     /// Error message describing the issue with the associated property.
