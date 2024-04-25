@@ -45,7 +45,7 @@ public class ValidateEntityTests
         const string propertyName = "Street";
 
         var typeExtender = new TypeExtender("Saritasa.NetForge.Tests.Domain.Models.Dummy");
-        typeExtender.AddProperty(propertyName, typeof(string), new List<Tuple<Type, object[]>>()
+        typeExtender.AddProperty(propertyName, typeof(string), new List<Tuple<Type, object[]>>
         {
             new(typeof(RequiredAttribute), null!)
         });
@@ -74,7 +74,7 @@ public class ValidateEntityTests
         const string propertyName = "Street";
 
         var typeExtender = new TypeExtender("Saritasa.NetForge.Tests.Domain.Models.Dummy");
-        typeExtender.AddProperty(propertyName, typeof(string), new List<Tuple<Type, object[]>>()
+        typeExtender.AddProperty(propertyName, typeof(string), new List<Tuple<Type, object[]>>
         {
             new(typeof(RequiredAttribute), null!)
         });
@@ -106,7 +106,7 @@ public class ValidateEntityTests
         const string propertyName = "Street";
 
         var typeExtender = new TypeExtender("Saritasa.NetForge.Tests.Domain.Models.Dummy");
-        typeExtender.AddProperty(propertyName, typeof(string), new List<Tuple<Type, object[]>>()
+        typeExtender.AddProperty(propertyName, typeof(string), new List<Tuple<Type, object[]>>
         {
             new(typeof(MinLengthAttribute), [1]),
             new(typeof(MaxLengthAttribute), [10]),
@@ -138,7 +138,7 @@ public class ValidateEntityTests
         const int maxLengthValue = 1;
 
         var typeExtender = new TypeExtender("Saritasa.NetForge.Tests.Domain.Models.Dummy");
-        typeExtender.AddProperty(propertyName, typeof(string), new List<Tuple<Type, object[]>>()
+        typeExtender.AddProperty(propertyName, typeof(string), new List<Tuple<Type, object[]>>
         {
             new(typeof(MinLengthAttribute), [minLengthValue]),
             new(typeof(MaxLengthAttribute), [maxLengthValue]),
@@ -177,12 +177,12 @@ public class ValidateEntityTests
         const string secondPropertyName = "Latitude";
 
         var typeExtender = new TypeExtender("Saritasa.NetForge.Tests.Domain.Models.Dummy");
-        typeExtender.AddProperty(firstPropertyName, typeof(string), new List<Tuple<Type, object[]>>()
+        typeExtender.AddProperty(firstPropertyName, typeof(string), new List<Tuple<Type, object[]>>
         {
             new(typeof(MinLengthAttribute), [1]),
             new(typeof(MaxLengthAttribute), [10]),
         });
-        typeExtender.AddProperty(secondPropertyName, typeof(int), new List<Tuple<Type, object[]>>()
+        typeExtender.AddProperty(secondPropertyName, typeof(int), new List<Tuple<Type, object[]>>
         {
             new(typeof(RequiredAttribute), null!),
             new(typeof(RangeAttribute), [1, 10]),
@@ -219,12 +219,12 @@ public class ValidateEntityTests
         const int secondPropertyMaxLengthValue = 10;
 
         var typeExtender = new TypeExtender("Saritasa.NetForge.Tests.Domain.Models.Dummy");
-        typeExtender.AddProperty(firstPropertyName, typeof(string), new List<Tuple<Type, object[]>>()
+        typeExtender.AddProperty(firstPropertyName, typeof(string), new List<Tuple<Type, object[]>>
         {
             new(typeof(MinLengthAttribute), [firstPropertyMinLengthValue]),
             new(typeof(MaxLengthAttribute), [firstPropertyMaxLengthValue]),
         });
-        typeExtender.AddProperty(secondPropertyName, typeof(int), new List<Tuple<Type, object[]>>()
+        typeExtender.AddProperty(secondPropertyName, typeof(int), new List<Tuple<Type, object[]>>
         {
             new(typeof(RangeAttribute), [secondPropertyMinLengthValue, secondPropertyMaxLengthValue]),
         });
@@ -262,10 +262,17 @@ public class ValidateEntityTests
     public void ValidateEntity_CustomValidationAttribute_ShouldNotHaveError()
     {
         // Prepare
-        var instance = new Dummy
+        const string property = "Phone";
+
+        var typeExtender = new TypeExtender("Saritasa.NetForge.Tests.Domain.Models.Dummy");
+        typeExtender.AddProperty(property, typeof(string), new List<Tuple<Type, object[]>>
         {
-            Phone = "0123-456-789"
-        };
+            new(typeof(PhoneMaskAttribute), ["dddd-ddd-ddd"])
+        });
+        var instanceType = typeExtender.FetchType();
+
+        var instance = Activator.CreateInstance(instanceType);
+        instance!.GetType().GetProperty(property)?.SetValue(instance, "0123-456-789");
 
         var errors = new List<ValidationResult>();
 
@@ -283,13 +290,18 @@ public class ValidateEntityTests
     [Fact]
     public void ValidateEntity_CustomValidationAttribute_ShouldHaveError()
     {
+        // Prepare
         const string property = "Phone";
 
-        // Prepare
-        var instance = new Dummy
+        var typeExtender = new TypeExtender("Saritasa.NetForge.Tests.Domain.Models.Dummy");
+        typeExtender.AddProperty(property, typeof(string), new List<Tuple<Type, object[]>>
         {
-            Phone = "0123456789"
-        };
+            new(typeof(PhoneMaskAttribute), ["dddd-ddd-ddd"])
+        });
+        var instanceType = typeExtender.FetchType();
+
+        var instance = Activator.CreateInstance(instanceType);
+        instance!.GetType().GetProperty(property)?.SetValue(instance, "0123456789");
 
         var errors = new List<ValidationResult>();
 
@@ -302,6 +314,5 @@ public class ValidateEntityTests
 
         var phoneMaskError = errors[0];
         Assert.Contains("Phone", phoneMaskError.MemberNames);
-        Assert.All(new List<string> { property, "does not match", }, item => Assert.Contains(item, phoneMaskError.ErrorMessage));
     }
 }

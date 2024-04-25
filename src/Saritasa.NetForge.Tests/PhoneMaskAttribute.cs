@@ -7,8 +7,8 @@ namespace Saritasa.NetForge.Tests;
 /// Validated as a phone number with a specific mask pattern.
 /// <b>Note:</b> It only use for the test custom validation only, not using on anywhere.
 /// </summary>
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
-internal class PhoneMaskAttribute : ValidationAttribute
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter)]
+public class PhoneMaskAttribute : ValidationAttribute
 {
     /// <summary>
     /// Mask pattern for the phone number validation.
