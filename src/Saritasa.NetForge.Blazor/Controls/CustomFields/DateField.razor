@@ -14,8 +14,8 @@
                       HelperText="@Property.Description"
                       Disabled="IsReadOnly"
                       @bind-Value="PropertyValue"
-                      Error="@ComponentErrorModel.IsError"
-                      ErrorText="@ComponentErrorModel.ErrorMessage">
+                      Error="@FieldErrorModel.IsError"
+                      ErrorText="@FieldErrorModel.ErrorMessage">
         </MudTextField>
     }
     else if (propertyType == typeof(DateOnly) || propertyType == typeof(DateOnly?))
@@ -26,7 +26,7 @@
                        HelperText="@Property.Description"
                        Disabled="IsReadOnly"
                        @bind-Date="PropertyValue"
-                       Error="@ComponentErrorModel.IsError"
-                       ErrorText="@ComponentErrorModel.ErrorMessage" />
+                       Error="@FieldErrorModel.IsError"
+                       ErrorText="@FieldErrorModel.ErrorMessage" />
     }
 }

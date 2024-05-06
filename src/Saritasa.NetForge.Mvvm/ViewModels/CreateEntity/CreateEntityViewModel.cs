@@ -83,9 +83,9 @@ public class CreateEntityViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// List of <see cref="ComponentErrorModel"/> instances in the view model.
+    /// List of <see cref="FieldErrorModel"/> instances in the view model.
     /// </summary>
-    public List<ComponentErrorModel> ErrorViewModels { get; } = [];
+    public List<FieldErrorModel> FieldErrorModels { get; } = [];
 
     /// <summary>
     /// Creates entity.
@@ -109,13 +109,13 @@ public class CreateEntityViewModel : BaseViewModel
         else
         {
             // Clear the error on the previous validation.
-            ErrorViewModels.ForEach(e => e.ErrorMessage = string.Empty);
+            FieldErrorModels.ForEach(e => e.ErrorMessage = string.Empty);
 
             foreach (var result in errors)
             {
                 foreach (var member in result.MemberNames)
                 {
-                    var errorViewModel = ErrorViewModels.FirstOrDefault(e => e.Property.Name == member);
+                    var errorViewModel = FieldErrorModels.FirstOrDefault(e => e.Property.Name == member);
                     if (errorViewModel is null)
                     {
                         continue;

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 using Saritasa.NetForge.Demo.Constants;
 using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.Domain.Enums;
@@ -22,6 +23,7 @@ public class Address
     /// </summary>
     [NetForgeProperty(DisplayName = "Street name", Description = "Street name without street number.",
         Order = 3, SearchType = SearchType.StartsWithCaseSensitive)]
+    [Required]
     public required string Street { get; set; }
 
     /// <summary>

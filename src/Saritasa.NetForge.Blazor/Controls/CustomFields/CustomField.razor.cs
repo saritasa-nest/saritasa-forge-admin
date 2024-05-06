@@ -41,9 +41,9 @@ public abstract class CustomField : OwningComponentBase<IOrmDataService>
     public bool IsReadOnly { get; init; }
 
     /// <summary>
-    /// Error model to show error for component.
+    /// Error model to display the field error.
     /// </summary>
     [Parameter]
     [EditorRequired]
-    public ComponentErrorModel ComponentErrorModel { get; set; } = null!;
+    public FieldErrorModel FieldErrorModel { get; set; } = null!;
 }

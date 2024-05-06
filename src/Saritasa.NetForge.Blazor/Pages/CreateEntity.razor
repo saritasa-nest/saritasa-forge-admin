@@ -20,19 +20,19 @@
                     @foreach (var property in ViewModel.Model.Properties)
                     {
                         // If there is no error view model for the property, create a new one
-                        ComponentErrorModel componentError;
-                        if (ViewModel.ErrorViewModels.Count != ViewModel.Model.Properties.Count)
+                        FieldErrorModel fieldError;
+                        if (ViewModel.FieldErrorModels.Count != ViewModel.Model.Properties.Count)
                         {
-                            componentError = new ComponentErrorModel
+                            fieldError = new FieldErrorModel
                             {
                                 Property = property
                             };
 
-                            ViewModel.ErrorViewModels.Add(componentError);
+                            ViewModel.FieldErrorModels.Add(fieldError);
                         }
                         else
                         {
-                            componentError = ViewModel.ErrorViewModels.First(e => e.Property.Name == property.Name);
+                            fieldError = ViewModel.FieldErrorModels.First(e => e.Property.Name == property.Name);
                         }
 
                         var componentType = CustomFieldHelper.GetComponentType(property);
@@ -40,7 +40,7 @@
                         {
                             { "Property", property },
                             { "EntityInstance", ViewModel.Model.EntityInstance },
-                            { "ComponentErrorModel", componentError }
+                            { "FieldErrorModel", fieldError }
                         };
 
                         <DynamicComponent Type="componentType" Parameters="parameters" />

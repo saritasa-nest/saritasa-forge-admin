@@ -5,7 +5,7 @@ namespace Saritasa.NetForge.Mvvm.ViewModels;
 /// <summary>
 /// Model to store information about an error related to a component property.
 /// </summary>
-public class ComponentErrorModel
+public class FieldErrorModel
 {
     /// <summary>
     /// Metadata information about the property associated with the error.

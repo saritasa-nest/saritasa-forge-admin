@@ -2,7 +2,6 @@
 using Extender;
 using Moq;
 using Saritasa.NetForge.DomainServices;
-using Saritasa.NetForge.Tests.Domain.Models;
 using Saritasa.NetForge.Tests.Helpers;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.Services;
