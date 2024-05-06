@@ -3,8 +3,7 @@
 namespace Saritasa.NetForge.Demo.Infrastructure.UploadFiles.S3Storage;
 
 /// <summary>
-/// Contains methods for creating content URI
-/// for files to upload them.
+/// Contains methods for creating content URI for files to upload them.
 /// </summary>
 public static class ContentUriBuilder
 {
