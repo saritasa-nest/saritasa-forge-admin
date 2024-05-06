@@ -6,7 +6,7 @@ namespace Saritasa.NetForge.Demo.Infrastructure.UploadFiles.Strategies;
 /// <summary>
 /// Strategy when uploaded file converts to base 64 string.
 /// </summary>
-public class UploadBase64FileStrategy : IUploadFileStrategy
+internal class UploadBase64FileStrategy : IUploadFileStrategy
 {
     /// <summary>
     /// Converts given file to base 64 string.

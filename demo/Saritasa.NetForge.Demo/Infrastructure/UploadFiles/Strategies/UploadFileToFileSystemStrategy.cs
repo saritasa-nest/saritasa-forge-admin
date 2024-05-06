@@ -6,7 +6,7 @@ namespace Saritasa.NetForge.Demo.Infrastructure.UploadFiles.Strategies;
 /// <summary>
 /// Strategy to upload file to file system.
 /// </summary>
-public class UploadFileToFileSystemStrategy : IUploadFileStrategy
+internal class UploadFileToFileSystemStrategy : IUploadFileStrategy
 {
     /// <summary>
     /// Uploads file to file system.

@@ -8,7 +8,7 @@ namespace Saritasa.NetForge.Demo.Infrastructure.UploadFiles.Strategies;
 /// <summary>
 /// Strategy to upload file to S3.
 /// </summary>
-public class UploadFileToS3Strategy : IUploadFileStrategy
+internal class UploadFileToS3Strategy : IUploadFileStrategy
 {
     private readonly IBlobStorageService blobStorageService;
     private readonly ICloudBlobStorageService cloudBlobStorageService;
