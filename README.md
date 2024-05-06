@@ -135,9 +135,7 @@ You can read about search [here](docs/SEARCH.md).
 ## View Site URL
 
 Located in the top right corner of the admin panel is a "View Site" link, configurable to direct users to the website URL.
-The default URL is "/".You can customize this value using the Fluent API:
-
-**Using Fluent API:**
+The default URL is "/". You can customize this value using the Fluent API:
 
 ```csharp
 services.AddNetForge(optionsBuilder =>
@@ -766,7 +764,7 @@ public required string Street { get; set; }
 
 **Auto Grow**
 
-IsAutoGrow property identifies whether the height of the text field automatically changes with the number of lines of text.
+`IsAutoGrow` property identifies whether the height of the text field automatically changes with the number of lines of text.
 
 **Using Fluent API**
 
