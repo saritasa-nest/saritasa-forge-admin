@@ -518,7 +518,7 @@ optionsBuilder.ConfigureEntity<Product>(entityOptionsBuilder =>
 
 # Image Properties
 
-You can add properties that will be displayed as images. They can be configured only via `Fluent API`.
+You can add properties that will be displayed as images.
 
 ## Max image size
 
@@ -535,7 +535,7 @@ services.AddNetForge(optionsBuilder =>
 
 ### Using Fluent API
 
-You can create your own implementaion of `IUploadFileStrategy` interface and pass it to `SetUploadFileStrategy` method.
+You can create your own implementaion of `IUploadFileStrategy` interface and pass it to `SetUploadFileStrategy` configuration method.
 
 This interface has methods `UploadFileAsync` that is calling when file is uploaded and `GetFileSource` that is calling when file should be displayed.
 
