@@ -251,7 +251,19 @@ public class EntityService : IEntityService
         var convertedEntity = Expression.Convert(entity, entityType);
 
         var bindings = properties
-            .Select(property => Expression.Property(convertedEntity, property.Name))
+            .Select(property =>
+            {
+                var propertyExpression = Expression.Property(convertedEntity, property.Name);
+                var propertyInfo = propertyExpression.Member;
+
+                if (propertyInfo.DeclaringType == propertyInfo.ReflectedType)
+                {
+                    return propertyExpression;
+                }
+
+                var parentEntity = Expression.Convert(convertedEntity, propertyInfo.DeclaringType!);
+                return Expression.Property(parentEntity, property.Name);
+            })
             .Select(member => Expression.Bind(member.Member, member));
 
         var ctor = entityType.GetConstructors()[0];
