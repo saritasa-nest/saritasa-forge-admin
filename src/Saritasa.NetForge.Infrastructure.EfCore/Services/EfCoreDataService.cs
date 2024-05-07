@@ -2,12 +2,14 @@
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.DomainServices.Comparers;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
+using ExpressionExtensions = Saritasa.NetForge.DomainServices.Extensions.ExpressionExtensions;
 
 namespace Saritasa.NetForge.Infrastructure.EfCore.Services;
 
@@ -274,9 +276,24 @@ public class EfCoreDataService : IOrmDataService
         var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
         var entryConstant = Expression.Constant(searchEntry);
 
+        //var collateMethod = typeof(EF).GetMethod("Collate");
+        //var collateCall = Expression.Call(collateMethod, property, entryConstant);
+
+        Expression<Func<string, string, bool>> predicateTemplate =
+            (property, value)
+                => EF.Functions.Like(EF.Functions.Collate(property, "Latin1_General_CI_AI"), $"%{value}%");
+
+        var body = predicateTemplate.Body;
+
+        body = ReplacingExpressionVisitor.Replace(predicateTemplate.Parameters[0], property, body);
+        body = ReplacingExpressionVisitor.Replace(predicateTemplate.Parameters[1], entryConstant, body);
+
+        return body;
+        //var lambda = Expression.Lambda<Func<object, bool>>(body, entityParam);
+
         // entity => Regex.IsMatch(((entityType)entity).propertyName, searchWord, RegexOptions.IgnoreCase)
-        return Expression.Call(
-            isMatch, property, entryConstant, Expression.Constant(RegexOptions.IgnoreCase));
+        //return Expression.Call(
+        //    isMatch, property, entryConstant, Expression.Constant(RegexOptions.IgnoreCase));
     }
 
     /// <summary>
