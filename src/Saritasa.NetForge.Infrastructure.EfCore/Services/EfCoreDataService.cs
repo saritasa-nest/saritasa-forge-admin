@@ -258,11 +258,10 @@ public class EfCoreDataService : IOrmDataService
         return matches.Select(match => match.Value);
     }
 
-    private static readonly MethodInfo isMatch =
+#if NET8_0_OR_GREATER
+    private static readonly MethodInfo IsMatch =
         typeof(Regex).GetMethod(nameof(Regex.IsMatch), new[] { typeof(string), typeof(string), typeof(RegexOptions) })!;
-
-    private static readonly MethodInfo startsWith =
-        typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string) })!;
+#endif
 
     /// <summary>
     /// Gets call of method similar to <see cref="string.Contains(string)"/> but case insensitive.
@@ -278,7 +277,7 @@ public class EfCoreDataService : IOrmDataService
 
 #if NET8_0_OR_GREATER
         return Expression.Call(
-            isMatch, property, entryConstant, Expression.Constant(RegexOptions.IgnoreCase));
+            IsMatch, property, entryConstant, Expression.Constant(RegexOptions.IgnoreCase));
 #else
         Expression<Func<string, string, bool>> containsExpression =
             (property, value) => property.ToUpper().Contains(value.ToUpper());
@@ -302,6 +301,7 @@ public class EfCoreDataService : IOrmDataService
         MemberExpression propertyExpression, string searchEntry)
     {
         var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
+        var startsWith = typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string) })!;
         var entryConstant = Expression.Constant(searchEntry);
 
         // entity => ((entityType)entity).propertyName.StartsWith(searchConstant)
@@ -330,7 +330,7 @@ public class EfCoreDataService : IOrmDataService
         var entryConstant = Expression.Constant($"^{searchEntry}$");
         // entity => Regex.IsMatch(((entityType)entity).propertyName, ^searchWord$, RegexOptions.IgnoreCase)
         return Expression.Call(
-            isMatch, property, entryConstant, Expression.Constant(RegexOptions.IgnoreCase));
+            IsMatch, property, entryConstant, Expression.Constant(RegexOptions.IgnoreCase));
 #else
         Expression<Func<string, string, bool>> equalsExpression =
             (property, value) => property.ToUpper().Equals(value.ToUpper());
