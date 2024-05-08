@@ -324,13 +324,26 @@ public class EfCoreDataService : IOrmDataService
             return GetNullCheckExpression(propertyExpression);
         }
 
-        var entryConstant = Expression.Constant($"^{searchEntry}$");
-
         var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
 
+#if NET8_0_OR_GREATER
+        var entryConstant = Expression.Constant($"^{searchEntry}$");
         // entity => Regex.IsMatch(((entityType)entity).propertyName, ^searchWord$, RegexOptions.IgnoreCase)
         return Expression.Call(
             isMatch, property, entryConstant, Expression.Constant(RegexOptions.IgnoreCase));
+#else
+        Expression<Func<string, string, bool>> equalsExpression =
+            (property, value) => property.ToUpper().Equals(value.ToUpper());
+
+        var body = equalsExpression.Body;
+
+        body = ReplacingExpressionVisitor.Replace(equalsExpression.Parameters[0], property, body);
+
+        var entryConstant = Expression.Constant(searchEntry);
+        body = ReplacingExpressionVisitor.Replace(equalsExpression.Parameters[1], entryConstant, body);
+
+        return body;
+#endif
     }
 
     /// <summary>
