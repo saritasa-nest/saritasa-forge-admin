@@ -251,19 +251,7 @@ public class EntityService : IEntityService
         var convertedEntity = Expression.Convert(entity, entityType);
 
         var bindings = properties
-            .Select(property =>
-            {
-                var propertyExpression = Expression.Property(convertedEntity, property.Name);
-                var propertyInfo = propertyExpression.Member;
-
-                if (propertyInfo.DeclaringType == propertyInfo.ReflectedType)
-                {
-                    return propertyExpression;
-                }
-
-                var parentEntity = Expression.Convert(convertedEntity, propertyInfo.DeclaringType!);
-                return Expression.Property(parentEntity, property.Name);
-            })
+            .Select(property => GetActualPropertyExpression(convertedEntity, property))
             .Select(member => Expression.Bind(member.Member, member));
 
         var ctor = entityType.GetConstructors()[0];
@@ -275,6 +263,30 @@ public class EntityService : IEntityService
         var selectLambda = Expression.Lambda<Func<object, object>>(memberInit, entity);
 
         return query.Select(selectLambda);
+    }
+
+    /// <summary>
+    /// Gets property expression.
+    /// When <paramref name="property"/> contains inside parent class,
+    /// then <paramref name="entityExpression"/> will be converted to that class.
+    /// </summary>
+    /// <remarks>
+    /// Use case: when a parent class property has <see langword="private set"/>,
+    /// then child class cannot access that <see langword="set"/>.
+    /// </remarks>
+    private static MemberExpression GetActualPropertyExpression(
+        Expression entityExpression, PropertyMetadataDto property)
+    {
+        var propertyExpression = Expression.Property(entityExpression, property.Name);
+        var propertyInfo = propertyExpression.Member;
+
+        if (propertyInfo.DeclaringType == propertyInfo.ReflectedType)
+        {
+            return propertyExpression;
+        }
+
+        var parentEntity = Expression.Convert(entityExpression, propertyInfo.DeclaringType!);
+        return Expression.Property(parentEntity, property.Name);
     }
 
     private IQueryable<object> Search(
