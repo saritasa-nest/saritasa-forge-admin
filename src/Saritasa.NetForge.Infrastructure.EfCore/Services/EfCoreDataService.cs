@@ -276,24 +276,20 @@ public class EfCoreDataService : IOrmDataService
         var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
         var entryConstant = Expression.Constant(searchEntry);
 
-        //var collateMethod = typeof(EF).GetMethod("Collate");
-        //var collateCall = Expression.Call(collateMethod, property, entryConstant);
+#if NET8_0_OR_GREATER
+        return Expression.Call(
+            isMatch, property, entryConstant, Expression.Constant(RegexOptions.IgnoreCase));
+#else
+        Expression<Func<string, string, bool>> containsExpression =
+            (property, value) => property.ToUpper().Contains(value.ToUpper());
 
-        Expression<Func<string, string, bool>> predicateTemplate =
-            (property, value)
-                => EF.Functions.Like(EF.Functions.Collate(property, "Latin1_General_CI_AI"), $"%{value}%");
+        var body = containsExpression.Body;
 
-        var body = predicateTemplate.Body;
-
-        body = ReplacingExpressionVisitor.Replace(predicateTemplate.Parameters[0], property, body);
-        body = ReplacingExpressionVisitor.Replace(predicateTemplate.Parameters[1], entryConstant, body);
+        body = ReplacingExpressionVisitor.Replace(containsExpression.Parameters[0], property, body);
+        body = ReplacingExpressionVisitor.Replace(containsExpression.Parameters[1], entryConstant, body);
 
         return body;
-        //var lambda = Expression.Lambda<Func<object, bool>>(body, entityParam);
-
-        // entity => Regex.IsMatch(((entityType)entity).propertyName, searchWord, RegexOptions.IgnoreCase)
-        //return Expression.Call(
-        //    isMatch, property, entryConstant, Expression.Constant(RegexOptions.IgnoreCase));
+#endif
     }
 
     /// <summary>
