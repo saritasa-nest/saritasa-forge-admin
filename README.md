@@ -3,6 +3,7 @@
 The **NetForge** is a library that provides a user-friendly and intuitive user interface for performing CRUD operations on your database entities within your .NET applications.
 
 - [NetForge - Admin Panel for ASP.NET Core 6 \& 7 \& 8](#netforge---admin-panel-for-aspnet-core-6--7--8)
+- [Prerequisites](#prerequisites)
 - [How to Use](#how-to-use)
 - [Global Configurations](#global-configurations)
   - [Customizing the Endpoint](#customizing-the-endpoint)
@@ -46,11 +47,11 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
 
 # Prerequisites
 
-## .NET 6 and 7
+### .NET 6 and 7
 
 - MudBlazor 6.3.0+
 
-## .NET 8
+### .NET 8
 
 - MudBlazor 6.12.0+
 
