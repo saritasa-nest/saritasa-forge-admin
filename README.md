@@ -47,6 +47,8 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
 
 # Prerequisites
 
+If you utilize `MudBlazor` then your version of `MudBlazor` must be:
+
 ### .NET 6 and 7
 
 - MudBlazor 6.3.0+
