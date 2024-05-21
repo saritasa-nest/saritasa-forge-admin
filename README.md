@@ -44,6 +44,16 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
   - [Multiline Text Field Property](#multiline-text-field-property)
     - [Configuration](#configuration-4)
 
+# Prerequisites
+
+## .NET 6 and 7
+
+- MudBlazor 6.3.0+
+
+## .NET 8
+
+- MudBlazor 6.12.0+
+
 
 # How to Use
 
