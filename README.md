@@ -33,10 +33,7 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
   - [Generated Properties](#generated-properties)
   - [Rich Text Field](#rich-text-field)
   - [Image Properties](#image-properties)
-    - [Image Path](#image-path)
-      - [Configuring Place to Store Media Files](#configuring-place-to-store-media-files)
-    - [Base 64 String](#base-64-string)
-      - [Configuration](#configuration-1)
+    - [Configuration](#configuration-1)
   - [Read-only Properties](#read-only-properties)
     - [Configuration](#configuration-2)
   - [String Truncate](#string-truncate)
@@ -561,20 +558,9 @@ optionsBuilder.ConfigureEntity<Product>(entityOptionsBuilder =>
 
 You can add properties that will be displayed as images.
 
-## Max image size
+### Configuration
 
-You can set max image size in the application. Default value for max image size is 10 MB.
-
-``` csharp
-services.AddNetForge(optionsBuilder =>
-{
-    optionsBuilder.SetMaxImageSize(15);
-});
-```
-
-## Configuration
-
-### Using Fluent API
+**Using Fluent API**
 
 You can create your own implementaion of `IUploadFileStrategy` interface and pass it to `SetUploadFileStrategy` configuration method.
 
@@ -588,6 +574,17 @@ entityOptionsBuilder.ConfigureProperty(shop => shop.BuildingPhoto, builder =>
     builder
         .SetIsImage(true)
         .SetUploadFileStrategy(new UploadBase64FileStrategy());
+});
+```
+
+### Max image size
+
+You can set max image size in the application. Default value for max image size is 10 MB.
+
+``` csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetMaxImageSize(15);
 });
 ```
 
