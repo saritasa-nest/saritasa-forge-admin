@@ -1,6 +1,6 @@
 ﻿using Saritasa.NetForge.Domain.Exceptions;
-using CommunityToolkit.Mvvm.Messaging;
-using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
+using Microsoft.AspNetCore.Components.Forms;
+using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 using Saritasa.NetForge.UseCases.Interfaces;
@@ -20,7 +20,6 @@ public class CreateEntityViewModel : BaseViewModel
 
     private readonly IEntityService entityService;
     private readonly INavigationService navigationService;
-    private readonly IFileService fileService;
 
     /// <summary>
     /// Constructor.
@@ -28,14 +27,12 @@ public class CreateEntityViewModel : BaseViewModel
     public CreateEntityViewModel(
         string stringId,
         IEntityService entityService,
-        INavigationService navigationService,
-        IFileService fileService)
+        INavigationService navigationService)
     {
         Model = new CreateEntityModel { StringId = stringId };
 
         this.entityService = entityService;
         this.navigationService = navigationService;
-        this.fileService = fileService;
     }
 
     /// <summary>
@@ -70,6 +67,25 @@ public class CreateEntityViewModel : BaseViewModel
         }
     }
 
+    private readonly IDictionary<PropertyMetadataDto, IBrowserFile> filesToUpload
+        = new Dictionary<PropertyMetadataDto, IBrowserFile>();
+
+    /// <summary>
+    /// Handles selected file.
+    /// </summary>
+    /// <param name="property">File related to this property.</param>
+    /// <param name="file">Selected file.</param>
+    public void HandleSelectedFile(PropertyMetadataDto property, IBrowserFile? file)
+    {
+        if (file is null)
+        {
+            filesToUpload.Remove(property);
+            return;
+        }
+
+        filesToUpload.Add(property, file);
+    }
+
     private CreateEntityModel MapModel(GetEntityDto entity)
     {
         return Model with
@@ -86,11 +102,10 @@ public class CreateEntityViewModel : BaseViewModel
     /// </summary>
     public async Task CreateEntityAsync()
     {
-        var message = WeakReferenceMessenger.Default.Send(new UploadImageMessage());
-
-        foreach (var image in message.ChangedFiles)
+        foreach (var (property, file) in filesToUpload)
         {
-            await fileService.CreateFileAsync(image.PathToFile!, image.FileContent!, CancellationToken);
+            var fileString = await property.UploadFileStrategy!.UploadFileAsync(file, CancellationToken);
+            Model.EntityInstance.SetPropertyValue(property.Name, fileString);
         }
 
         await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);

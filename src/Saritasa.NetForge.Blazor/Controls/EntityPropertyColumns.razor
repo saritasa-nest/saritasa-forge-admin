@@ -82,10 +82,10 @@
                     {
                         @propertyValue
                     }
-                    else if (property.IsImagePath || property.IsBase64Image)
+                    else if (property.IsImage)
                     {
                         <div>
-                            <MudImage Src="@propertyValue"
+                            <MudImage Src="@property.UploadFileStrategy!.GetFileSource(propertyValue)"
                                       Elevation="25"
                                       Class="rounded-lg property-image" />
                         </div>

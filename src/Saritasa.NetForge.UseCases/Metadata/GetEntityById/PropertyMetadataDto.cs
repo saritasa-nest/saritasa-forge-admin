@@ -1,4 +1,5 @@
-﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+﻿using Saritasa.NetForge.Domain;
+using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.UseCases.Metadata.GetEntityById;
@@ -68,15 +69,6 @@ public record PropertyMetadataDto
     /// <inheritdoc cref="PropertyMetadataBase.IsRichTextField"/>
     public bool IsRichTextField { get; set; }
 
-    /// <inheritdoc cref="PropertyMetadata.IsImagePath"/>
-    public bool IsImagePath { get; set; }
-
-    /// <inheritdoc cref="PropertyMetadata.ImageFolder"/>
-    public string ImageFolder { get; set; } = string.Empty;
-
-    /// <inheritdoc cref="PropertyMetadata.IsBase64Image"/>
-    public bool IsBase64Image { get; set; }
-
     /// <inheritdoc cref="PropertyMetadataBase.IsReadOnly"/>
     public bool IsReadOnly { get; set; }
 
@@ -97,4 +89,10 @@ public record PropertyMetadataDto
 
     /// <inheritdoc cref="PropertyMetadataBase.IsAutoGrow"/>
     public bool IsAutoGrow { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.IsImage"/>
+    public bool IsImage { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.UploadFileStrategy"/>
+    public IUploadFileStrategy? UploadFileStrategy { get; set; }
 }
