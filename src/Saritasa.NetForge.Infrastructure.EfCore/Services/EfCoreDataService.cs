@@ -205,7 +205,7 @@ public class EfCoreDataService : IOrmDataService
         {
             // Add OR operator between every searchable property using search entry
             // Example:
-            // entity => Regex.IsMatch(((entityType)entity).propertyName, searchEntry, RegexOptions.IgnoreCase) ||
+            // entity => ((entityType)entity).propertyName.Equals(searchEntry) ||
             //           ((entityType)entity).propertyName2.StartsWith(searchEntry) ||
             //           ...
             return Expression.OrElse(combinedExpressions, expression);
@@ -223,10 +223,10 @@ public class EfCoreDataService : IOrmDataService
         if (combinedExpressions is not null)
         {
             // Example:
-            // entity => (Regex.IsMatch(((entityType)entity).propertyName, searchEntry, RegexOptions.IgnoreCase) ||
+            // entity => ((entityType)entity).propertyName.Equals(searchEntry) ||
             //           ((entityType)entity).propertyName2.StartsWith(searchEntry) ||
             //           ...) &&
-            //           (Regex.IsMatch(((entityType)entity).propertyName, searchEntry2, RegexOptions.IgnoreCase) ||
+            //           ((entityType)entity).propertyName.Equals(searchEntry2) ||
             //           ((entityType)entity).propertyName2.StartsWith(searchEntry2) ||
             //           ...) && ...
             return Expression.And(combinedExpressions, expression);
@@ -258,16 +258,11 @@ public class EfCoreDataService : IOrmDataService
         return matches.Select(match => match.Value);
     }
 
-#if NET8_0_OR_GREATER
-    private static readonly MethodInfo IsMatch =
-        typeof(Regex).GetMethod(nameof(Regex.IsMatch), new[] { typeof(string), typeof(string), typeof(RegexOptions) })!;
-#endif
-
     /// <summary>
     /// Gets call of method similar to <see cref="string.Contains(string)"/> but case insensitive.
     /// </summary>
     /// <remarks>
-    /// Uses <see cref="Regex.IsMatch(string, string, RegexOptions)"/> with <see cref="RegexOptions.IgnoreCase"/>.
+    /// Uses <see cref="string.ToUpper()"/> to achieve case insensitive search.
     /// </remarks>
     private static Expression GetContainsCaseInsensitiveMethodCall(
         MemberExpression propertyExpression, string searchEntry)
@@ -275,10 +270,6 @@ public class EfCoreDataService : IOrmDataService
         var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
         var entryConstant = Expression.Constant(searchEntry);
 
-#if NET8_0_OR_GREATER
-        return Expression.Call(
-            IsMatch, property, entryConstant, Expression.Constant(RegexOptions.IgnoreCase));
-#else
         Expression<Func<string, string, bool>> containsExpression =
             (property, value) => property.ToUpper().Contains(value.ToUpper());
 
@@ -288,7 +279,6 @@ public class EfCoreDataService : IOrmDataService
         body = ReplacingExpressionVisitor.Replace(containsExpression.Parameters[1], entryConstant, body);
 
         return body;
-#endif
     }
 
     /// <summary>
@@ -313,8 +303,7 @@ public class EfCoreDataService : IOrmDataService
     /// If provided search entry is <c>None</c>, then this method will perform <c>IS NULL</c> check.
     /// </summary>
     /// <remarks>
-    /// Adds <c>^</c> at the start and <c>$</c> at the end of search entry to make exact match.
-    /// Uses <see cref="Regex.IsMatch(string, string, RegexOptions)"/> with <see cref="RegexOptions.IgnoreCase"/>.
+    /// Uses <see cref="string.ToUpper()"/> to achieve case insensitive search.
     /// </remarks>
     private static Expression GetExactMatchCaseInsensitiveMethodCall(
         MemberExpression propertyExpression, string searchEntry)
@@ -326,12 +315,6 @@ public class EfCoreDataService : IOrmDataService
 
         var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
 
-#if NET8_0_OR_GREATER
-        var entryConstant = Expression.Constant($"^{searchEntry}$");
-        // entity => Regex.IsMatch(((entityType)entity).propertyName, ^searchWord$, RegexOptions.IgnoreCase)
-        return Expression.Call(
-            IsMatch, property, entryConstant, Expression.Constant(RegexOptions.IgnoreCase));
-#else
         Expression<Func<string, string, bool>> equalsExpression =
             (property, value) => property.ToUpper().Equals(value.ToUpper());
 
@@ -343,7 +326,6 @@ public class EfCoreDataService : IOrmDataService
         body = ReplacingExpressionVisitor.Replace(equalsExpression.Parameters[1], entryConstant, body);
 
         return body;
-#endif
     }
 
     /// <summary>
