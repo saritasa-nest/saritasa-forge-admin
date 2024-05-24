@@ -69,11 +69,13 @@
 
                         @if (property.SearchType != SearchType.None)
                         {
-                            <MudTooltip Text="@property.SearchType.ToString().ToMeaningfulName()"
-                                        Arrow="true"
-                                        Placement="Placement.Bottom">
-                                <MudIcon Icon="@Icons.Material.Filled.Search" />
-                            </MudTooltip>
+                            <div class="entity-details-grid__small-icon">
+                                <MudTooltip Text="@property.SearchType.ToString().ToMeaningfulName()"
+                                            Arrow="true"
+                                            Placement="Placement.Bottom">
+                                    <MudIcon Icon="@Icons.Material.Filled.Search" Size="Size.Small" />
+                                </MudTooltip>
+                            </div>
                         }
                     </div>
                 }
