@@ -1,4 +1,5 @@
-﻿@using Saritasa.NetForge.UseCases.Metadata.GetEntityById
+﻿@using Saritasa.NetForge.Domain.Enums
+@using Saritasa.NetForge.UseCases.Metadata.GetEntityById
 @using Saritasa.NetForge.Domain.Entities.Options
 @using Saritasa.NetForge.UseCases.Constants
 @using Saritasa.NetForge.Blazor.Extensions
@@ -49,21 +50,34 @@
                         displayName = displayName.ToMeaningfulName();
                     }
 
-                    if (string.IsNullOrEmpty(property.Description))
-                    {
-                        @displayName
-                    }
-                    else
-                    {
-                        <MudTooltip Arrow="true" Placement="@Placement.Top">
-                            <ChildContent>
-                                @displayName
-                            </ChildContent>
-                            <TooltipContent>
-                                <MudText Typo="@Typo.body2">@property.Description</MudText>
-                            </TooltipContent>
-                        </MudTooltip>
-                    }
+                    <div class="entity-details-grid__header-cell">
+                        @if (string.IsNullOrEmpty(property.Description))
+                        {
+                            @displayName
+                        }
+                        else
+                        {
+                            <MudTooltip Arrow="true" Placement="@Placement.Top">
+                                <ChildContent>
+                                    @displayName
+                                </ChildContent>
+                                <TooltipContent>
+                                    <MudText Typo="@Typo.body2">@property.Description</MudText>
+                                </TooltipContent>
+                            </MudTooltip>
+                        }
+
+                        @if (property.SearchType != SearchType.None)
+                        {
+                            <div class="entity-details-grid__small-icon">
+                                <MudTooltip Text="@property.SearchType.ToString().ToMeaningfulName()"
+                                            Arrow="true"
+                                            Placement="Placement.Bottom">
+                                    <MudIcon Icon="@Icons.Material.Filled.Search" Size="Size.Small" />
+                                </MudTooltip>
+                            </div>
+                        }
+                    </div>
                 }
             </HeaderTemplate>
 
