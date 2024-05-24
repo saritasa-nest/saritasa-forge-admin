@@ -41,7 +41,6 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
   - [Multiline Text Field Property](#multiline-text-field-property)
     - [Configuration](#configuration-4)
 
-
 # How to Use
 
 Add NetForge to your service collection in `Program.cs`:
