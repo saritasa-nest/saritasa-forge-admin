@@ -60,6 +60,7 @@ public class PhoneMaskAttribute : ValidationAttribute
                 return false;
             }
         }
+
         return true;
     }
 
