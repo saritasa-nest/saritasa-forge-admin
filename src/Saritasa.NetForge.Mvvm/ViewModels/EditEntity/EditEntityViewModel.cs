@@ -1,5 +1,6 @@
 ﻿using Saritasa.NetForge.Domain.Exceptions;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.AspNetCore.Components.Forms;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Interfaces;
@@ -26,7 +27,6 @@ public class EditEntityViewModel : BaseViewModel
 
     private readonly IEntityService entityService;
     private readonly IOrmDataService dataService;
-    private readonly IFileService fileService;
 
     /// <summary>
     /// Constructor.
@@ -35,15 +35,13 @@ public class EditEntityViewModel : BaseViewModel
         string stringId,
         string instancePrimaryKey,
         IEntityService entityService,
-        IOrmDataService dataService,
-        IFileService fileService)
+        IOrmDataService dataService)
     {
         Model = new EditEntityModel { StringId = stringId };
         InstancePrimaryKey = instancePrimaryKey;
 
         this.entityService = entityService;
         this.dataService = dataService;
-        this.fileService = fileService;
     }
 
     /// <summary>
@@ -91,6 +89,25 @@ public class EditEntityViewModel : BaseViewModel
         }
     }
 
+    private readonly IDictionary<PropertyMetadataDto, IBrowserFile> filesToUpload
+        = new Dictionary<PropertyMetadataDto, IBrowserFile>();
+
+    /// <summary>
+    /// Handles selected file.
+    /// </summary>
+    /// <param name="property">File related to this property.</param>
+    /// <param name="file">Selected file.</param>
+    public void HandleSelectedFile(PropertyMetadataDto property, IBrowserFile? file)
+    {
+        if (file is null)
+        {
+            filesToUpload.Remove(property);
+            return;
+        }
+
+        filesToUpload[property] = file;
+    }
+
     private EditEntityModel MapModel(GetEntityDto entity)
     {
         return Model with
@@ -112,11 +129,10 @@ public class EditEntityViewModel : BaseViewModel
     /// </summary>
     public async Task UpdateEntityAsync()
     {
-        var message = WeakReferenceMessenger.Default.Send(new UploadImageMessage());
-
-        foreach (var image in message.ChangedFiles)
+        foreach (var (property, file) in filesToUpload)
         {
-            await fileService.CreateFileAsync(image.PathToFile!, image.FileContent!, CancellationToken);
+            var fileString = await property.UploadFileStrategy!.UploadFileAsync(file, CancellationToken);
+            Model.EntityInstance.SetPropertyValue(property.Name, fileString);
         }
 
         var errors = new List<ValidationResult>();

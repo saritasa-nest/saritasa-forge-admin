@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Saritasa.NetForge.Blazor.Extensions;
 using Saritasa.NetForge.Demo.Infrastructure.Startup;
 using Saritasa.NetForge.Demo.Infrastructure.Startup.HealthCheck;
+using Saritasa.NetForge.Demo.Infrastructure.UploadFiles.S3Storage;
 using Saritasa.NetForge.Demo.Models;
+using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
 namespace Saritasa.NetForge.Demo;
 
@@ -48,9 +50,15 @@ public class Startup
             .AddEntityFrameworkStores<ShopDbContext>()
             .AddDefaultTokenProviders();
         services.Configure<IdentityOptions>(new IdentityOptionsSetup().Setup);
-        
+
+        // S3 storage
+        services.Configure<S3Settings>(configuration.GetSection("S3Settings"));
+
+        services.AddScoped<IBlobStorageService, S3StorageService>();
+        services.AddScoped<ICloudBlobStorageService, S3StorageService>();
+
         // Add NetForge admin panel.
-        Infrastructure.DependencyInjection.NetForgeModule.Register(services);
+        Infrastructure.DependencyInjection.NetForgeModule.Register(services, configuration);
     }
 
     /// <summary>

@@ -98,7 +98,7 @@ public partial class EntityPropertyColumns : ComponentBase
 
         value = FormatValue(value, property.Name);
 
-        if (property.ClrType == typeof(string))
+        if (property.ClrType == typeof(string) && !property.IsImage)
         {
             var stringValue = value.ToString();
 

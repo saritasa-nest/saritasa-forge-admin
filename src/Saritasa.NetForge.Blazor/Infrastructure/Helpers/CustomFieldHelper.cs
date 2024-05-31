@@ -52,7 +52,7 @@ public static class CustomFieldHelper
     /// </summary>
     public static Type GetComponentType(PropertyMetadataDto property)
     {
-        if (property.IsImagePath || property.IsBase64Image)
+        if (property.IsImage)
         {
             return typeof(UploadImage);
         }
