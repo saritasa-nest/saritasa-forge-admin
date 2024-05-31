@@ -5,6 +5,7 @@ using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using System.ComponentModel.DataAnnotations;
+using Saritasa.NetForge.Mvvm.Utils;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 
@@ -118,31 +119,16 @@ public class EditEntityViewModel : BaseViewModel
             await fileService.CreateFileAsync(image.PathToFile!, image.FileContent!, CancellationToken);
         }
 
-        var error = new List<ValidationResult>();
+        var errors = new List<ValidationResult>();
 
-        if (entityService.ValidateEntity(Model.EntityInstance!, ref error))
+        if (entityService.ValidateEntity(Model.EntityInstance!, ref errors))
         {
             await dataService.UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken);
             IsUpdated = true;
         }
         else
         {
-            // Clear the error on the previous validation.
-            FieldErrorModels.ForEach(e => e.ErrorMessage = string.Empty);
-
-            foreach (var result in error)
-            {
-                foreach (var member in result.MemberNames)
-                {
-                    var errorViewModel = FieldErrorModels.FirstOrDefault(e => e.Property.Name == member);
-                    if (errorViewModel is null)
-                    {
-                        continue;
-                    }
-
-                    errorViewModel.ErrorMessage = result.ErrorMessage!;
-                }
-            }
+            FieldErrorModels.MappingErrorToCorrectField(errors);
         }
     }
 }

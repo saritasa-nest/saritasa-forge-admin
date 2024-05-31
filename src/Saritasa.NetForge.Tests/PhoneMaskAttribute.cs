@@ -5,18 +5,20 @@ namespace Saritasa.NetForge.Tests;
 
 /// <summary>
 /// Validated as a phone number with a specific mask pattern.
-/// <b>Note:</b> It only use for the test custom validation only, not using on anywhere.
+/// <b>Note:</b> It only uses for the test custom validation only, not using on anywhere.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter)]
 public class PhoneMaskAttribute : ValidationAttribute
 {
+    private const char Digit = 'd';
+
     /// <summary>
     /// Mask pattern for the phone number validation.
     /// </summary>
     private readonly string mask;
 
     /// <summary>
-    /// Constructor
+    /// Constructor.
     /// </summary>
     /// <param name="mask">The mask pattern to be used for phone number validation.</param>
     public PhoneMaskAttribute(string mask)
@@ -32,7 +34,7 @@ public class PhoneMaskAttribute : ValidationAttribute
             return false;
         }
 
-        var phoneNumber = (string)value;
+        var phoneNumber = value as string ?? "";
         var result = MatchesMask(mask, phoneNumber);
         return result;
     }
@@ -49,7 +51,7 @@ public class PhoneMaskAttribute : ValidationAttribute
         }
         for (var i = 0; i < maskPattern.Length; i++)
         {
-            if (maskPattern[i] == 'd' && !char.IsDigit(phoneNumber[i]))
+            if (maskPattern[i] == Digit && !char.IsDigit(phoneNumber[i]))
             {
                 // Digit expected at this position.
                 return false;

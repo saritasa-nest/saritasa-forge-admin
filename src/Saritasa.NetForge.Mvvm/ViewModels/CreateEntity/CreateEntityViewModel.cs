@@ -6,6 +6,7 @@ using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using System.ComponentModel.DataAnnotations;
+using Saritasa.NetForge.Mvvm.Utils;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
 
@@ -108,22 +109,7 @@ public class CreateEntityViewModel : BaseViewModel
         }
         else
         {
-            // Clear the error on the previous validation.
-            FieldErrorModels.ForEach(e => e.ErrorMessage = string.Empty);
-
-            foreach (var result in errors)
-            {
-                foreach (var member in result.MemberNames)
-                {
-                    var errorViewModel = FieldErrorModels.FirstOrDefault(e => e.Property.Name == member);
-                    if (errorViewModel is null)
-                    {
-                        continue;
-                    }
-
-                    errorViewModel.ErrorMessage = result.ErrorMessage!;
-                }
-            }
+            FieldErrorModels.MappingErrorToCorrectField(errors);
         }
     }
 }

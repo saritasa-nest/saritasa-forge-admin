@@ -418,8 +418,8 @@ public class EntityService : IEntityService
     /// <inheritdoc />
     public bool ValidateEntity(object instance, ref List<ValidationResult> errors)
     {
-        var context = new ValidationContext(instance, serviceProvider, null);
+        var context = new ValidationContext(instance, serviceProvider, items: null);
 
-        return Validator.TryValidateObject(instance, context, errors, true);
+        return Validator.TryValidateObject(instance, context, errors, validateAllProperties: true);
     }
 }
