@@ -1,5 +1,4 @@
 ﻿using Saritasa.NetForge.Domain.Exceptions;
-using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.AspNetCore.Components.Forms;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
@@ -7,13 +6,14 @@ using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using System.ComponentModel.DataAnnotations;
 using Saritasa.NetForge.Mvvm.Utils;
+using System.Reflection;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 
 /// <summary>
 /// View model for edit entity page.
 /// </summary>
-public class EditEntityViewModel : BaseViewModel
+public class EditEntityViewModel : ValidationEntityViewModel
 {
     /// <summary>
     /// Entity details model.
@@ -82,6 +82,13 @@ public class EditEntityViewModel : BaseViewModel
                 .GetInstanceAsync(InstancePrimaryKey, Model.ClrType!, includedNavigationNames, CancellationToken);
 
             Model.OriginalEntityInstance = Model.EntityInstance.CloneJson();
+
+            FieldErrorModels = Model.Properties
+                .Select(property => new FieldErrorModel
+                {
+                    Property = property
+                })
+                .ToList();
         }
         catch (NotFoundException)
         {
@@ -120,11 +127,6 @@ public class EditEntityViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// List of <see cref="FieldErrorModel"/> instances in the view model.
-    /// </summary>
-    public List<FieldErrorModel> FieldErrorModels { get; } = [];
-
-    /// <summary>
     /// Updates entity.
     /// </summary>
     public async Task UpdateEntityAsync()
@@ -136,6 +138,9 @@ public class EditEntityViewModel : BaseViewModel
         }
 
         var errors = new List<ValidationResult>();
+
+        // Clear the error on the previous validation.
+        FieldErrorModels.ForEach(e => e.ErrorMessage = string.Empty);
 
         if (entityService.ValidateEntity(Model.EntityInstance!, ref errors))
         {

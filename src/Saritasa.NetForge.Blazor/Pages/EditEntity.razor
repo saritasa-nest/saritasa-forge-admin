@@ -27,21 +27,15 @@ else if (ViewModel.IsEntityExists)
                     @foreach (var property in ViewModel.Model.Properties)
                     {
                         // If there is no error view model for the property, create a new one
-                        FieldErrorModel fieldError;
-                        if (ViewModel.FieldErrorModels.Count != ViewModel.Model.Properties.Count)
+                        var fieldError = ViewModel.FieldErrorModels.FirstOrDefault(e => e.Property.Name == property.Name);
+                        if (fieldError == null)
                         {
                             fieldError = new FieldErrorModel
                             {
                                 Property = property
                             };
-
                             ViewModel.FieldErrorModels.Add(fieldError);
                         }
-                        else
-                        {
-                            fieldError = ViewModel.FieldErrorModels.First(e => e.Property.Name == property.Name);
-                        }
-
                         var componentType = CustomFieldHelper.GetComponentType(property);
                         var parameters = new Dictionary<string, object>
                         {

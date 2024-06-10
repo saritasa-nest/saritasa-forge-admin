@@ -13,7 +13,7 @@ namespace Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
 /// <summary>
 /// View model for create entity page.
 /// </summary>
-public class CreateEntityViewModel : BaseViewModel
+public class CreateEntityViewModel : ValidationEntityViewModel
 {
     /// <summary>
     /// Entity details model.
@@ -60,8 +60,15 @@ public class CreateEntityViewModel : BaseViewModel
                         IsValueGeneratedOnUpdate: false,
                         IsReadOnly: false
                     })
-                    .ToList()
+                    .ToList(),
             };
+
+            FieldErrorModels = Model.Properties
+                .Select(property => new FieldErrorModel
+                {
+                    Property = property
+                })
+                .ToList();
         }
         catch (NotFoundException)
         {
@@ -100,11 +107,6 @@ public class CreateEntityViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// List of <see cref="FieldErrorModel"/> instances in the view model.
-    /// </summary>
-    public List<FieldErrorModel> FieldErrorModels { get; } = [];
-
-    /// <summary>
     /// Creates entity.
     /// </summary>
     public async Task CreateEntityAsync()
@@ -116,6 +118,9 @@ public class CreateEntityViewModel : BaseViewModel
         }
 
         var errors = new List<ValidationResult>();
+
+        // Clear the error on the previous validation.
+        FieldErrorModels.ForEach(e => e.ErrorMessage = string.Empty);
 
         if (entityService.ValidateEntity(Model.EntityInstance, ref errors))
         {

@@ -30,6 +30,7 @@ public class Address
     /// The city where the address is located.
     /// </summary>
     [NetForgeProperty(Order = 4, SearchType = SearchType.StartsWithCaseSensitive)]
+    [Required]
     public required string City { get; set; }
 
     /// <summary>
@@ -41,12 +42,14 @@ public class Address
     /// The postal code of the address.
     /// </summary>
     [NetForgeProperty(Order = 6)]
+    [Required]
     public required string PostalCode { get; set; }
 
     /// <summary>
     /// The name of the country.
     /// </summary>
     [NetForgeProperty(Description = "Country name.", Order = 5)]
+    [Required]
     public required string Country { get; set; }
 
     /// <summary>
@@ -64,6 +67,7 @@ public class Address
     /// <summary>
     /// The contact phone number associated with the address.
     /// </summary>
+    [Required]
     public required string ContactPhone { get; set; }
 
     /// <inheritdoc />
