@@ -3,6 +3,8 @@
 
 <MudCheckBox Label="@Property.Name.ToMeaningfulName()"
              Disabled="IsReadOnly"
-             @bind-Checked="PropertyValue">
+             @bind-Checked="PropertyValue"
+             Error="@FieldErrorModel.IsError"
+             ErrorText="@FieldErrorModel.ErrorMessage">
     <MudText class="mud-input-helper-text ml-3">@Property.Description</MudText>
 </MudCheckBox>

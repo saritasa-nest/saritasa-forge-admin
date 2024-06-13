@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 using Saritasa.NetForge.Demo.Constants;
 using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.Domain.Enums;
@@ -22,12 +23,14 @@ public class Address
     /// </summary>
     [NetForgeProperty(DisplayName = "Street name", Description = "Street name without street number.",
         Order = 3, SearchType = SearchType.StartsWithCaseSensitive)]
+    [Required]
     public required string Street { get; set; }
 
     /// <summary>
     /// The city where the address is located.
     /// </summary>
     [NetForgeProperty(Order = 4, SearchType = SearchType.StartsWithCaseSensitive)]
+    [Required]
     public required string City { get; set; }
 
     /// <summary>
@@ -39,12 +42,14 @@ public class Address
     /// The postal code of the address.
     /// </summary>
     [NetForgeProperty(Order = 6)]
+    [Required]
     public required string PostalCode { get; set; }
 
     /// <summary>
     /// The name of the country.
     /// </summary>
     [NetForgeProperty(Description = "Country name.", Order = 5)]
+    [Required]
     public required string Country { get; set; }
 
     /// <summary>
@@ -62,6 +67,7 @@ public class Address
     /// <summary>
     /// The contact phone number associated with the address.
     /// </summary>
+    [Required]
     public required string ContactPhone { get; set; }
 
     /// <inheritdoc />

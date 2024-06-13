@@ -1,4 +1,6 @@
-﻿namespace Saritasa.NetForge.Tests.Domain.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Saritasa.NetForge.Tests.Domain.Models;
 
 /// <summary>
 /// Represents contact information of a user or entity.
@@ -13,6 +15,8 @@ internal class ContactInfo
     /// <summary>
     /// The full name of the contact person.
     /// </summary>
+    [MinLength(5)]
+    [MaxLength(10)]
     public string FullName { get; set; } = string.Empty;
 
     /// <summary>
@@ -23,6 +27,8 @@ internal class ContactInfo
     /// <summary>
     /// The phone number of the contact person.
     /// </summary>
+    [StringLength(12)]
+    [PhoneMask("dddd-ddd-ddd", ErrorMessage = "The phone number have wrong format, format is: dddd-ddd-ddd")]
     public string PhoneNumber { get; set; } = string.Empty;
 
     /// <inheritdoc />

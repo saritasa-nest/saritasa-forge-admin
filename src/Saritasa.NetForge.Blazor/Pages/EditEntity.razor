@@ -3,6 +3,7 @@
 @using Saritasa.NetForge.Blazor.Controls.CustomFields
 @using Saritasa.NetForge.Blazor.Extensions
 @using Saritasa.NetForge.Blazor.Infrastructure.Helpers
+@using Saritasa.NetForge.Mvvm.ViewModels
 @using Saritasa.NetForge.UseCases.Metadata.GetEntityById
 
 @inherits MvvmComponentBase<EditEntityViewModel>
@@ -25,12 +26,23 @@ else if (ViewModel.IsEntityExists)
                 <div class="d-flex flex-column flex-grow-1 gap-4">
                     @foreach (var property in ViewModel.Model.Properties)
                     {
+                        // If there is no error view model for the property, create a new one
+                        var fieldError = ViewModel.FieldErrorModels.FirstOrDefault(e => e.Property.Name == property.Name);
+                        if (fieldError == null)
+                        {
+                            fieldError = new FieldErrorModel
+                            {
+                                Property = property
+                            };
+                            ViewModel.FieldErrorModels.Add(fieldError);
+                        }
                         var componentType = CustomFieldHelper.GetComponentType(property);
                         var parameters = new Dictionary<string, object>
                         {
                             { "Property", property },
                             { "EntityInstance", ViewModel.Model.EntityInstance },
-                            { "IsReadOnly", property.IsPrimaryKey || property.IsReadOnly }
+                            { "IsReadOnly", property.IsPrimaryKey || property.IsReadOnly },
+                            { "FieldErrorModel", fieldError }
                         };
 
                         if (property.UploadFileStrategy is not null)

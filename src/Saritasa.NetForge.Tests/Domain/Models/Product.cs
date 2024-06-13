@@ -1,4 +1,6 @@
-﻿namespace Saritasa.NetForge.Tests.Domain.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Saritasa.NetForge.Tests.Domain.Models;
 
 /// <summary>
 /// Represents a product entity.
@@ -18,6 +20,8 @@ internal class Product
     /// <summary>
     /// The description of the product.
     /// </summary>
+    [MinLength(7)]
+    [MaxLength(3)]
     public string Description { get; set; } = string.Empty;
 
     /// <summary>

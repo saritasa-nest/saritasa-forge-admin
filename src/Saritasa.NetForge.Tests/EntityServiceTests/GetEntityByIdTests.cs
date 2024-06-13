@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using Moq;
 using Saritasa.NetForge.Domain.Attributes;
-using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Domain.Exceptions;
 using Saritasa.NetForge.DomainServices;
 using Saritasa.NetForge.Tests.Domain;

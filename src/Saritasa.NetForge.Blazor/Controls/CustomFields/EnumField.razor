@@ -6,7 +6,9 @@
            Variant="Variant.Outlined"
            HelperText="@Property.Description"
            Disabled="IsReadOnly"
-           @bind-Value="PropertyValue">
+           @bind-Value="PropertyValue"
+           Error="@FieldErrorModel.IsError"
+           ErrorText="@FieldErrorModel.ErrorMessage">
     @foreach (var enumValue in Enum.GetNames(Property.ClrType!))
     {
         <MudSelectItem Value="enumValue" />

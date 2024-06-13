@@ -1,4 +1,5 @@
-﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+﻿using System.ComponentModel.DataAnnotations;
+using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Metadata.DTOs;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
@@ -70,4 +71,12 @@ public interface IEntityService
     /// <param name="entityType">Entity type.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     Task DeleteEntitiesAsync(IEnumerable<object> entities, Type entityType, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Validates the specified entity instance and populates the provided list of validation errors.
+    /// </summary>
+    /// <param name="instance">The object instance to be validated.</param>
+    /// <param name="errors">A reference to a list of <see cref="ValidationResult"/> where validation errors will be stored.</param>
+    /// <returns>Returns <c>true</c> if the entity is valid; otherwise, returns <c>false</c>.</returns>
+    bool ValidateEntity(object instance, ref List<ValidationResult> errors);
 }

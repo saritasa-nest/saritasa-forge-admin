@@ -5,13 +5,15 @@ using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
+using System.ComponentModel.DataAnnotations;
+using Saritasa.NetForge.Mvvm.Utils;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
 
 /// <summary>
 /// View model for create entity page.
 /// </summary>
-public class CreateEntityViewModel : BaseViewModel
+public class CreateEntityViewModel : ValidationEntityViewModel
 {
     /// <summary>
     /// Entity details model.
@@ -58,8 +60,15 @@ public class CreateEntityViewModel : BaseViewModel
                         IsValueGeneratedOnUpdate: false,
                         IsReadOnly: false
                     })
-                    .ToList()
+                    .ToList(),
             };
+
+            FieldErrorModels = Model.Properties
+                .Select(property => new FieldErrorModel
+                {
+                    Property = property
+                })
+                .ToList();
         }
         catch (NotFoundException)
         {
@@ -108,7 +117,19 @@ public class CreateEntityViewModel : BaseViewModel
             Model.EntityInstance.SetPropertyValue(property.Name, fileString);
         }
 
-        await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
-        navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
+        var errors = new List<ValidationResult>();
+
+        // Clear the error on the previous validation.
+        FieldErrorModels.ForEach(e => e.ErrorMessage = string.Empty);
+
+        if (entityService.ValidateEntity(Model.EntityInstance, ref errors))
+        {
+            await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
+            navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
+        }
+        else
+        {
+            FieldErrorModels.MappingErrorToCorrectField(errors);
+        }
     }
 }

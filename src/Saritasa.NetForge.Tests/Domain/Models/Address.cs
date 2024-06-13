@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.Tests.Domain.Constants;
 
@@ -25,6 +26,7 @@ internal class Address
     /// <summary>
     /// The city where the address is located.
     /// </summary>
+    [Required]
     public string City { get; set; } = string.Empty;
 
     /// <summary>
