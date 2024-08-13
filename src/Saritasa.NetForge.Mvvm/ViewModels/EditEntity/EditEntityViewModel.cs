@@ -142,14 +142,15 @@ public class EditEntityViewModel : ValidationEntityViewModel
         // Clear the error on the previous validation.
         FieldErrorModels.ForEach(e => e.ErrorMessage = string.Empty);
 
-        if (entityService.ValidateEntity(Model.EntityInstance!, ref errors))
-        {
-            await dataService.UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken);
-            IsUpdated = true;
-        }
-        else
+        if (!entityService.ValidateEntity(Model.ClrType!, Model.EntityInstance!, ref errors))
         {
             FieldErrorModels.MappingErrorToCorrectField(errors);
+
+            return;
+
         }
+
+        await dataService.UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken);
+        IsUpdated = true;
     }
 }

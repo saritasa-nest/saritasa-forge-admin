@@ -13,7 +13,7 @@ namespace Saritasa.NetForge.Demo.Controllers;
 public class HomeController : Controller
 {
     private readonly AdminOptions adminOptions;
-    
+
     /// <summary>
     /// Constructor.
     /// </summary>
@@ -21,7 +21,7 @@ public class HomeController : Controller
     {
         this.adminOptions = adminOptions;
     }
-    
+
     /// <summary>
     /// Display the home page.
     /// </summary>
@@ -32,7 +32,7 @@ public class HomeController : Controller
         {
             AdminPanelUrl = adminOptions.AdminPanelEndpoint
         };
-        
+
         return View(viewModel);
     }
 }
