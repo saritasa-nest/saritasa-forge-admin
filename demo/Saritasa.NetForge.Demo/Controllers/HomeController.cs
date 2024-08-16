@@ -8,7 +8,6 @@ namespace Saritasa.NetForge.Demo.Controllers;
 /// <summary>
 /// Home controller.
 /// </summary>
-[Authorize]
 [Route("")]
 public class HomeController : Controller
 {
