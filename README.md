@@ -734,3 +734,13 @@ entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
 [MultilineText(IsAutoGrow = true)]
 public required string Street { get; set; }
 ```
+
+Contributors
+------------
+
+* Saritasa http://www.saritasa.com
+
+License
+-------
+
+The project is licensed under the terms of the BSD license. Refer to LICENSE.txt for more information.
