@@ -1,4 +1,4 @@
-﻿import "/_content/NetForgeBlazor/ckeditor.js";
+﻿import "/_content/Saritasa.NetForge/ckeditor.js";
 
 const timeouts = [];
 const editorConfig = {
