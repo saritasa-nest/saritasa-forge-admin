@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Saritasa.NetForge.DomainServices\Saritasa.NetForge.DomainServices.csproj" />
     <ProjectReference Include="..\Saritasa.NetForge.Infrastructure.Abstractions\Saritasa.NetForge.Infrastructure.Abstractions.csproj" />
+    <ProjectReference Include="..\Saritasa.NetForge.Infrastructure.EfCore\Saritasa.NetForge.Infrastructure.EfCore.csproj" />
     <ProjectReference Include="..\Saritasa.NetForge.Mvvm\Saritasa.NetForge.Mvvm.csproj" />
     <ProjectReference Include="..\Saritasa.NetForge.UseCases\Saritasa.NetForge.UseCases.csproj" />
   </ItemGroup>
