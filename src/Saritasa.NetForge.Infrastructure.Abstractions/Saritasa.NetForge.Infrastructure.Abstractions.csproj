@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
     <RootNamespace>Saritasa.NetForge.Infrastructure.Abstractions</RootNamespace>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">

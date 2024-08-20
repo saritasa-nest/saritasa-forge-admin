@@ -24,7 +24,7 @@ public partial class CkEditorField : CustomField, IAsyncDisposable
         {
             await base.OnAfterRenderAsync(firstRender);
             jsModule = await JsRuntime!.InvokeAsync<IJSObjectReference>("import",
-                "./_content/NetForgeBlazor/Controls/CustomFields/CkEditorField.razor.js");
+                "./_content/Saritasa.NetForge/Controls/CustomFields/CkEditorField.razor.js");
             var editorId = Guid.NewGuid().ToString();
             var dotnetReference = DotNetObjectReference.Create(this);
             await jsModule.InvokeVoidAsync("InitCKEditor", editor, editorId, IsReadOnly,

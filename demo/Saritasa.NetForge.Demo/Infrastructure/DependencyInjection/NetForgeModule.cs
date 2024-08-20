@@ -22,12 +22,6 @@ internal static class NetForgeModule
     {
         services.AddNetForge(optionsBuilder =>
         {
-            optionsBuilder.ConfigureAuth(serviceProvider =>
-            {
-                var httpContext = serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
-                return Task.FromResult(httpContext?.User.Identity?.IsAuthenticated ?? false);
-            });
-
             optionsBuilder.UseEntityFramework(efOptionsBuilder => { efOptionsBuilder.UseDbContext<ShopDbContext>(); })
                 .AddGroups(new List<EntityGroup>
                 {
