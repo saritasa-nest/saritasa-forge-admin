@@ -122,7 +122,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
         // Clear the error on the previous validation.
         FieldErrorModels.ForEach(e => e.ErrorMessage = string.Empty);
 
-        if (!entityService.ValidateEntity(Model.ClrType!, Model.EntityInstance, ref errors))
+        if (!entityService.ValidateEntity(Model.EntityInstance, Model.Properties, ref errors))
         {
             FieldErrorModels.MappingErrorToCorrectField(errors);
 

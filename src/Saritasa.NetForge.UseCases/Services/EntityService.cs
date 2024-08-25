@@ -415,14 +415,20 @@ public class EntityService : IEntityService
     }
 
     /// <inheritdoc />
-    public bool ValidateEntity(Type entityType, object instance, ref List<ValidationResult> errors)
+    public bool ValidateEntity(object instance, ICollection<PropertyMetadataDto> properties, ref List<ValidationResult> errors)
     {
         var context = new ValidationContext(instance, serviceProvider, items: null);
 
         Validator.TryValidateObject(instance, context, errors, validateAllProperties: true);
 
-        var requiredProperties = entityType.GetProperties()
-            .Where(prop => prop.CustomAttributes.Any(attr => attr.AttributeType.Name == "RequiredMemberAttribute") && !prop.IsDefined(typeof(RequiredAttribute), false))
+        var isNotNullableProperties = properties
+            .Where(property => !property.IsNullable)
+            .Select(e => e.Name)
+            .ToList();
+
+        // Validate property that not have RequiredAttribute but have RequiredMemberAttribute or is not nullable (in Entity Framework).
+        var requiredProperties = instance.GetType().GetProperties()
+            .Where(prop => !prop.IsDefined(typeof(RequiredAttribute), false) && (prop.CustomAttributes.Any(attr => attr.AttributeType.Name == "RequiredMemberAttribute") || isNotNullableProperties.Contains(prop.Name)))
             .ToList();
 
         var requiredErrors = new List<ValidationResult>();
@@ -430,7 +436,6 @@ public class EntityService : IEntityService
         {
             var value = instance.GetPropertyValue(property.Name);
 
-            // Validation
             switch (value)
             {
                 case string str:

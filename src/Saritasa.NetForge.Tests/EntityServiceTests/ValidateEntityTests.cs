@@ -46,7 +46,7 @@ public class ValidateEntityTests
         var errors = new List<ValidationResult>();
 
         // Act
-        var result = entityService.ValidateEntity(typeof(Address), instance, ref errors);
+        var result = entityService.ValidateEntity(instance, [], ref errors);
 
         // Assert
         Assert.True(result, "The validate result must be true");
@@ -66,7 +66,7 @@ public class ValidateEntityTests
         var errors = new List<ValidationResult>();
 
         // Act
-        var result = entityService.ValidateEntity(typeof(Address), instance!, ref errors);
+        var result = entityService.ValidateEntity(instance, [], ref errors);
 
         // Assert
         // The result should be false because the City property is required.
@@ -90,7 +90,7 @@ public class ValidateEntityTests
         var errors = new List<ValidationResult>();
 
         // Act
-        var result = entityService.ValidateEntity(typeof(ContactInfo), instance, ref errors);
+        var result = entityService.ValidateEntity(instance, [], ref errors);
 
         // Assert
         Assert.True(result, "The validate result must be true");
@@ -110,7 +110,7 @@ public class ValidateEntityTests
         var errors = new List<ValidationResult>();
 
         // Act
-        var result = entityService.ValidateEntity(typeof(Product), instance, ref errors);
+        var result = entityService.ValidateEntity(instance, [], ref errors);
 
         // Assert
         Assert.False(result, "The validate result must be false");
@@ -133,7 +133,7 @@ public class ValidateEntityTests
         var errors = new List<ValidationResult>();
 
         // Act
-        var result = entityService.ValidateEntity(typeof(ProductTag), instance, ref errors);
+        var result = entityService.ValidateEntity(instance, [], ref errors);
 
         // Assert
         Assert.True(result);
@@ -154,7 +154,7 @@ public class ValidateEntityTests
         var errors = new List<ValidationResult>();
 
         // Act
-        var result = entityService.ValidateEntity(typeof(ProductTag), instance, ref errors);
+        var result = entityService.ValidateEntity(instance, [], ref errors);
 
         // Assert
         Assert.False(result, "The validate result must false.");
@@ -177,7 +177,7 @@ public class ValidateEntityTests
         var errors = new List<ValidationResult>();
 
         // Act
-        var result = entityService.ValidateEntity(typeof(ContactInfo), instance, ref errors);
+        var result = entityService.ValidateEntity(instance, [], ref errors);
 
         // Assert
         Assert.True(result, "The validate result must be true");
@@ -197,7 +197,7 @@ public class ValidateEntityTests
         var errors = new List<ValidationResult>();
 
         // Act
-        var result = entityService.ValidateEntity(typeof(ContactInfo), instance, ref errors);
+        var result = entityService.ValidateEntity(instance, [], ref errors);
 
         // Assert
         Assert.False(result, "The validate result must be false");
