@@ -426,7 +426,7 @@ public class EntityService : IEntityService
             .Select(e => e.Name)
             .ToList();
 
-        // Validate property that not have RequiredAttribute but have RequiredMemberAttribute or is not nullable (in Entity Framework).
+        // Validate property that not have RequiredAttribute but have RequiredMemberAttribute or is not nullable (in ORM).
         var requiredProperties = instance.GetType().GetProperties()
             .Where(prop => !prop.IsDefined(typeof(RequiredAttribute), false) && (prop.CustomAttributes.Any(attr => attr.AttributeType.Name == "RequiredMemberAttribute") || isNotNullableProperties.Contains(prop.Name)))
             .ToList();
@@ -435,44 +435,50 @@ public class EntityService : IEntityService
         foreach (var property in requiredProperties)
         {
             var value = instance.GetPropertyValue(property.Name);
+            var isError = false;
 
             switch (value)
             {
                 case string str:
                     if (string.IsNullOrEmpty(str))
                     {
-                        requiredErrors.Add(new ValidationResult($"The {property.Name} field is required.", [property.Name]));
+                        isError = true;
                     }
 
                     break;
                 case DateTime dt:
                     if (dt == DateTime.MinValue)
                     {
-                        requiredErrors.Add(new ValidationResult($"The {property.Name} field is required.", [property.Name]));
+                        isError = true;
                     }
 
                     break;
                 case DateTimeOffset dt:
                     if (dt == DateTimeOffset.MinValue)
                     {
-                        requiredErrors.Add(new ValidationResult($"The {property.Name} field is required.", [property.Name]));
+                        isError = true;
                     }
 
                     break;
                 case DateOnly dt:
                     if (dt == DateOnly.MinValue)
                     {
-                        requiredErrors.Add(new ValidationResult($"The {property.Name} field is required.", [property.Name]));
+                        isError = true;
                     }
 
                     break;
                 default:
                     if (value is null)
                     {
-                        requiredErrors.Add(new ValidationResult($"The {property.Name} field is required.", [property.Name]));
+                        isError = true;
                     }
 
                     break;
+            }
+
+            if (isError)
+            {
+                requiredErrors.Add(new ValidationResult($"The {property.Name} field is required.", [property.Name]));
             }
         }
 
