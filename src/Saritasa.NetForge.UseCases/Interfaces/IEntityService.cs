@@ -76,7 +76,8 @@ public interface IEntityService
     /// Validates the specified entity instance and populates the provided list of validation errors.
     /// </summary>
     /// <param name="instance">The object instance to be validated.</param>
+    /// <param name="properties">The metadata of properties for entity.</param>
     /// <param name="errors">A reference to a list of <see cref="ValidationResult"/> where validation errors will be stored.</param>
     /// <returns>Returns <c>true</c> if the entity is valid; otherwise, returns <c>false</c>.</returns>
-    bool ValidateEntity(object instance, ref List<ValidationResult> errors);
+    bool ValidateEntity(object instance, ICollection<PropertyMetadataDto> properties, ref List<ValidationResult> errors);
 }

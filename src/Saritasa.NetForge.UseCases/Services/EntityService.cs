@@ -415,10 +415,78 @@ public class EntityService : IEntityService
     }
 
     /// <inheritdoc />
-    public bool ValidateEntity(object instance, ref List<ValidationResult> errors)
+    public bool ValidateEntity(object instance, ICollection<PropertyMetadataDto> properties, ref List<ValidationResult> errors)
     {
         var context = new ValidationContext(instance, serviceProvider, items: null);
 
-        return Validator.TryValidateObject(instance, context, errors, validateAllProperties: true);
+        Validator.TryValidateObject(instance, context, errors, validateAllProperties: true);
+
+        var isNotNullableProperties = properties
+            .Where(property => !property.IsNullable)
+            .Select(e => e.Name)
+            .ToList();
+
+        // Validate property that not have RequiredAttribute but have RequiredMemberAttribute or is not nullable (in ORM).
+        var requiredProperties = instance.GetType().GetProperties()
+            .Where(prop => !prop.IsDefined(typeof(RequiredAttribute), false) && (prop.CustomAttributes.Any(attr => attr.AttributeType.Name == "RequiredMemberAttribute") || isNotNullableProperties.Contains(prop.Name)))
+            .ToList();
+
+        var requiredErrors = new List<ValidationResult>();
+        foreach (var property in requiredProperties)
+        {
+            var value = instance.GetPropertyValue(property.Name);
+            var isError = false;
+
+            switch (value)
+            {
+                case string str:
+                    if (string.IsNullOrEmpty(str))
+                    {
+                        isError = true;
+                    }
+
+                    break;
+                case DateTime dt:
+                    if (dt == DateTime.MinValue)
+                    {
+                        isError = true;
+                    }
+
+                    break;
+                case DateTimeOffset dt:
+                    if (dt == DateTimeOffset.MinValue)
+                    {
+                        isError = true;
+                    }
+
+                    break;
+                case DateOnly dt:
+                    if (dt == DateOnly.MinValue)
+                    {
+                        isError = true;
+                    }
+
+                    break;
+                default:
+                    if (value is null)
+                    {
+                        isError = true;
+                    }
+
+                    break;
+            }
+
+            if (isError)
+            {
+                requiredErrors.Add(new ValidationResult($"The {property.Name} field is required.", [property.Name]));
+            }
+        }
+
+        if (requiredErrors.Count != 0)
+        {
+            errors.AddRange(requiredErrors);
+        }
+
+        return errors.Count == 0;
     }
 }

@@ -122,14 +122,14 @@ public class CreateEntityViewModel : ValidationEntityViewModel
         // Clear the error on the previous validation.
         FieldErrorModels.ForEach(e => e.ErrorMessage = string.Empty);
 
-        if (entityService.ValidateEntity(Model.EntityInstance, ref errors))
-        {
-            await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
-            navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
-        }
-        else
+        if (!entityService.ValidateEntity(Model.EntityInstance, Model.Properties, ref errors))
         {
             FieldErrorModels.MappingErrorToCorrectField(errors);
+
+            return;
         }
+
+        await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
+        navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
     }
 }
