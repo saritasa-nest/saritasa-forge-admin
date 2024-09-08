@@ -6,7 +6,12 @@
 public abstract class ValidationEntityViewModel : BaseViewModel
 {
     /// <summary>
-    /// List of <see cref="FieldErrorModel"/> instances in the view model.
+    /// General error message.
+    /// </summary>
+    public string GeneralError { get; set; } = "";
+
+    /// <summary>
+    /// Gets or sets the list of field error models in the view model.
     /// </summary>
     public List<FieldErrorModel> FieldErrorModels { get; set; } = [];
 }

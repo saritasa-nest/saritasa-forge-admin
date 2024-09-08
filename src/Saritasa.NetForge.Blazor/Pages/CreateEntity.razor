@@ -3,7 +3,6 @@
 @using Saritasa.NetForge.Blazor.Extensions
 @using Saritasa.NetForge.Blazor.Infrastructure.Helpers
 @using Saritasa.NetForge.Mvvm.ViewModels
-@using Saritasa.NetForge.Mvvm.ViewModels.CreateEntity
 @using Saritasa.NetForge.UseCases.Metadata.GetEntityById
 
 @inherits MvvmComponentBase<Saritasa.NetForge.Mvvm.ViewModels.CreateEntity.CreateEntityViewModel>
@@ -18,6 +17,11 @@
 
     <MudGrid Justify="Justify.Center">
         <MudItem xs="6">
+            @if (!string.IsNullOrEmpty(ViewModel.GeneralError))
+            {
+                <MudAlert Severity="Severity.Error" Class="mb-5">@ViewModel.GeneralError</MudAlert>
+            }
+
             <EditForm Model="ViewModel.Model.EntityInstance" OnValidSubmit="ViewModel.CreateEntityAsync">
                 <div class="d-flex flex-column flex-grow-1 gap-4">
                     @foreach (var property in ViewModel.Model.Properties)
@@ -47,7 +51,7 @@
                                 (Action<PropertyMetadataDto, IBrowserFile?>)ViewModel.HandleSelectedFile);
                         }
 
-                        <DynamicComponent Type="componentType" Parameters="parameters" />
+                        <DynamicComponent Type="componentType" Parameters="parameters"/>
                     }
 
                     <div class="d-flex flex-row gap-4 pt-4">

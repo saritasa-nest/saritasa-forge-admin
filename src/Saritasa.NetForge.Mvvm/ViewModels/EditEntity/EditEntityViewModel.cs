@@ -6,7 +6,7 @@ using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using System.ComponentModel.DataAnnotations;
 using Saritasa.NetForge.Mvvm.Utils;
-using System.Reflection;
+using Microsoft.Extensions.Logging;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 
@@ -25,6 +25,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
     /// </summary>
     public string InstancePrimaryKey { get; set; }
 
+    private readonly ILogger<EditEntityViewModel> logger;
     private readonly IEntityService entityService;
     private readonly IOrmDataService dataService;
 
@@ -34,12 +35,14 @@ public class EditEntityViewModel : ValidationEntityViewModel
     public EditEntityViewModel(
         string stringId,
         string instancePrimaryKey,
+        ILogger<EditEntityViewModel> logger,
         IEntityService entityService,
         IOrmDataService dataService)
     {
         Model = new EditEntityModel { StringId = stringId };
         InstancePrimaryKey = instancePrimaryKey;
 
+        this.logger = logger;
         this.entityService = entityService;
         this.dataService = dataService;
     }
@@ -149,7 +152,17 @@ public class EditEntityViewModel : ValidationEntityViewModel
             return;
         }
 
-        await dataService.UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken);
-        IsUpdated = true;
+        try
+        {
+            await dataService.UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken);
+            IsUpdated = true;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{handler}: {message}", nameof(EditEntityViewModel), ex.Message);
+
+            GeneralError = ex.InnerException is not null ? ex.InnerException.Message : ex.Message;
+        }
+
     }
 }
