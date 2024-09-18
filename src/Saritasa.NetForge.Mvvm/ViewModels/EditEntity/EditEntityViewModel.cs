@@ -163,6 +163,5 @@ public class EditEntityViewModel : ValidationEntityViewModel
 
             GeneralError = ex.InnerException is not null ? ex.InnerException.Message : ex.Message;
         }
-
     }
 }

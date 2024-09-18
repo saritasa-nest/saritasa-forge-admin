@@ -369,6 +369,8 @@ public class EfCoreDataService : IOrmDataService
         }
         catch (Exception)
         {
+            // Need to clear because when we re-add the same entity
+            // EF will throw an exception that entity is already tracked.
             dbContext.ChangeTracker.Clear();
 
             throw;
