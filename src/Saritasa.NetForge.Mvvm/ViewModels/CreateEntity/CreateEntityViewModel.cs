@@ -42,6 +42,11 @@ public class CreateEntityViewModel : ValidationEntityViewModel
     /// </summary>
     public bool IsEntityExists { get; private set; } = true;
 
+    /// <summary>
+    /// Errors encountered while entity updating.
+    /// </summary>
+    public List<ValidationResult>? Errors { get; set; }
+
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
     {
@@ -125,6 +130,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
         if (!entityService.ValidateEntity(Model.EntityInstance, Model.Properties, ref errors))
         {
             FieldErrorModels.MappingErrorToCorrectField(errors);
+            Errors = errors;
 
             return;
         }

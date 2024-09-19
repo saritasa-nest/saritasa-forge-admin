@@ -58,6 +58,18 @@
                             Save
                         </MudButton>
                     </div>
+
+                    @if (ViewModel.Errors is not null && ViewModel.Errors.Count != 0)
+                    {
+                    <MudAlert Variant="Variant.Outlined"
+                              Severity="Severity.Error"
+                              NoIcon>
+                        @foreach (var error in ViewModel.Errors)
+                        {
+                        <MudText>@error.ErrorMessage</MudText>
+                        }
+                    </MudAlert>
+                    }
                 </div>
             </EditForm>
         </MudItem>
