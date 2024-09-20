@@ -76,4 +76,9 @@ public class EntityMetadata
     /// Whether the entity has the primary key.
     /// </summary>
     public bool IsKeyless { get; set; }
+
+    /// <summary>
+    /// Action that called after entity update.
+    /// </summary>
+    public Action? UpdateAction { get; set; }
 }

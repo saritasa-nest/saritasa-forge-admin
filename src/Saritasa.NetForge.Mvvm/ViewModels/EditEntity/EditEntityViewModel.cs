@@ -122,7 +122,8 @@ public class EditEntityViewModel : ValidationEntityViewModel
             DisplayName = entity.DisplayName,
             PluralName = entity.PluralName,
             ClrType = entity.ClrType,
-            Properties = entity.Properties
+            Properties = entity.Properties,
+            UpdateAction = entity.UpdateAction
         };
     }
 
@@ -150,6 +151,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
         }
 
         await dataService.UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken);
+        Model.UpdateAction?.Invoke();
         IsUpdated = true;
     }
 }

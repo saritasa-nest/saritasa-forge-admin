@@ -194,7 +194,8 @@ public class EntityService : IEntityService
             ClrType = entity.ClrType,
             SearchFunction = entity.SearchFunction,
             CustomQueryFunction = entity.CustomQueryFunction,
-            IsKeyless = entity.IsKeyless
+            IsKeyless = entity.IsKeyless,
+            UpdateAction = entity.UpdateAction
         };
     }
 

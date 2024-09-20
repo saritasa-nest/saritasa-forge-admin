@@ -44,5 +44,10 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
         {
             propertyBuilder.SetSearchType(SearchType.ContainsCaseInsensitive);
         });
+
+        entityOptionsBuilder.SetCustomUpdateAction(() =>
+        {
+            var test = 1;
+        });
     }
 }
