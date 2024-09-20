@@ -51,8 +51,7 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                 navigationOptionsBuilder
                     .IncludeProperty(address => address.Id, builder =>
                     {
-                        builder
-                            .SetDisplayName("Address Id");
+                        builder.SetDisplayName("Address Id");
                     })
                     .IncludeProperty(address => address.Street, builder =>
                     {
