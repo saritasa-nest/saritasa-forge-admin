@@ -49,10 +49,10 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             .IncludeNavigation<Address>(shop => shop.Address, navigationOptionsBuilder =>
             {
                 navigationOptionsBuilder
-                    .SetOrder(1)
                     .IncludeProperty(address => address.Id, builder =>
                     {
-                        builder.SetDisplayName("Address Id");
+                        builder
+                            .SetDisplayName("Address Id");
                     })
                     .IncludeProperty(address => address.Street, builder =>
                     {
