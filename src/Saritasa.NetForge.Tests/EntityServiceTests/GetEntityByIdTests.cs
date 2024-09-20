@@ -250,7 +250,7 @@ public class GetEntityByIdTests : IDisposable
     /// Test for case when properties have ordering via Fluent API.
     /// </summary>
     [Fact]
-    public async Task GetEntityByIdAsync_WithOrderingViaFluentApi_OrderedPropertyShouldBeFirst()
+    public async Task GetEntityByIdAsync_WithOrderingViaFluentApi_OrderShouldBeSet()
     {
         // Arrange
         adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
@@ -260,28 +260,32 @@ public class GetEntityByIdTests : IDisposable
                 .ConfigureProperty(shop => shop.Id, optionsBuilder => optionsBuilder.SetOrder(1));
         });
         const string expectedPropertyName = nameof(Shop.TotalSales);
+        const int expectedOrder = 0;
 
         // Act
         var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+        var actualOrder = entity.Properties.First(property => property.Name == expectedPropertyName).Order;
 
         // Assert
-        Assert.Equal(expectedPropertyName, entity.Properties.First().Name);
+        Assert.Equal(expectedOrder, actualOrder);
     }
 
     /// <summary>
     /// Test for case when properties have ordering via <see cref="NetForgePropertyAttribute"/>.
     /// </summary>
     [Fact]
-    public async Task GetEntityByIdAsync_WithOrderingViaAttribute_OrderedPropertyShouldBeFirst()
+    public async Task GetEntityByIdAsync_WithOrderingViaAttribute_OrderShouldBeSet()
     {
         // Arrange
         const string expectedPropertyName = nameof(Address.Latitude);
+        const int expectedOrder = 0;
 
         // Act
         var entity = await entityService.GetEntityByIdAsync(AttributeTestEntityId, CancellationToken.None);
+        var actualOrder = entity.Properties.First(property => property.Name == expectedPropertyName).Order;
 
         // Assert
-        Assert.Equal(expectedPropertyName, entity.Properties.First().Name);
+        Assert.Equal(expectedOrder, actualOrder);
     }
 
     /// <summary>
