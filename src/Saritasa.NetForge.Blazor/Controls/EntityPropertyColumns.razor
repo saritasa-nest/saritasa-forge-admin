@@ -41,7 +41,8 @@
     }
 
     var orderedProperties = allProperties
-        .OrderByDescending(property => property.Property.Order.HasValue)
+        .OrderByDescending(property => property.Property is { IsPrimaryKey: true, Order: null })
+        .ThenByDescending(property => property.Property.Order.HasValue)
         .ThenBy(property => property.Property.Order);
     foreach (var (property, navigation) in orderedProperties)
     {
