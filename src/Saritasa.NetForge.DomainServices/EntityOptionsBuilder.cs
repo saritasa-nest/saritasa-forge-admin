@@ -149,9 +149,14 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     /// Sets action that will be called after entity update.
     /// </summary>
     /// <param name="action">Action to call.</param>
-    public EntityOptionsBuilder<TEntity> SetCustomUpdateAction(Action action)
+    public EntityOptionsBuilder<TEntity> SetCustomUpdateAction(Action<TEntity, TEntity> action)
     {
-        options.UpdateAction = action;
+        options.UpdateAction = WrapAction;
         return this;
+
+        void WrapAction(object x, object y)
+        {
+            action((TEntity)x, (TEntity)y);
+        }
     }
 }

@@ -40,5 +40,5 @@ public record GetEntityDto
     /// <summary>
     /// Action that called after entity update.
     /// </summary>
-    public Action? UpdateAction { get; set; }
+    public Action<object, object>? UpdateAction { get; set; }
 }

@@ -36,5 +36,5 @@ public record EditEntityModel
     /// <summary>
     /// Action that called after entity update.
     /// </summary>
-    public Action? UpdateAction { get; init; }
+    public Action<object, object>? UpdateAction { get; init; }
 }

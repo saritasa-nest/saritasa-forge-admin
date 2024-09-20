@@ -150,8 +150,9 @@ public class EditEntityViewModel : ValidationEntityViewModel
             return;
         }
 
+        var copy = Model.OriginalEntityInstance!.CloneJson();
         await dataService.UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken);
-        Model.UpdateAction?.Invoke();
+        Model.UpdateAction?.Invoke(copy, Model.EntityInstance!);
         IsUpdated = true;
     }
 }
