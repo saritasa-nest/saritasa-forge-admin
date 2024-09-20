@@ -40,8 +40,10 @@
         }
     }
 
+    // Display principal entity primary key at the start of columns if the order is not set.
     var orderedProperties = allProperties
-        .OrderByDescending(property => property.Property.Order.HasValue)
+        .OrderByDescending(property => property is { Property: { IsPrimaryKey: true, Order: null }, Navigation: null })
+        .ThenByDescending(property => property.Property.Order.HasValue)
         .ThenBy(property => property.Property.Order);
     foreach (var (property, navigation) in orderedProperties)
     {
