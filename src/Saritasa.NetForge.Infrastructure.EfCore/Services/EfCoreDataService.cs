@@ -433,6 +433,14 @@ public class EfCoreDataService : IOrmDataService
     {
         dbContext.Attach(originalEntity);
 
+        UpdateNavigations(dbContext, entity, originalEntity);
+
+        dbContext.Entry(originalEntity).CurrentValues.SetValues(entity);
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    private static void UpdateNavigations(DbContext dbContext, object entity, object originalEntity)
+    {
         // By default, EF does not track removed items from navigation collections
         // when you just change reference to another collection.
         // We use this foreach to explicitly remove items from navigation collection
@@ -457,13 +465,10 @@ public class EfCoreDataService : IOrmDataService
 
             UpdateNavigationCollection(dbContext, originalNavigationEntry, navigationEntry);
         }
-
-        dbContext.Entry(originalEntity).CurrentValues.SetValues(entity);
-        await dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    private static void UpdateNavigationReference(DbContext dbContext, NavigationEntry navigationEntry,
-        NavigationEntry originalNavigationEntry)
+    private static void UpdateNavigationReference(
+        DbContext dbContext, NavigationEntry navigationEntry, NavigationEntry originalNavigationEntry)
     {
         // Case when the user want to remove navigation value
         if (navigationEntry.CurrentValue is null && originalNavigationEntry.CurrentValue is not null)
@@ -483,9 +488,7 @@ public class EfCoreDataService : IOrmDataService
     }
 
     private static void UpdateNavigationCollection(
-        DbContext dbContext,
-        NavigationEntry originalNavigationEntry,
-        NavigationEntry navigationEntry)
+        DbContext dbContext, NavigationEntry originalNavigationEntry, NavigationEntry navigationEntry)
     {
         var navigationCollectionInstance = (IEnumerable<object>)navigationEntry.CurrentValue!;
 
