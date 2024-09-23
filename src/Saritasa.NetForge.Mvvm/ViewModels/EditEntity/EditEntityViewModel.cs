@@ -153,8 +153,12 @@ public class EditEntityViewModel : ValidationEntityViewModel
             return;
         }
 
-        Model.EntityInstance = await dataService
+        var updatedEntity = await dataService
             .UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken, Model.UpdateAction);
+
+        // We do clone because UpdateAsync method returns Model.OriginalEntityInstance
+        // so we don't want Model.EntityInstance and Model.OriginalEntityInstance to have the same reference.
+        Model.EntityInstance = updatedEntity.CloneJson();
         IsUpdated = true;
     }
 }
