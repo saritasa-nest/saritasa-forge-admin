@@ -27,6 +27,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
 
     private readonly IEntityService entityService;
     private readonly IOrmDataService dataService;
+    private readonly IServiceProvider serviceProvider;
 
     /// <summary>
     /// Constructor.
@@ -35,13 +36,15 @@ public class EditEntityViewModel : ValidationEntityViewModel
         string stringId,
         string instancePrimaryKey,
         IEntityService entityService,
-        IOrmDataService dataService)
+        IOrmDataService dataService,
+        IServiceProvider serviceProvider)
     {
         Model = new EditEntityModel { StringId = stringId };
         InstancePrimaryKey = instancePrimaryKey;
 
         this.entityService = entityService;
         this.dataService = dataService;
+        this.serviceProvider = serviceProvider;
     }
 
     /// <summary>
@@ -150,9 +153,8 @@ public class EditEntityViewModel : ValidationEntityViewModel
             return;
         }
 
-        var copy = Model.OriginalEntityInstance!.CloneJson();
-        await dataService.UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken);
-        Model.UpdateAction?.Invoke(copy, Model.EntityInstance!);
+        Model.EntityInstance = await dataService
+            .UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken, Model.UpdateAction);
         IsUpdated = true;
     }
 }
