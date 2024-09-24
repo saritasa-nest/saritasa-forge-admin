@@ -17,11 +17,6 @@
 
     <MudGrid Justify="Justify.Center">
         <MudItem xs="6">
-            @if (!string.IsNullOrEmpty(ViewModel.GeneralError))
-            {
-                <MudAlert Severity="Severity.Error" Class="mb-5">@ViewModel.GeneralError</MudAlert>
-            }
-
             <EditForm Model="ViewModel.Model.EntityInstance" OnValidSubmit="ViewModel.CreateEntityAsync">
                 <div class="d-flex flex-column flex-grow-1 gap-4">
                     @foreach (var property in ViewModel.Model.Properties)
@@ -62,6 +57,11 @@
                             Save
                         </MudButton>
                     </div>
+
+                    @if (!string.IsNullOrEmpty(ViewModel.GeneralError))
+                    {
+                        <MudAlert Severity="Severity.Error" Class="mb-5">@ViewModel.GeneralError</MudAlert>
+                    }
                 </div>
             </EditForm>
         </MudItem>
