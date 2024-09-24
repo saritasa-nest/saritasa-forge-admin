@@ -47,8 +47,7 @@ internal static class NetForgeModule
                                 .IncludeProperty(shop => shop.Name, propertyOptionsBuilder =>
                                 {
                                     propertyOptionsBuilder.SetDisplayName("Shop name");
-                                })
-                                .SetOrder(1);
+                                });
                         });
                 });
         });

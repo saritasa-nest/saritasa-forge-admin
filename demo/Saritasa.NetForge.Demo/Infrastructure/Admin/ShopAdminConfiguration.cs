@@ -49,14 +49,16 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             .IncludeNavigation<Address>(shop => shop.Address, navigationOptionsBuilder =>
             {
                 navigationOptionsBuilder
-                    .SetOrder(1)
                     .IncludeProperty(address => address.Id, builder =>
                     {
-                        builder.SetDisplayName("Address Id");
+                        builder
+                            .SetOrder(3)
+                            .SetDisplayName("Address Id");
                     })
                     .IncludeProperty(address => address.Street, builder =>
                     {
                         builder
+                            .SetOrder(4)
                             .SetDisplayName("Address Street")
                             .SetDescription("Address street name.")
                             .SetEmptyValueDisplay("N/A")
@@ -88,7 +90,7 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             var cloudStorage = serviceProvider.GetRequiredService<ICloudBlobStorageService>();
             builder
                 .SetIsImage(true)
-                .SetOrder(3)
+                .SetOrder(1)
                 .SetUploadFileStrategy(new UploadFileToS3Strategy(s3Storage, cloudStorage));
         });
 

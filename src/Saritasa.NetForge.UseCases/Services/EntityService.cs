@@ -105,13 +105,7 @@ public class EntityService : IEntityService
 
         propertyDtos = propertyDtos.Union(navigationDtos);
 
-        var orderedProperties = propertyDtos
-            .OrderByDescending(property => property is { IsPrimaryKey: true, Order: null })
-            .ThenByDescending(property => property.Order.HasValue)
-            .ThenBy(property => property.Order)
-            .ToList();
-
-        return MapGetEntityDto(metadata) with { Properties = orderedProperties };
+        return MapGetEntityDto(metadata) with { Properties = propertyDtos.ToList() };
     }
 
     private static PropertyMetadataDto MapProperty(PropertyMetadata property)

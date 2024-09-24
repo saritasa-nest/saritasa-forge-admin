@@ -11,6 +11,7 @@
 }
 
 @{
+    var allProperties = new List<(PropertyMetadataDto Property, NavigationMetadataDto? Navigation)>();
     foreach (var property in Properties)
     {
         if (property is NavigationMetadataDto navigation)
@@ -24,19 +25,29 @@
             {
                 foreach (var targetProperty in navigation.TargetEntityProperties)
                 {
-                    RenderPropertyColumn(targetProperty, navigation);
+                    allProperties.Add((targetProperty, navigation));
                 }
             }
             else
             {
-                RenderPropertyColumn(property, navigation);
+                allProperties.Add((property, navigation));
             }
 
         }
         else
         {
-            RenderPropertyColumn(property);
+            allProperties.Add((property, null));
         }
+    }
+
+    // Display principal entity primary key at the start of columns if the order is not set.
+    var orderedProperties = allProperties
+        .OrderByDescending(property => property is { Property: { IsPrimaryKey: true, Order: null }, Navigation: null })
+        .ThenByDescending(property => property.Property.Order.HasValue)
+        .ThenBy(property => property.Property.Order);
+    foreach (var (property, navigation) in orderedProperties)
+    {
+        RenderPropertyColumn(property, navigation);
     }
 
     void RenderPropertyColumn(PropertyMetadataDto property, NavigationMetadataDto? navigation = null)
