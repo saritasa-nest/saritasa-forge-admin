@@ -404,10 +404,11 @@ public class EfCoreDataService : IOrmDataService
     }
 
     /// <inheritdoc />
-    public async Task<object> UpdateAsync(object entity,
+    public async Task<object> UpdateAsync(
+        object entity,
         object originalEntity,
-        CancellationToken cancellationToken,
-        Action<IServiceProvider?, object, object>? updateAction = null)
+        Action<IServiceProvider?, object, object>? updateAction,
+        CancellationToken cancellationToken)
     {
         var entityType = entity.GetType();
         var dbContext = GetDbContextThatContainsEntity(entityType);

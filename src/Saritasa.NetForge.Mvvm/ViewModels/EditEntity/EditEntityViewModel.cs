@@ -154,7 +154,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
         }
 
         var updatedEntity = await dataService
-            .UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken, Model.UpdateAction);
+            .UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, Model.UpdateAction, CancellationToken);
 
         // We do clone because UpdateAsync method returns Model.OriginalEntityInstance
         // so we don't want Model.EntityInstance and Model.OriginalEntityInstance to have the same reference.
