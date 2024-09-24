@@ -104,7 +104,7 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             builder.SetTruncationMaxCharacters(25);
         });
 
-        entityOptionsBuilder.SetCustomUpdateAction((serviceProvider, _, modifiedEntity) =>
+        entityOptionsBuilder.SetAfterUpdateAction((serviceProvider, _, modifiedEntity) =>
         {
             var dbContext = serviceProvider!.GetRequiredService<ShopDbContext>();
 

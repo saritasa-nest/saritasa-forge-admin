@@ -407,18 +407,18 @@ public class EfCoreDataService : IOrmDataService
     public async Task<object> UpdateAsync(
         object entity,
         object originalEntity,
-        Action<IServiceProvider?, object, object>? updateAction,
+        Action<IServiceProvider?, object, object>? afterUpdateAction,
         CancellationToken cancellationToken)
     {
         var entityType = entity.GetType();
         var dbContext = GetDbContextThatContainsEntity(entityType);
 
-        if (updateAction is not null)
+        if (afterUpdateAction is not null)
         {
             var originalEntityClone = originalEntity.CloneJson();
             await UpdateAsync(dbContext, entity, originalEntity, cancellationToken);
 
-            updateAction.Invoke(serviceProvider, originalEntityClone!, originalEntity);
+            afterUpdateAction.Invoke(serviceProvider, originalEntityClone!, originalEntity);
         }
         else
         {

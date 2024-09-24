@@ -195,7 +195,7 @@ public class EntityService : IEntityService
             SearchFunction = entity.SearchFunction,
             CustomQueryFunction = entity.CustomQueryFunction,
             IsKeyless = entity.IsKeyless,
-            UpdateAction = entity.UpdateAction
+            AfterUpdateAction = entity.AfterUpdateAction
         };
     }
 

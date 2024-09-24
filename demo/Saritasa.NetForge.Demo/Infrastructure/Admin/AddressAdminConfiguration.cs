@@ -45,7 +45,7 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
             propertyBuilder.SetSearchType(SearchType.ContainsCaseInsensitive);
         });
 
-        entityOptionsBuilder.SetCustomUpdateAction((serviceProvider, originalEntity, modifiedEntity) =>
+        entityOptionsBuilder.SetAfterUpdateAction((serviceProvider, originalEntity, modifiedEntity) =>
         {
             var dbContext = serviceProvider!.GetRequiredService<ShopDbContext>();
 

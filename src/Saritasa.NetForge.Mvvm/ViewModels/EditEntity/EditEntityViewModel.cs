@@ -126,7 +126,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
             PluralName = entity.PluralName,
             ClrType = entity.ClrType,
             Properties = entity.Properties,
-            UpdateAction = entity.UpdateAction
+            AfterUpdateAction = entity.AfterUpdateAction
         };
     }
 
@@ -154,7 +154,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
         }
 
         var updatedEntity = await dataService
-            .UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, Model.UpdateAction, CancellationToken);
+            .UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, Model.AfterUpdateAction, CancellationToken);
 
         // We do clone because UpdateAsync method returns Model.OriginalEntityInstance
         // so we don't want Model.EntityInstance and Model.OriginalEntityInstance to have the same reference.

@@ -74,5 +74,5 @@ public class EntityOptions
     /// <summary>
     /// Action that called after entity update.
     /// </summary>
-    public Action<IServiceProvider?, object, object>? UpdateAction { get; set; }
+    public Action<IServiceProvider?, object, object>? AfterUpdateAction { get; set; }
 }
