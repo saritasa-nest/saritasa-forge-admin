@@ -103,5 +103,16 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
         {
             builder.SetTruncationMaxCharacters(25);
         });
+
+        entityOptionsBuilder.SetCustomUpdateAction((serviceProvider, _, modifiedEntity) =>
+        {
+            var dbContext = serviceProvider!.GetRequiredService<ShopDbContext>();
+
+            var randomNumber = Random.Shared.Next(0, 100);
+            modifiedEntity.Address!.City = $"Berlin {randomNumber}";
+            modifiedEntity.Suppliers[0].IsActive = !modifiedEntity.Suppliers[0].IsActive;
+
+            dbContext.SaveChanges();
+        });
     }
 }
