@@ -54,6 +54,11 @@ public class EditEntityViewModel : ValidationEntityViewModel
     /// </summary>
     public bool IsUpdated { get; set; }
 
+    /// <summary>
+    /// Errors encountered while entity updating.
+    /// </summary>
+    public List<ValidationResult>? Errors { get; set; }
+
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
     {
@@ -145,6 +150,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
         if (!entityService.ValidateEntity(Model.EntityInstance!, Model.Properties, ref errors))
         {
             FieldErrorModels.MappingErrorToCorrectField(errors);
+            Errors = errors;
 
             return;
         }
