@@ -151,12 +151,7 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     /// <param name="action">Action to call.</param>
     public EntityOptionsBuilder<TEntity> SetAfterUpdateAction(Action<IServiceProvider?, TEntity, TEntity> action)
     {
-        options.AfterUpdateAction = WrapAction;
+        options.AfterUpdateAction = (serviceProvider, x, y) => action(serviceProvider, (TEntity)x, (TEntity)y);
         return this;
-
-        void WrapAction(IServiceProvider? serviceProvider, object x, object y)
-        {
-            action(serviceProvider, (TEntity)x, (TEntity)y);
-        }
     }
 }
