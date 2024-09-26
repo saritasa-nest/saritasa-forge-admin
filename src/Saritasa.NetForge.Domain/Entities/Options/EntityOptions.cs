@@ -70,4 +70,9 @@ public class EntityOptions
 
     /// <inheritdoc cref="EntityMetadata.CustomQueryFunction"/>
     public Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? CustomQueryFunction { get; set; }
+
+    /// <summary>
+    /// Action that called after entity update.
+    /// </summary>
+    public Action<IServiceProvider?, object, object>? AfterUpdateAction { get; set; }
 }

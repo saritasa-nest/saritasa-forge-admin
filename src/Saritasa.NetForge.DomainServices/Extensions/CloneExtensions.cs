@@ -36,8 +36,37 @@ public static class CloneExtensions
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
         };
 
+        serializeSettings.Converters.Add(new DecimalJsonConverter());
+
         var serializedSource = JsonConvert.SerializeObject(source, serializeSettings);
         var sourceType = source.GetType();
         return JsonConvert.DeserializeObject(serializedSource, sourceType, deserializeSettings);
+    }
+}
+
+/// <summary>
+/// JSON converter for <c>decimal</c> type.
+/// </summary>
+/// <remarks>
+/// Why we use this converter:
+/// When we convert 1000 using JSON we will have 1000.0 value instead.
+/// This converter prevents this behavior.
+/// For example, it occurs when updating entity.
+/// </remarks>
+public class DecimalJsonConverter : JsonConverter<decimal>
+{
+    /// <summary>
+    /// Non-implemented read method.
+    /// </summary>
+    public override decimal ReadJson(
+        JsonReader reader, Type objectType, decimal existingValue, bool hasExistingValue, JsonSerializer serializer)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public override void WriteJson(JsonWriter writer, decimal value, JsonSerializer serializer)
+    {
+        writer.WriteRawValue(value.ToString());
     }
 }

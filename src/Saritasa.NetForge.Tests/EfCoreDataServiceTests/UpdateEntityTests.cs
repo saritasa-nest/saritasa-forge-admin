@@ -2,6 +2,7 @@
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Tests.Domain;
+using Saritasa.NetForge.Tests.Domain.Models;
 using Saritasa.NetForge.Tests.Helpers;
 using Xunit;
 
@@ -72,7 +73,7 @@ public class UpdateEntityTests : IDisposable
         updatedShop.Name = newName;
 
         // Act
-        await efCoreDataService.UpdateAsync(updatedShop, originalShop, CancellationToken.None);
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, CancellationToken.None);
 
         // Assert
         Assert.Contains(testDbContext.Shops, shop => shop.Name.Equals(newName));
@@ -94,7 +95,7 @@ public class UpdateEntityTests : IDisposable
         updatedShop.Address = newAddress;
 
         // Act
-        await efCoreDataService.UpdateAsync(updatedShop, originalShop, CancellationToken.None);
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, CancellationToken.None);
 
         // Assert
         Assert.Contains(testDbContext.Addresses, address => address.Street.Equals(newAddress.Street));
@@ -119,7 +120,7 @@ public class UpdateEntityTests : IDisposable
         updatedShop.Address = addressToUpdate;
 
         // Act
-        await efCoreDataService.UpdateAsync(updatedShop, originalShop, CancellationToken.None);
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, CancellationToken.None);
 
         // Assert
         Assert.Contains(shops, shop => shop.Address!.Street.Equals(addressToUpdate.Street));
@@ -140,7 +141,7 @@ public class UpdateEntityTests : IDisposable
         updatedShop.Address = null;
 
         // Act
-        await efCoreDataService.UpdateAsync(updatedShop, originalShop, CancellationToken.None);
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, CancellationToken.None);
 
         // Assert
         Assert.Contains(shops, shop => shop.Address is null);
@@ -162,7 +163,7 @@ public class UpdateEntityTests : IDisposable
         updatedShop.Products.Add(newProduct);
 
         // Act
-        await efCoreDataService.UpdateAsync(updatedShop, originalShop, CancellationToken.None);
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, CancellationToken.None);
 
         // Assert
         Assert.Contains(testDbContext.Products, product => product.Id == newProduct.Id);
@@ -187,7 +188,7 @@ public class UpdateEntityTests : IDisposable
         updatedShop.Products.Add(productToAdd);
 
         // Act
-        await efCoreDataService.UpdateAsync(updatedShop, originalShop, CancellationToken.None);
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, CancellationToken.None);
 
         // Assert
         Assert.Contains(productToAdd, updatedShop.Products);
@@ -209,9 +210,33 @@ public class UpdateEntityTests : IDisposable
         updatedShop.Products.Remove(productToRemove);
 
         // Act
-        await efCoreDataService.UpdateAsync(updatedShop, originalShop, CancellationToken.None);
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, CancellationToken.None);
 
         // Assert
         Assert.DoesNotContain(productToRemove, updatedShop.Products);
+    }
+
+    /// <summary>
+    /// Tests that after update action was called.
+    /// </summary>
+    [Fact]
+    public async Task UpdateEntity_AfterUpdateAction_ShouldUpdate()
+    {
+        // Arrange
+        var updatedShop = await testDbContext.Shops.AsNoTracking().FirstAsync();
+        var originalShop = updatedShop.CloneJson()!;
+
+        const string newName = "Test222";
+        Action<IServiceProvider?, object, object> afterUpdateAction = (_, _, shop) =>
+        {
+            ((Shop)shop).Name = newName;
+            testDbContext.SaveChanges();
+        };
+
+        // Act
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(testDbContext.Shops, shop => shop.Name.Equals(newName));
     }
 }

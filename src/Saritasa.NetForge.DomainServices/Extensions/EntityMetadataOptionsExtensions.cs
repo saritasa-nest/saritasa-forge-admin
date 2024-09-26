@@ -47,6 +47,11 @@ public static class EntityMetadataOptionsExtensions
             entityMetadata.CustomQueryFunction = entityOptions.CustomQueryFunction;
         }
 
+        if (entityOptions.AfterUpdateAction is not null)
+        {
+            entityMetadata.AfterUpdateAction = entityOptions.AfterUpdateAction;
+        }
+
         foreach (var option in entityOptions.PropertyOptions)
         {
             var property = entityMetadata.Properties

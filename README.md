@@ -305,6 +305,33 @@ You can configure your query for specific entity.
 })
 ```
 
+## After Update Action
+
+You can configure action that will be performed after entity update.
+
+```csharp
+.ConfigureEntity<Address>(entityOptionsBuilder =>
+{
+    entityOptionsBuilder.SetAfterUpdateAction((serviceProvider, originalEntity, modifiedEntity) =>
+    {
+        var dbContext = serviceProvider!.GetRequiredService<ShopDbContext>();
+
+        const string country = "Germany";
+        if (originalEntity.Country == country)
+        {
+            return;
+        }
+
+        if (modifiedEntity.Country == country)
+        {
+            modifiedEntity.PostalCode = "99998";
+        }
+
+        dbContext.SaveChanges();
+    });
+})
+```
+
 You can use `ServiceProvider` to access your services.
 
 # Customizing Entity Properties

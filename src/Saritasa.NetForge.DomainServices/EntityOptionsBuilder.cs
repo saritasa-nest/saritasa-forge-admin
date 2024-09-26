@@ -144,4 +144,14 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         options.NavigationOptions.Add(navigationOptions);
         return this;
     }
+
+    /// <summary>
+    /// Sets action that will be called after entity update.
+    /// </summary>
+    /// <param name="action">Action to call.</param>
+    public EntityOptionsBuilder<TEntity> SetAfterUpdateAction(Action<IServiceProvider?, TEntity, TEntity> action)
+    {
+        options.AfterUpdateAction = (serviceProvider, x, y) => action(serviceProvider, (TEntity)x, (TEntity)y);
+        return this;
+    }
 }

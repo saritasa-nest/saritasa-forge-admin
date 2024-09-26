@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
 using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Domain.Enums;
@@ -403,13 +404,44 @@ public class EfCoreDataService : IOrmDataService
     }
 
     /// <inheritdoc />
-    public async Task UpdateAsync(object entity, object originalEntity, CancellationToken cancellationToken)
+    public async Task<object> UpdateAsync(
+        object entity,
+        object originalEntity,
+        Action<IServiceProvider?, object, object>? afterUpdateAction,
+        CancellationToken cancellationToken)
     {
         var entityType = entity.GetType();
         var dbContext = GetDbContextThatContainsEntity(entityType);
 
+        if (afterUpdateAction is not null)
+        {
+            var originalEntityClone = originalEntity.CloneJson();
+            await UpdateAsync(dbContext, entity, originalEntity, cancellationToken);
+
+            afterUpdateAction.Invoke(serviceProvider, originalEntityClone!, originalEntity);
+        }
+        else
+        {
+            await UpdateAsync(dbContext, entity, originalEntity, cancellationToken);
+        }
+
+        dbContext.ChangeTracker.Clear();
+        return originalEntity;
+    }
+
+    private static async Task UpdateAsync(
+        DbContext dbContext, object entity, object originalEntity, CancellationToken cancellationToken)
+    {
         dbContext.Attach(originalEntity);
 
+        UpdateNavigations(dbContext, entity, originalEntity);
+
+        dbContext.Entry(originalEntity).CurrentValues.SetValues(entity);
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    private static void UpdateNavigations(DbContext dbContext, object entity, object originalEntity)
+    {
         // By default, EF does not track removed items from navigation collections
         // when you just change reference to another collection.
         // We use this foreach to explicitly remove items from navigation collection
@@ -427,67 +459,72 @@ public class EfCoreDataService : IOrmDataService
 
             if (!navigationEntry.Metadata.IsCollection)
             {
-                // Case when the user want to remove navigation value
-                if (navigationEntry.CurrentValue is null && originalNavigationEntry.CurrentValue is not null)
-                {
-                    originalNavigationEntry.CurrentValue = navigationEntry.CurrentValue;
-                }
-                else
-                {
-                    var isTracked = dbContext.IsTracked(navigationEntry.CurrentValue!);
-
-                    if (!isTracked)
-                    {
-                        dbContext.Attach(navigationEntry.CurrentValue!);
-                        originalNavigationEntry.CurrentValue = navigationEntry.CurrentValue;
-                    }
-                }
+                UpdateNavigationReference(dbContext, navigationEntry, originalNavigationEntry);
 
                 continue;
             }
 
-            var navigationCollectionInstance = (IEnumerable<object>)navigationEntry.CurrentValue!;
+            UpdateNavigationCollection(dbContext, originalNavigationEntry, navigationEntry);
+        }
+    }
 
-            // Track added elements
-            foreach (var element in navigationCollectionInstance)
+    private static void UpdateNavigationReference(
+        DbContext dbContext, NavigationEntry navigationEntry, NavigationEntry originalNavigationEntry)
+    {
+        // Case when the user want to remove navigation value
+        if (navigationEntry.CurrentValue is null && originalNavigationEntry.CurrentValue is not null)
+        {
+            originalNavigationEntry.CurrentValue = navigationEntry.CurrentValue;
+        }
+        else
+        {
+            var isTracked = dbContext.IsTracked(navigationEntry.CurrentValue!);
+
+            if (!isTracked)
             {
-                var isTracked = dbContext.IsTracked(element);
-
-                if (!isTracked)
-                {
-                    dbContext.Attach(element);
-                }
+                dbContext.Attach(navigationEntry.CurrentValue!);
+                originalNavigationEntry.CurrentValue = navigationEntry.CurrentValue;
             }
+        }
+    }
 
-            var originalNavigationCollectionInstance = (IEnumerable<object>)originalNavigationEntry.CurrentValue!;
+    private static void UpdateNavigationCollection(
+        DbContext dbContext, NavigationEntry originalNavigationEntry, NavigationEntry navigationEntry)
+    {
+        var navigationCollectionInstance = (IEnumerable<object>)navigationEntry.CurrentValue!;
 
-            var objectComparer = new ObjectComparer<object>();
+        // Track added elements
+        foreach (var element in navigationCollectionInstance)
+        {
+            var isTracked = dbContext.IsTracked(element);
 
-            var addedElements = navigationCollectionInstance
-                .Except(originalNavigationCollectionInstance, objectComparer);
-
-            var removedElements = originalNavigationCollectionInstance
-                .Except(navigationCollectionInstance, objectComparer);
-
-            var actualElements = originalNavigationCollectionInstance
-                .Union(addedElements)
-                .Except(removedElements);
-
-            var underlyingTypeOfCollection = navigationEntry.Metadata.TargetEntityType.ClrType;
-
-            var castCollection = actualElements.Cast(underlyingTypeOfCollection);
-
-            var listCollection = typeof(Enumerable)
-                .GetMethod(nameof(Enumerable.ToList))!
-                .MakeGenericMethod(underlyingTypeOfCollection)
-                .Invoke(null, new object[] { castCollection });
-
-            originalNavigationEntry.CurrentValue = listCollection;
+            if (!isTracked)
+            {
+                dbContext.Attach(element);
+            }
         }
 
-        dbContext.Entry(originalEntity).CurrentValues.SetValues(entity);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        var originalNavigationCollectionInstance = (IEnumerable<object>)originalNavigationEntry.CurrentValue!;
 
-        dbContext.ChangeTracker.Clear();
+        var objectComparer = new ObjectComparer<object>();
+
+        var addedElements = navigationCollectionInstance
+            .Except(originalNavigationCollectionInstance, objectComparer);
+
+        var removedElements = originalNavigationCollectionInstance
+            .Except(navigationCollectionInstance, objectComparer);
+
+        var actualElements = originalNavigationCollectionInstance
+            .Union(addedElements)
+            .Except(removedElements);
+
+        var underlyingTypeOfCollection = navigationEntry.Metadata.TargetEntityType.ClrType;
+
+        var castCollection = actualElements.Cast(underlyingTypeOfCollection);
+
+        originalNavigationEntry.CurrentValue = typeof(Enumerable)
+            .GetMethod(nameof(Enumerable.ToList))!
+            .MakeGenericMethod(underlyingTypeOfCollection)
+            .Invoke(null, [castCollection]);
     }
 }

@@ -44,5 +44,23 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
         {
             propertyBuilder.SetSearchType(SearchType.ContainsCaseInsensitive);
         });
+
+        entityOptionsBuilder.SetAfterUpdateAction((serviceProvider, originalEntity, modifiedEntity) =>
+        {
+            var dbContext = serviceProvider!.GetRequiredService<ShopDbContext>();
+
+            const string country = "Germany";
+            if (originalEntity.Country == country)
+            {
+                return;
+            }
+
+            if (modifiedEntity.Country == country)
+            {
+                modifiedEntity.PostalCode = "99998";
+            }
+
+            dbContext.SaveChanges();
+        });
     }
 }

@@ -74,6 +74,11 @@ public interface IOrmDataService
     /// </summary>
     /// <param name="entity">Entity to update.</param>
     /// <param name="originalEntity">Entity that contains initial unchanged values.</param>
+    /// <param name="afterUpdateAction">Action that will be called after update.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    Task UpdateAsync(object entity, object originalEntity, CancellationToken cancellationToken);
+    Task<object> UpdateAsync(
+        object entity,
+        object originalEntity,
+        Action<IServiceProvider?, object, object>? afterUpdateAction,
+        CancellationToken cancellationToken);
 }

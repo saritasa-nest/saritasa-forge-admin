@@ -36,4 +36,9 @@ public record GetEntityDto
 
     /// <inheritdoc cref="EntityMetadata.IsKeyless"/>
     public bool IsKeyless { get; set; }
+
+    /// <summary>
+    /// Action that called after entity update.
+    /// </summary>
+    public Action<IServiceProvider?, object, object>? AfterUpdateAction { get; set; }
 }
