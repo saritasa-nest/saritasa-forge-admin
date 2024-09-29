@@ -454,4 +454,76 @@ public class GetEntityByIdTests : IDisposable
         Assert
             .Contains(navigation.TargetEntityProperties, property => property.Description.Equals(streetDescription));
     }
+
+    /// <summary>
+    /// Test for case when entity operations are not configured.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_EntityOperationsAreNotConfigured_TheyShouldBeTrue()
+    {
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.True(entity.CanAdd);
+        Assert.True(entity.CanEdit);
+        Assert.True(entity.CanDelete);
+    }
+
+    /// <summary>
+    /// Test for case when add possibility of an entity is disabled.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_AddOperationDisabled_CanAddShouldBeFalse()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.SetCanAdd(false);
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.False(entity.CanAdd);
+    }
+
+    /// <summary>
+    /// Test for case when edit possibility of an entity is disabled.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_EditOperationDisabled_CanEditShouldBeFalse()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.SetCanEdit(false);
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.False(entity.CanEdit);
+    }
+
+    /// <summary>
+    /// Test for case when delete possibility of an entity is disabled.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_DeleteOperationDisabled_CanDeleteShouldBeFalse()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.SetCanDelete(false);
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.False(entity.CanDelete);
+    }
 }
