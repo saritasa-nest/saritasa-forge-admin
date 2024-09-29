@@ -189,7 +189,10 @@ public class EntityService : IEntityService
             SearchFunction = entity.SearchFunction,
             CustomQueryFunction = entity.CustomQueryFunction,
             IsKeyless = entity.IsKeyless,
-            AfterUpdateAction = entity.AfterUpdateAction
+            AfterUpdateAction = entity.AfterUpdateAction,
+            CanAdd = entity.CanAdd,
+            CanEdit = entity.CanEdit,
+            CanDelete = entity.CanDelete
         };
     }
 

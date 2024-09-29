@@ -49,7 +49,8 @@ internal static class NetForgeModule
                                     propertyOptionsBuilder.SetDisplayName("Shop name");
                                 });
                         });
-                });
+                })
+                .ConfigureEntity(new ContactInfoAdminConfiguration());
         });
     }
 }
