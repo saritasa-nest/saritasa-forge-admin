@@ -68,6 +68,11 @@ public class Shop
     public List<Supplier> Suppliers { get; set; } = new();
 
     /// <summary>
+    /// Count of suppliers.
+    /// </summary>
+    public int SupplierCount => Suppliers.Count;
+
+    /// <summary>
     /// Path to image file.
     /// </summary>
     public string? Logo { get; set; }
