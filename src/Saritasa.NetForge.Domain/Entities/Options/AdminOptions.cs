@@ -75,4 +75,9 @@ public class AdminOptions
     /// Maximum number of characters. Exceeded characters will be truncated.
     /// </summary>
     public int TruncationMaxCharacters { get; set; } = 50;
+
+    /// <summary>
+    /// The date format for displaying dates.
+    /// </summary>
+    public string? DateFormat { get; set; }
 }

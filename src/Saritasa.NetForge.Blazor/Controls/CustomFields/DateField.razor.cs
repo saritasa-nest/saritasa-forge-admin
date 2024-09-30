@@ -1,4 +1,7 @@
-﻿namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
+﻿using Microsoft.AspNetCore.Components;
+using Saritasa.NetForge.Domain.Entities.Options;
+
+namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
 
 /// <summary>
 /// Represents date field.
@@ -29,6 +32,9 @@ public partial class DateField : CustomField
             SetPropertyValue(value);
         }
     }
+
+    [Inject]
+    private AdminOptions AdminOptions { get; init; } = null!;
 
     /// <summary>
     /// Handles input changes.

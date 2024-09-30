@@ -244,4 +244,13 @@ public class AdminOptionsBuilder
         options.TruncationMaxCharacters = default;
         return this;
     }
+
+    /// <summary>
+    /// Sets the date format for displaying dates.
+    /// </summary>
+    public AdminOptionsBuilder SetDateFormat(string dateFormat)
+    {
+        options.DateFormat = dateFormat;
+        return this;
+    }
 }

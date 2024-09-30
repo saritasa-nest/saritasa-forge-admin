@@ -27,6 +27,7 @@
                        Disabled="IsReadOnly"
                        @bind-Date="PropertyValue"
                        Error="@FieldErrorModel.IsError"
-                       ErrorText="@FieldErrorModel.ErrorMessage" />
+                       ErrorText="@FieldErrorModel.ErrorMessage"
+                       DateFormat="@AdminOptions.DateFormat"/>
     }
 }
