@@ -162,6 +162,13 @@ public partial class EntityPropertyColumns : ComponentBase
 
     private string FormatValue(object value, string propertyName)
     {
+        if (value is DateOnly date)
+        {
+            if (AdminOptions.DateFormat != null)
+            {
+                value = date.ToString(AdminOptions.DateFormat);
+            }
+        }
         var propertyMetadata = Properties.FirstOrDefault(property => property.Name == propertyName);
         return DataFormatUtils.GetFormattedValue(value, propertyMetadata?.DisplayFormat,
             propertyMetadata?.FormatProvider);
