@@ -22,9 +22,12 @@ public static class CustomFieldHelper
         typeof(decimal), typeof(decimal?)
     };
 
-    private static readonly IEnumerable<Type> DateOnlyTypes = new List<Type> { typeof(DateOnly), typeof(DateOnly?) };
+    private static readonly IEnumerable<Type> DateOnlyFieldTypes = new List<Type>
+    {
+        typeof(DateOnly), typeof(DateOnly?)
+    };
 
-    private static readonly IEnumerable<Type> DateFieldTypes = new List<Type>
+    private static readonly IEnumerable<Type> DateTimeFieldTypes = new List<Type>
     {
         typeof(DateTime), typeof(DateTime?),
         typeof(DateTimeOffset), typeof(DateTimeOffset?)
@@ -44,8 +47,8 @@ public static class CustomFieldHelper
         new Dictionary<IEnumerable<Type>, Type>
         {
             { NumberFieldTypes, typeof(NumberField<>) },
-            { DateFieldTypes, typeof(DateField) },
-            { DateOnlyTypes, typeof(DateOnlyField) },
+            { DateTimeFieldTypes, typeof(DateTimeField) },
+            { DateOnlyFieldTypes, typeof(DateOnlyField) },
             { BooleanFieldTypes, typeof(BoolField) },
             { TextFieldTypes, typeof(TextField) }
         };

@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Saritasa.NetForge.Domain.Entities.Options;
 
-namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
+namespace Saritasa.NetForge.Blazor.Controls.CustomFields.DateTimeFields;
 
 /// <summary>
-/// Represents date field.
+/// Represents DateTime field.
 /// </summary>
-public partial class DateField : CustomField
+public partial class DateTimeField : CustomField
 {
     /// <summary>
     /// Property date value.
@@ -61,3 +61,4 @@ public partial class DateField : CustomField
         }
     }
 }
+
