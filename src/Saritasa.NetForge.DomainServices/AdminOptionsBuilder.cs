@@ -248,9 +248,9 @@ public class AdminOptionsBuilder
     /// <summary>
     /// Sets the date format for displaying dates.
     /// </summary>
-    public AdminOptionsBuilder SetDateFormat(string dateFormat)
+    public AdminOptionsBuilder SetDateOnlyFormat(string dateFormat)
     {
-        options.DateFormat = dateFormat;
+        options.DateOnlyFormat = dateFormat;
         return this;
     }
 
@@ -266,11 +266,9 @@ public class AdminOptionsBuilder
     /// <summary>
     /// Sets the time format.
     /// </summary>
-    /// <param name="timeFormat"></param>
-    /// <returns></returns>
-    public AdminOptionsBuilder SetTimeFormat(string timeFormat)
+    public AdminOptionsBuilder SetTimeOnlyFormat(string timeFormat)
     {
-        options.TimeFormat = timeFormat;
+        options.TimeOnlyFormat = timeFormat;
         return this;
     }
 }

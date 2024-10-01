@@ -164,9 +164,9 @@ public partial class EntityPropertyColumns : ComponentBase
     {
         if (value is DateOnly date)
         {
-            if (AdminOptions.DateFormat != null)
+            if (AdminOptions.DateOnlyFormat != null)
             {
-                value = date.ToString(AdminOptions.DateFormat);
+                value = date.ToString(AdminOptions.DateOnlyFormat);
             }
         }
 
@@ -178,12 +178,12 @@ public partial class EntityPropertyColumns : ComponentBase
             }
         }
 
-        if (AdminOptions.TimeFormat != null)
+        if (AdminOptions.TimeOnlyFormat != null)
         {
             value = value switch
             {
-                TimeSpan timeSpan => DateTime.Today.Add(timeSpan).ToString(AdminOptions.TimeFormat),
-                TimeOnly timeOnly => DateTime.Today.Add(timeOnly.ToTimeSpan()).ToString(AdminOptions.TimeFormat),
+                TimeSpan timeSpan => DateTime.Today.Add(timeSpan).ToString(AdminOptions.TimeOnlyFormat),
+                TimeOnly timeOnly => DateTime.Today.Add(timeOnly.ToTimeSpan()).ToString(AdminOptions.TimeOnlyFormat),
                 _ => value
             };
         }

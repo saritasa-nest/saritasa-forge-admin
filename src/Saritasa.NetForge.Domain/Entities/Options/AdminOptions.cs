@@ -79,7 +79,7 @@ public class AdminOptions
     /// <summary>
     /// The date format for displaying dates.
     /// </summary>
-    public string? DateFormat { get; set; }
+    public string? DateOnlyFormat { get; set; }
 
     /// <summary>
     /// The date time format for displaying dates.
@@ -89,5 +89,5 @@ public class AdminOptions
     /// <summary>
     /// Time format for displaying time.
     /// </summary>
-    public string? TimeFormat { get; set; }
+    public string? TimeOnlyFormat { get; set; }
 }
