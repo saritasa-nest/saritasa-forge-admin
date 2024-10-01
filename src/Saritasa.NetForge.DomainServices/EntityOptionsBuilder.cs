@@ -115,18 +115,6 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
-    /// Adds calculated properties for the specified entity type.
-    /// </summary>
-    /// <param name="propertyExpressions">An array of lambda expressions representing calculated properties.</param>
-    public EntityOptionsBuilder<TEntity> AddCalculatedProperties(
-        params Expression<Func<TEntity, object?>>[] propertyExpressions)
-    {
-        var propertyNames = propertyExpressions.Select(expression => expression.GetMemberName());
-        options.CalculatedPropertyNames.AddRange(propertyNames);
-        return this;
-    }
-
-    /// <summary>
     /// Adds navigation property to the entity.
     /// </summary>
     /// <param name="navigationExpression">Lambda expression representing navigation to include.</param>
