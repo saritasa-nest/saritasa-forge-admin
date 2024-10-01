@@ -17,11 +17,11 @@ public partial class TimeOnlyField : CustomField
         {
             var propertyValue = EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance)?.ToString();
 
-            var isTimeParsed = TimeSpan.TryParse(propertyValue, out var timeSpan);
+            var isTimeParsed = DateTime.TryParse(propertyValue, out var dateTime);
 
             if (isTimeParsed)
             {
-                return timeSpan;
+                return dateTime.TimeOfDay;
             }
 
             return null;
@@ -50,7 +50,7 @@ public partial class TimeOnlyField : CustomField
             return;
         }
 
-        if (Property.ClrType == typeof(TimeOnly))
+        if (Property.ClrType == typeof(TimeOnly) || Property.ClrType == typeof(TimeOnly?))
         {
             property.SetValue(EntityInstance, TimeOnly.FromTimeSpan(value.Value));
         }
