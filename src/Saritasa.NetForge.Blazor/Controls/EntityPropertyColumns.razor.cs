@@ -178,6 +178,16 @@ public partial class EntityPropertyColumns : ComponentBase
             }
         }
 
+        if (AdminOptions.TimeFormat != null)
+        {
+            value = value switch
+            {
+                TimeSpan timeSpan => DateTime.Today.Add(timeSpan).ToString(AdminOptions.TimeFormat),
+                TimeOnly timeOnly => DateTime.Today.Add(timeOnly.ToTimeSpan()).ToString(AdminOptions.TimeFormat),
+                _ => value
+            };
+        }
+
         var propertyMetadata = Properties.FirstOrDefault(property => property.Name == propertyName);
         return DataFormatUtils.GetFormattedValue(value, propertyMetadata?.DisplayFormat,
             propertyMetadata?.FormatProvider);

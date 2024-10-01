@@ -262,4 +262,15 @@ public class AdminOptionsBuilder
         options.DateTimeFormat = dateTimeFormat;
         return this;
     }
+
+    /// <summary>
+    /// Sets the time format.
+    /// </summary>
+    /// <param name="timeFormat"></param>
+    /// <returns></returns>
+    public AdminOptionsBuilder SetTimeFormat(string timeFormat)
+    {
+        options.TimeFormat = timeFormat;
+        return this;
+    }
 }
