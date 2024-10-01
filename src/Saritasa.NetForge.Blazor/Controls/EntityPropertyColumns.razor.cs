@@ -162,37 +162,20 @@ public partial class EntityPropertyColumns : ComponentBase
 
     private string FormatValue(object value, string propertyName)
     {
-        if (value is DateOnly date)
-        {
-            if (AdminOptions.DateOnlyFormat != null)
-            {
-                value = date.ToString(AdminOptions.DateOnlyFormat);
-            }
-        }
-
-        if (value is DateTime dateTime)
-        {
-            if (AdminOptions.DateTimeFormat != null)
-            {
-                value = dateTime.ToString(AdminOptions.DateTimeFormat);
-            }
-        }
-
-        if (AdminOptions.TimeOnlyFormat != null)
-        {
-            value = value switch
-            {
-                TimeSpan timeSpan => DateTime.Today.Add(timeSpan).ToString(AdminOptions.TimeOnlyFormat),
-                TimeOnly timeOnly => DateTime.Today.Add(timeOnly.ToTimeSpan()).ToString(AdminOptions.TimeOnlyFormat),
-                _ => value
-            };
-        }
-
         var propertyMetadata = Properties.FirstOrDefault(property => property.Name == propertyName);
-        return DataFormatUtils.GetFormattedValue(value, propertyMetadata?.DisplayFormat,
-            propertyMetadata?.FormatProvider);
-    }
+        var formattedValue = value switch
+        {
+            DateOnly date => date.ToString(AdminOptions.DateOnlyFormat ?? string.Empty),
+            DateTime dateTime => dateTime.ToString(AdminOptions.DateTimeFormat ?? string.Empty),
+            DateTimeOffset dateTimeOffset => dateTimeOffset.ToString(AdminOptions.DateTimeFormat ?? string.Empty),
+            TimeSpan timeSpan => DateTime.Today.Add(timeSpan).ToString(AdminOptions.TimeOnlyFormat ?? string.Empty),
+            TimeOnly timeOnly => DateTime.Today.Add(timeOnly.ToTimeSpan()).ToString(AdminOptions.TimeOnlyFormat ?? string.Empty),
+            _ => DataFormatUtils.GetFormattedValue(value, propertyMetadata?.DisplayFormat,
+                propertyMetadata?.FormatProvider)
+        };
 
+        return formattedValue;
+    }
 
     private async Task OpenDialogAsync(object navigationInstance, NavigationMetadataDto navigationMetadata)
     {
