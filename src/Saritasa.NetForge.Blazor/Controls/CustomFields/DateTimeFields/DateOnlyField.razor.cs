@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Saritasa.NetForge.Domain.Entities.Options;
 
-namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
+namespace Saritasa.NetForge.Blazor.Controls.CustomFields.DateTimeFields;
 
 /// <summary>
-/// Represents date field.
+/// Represents DateOnly field.
 /// </summary>
-public partial class DateField : CustomField
+public partial class DateOnlyField : CustomField
 {
     /// <summary>
     /// Property date value.
@@ -50,14 +50,6 @@ public partial class DateField : CustomField
             return;
         }
 
-        var actualPropertyType = Nullable.GetUnderlyingType(Property.ClrType!) ?? Property.ClrType;
-        if (actualPropertyType == typeof(DateTimeOffset))
-        {
-            property.SetValue(EntityInstance, new DateTimeOffset(value.Value));
-        }
-        else
-        {
-            property.SetValue(EntityInstance, value);
-        }
+        property.SetValue(EntityInstance, DateOnly.FromDateTime(value.Value));
     }
 }
