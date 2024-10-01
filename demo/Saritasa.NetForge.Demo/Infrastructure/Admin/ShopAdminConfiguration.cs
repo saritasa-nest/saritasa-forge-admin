@@ -65,6 +65,12 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                             .SetIsSortable(true)
                             .SetSearchType(SearchType.ContainsCaseInsensitive);
                     })
+                    .IncludeProperty(address => address.FullAddress, builder =>
+                    {
+                        builder
+                            .SetOrder(5)
+                            .SetDisplayName("Full Address");
+                    })
                     .SetDisplayDetails(true);
             })
             .IncludeNavigation<Product>(shop => shop.Products, navigationOptionsBuilder =>
