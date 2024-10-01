@@ -253,4 +253,13 @@ public class AdminOptionsBuilder
         options.DateFormat = dateFormat;
         return this;
     }
+
+    /// <summary>
+    /// Sets the date time format for displaying dates.
+    /// </summary>
+    public AdminOptionsBuilder SetDateTimeFormat(string dateTimeFormat)
+    {
+        options.DateTimeFormat = dateTimeFormat;
+        return this;
+    }
 }

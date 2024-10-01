@@ -80,4 +80,9 @@ public class AdminOptions
     /// The date format for displaying dates.
     /// </summary>
     public string? DateFormat { get; set; }
+
+    /// <summary>
+    /// The date time format for displaying dates.
+    /// </summary>
+    public string? DateTimeFormat { get; set; }
 }

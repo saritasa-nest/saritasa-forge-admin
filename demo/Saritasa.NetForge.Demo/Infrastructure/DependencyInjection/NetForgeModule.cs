@@ -2,10 +2,8 @@
 using Saritasa.NetForge.Demo.Constants;
 using Saritasa.NetForge.Demo.Infrastructure.Admin;
 using Saritasa.NetForge.Demo.Infrastructure.Extensions;
-using Saritasa.NetForge.Demo.Infrastructure.UploadFiles.S3Storage;
 using Saritasa.NetForge.Demo.Models;
 using Saritasa.NetForge.Domain.Entities.Options;
-using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.DependencyInjection;
@@ -51,6 +49,7 @@ internal static class NetForgeModule
                         });
                 });
             optionsBuilder.SetDateFormat("yyyy-MM-dd");
+            optionsBuilder.SetDateTimeFormat("yyyy-MM-dd HH:mm:ss");
         });
     }
 }

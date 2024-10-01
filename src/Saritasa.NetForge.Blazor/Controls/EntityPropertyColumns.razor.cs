@@ -169,10 +169,20 @@ public partial class EntityPropertyColumns : ComponentBase
                 value = date.ToString(AdminOptions.DateFormat);
             }
         }
+
+        if (value is DateTime dateTime)
+        {
+            if (AdminOptions.DateTimeFormat != null)
+            {
+                value = dateTime.ToString(AdminOptions.DateTimeFormat);
+            }
+        }
+
         var propertyMetadata = Properties.FirstOrDefault(property => property.Name == propertyName);
         return DataFormatUtils.GetFormattedValue(value, propertyMetadata?.DisplayFormat,
             propertyMetadata?.FormatProvider);
     }
+
 
     private async Task OpenDialogAsync(object navigationInstance, NavigationMetadataDto navigationMetadata)
     {
