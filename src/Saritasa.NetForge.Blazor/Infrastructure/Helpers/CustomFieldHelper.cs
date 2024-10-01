@@ -33,6 +33,12 @@ public static class CustomFieldHelper
         typeof(DateTimeOffset), typeof(DateTimeOffset?)
     };
 
+    private static readonly IEnumerable<Type> TimeOnlyFieldTypes = new List<Type>
+    {
+        typeof(TimeSpan), typeof(TimeSpan?),
+        typeof(TimeOnly), typeof(TimeOnly?)
+    };
+
     private static readonly IEnumerable<Type> BooleanFieldTypes = new List<Type>
     {
         typeof(bool), typeof(bool?)
@@ -49,6 +55,7 @@ public static class CustomFieldHelper
             { NumberFieldTypes, typeof(NumberField<>) },
             { DateTimeFieldTypes, typeof(DateTimeField) },
             { DateOnlyFieldTypes, typeof(DateOnlyField) },
+            { TimeOnlyFieldTypes, typeof(TimeOnlyField) },
             { BooleanFieldTypes, typeof(BoolField) },
             { TextFieldTypes, typeof(TextField) }
         };
