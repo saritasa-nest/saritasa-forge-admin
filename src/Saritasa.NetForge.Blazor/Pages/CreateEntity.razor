@@ -15,13 +15,14 @@
     var title = $"Create {ViewModel.Model.DisplayName.ToMeaningfulName()}";
     <PageTitle>@title</PageTitle>
     <MudText Class="pb-4" Typo="Typo.h4">@title</MudText>
-
-    <MudGrid Justify="Justify.Center">
-        <MudItem xs="6">
-            <EditForm Model="ViewModel.Model.EntityInstance" OnValidSubmit="ViewModel.CreateEntityAsync">
-                <div class="d-flex flex-column flex-grow-1 gap-4">
-                    @foreach (var property in ViewModel.Model.Properties)
-                    {
+    if (ViewModel.Model.Properties.Any())
+    {
+        <MudGrid Justify="Justify.Center">
+            <MudItem xs="6">
+                <EditForm Model="ViewModel.Model.EntityInstance" OnValidSubmit="ViewModel.CreateEntityAsync">
+                    <div class="d-flex flex-column flex-grow-1 gap-4">
+                        @foreach (var property in ViewModel.Model.Properties)
+                        {
                         // If there is no error view model for the property, create a new one
                         var fieldError = ViewModel.FieldErrorModels.FirstOrDefault(e => e.Property.Name == property.Name);
                         if (fieldError == null)
@@ -32,13 +33,13 @@
                             };
                             ViewModel.FieldErrorModels.Add(fieldError);
                         }
-                        var componentType = CustomFieldHelper.GetComponentType(property);
-                        var parameters = new Dictionary<string, object>
-                        {
-                            { nameof(CustomField.Property), property },
-                            { nameof(CustomField.EntityInstance), ViewModel.Model.EntityInstance },
-                            { "FieldErrorModel", fieldError }
-                        };
+                            var componentType = CustomFieldHelper.GetComponentType(property);
+                            var parameters = new Dictionary<string, object>
+                            {
+                                { nameof(CustomField.Property), property },
+                                { nameof(CustomField.EntityInstance), ViewModel.Model.EntityInstance },
+                                { "FieldErrorModel", fieldError }
+                            };
 
                         if (property.UploadFileStrategy is not null)
                         {
@@ -47,21 +48,26 @@
                                 (Action<PropertyMetadataDto, IBrowserFile?>)ViewModel.HandleSelectedFile);
                         }
 
-                        <DynamicComponent Type="componentType" Parameters="parameters" />
-                    }
+                            <DynamicComponent Type="componentType" Parameters="parameters" />
+                        }
 
-                    <div class="d-flex flex-row gap-4 pt-4">
-                        <MudButton Variant="Variant.Outlined" OnClick="NavigateToEntityDetails">
-                            Cancel
-                        </MudButton>
-                        <MudButton Variant="Variant.Outlined" Color="Color.Success" ButtonType="ButtonType.Submit">
-                            Save
-                        </MudButton>
+                        <div class="d-flex flex-row gap-4 pt-4">
+                            <MudButton Variant="Variant.Outlined" OnClick="NavigateToEntityDetails">
+                                Cancel
+                            </MudButton>
+                            <MudButton Variant="Variant.Outlined" Color="Color.Success" ButtonType="ButtonType.Submit">
+                                Save
+                            </MudButton>
+                        </div>
                     </div>
-                </div>
-            </EditForm>
-        </MudItem>
-    </MudGrid>
+                </EditForm>
+            </MudItem>
+        </MudGrid>
+    }
+    else
+    {
+        <MudText>There are no properties to display for the entity.</MudText>
+    }
 }
 else
 {
