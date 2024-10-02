@@ -144,4 +144,44 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         options.NavigationOptions.Add(navigationOptions);
         return this;
     }
+
+    /// <summary>
+    /// Sets action that will be called after entity update.
+    /// </summary>
+    /// <param name="action">Action to call.</param>
+    public EntityOptionsBuilder<TEntity> SetAfterUpdateAction(Action<IServiceProvider?, TEntity, TEntity> action)
+    {
+        options.AfterUpdateAction = (serviceProvider, x, y) => action(serviceProvider, (TEntity)x, (TEntity)y);
+        return this;
+    }
+
+    /// <summary>
+    /// Sets possibility to add a new entity.
+    /// </summary>
+    /// <param name="canAdd">Whether an entity can be added.</param>
+    public EntityOptionsBuilder<TEntity> SetCanAdd(bool canAdd)
+    {
+        options.CanAdd = canAdd;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets possibility to edit an entity.
+    /// </summary>
+    /// <param name="canEdit">Whether an entity can be edited.</param>
+    public EntityOptionsBuilder<TEntity> SetCanEdit(bool canEdit)
+    {
+        options.CanEdit = canEdit;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets possibility to delete an entity.
+    /// </summary>
+    /// <param name="canDelete">Whether an entity can be deleted.</param>
+    public EntityOptionsBuilder<TEntity> SetCanDelete(bool canDelete)
+    {
+        options.CanDelete = canDelete;
+        return this;
+    }
 }

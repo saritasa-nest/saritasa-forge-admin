@@ -10,7 +10,9 @@
            HelperText="@Property.Description"
            Disabled="IsReadOnly"
            MultiSelection="true"
-           Comparer="new ObjectComparer<T>()">
+           Comparer="new ObjectComparer<T>()"
+           Error="@FieldErrorModel.IsError"
+           ErrorText="@FieldErrorModel.ErrorMessage">
     @foreach (var instance in NavigationInstances)
     {
         <MudSelectItem Value="instance" />

@@ -2,8 +2,10 @@
 using Saritasa.NetForge.Demo.Constants;
 using Saritasa.NetForge.Demo.Infrastructure.Admin;
 using Saritasa.NetForge.Demo.Infrastructure.Extensions;
+using Saritasa.NetForge.Demo.Infrastructure.UploadFiles.S3Storage;
 using Saritasa.NetForge.Demo.Models;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.DependencyInjection;
@@ -16,16 +18,10 @@ internal static class NetForgeModule
     /// <summary>
     /// Register dependencies.
     /// </summary>
-    public static void Register(IServiceCollection services)
+    public static void Register(IServiceCollection services, IConfiguration configuration)
     {
         services.AddNetForge(optionsBuilder =>
         {
-            optionsBuilder.ConfigureAuth(serviceProvider =>
-            {
-                var httpContext = serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
-                return Task.FromResult(httpContext?.User.Identity?.IsAuthenticated ?? false);
-            });
-
             optionsBuilder.UseEntityFramework(efOptionsBuilder => { efOptionsBuilder.UseDbContext<ShopDbContext>(); })
                 .AddGroups(new List<EntityGroup>
                 {
@@ -33,14 +29,14 @@ internal static class NetForgeModule
                     new() { Name = GroupConstants.Shops }
                 })
                 .SetGroupHeadersExpanded(true)
-                .ConfigureEntity(new ShopAdminConfiguration())
+                .ConfigureEntity(new ShopAdminConfiguration(services))
                 .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
                 {
                     entityOptionsBuilder.SetIsHidden(true);
                 }).AddIdentityGroup()
                 .ConfigureEntity(new UserAdminConfiguration())
                 .ConfigureEntity(new AddressAdminConfiguration())
-                .ConfigureEntity(new ProductAdminConfiguration())
+                .ConfigureEntity(new ProductAdminConfiguration(services))
                 .ConfigureEntity<ShopProductsCount>(entityOptionsBuilder =>
                 {
                     entityOptionsBuilder.IncludeNavigation<Shop>(
@@ -51,10 +47,10 @@ internal static class NetForgeModule
                                 .IncludeProperty(shop => shop.Name, propertyOptionsBuilder =>
                                 {
                                     propertyOptionsBuilder.SetDisplayName("Shop name");
-                                })
-                                .SetOrder(1);
+                                });
                         });
-                });
+                })
+                .ConfigureEntity(new ContactInfoAdminConfiguration());
         });
     }
 }

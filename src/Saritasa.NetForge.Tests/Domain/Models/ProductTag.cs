@@ -1,4 +1,6 @@
-﻿namespace Saritasa.NetForge.Tests.Domain.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Saritasa.NetForge.Tests.Domain.Models;
 
 /// <summary>
 /// Represents a tag associated with a product in the shop.
@@ -13,11 +15,14 @@ internal class ProductTag
     /// <summary>
     /// The name of the tag.
     /// </summary>
+    [MinLength(1)]
+    [MaxLength(10)]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// The description of the tag.
     /// </summary>
+    [Required]
     public string Description { get; set; } = string.Empty;
 
     /// <summary>

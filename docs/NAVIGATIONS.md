@@ -27,14 +27,16 @@ public void Configure(EntityOptionsBuilder<Shop> entityOptionsBuilder)
         .IncludeNavigation<Address>(shop => shop.Address, navigationOptionsBuilder =>
         {
             navigationOptionsBuilder
-                .SetOrder(1)
                 .IncludeProperty(address => address.Id, builder =>
                 {
-                    builder.SetDisplayName("Address Id");
+                    builder
+                        .SetOrder(3)
+                        .SetDisplayName("Address Id");
                 })
                 .IncludeProperty(address => address.Street, builder =>
                 {
                     builder
+                        .SetOrder(4)
                         .SetDisplayName("Address Street")
                         .SetDescription("Address street name.")
                         .SetEmptyValueDisplay("N/A")

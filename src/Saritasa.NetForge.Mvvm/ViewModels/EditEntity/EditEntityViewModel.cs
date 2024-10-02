@@ -1,16 +1,19 @@
 ﻿using Saritasa.NetForge.Domain.Exceptions;
-using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.AspNetCore.Components.Forms;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
+using System.ComponentModel.DataAnnotations;
+using Saritasa.NetForge.Mvvm.Utils;
+using System.Reflection;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 
 /// <summary>
 /// View model for edit entity page.
 /// </summary>
-public class EditEntityViewModel : BaseViewModel
+public class EditEntityViewModel : ValidationEntityViewModel
 {
     /// <summary>
     /// Entity details model.
@@ -24,7 +27,7 @@ public class EditEntityViewModel : BaseViewModel
 
     private readonly IEntityService entityService;
     private readonly IOrmDataService dataService;
-    private readonly IFileService fileService;
+    private readonly IServiceProvider serviceProvider;
 
     /// <summary>
     /// Constructor.
@@ -34,14 +37,14 @@ public class EditEntityViewModel : BaseViewModel
         string instancePrimaryKey,
         IEntityService entityService,
         IOrmDataService dataService,
-        IFileService fileService)
+        IServiceProvider serviceProvider)
     {
         Model = new EditEntityModel { StringId = stringId };
         InstancePrimaryKey = instancePrimaryKey;
 
         this.entityService = entityService;
         this.dataService = dataService;
-        this.fileService = fileService;
+        this.serviceProvider = serviceProvider;
     }
 
     /// <summary>
@@ -53,6 +56,11 @@ public class EditEntityViewModel : BaseViewModel
     /// Is entity was updated.
     /// </summary>
     public bool IsUpdated { get; set; }
+
+    /// <summary>
+    /// Errors encountered while entity updating.
+    /// </summary>
+    public List<ValidationResult>? Errors { get; set; }
 
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
@@ -82,11 +90,37 @@ public class EditEntityViewModel : BaseViewModel
                 .GetInstanceAsync(InstancePrimaryKey, Model.ClrType!, includedNavigationNames, CancellationToken);
 
             Model.OriginalEntityInstance = Model.EntityInstance.CloneJson();
+
+            FieldErrorModels = Model.Properties
+                .Select(property => new FieldErrorModel
+                {
+                    Property = property
+                })
+                .ToList();
         }
         catch (NotFoundException)
         {
             IsEntityExists = false;
         }
+    }
+
+    private readonly IDictionary<PropertyMetadataDto, IBrowserFile> filesToUpload
+        = new Dictionary<PropertyMetadataDto, IBrowserFile>();
+
+    /// <summary>
+    /// Handles selected file.
+    /// </summary>
+    /// <param name="property">File related to this property.</param>
+    /// <param name="file">Selected file.</param>
+    public void HandleSelectedFile(PropertyMetadataDto property, IBrowserFile? file)
+    {
+        if (file is null)
+        {
+            filesToUpload.Remove(property);
+            return;
+        }
+
+        filesToUpload[property] = file;
     }
 
     private EditEntityModel MapModel(GetEntityDto entity)
@@ -96,7 +130,8 @@ public class EditEntityViewModel : BaseViewModel
             DisplayName = entity.DisplayName,
             PluralName = entity.PluralName,
             ClrType = entity.ClrType,
-            Properties = entity.Properties
+            Properties = entity.Properties,
+            AfterUpdateAction = entity.AfterUpdateAction
         };
     }
 
@@ -105,14 +140,31 @@ public class EditEntityViewModel : BaseViewModel
     /// </summary>
     public async Task UpdateEntityAsync()
     {
-        var message = WeakReferenceMessenger.Default.Send(new UploadImageMessage());
-
-        foreach (var image in message.ChangedFiles)
+        foreach (var (property, file) in filesToUpload)
         {
-            await fileService.CreateFileAsync(image.PathToFile!, image.FileContent!, CancellationToken);
+            var fileString = await property.UploadFileStrategy!.UploadFileAsync(file, CancellationToken);
+            Model.EntityInstance.SetPropertyValue(property.Name, fileString);
         }
 
-        await dataService.UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken);
+        var errors = new List<ValidationResult>();
+
+        // Clear the error on the previous validation.
+        FieldErrorModels.ForEach(e => e.ErrorMessage = string.Empty);
+
+        if (!entityService.ValidateEntity(Model.EntityInstance!, Model.Properties, ref errors))
+        {
+            FieldErrorModels.MappingErrorToCorrectField(errors);
+            Errors = errors;
+
+            return;
+        }
+
+        var updatedEntity = await dataService
+            .UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, Model.AfterUpdateAction, CancellationToken);
+
+        // We do clone because UpdateAsync method returns Model.OriginalEntityInstance
+        // so we don't want Model.EntityInstance and Model.OriginalEntityInstance to have the same reference.
+        Model.EntityInstance = updatedEntity.CloneJson();
         IsUpdated = true;
     }
 }

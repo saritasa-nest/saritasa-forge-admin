@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Domain.Entities.Metadata;
@@ -104,13 +105,7 @@ public class EntityService : IEntityService
 
         propertyDtos = propertyDtos.Union(navigationDtos);
 
-        var orderedProperties = propertyDtos
-            .OrderByDescending(property => property is { IsPrimaryKey: true, Order: null })
-            .ThenByDescending(property => property.Order.HasValue)
-            .ThenBy(property => property.Order)
-            .ToList();
-
-        return MapGetEntityDto(metadata) with { Properties = orderedProperties };
+        return MapGetEntityDto(metadata) with { Properties = propertyDtos.ToList() };
     }
 
     private static PropertyMetadataDto MapProperty(PropertyMetadata property)
@@ -137,9 +132,8 @@ public class EntityService : IEntityService
             IsValueGeneratedOnAdd = property.IsValueGeneratedOnAdd,
             IsValueGeneratedOnUpdate = property.IsValueGeneratedOnUpdate,
             IsRichTextField = property.IsRichTextField,
-            IsImagePath = property.IsImagePath,
-            ImageFolder = property.ImageFolder ?? string.Empty,
-            IsBase64Image = property.IsBase64Image,
+            IsImage = property.IsImage,
+            UploadFileStrategy = property.UploadFileStrategy,
             IsReadOnly = property.IsReadOnly,
             TruncationMaxCharacters = property.TruncationMaxCharacters,
             IsNullable = property.IsNullable,
@@ -194,7 +188,11 @@ public class EntityService : IEntityService
             ClrType = entity.ClrType,
             SearchFunction = entity.SearchFunction,
             CustomQueryFunction = entity.CustomQueryFunction,
-            IsKeyless = entity.IsKeyless
+            IsKeyless = entity.IsKeyless,
+            AfterUpdateAction = entity.AfterUpdateAction,
+            CanAdd = entity.CanAdd,
+            CanEdit = entity.CanEdit,
+            CanDelete = entity.CanDelete
         };
     }
 
@@ -436,5 +434,81 @@ public class EntityService : IEntityService
         IEnumerable<object> entities, Type entityType, CancellationToken cancellationToken)
     {
         return dataService.BulkDeleteAsync(entities, entityType, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public bool ValidateEntity(object instance, ICollection<PropertyMetadataDto> properties, ref List<ValidationResult> errors)
+    {
+        var context = new ValidationContext(instance, serviceProvider, items: null);
+
+        Validator.TryValidateObject(instance, context, errors, validateAllProperties: true);
+
+        var isNotNullableProperties = properties
+            .Where(property => !property.IsNullable)
+            .Select(e => e.Name)
+            .ToList();
+
+        // Validate property that not have RequiredAttribute but have RequiredMemberAttribute or is not nullable (in ORM).
+        var requiredProperties = instance.GetType().GetProperties()
+            .Where(prop => !prop.IsDefined(typeof(RequiredAttribute), false) && (prop.CustomAttributes.Any(attr => attr.AttributeType.Name == "RequiredMemberAttribute") || isNotNullableProperties.Contains(prop.Name)))
+            .ToList();
+
+        var requiredErrors = new List<ValidationResult>();
+        foreach (var property in requiredProperties)
+        {
+            var value = instance.GetPropertyValue(property.Name);
+            var isError = false;
+
+            switch (value)
+            {
+                case string str:
+                    if (string.IsNullOrEmpty(str))
+                    {
+                        isError = true;
+                    }
+
+                    break;
+                case DateTime dt:
+                    if (dt == DateTime.MinValue)
+                    {
+                        isError = true;
+                    }
+
+                    break;
+                case DateTimeOffset dt:
+                    if (dt == DateTimeOffset.MinValue)
+                    {
+                        isError = true;
+                    }
+
+                    break;
+                case DateOnly dt:
+                    if (dt == DateOnly.MinValue)
+                    {
+                        isError = true;
+                    }
+
+                    break;
+                default:
+                    if (value is null)
+                    {
+                        isError = true;
+                    }
+
+                    break;
+            }
+
+            if (isError)
+            {
+                requiredErrors.Add(new ValidationResult($"The {property.Name} field is required.", [property.Name]));
+            }
+        }
+
+        if (requiredErrors.Count != 0)
+        {
+            errors.AddRange(requiredErrors);
+        }
+
+        return errors.Count == 0;
     }
 }

@@ -47,6 +47,26 @@ public static class EntityMetadataOptionsExtensions
             entityMetadata.CustomQueryFunction = entityOptions.CustomQueryFunction;
         }
 
+        if (entityOptions.AfterUpdateAction is not null)
+        {
+            entityMetadata.AfterUpdateAction = entityOptions.AfterUpdateAction;
+        }
+
+        if (entityOptions.CanAdd.HasValue)
+        {
+            entityMetadata.CanAdd = entityOptions.CanAdd.Value;
+        }
+
+        if (entityOptions.CanEdit.HasValue)
+        {
+            entityMetadata.CanEdit = entityOptions.CanEdit.Value;
+        }
+
+        if (entityOptions.CanDelete.HasValue)
+        {
+            entityMetadata.CanDelete = entityOptions.CanDelete.Value;
+        }
+
         foreach (var option in entityOptions.PropertyOptions)
         {
             var property = entityMetadata.Properties
@@ -126,10 +146,8 @@ public static class EntityMetadataOptionsExtensions
 
         if (property is PropertyMetadata propertyMetadata)
         {
-            propertyMetadata.IsImagePath = propertyOptions.IsImagePath;
-            propertyMetadata.ImageFolder = propertyOptions.ImageFolder;
-
-            propertyMetadata.IsBase64Image = propertyOptions.IsBase64Image;
+            propertyMetadata.IsImage = propertyOptions.IsImage;
+            propertyMetadata.UploadFileStrategy = propertyOptions.UploadFileStrategy;
         }
 
         if (propertyOptions.IsMultiline)

@@ -75,10 +75,7 @@ public class Shop
     /// <summary>
     /// Bytes that represents image.
     /// </summary>
-    [NetForgeProperty(
-        IsBase64Image = true,
-        Order = 4, 
-        Description = "Photo of the shop from the outside.")]
+    [NetForgeProperty(Order = 2, Description = "Photo of the shop from the outside.")]
     public string? BuildingPhoto { get; set; }
 
     /// <inheritdoc />

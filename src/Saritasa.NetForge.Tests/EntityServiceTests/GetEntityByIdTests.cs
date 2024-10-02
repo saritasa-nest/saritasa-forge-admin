@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using Moq;
 using Saritasa.NetForge.Domain.Attributes;
-using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Domain.Exceptions;
 using Saritasa.NetForge.DomainServices;
 using Saritasa.NetForge.Tests.Domain;
@@ -251,7 +250,7 @@ public class GetEntityByIdTests : IDisposable
     /// Test for case when properties have ordering via Fluent API.
     /// </summary>
     [Fact]
-    public async Task GetEntityByIdAsync_WithOrderingViaFluentApi_OrderedPropertyShouldBeFirst()
+    public async Task GetEntityByIdAsync_WithOrderingViaFluentApi_OrderShouldBeSet()
     {
         // Arrange
         adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
@@ -261,28 +260,32 @@ public class GetEntityByIdTests : IDisposable
                 .ConfigureProperty(shop => shop.Id, optionsBuilder => optionsBuilder.SetOrder(1));
         });
         const string expectedPropertyName = nameof(Shop.TotalSales);
+        const int expectedOrder = 0;
 
         // Act
         var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+        var actualOrder = entity.Properties.First(property => property.Name == expectedPropertyName).Order;
 
         // Assert
-        Assert.Equal(expectedPropertyName, entity.Properties.First().Name);
+        Assert.Equal(expectedOrder, actualOrder);
     }
 
     /// <summary>
     /// Test for case when properties have ordering via <see cref="NetForgePropertyAttribute"/>.
     /// </summary>
     [Fact]
-    public async Task GetEntityByIdAsync_WithOrderingViaAttribute_OrderedPropertyShouldBeFirst()
+    public async Task GetEntityByIdAsync_WithOrderingViaAttribute_OrderShouldBeSet()
     {
         // Arrange
         const string expectedPropertyName = nameof(Address.Latitude);
+        const int expectedOrder = 0;
 
         // Act
         var entity = await entityService.GetEntityByIdAsync(AttributeTestEntityId, CancellationToken.None);
+        var actualOrder = entity.Properties.First(property => property.Name == expectedPropertyName).Order;
 
         // Assert
-        Assert.Equal(expectedPropertyName, entity.Properties.First().Name);
+        Assert.Equal(expectedOrder, actualOrder);
     }
 
     /// <summary>
@@ -450,5 +453,77 @@ public class GetEntityByIdTests : IDisposable
             .Contains(navigation.TargetEntityProperties, property => property.DisplayName.Equals(idDisplayName));
         Assert
             .Contains(navigation.TargetEntityProperties, property => property.Description.Equals(streetDescription));
+    }
+
+    /// <summary>
+    /// Test for case when entity operations are not configured.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_EntityOperationsAreNotConfigured_TheyShouldBeTrue()
+    {
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.True(entity.CanAdd);
+        Assert.True(entity.CanEdit);
+        Assert.True(entity.CanDelete);
+    }
+
+    /// <summary>
+    /// Test for case when add possibility of an entity is disabled.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_AddOperationDisabled_CanAddShouldBeFalse()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.SetCanAdd(false);
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.False(entity.CanAdd);
+    }
+
+    /// <summary>
+    /// Test for case when edit possibility of an entity is disabled.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_EditOperationDisabled_CanEditShouldBeFalse()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.SetCanEdit(false);
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.False(entity.CanEdit);
+    }
+
+    /// <summary>
+    /// Test for case when delete possibility of an entity is disabled.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_DeleteOperationDisabled_CanDeleteShouldBeFalse()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.SetCanDelete(false);
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.False(entity.CanDelete);
     }
 }

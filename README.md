@@ -33,17 +33,13 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
   - [Generated Properties](#generated-properties)
   - [Rich Text Field](#rich-text-field)
   - [Image Properties](#image-properties)
-    - [Image Path](#image-path)
-      - [Configuring Place to Store Media Files](#configuring-place-to-store-media-files)
-    - [Base 64 String](#base-64-string)
-      - [Configuration](#configuration-1)
+    - [Configuration](#configuration-1)
   - [Read-only Properties](#read-only-properties)
     - [Configuration](#configuration-2)
   - [String Truncate](#string-truncate)
     - [Configuration](#configuration-3)
   - [Multiline Text Field Property](#multiline-text-field-property)
     - [Configuration](#configuration-4)
-
 
 # How to Use
 
@@ -309,6 +305,33 @@ You can configure your query for specific entity.
 })
 ```
 
+## After Update Action
+
+You can configure action that will be performed after entity update.
+
+```csharp
+.ConfigureEntity<Address>(entityOptionsBuilder =>
+{
+    entityOptionsBuilder.SetAfterUpdateAction((serviceProvider, originalEntity, modifiedEntity) =>
+    {
+        var dbContext = serviceProvider!.GetRequiredService<ShopDbContext>();
+
+        const string country = "Germany";
+        if (originalEntity.Country == country)
+        {
+            return;
+        }
+
+        if (modifiedEntity.Country == country)
+        {
+            modifiedEntity.PostalCode = "99998";
+        }
+
+        dbContext.SaveChanges();
+    });
+})
+```
+
 You can use `ServiceProvider` to access your services.
 
 # Customizing Entity Properties
@@ -561,76 +584,33 @@ optionsBuilder.ConfigureEntity<Product>(entityOptionsBuilder =>
 
 You can add properties that will be displayed as images.
 
-There are two types of images: `ImagePath` and `Base64Image`.
+### Configuration
 
-Both of them can be configured via `[NetForgeProperty]` and `Fluent API`.
+**Using Fluent API**
 
-### Image Path
+You can create your own implementaion of `IUploadFileStrategy` interface and pass it to `SetUploadFileStrategy` configuration method.
 
-`ImagePath` represents path to image on your storage.
+This interface has methods `UploadFileAsync` that is calling when file is uploaded and `GetFileSource` that is calling when file should be displayed.
 
-#### Configuring Place to Store Media Files
+We have some examples of strategies [here](demo/Saritasa.NetForge.Demo/Infrastructure/UploadFiles/Strategies).
 
-You can configure these properties related to images:
-
-**Static files folder**
-
-Default value for static files folder is `wwwrooot`.
-
-``` csharp
-services.AddNetForge(optionsBuilder =>
+```csharp
+entityOptionsBuilder.ConfigureProperty(shop => shop.BuildingPhoto, builder =>
 {
-    optionsBuilder.SetStaticFilesFolder("static")
+    builder
+        .SetIsImage(true)
+        .SetUploadFileStrategy(new UploadBase64FileStrategy());
 });
 ```
 
-**Media folder**
+### Max image size
 
-Default value for media folder is `media`.
-
-``` csharp
-services.AddNetForge(optionsBuilder =>
-{
-    optionsBuilder.SetMediaFolder("media files");
-});
-```
-So default path to media files - `wwwroot/media`.
-
-**Max image size**
-
-Default value for max image size is 10 MB.
+You can set max image size in the application. Default value for max image size is 10 MB.
 
 ``` csharp
 services.AddNetForge(optionsBuilder =>
 {
     optionsBuilder.SetMaxImageSize(15);
-});
-```
-
-### Base 64 String
-
-`Base64Image` is base 64 string that looks like: `data:image/{MIME};base64,{bytes of image}`.
-
-#### Configuration
-
-**Using Attribute**
-
-```csharp
-[NetForgeProperty(IsBase64Image = true)]
-public string? BuildingPhoto { get; set; }
-```
-
-**Using Fluent API**
-
-You can use `SetImageFolder` to store images in separate folder.
-For example, if you set image folder as `Shop images`, then images will be stored in that way: `wwwroot/media/Shop images`.
-
-```csharp
-entityOptionsBuilder.ConfigureProperty(shop => shop.Logo, builder =>
-{
-    builder
-        .SetIsImagePath(true)
-        .SetImageFolder("Shop images");
 });
 ```
 
@@ -781,3 +761,13 @@ entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
 [MultilineText(IsAutoGrow = true)]
 public required string Street { get; set; }
 ```
+
+Contributors
+------------
+
+* Saritasa http://www.saritasa.com
+
+License
+-------
+
+The project is licensed under the terms of the BSD license. Refer to LICENSE.txt for more information.

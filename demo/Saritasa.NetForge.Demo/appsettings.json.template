@@ -12,5 +12,13 @@
     "AppDatabase": "Server={{$.rds_db_host}};Database={{$.rds_db_name}};Uid={{$.rds_db_user}};Pwd={{$.rds_db_password}};"
   },
   "Application": {
+  },
+  "S3Settings": {
+    "RegionName": "{{$.aws_s3_direct_region}}",
+    "BucketName": "{{$.aws_s3_bucket_name}}",
+    "AccessKey": "",
+    "SecretKey": "",
+    "ServiceUrl": "",
+    "ForcePathStyle": false
   }
 }

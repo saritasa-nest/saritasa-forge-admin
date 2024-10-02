@@ -115,7 +115,7 @@ internal class EfCoreMetadataService : IOrmMetadataService
         }
         else if (navigation is IReadOnlyNavigation readOnlyNavigation)
         {
-            isNullable = !(readOnlyNavigation.ForeignKey.IsRequired || readOnlyNavigation.ForeignKey.IsRequiredDependent);
+            isNullable = !readOnlyNavigation.ForeignKey.IsRequiredDependent;
         }
 
         var navigationMetadata = new NavigationMetadata

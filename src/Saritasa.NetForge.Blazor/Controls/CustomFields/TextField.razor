@@ -10,7 +10,9 @@
               @bind-Value="PropertyValue"
               Lines="Lines"
               MaxLines="MaxLines"
-              AutoGrow="IsAutoGrow">
+              AutoGrow="IsAutoGrow"
+              Error="@FieldErrorModel.IsError"
+              ErrorText="@FieldErrorModel.ErrorMessage">
 </MudTextField>
 
 

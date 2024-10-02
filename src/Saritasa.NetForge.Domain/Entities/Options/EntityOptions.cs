@@ -70,4 +70,18 @@ public class EntityOptions
 
     /// <inheritdoc cref="EntityMetadata.CustomQueryFunction"/>
     public Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? CustomQueryFunction { get; set; }
+
+    /// <summary>
+    /// Action that called after entity update.
+    /// </summary>
+    public Action<IServiceProvider?, object, object>? AfterUpdateAction { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.CanAdd"/>
+    public bool? CanAdd { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.CanEdit"/>
+    public bool? CanEdit { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.CanDelete"/>
+    public bool? CanDelete { get; set; }
 }

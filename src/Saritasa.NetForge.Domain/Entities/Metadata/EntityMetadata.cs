@@ -76,4 +76,24 @@ public class EntityMetadata
     /// Whether the entity has the primary key.
     /// </summary>
     public bool IsKeyless { get; set; }
+
+    /// <summary>
+    /// Action that called after entity update.
+    /// </summary>
+    public Action<IServiceProvider?, object, object>? AfterUpdateAction { get; set; }
+
+    /// <summary>
+    /// Determines that entity can be added.
+    /// </summary>
+    public bool CanAdd { get; set; } = true;
+
+    /// <summary>
+    /// Determines that entity can be edited.
+    /// </summary>
+    public bool CanEdit { get; set; } = true;
+
+    /// <summary>
+    /// Determines that entity can be deleted.
+    /// </summary>
+    public bool CanDelete { get; set; } = true;
 }

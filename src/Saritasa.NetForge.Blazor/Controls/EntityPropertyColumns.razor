@@ -1,4 +1,5 @@
-﻿@using Saritasa.NetForge.UseCases.Metadata.GetEntityById
+﻿@using Saritasa.NetForge.Domain.Enums
+@using Saritasa.NetForge.UseCases.Metadata.GetEntityById
 @using Saritasa.NetForge.Domain.Entities.Options
 @using Saritasa.NetForge.UseCases.Constants
 @using Saritasa.NetForge.Blazor.Extensions
@@ -10,6 +11,7 @@
 }
 
 @{
+    var allProperties = new List<(PropertyMetadataDto Property, NavigationMetadataDto? Navigation)>();
     foreach (var property in Properties)
     {
         if (property is NavigationMetadataDto navigation)
@@ -23,19 +25,29 @@
             {
                 foreach (var targetProperty in navigation.TargetEntityProperties)
                 {
-                    RenderPropertyColumn(targetProperty, navigation);
+                    allProperties.Add((targetProperty, navigation));
                 }
             }
             else
             {
-                RenderPropertyColumn(property, navigation);
+                allProperties.Add((property, navigation));
             }
 
         }
         else
         {
-            RenderPropertyColumn(property);
+            allProperties.Add((property, null));
         }
+    }
+
+    // Display principal entity primary key at the start of columns if the order is not set.
+    var orderedProperties = allProperties
+        .OrderByDescending(property => property is { Property: { IsPrimaryKey: true, Order: null }, Navigation: null })
+        .ThenByDescending(property => property.Property.Order.HasValue)
+        .ThenBy(property => property.Property.Order);
+    foreach (var (property, navigation) in orderedProperties)
+    {
+        RenderPropertyColumn(property, navigation);
     }
 
     void RenderPropertyColumn(PropertyMetadataDto property, NavigationMetadataDto? navigation = null)
@@ -49,21 +61,34 @@
                         displayName = displayName.ToMeaningfulName();
                     }
 
-                    if (string.IsNullOrEmpty(property.Description))
-                    {
-                        @displayName
-                    }
-                    else
-                    {
-                        <MudTooltip Arrow="true" Placement="@Placement.Top">
-                            <ChildContent>
-                                @displayName
-                            </ChildContent>
-                            <TooltipContent>
-                                <MudText Typo="@Typo.body2">@property.Description</MudText>
-                            </TooltipContent>
-                        </MudTooltip>
-                    }
+                    <div class="entity-details-grid__header-cell">
+                        @if (string.IsNullOrEmpty(property.Description))
+                        {
+                            @displayName
+                        }
+                        else
+                        {
+                            <MudTooltip Arrow="true" Placement="@Placement.Top">
+                                <ChildContent>
+                                    @displayName
+                                </ChildContent>
+                                <TooltipContent>
+                                    <MudText Typo="@Typo.body2">@property.Description</MudText>
+                                </TooltipContent>
+                            </MudTooltip>
+                        }
+
+                        @if (property.SearchType != SearchType.None)
+                        {
+                            <div class="entity-details-grid__small-icon">
+                                <MudTooltip Text="@property.SearchType.ToString().ToMeaningfulName()"
+                                            Arrow="true"
+                                            Placement="Placement.Bottom">
+                                    <MudIcon Icon="@Icons.Material.Filled.Search" Size="Size.Small" />
+                                </MudTooltip>
+                            </div>
+                        }
+                    </div>
                 }
             </HeaderTemplate>
 
@@ -82,10 +107,10 @@
                     {
                         @propertyValue
                     }
-                    else if (property.IsImagePath || property.IsBase64Image)
+                    else if (property.IsImage)
                     {
                         <div>
-                            <MudImage Src="@propertyValue"
+                            <MudImage Src="@property.UploadFileStrategy!.GetFileSource(propertyValue)"
                                       Elevation="25"
                                       Class="rounded-lg property-image" />
                         </div>

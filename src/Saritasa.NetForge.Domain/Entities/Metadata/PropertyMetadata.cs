@@ -44,24 +44,12 @@ public class PropertyMetadata : PropertyMetadataBase
     public bool IsCalculatedProperty { get; set; }
 
     /// <summary>
-    /// Whether this property is image path.
+    /// Whether this property is image.
     /// </summary>
-    public bool IsImagePath { get; set; }
+    public bool IsImage { get; set; }
 
     /// <summary>
-    /// The folder where to save an image.
+    /// Upload file strategy.
     /// </summary>
-    /// <remarks>
-    /// Use it when you need to store images in separate folder inside <see cref="AdminOptions.MediaFolder"/>.
-    /// </remarks>
-    public string? ImageFolder { get; set; }
-
-    /// <summary>
-    /// Whether this property is bytes image.
-    /// </summary>
-    /// <remarks>
-    /// Property will have this value:
-    /// <c>data:image/{MIME};base64,{bytes of image}</c>.
-    /// </remarks>
-    public bool IsBase64Image { get; set; }
+    public IUploadFileStrategy? UploadFileStrategy { get; set; }
 }

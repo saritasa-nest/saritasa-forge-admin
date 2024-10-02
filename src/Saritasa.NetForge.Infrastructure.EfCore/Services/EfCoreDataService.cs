@@ -2,12 +2,15 @@
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Query;
 using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.DomainServices.Comparers;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
+using ExpressionExtensions = Saritasa.NetForge.DomainServices.Extensions.ExpressionExtensions;
 
 namespace Saritasa.NetForge.Infrastructure.EfCore.Services;
 
@@ -203,7 +206,7 @@ public class EfCoreDataService : IOrmDataService
         {
             // Add OR operator between every searchable property using search entry
             // Example:
-            // entity => Regex.IsMatch(((entityType)entity).propertyName, searchEntry, RegexOptions.IgnoreCase) ||
+            // entity => ((entityType)entity).propertyName.Equals(searchEntry) ||
             //           ((entityType)entity).propertyName2.StartsWith(searchEntry) ||
             //           ...
             return Expression.OrElse(combinedExpressions, expression);
@@ -221,10 +224,10 @@ public class EfCoreDataService : IOrmDataService
         if (combinedExpressions is not null)
         {
             // Example:
-            // entity => (Regex.IsMatch(((entityType)entity).propertyName, searchEntry, RegexOptions.IgnoreCase) ||
+            // entity => ((entityType)entity).propertyName.Equals(searchEntry) ||
             //           ((entityType)entity).propertyName2.StartsWith(searchEntry) ||
             //           ...) &&
-            //           (Regex.IsMatch(((entityType)entity).propertyName, searchEntry2, RegexOptions.IgnoreCase) ||
+            //           ((entityType)entity).propertyName.Equals(searchEntry2) ||
             //           ((entityType)entity).propertyName2.StartsWith(searchEntry2) ||
             //           ...) && ...
             return Expression.And(combinedExpressions, expression);
@@ -256,17 +259,11 @@ public class EfCoreDataService : IOrmDataService
         return matches.Select(match => match.Value);
     }
 
-    private static readonly MethodInfo isMatch =
-        typeof(Regex).GetMethod(nameof(Regex.IsMatch), new[] { typeof(string), typeof(string), typeof(RegexOptions) })!;
-
-    private static readonly MethodInfo startsWith =
-        typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string) })!;
-
     /// <summary>
     /// Gets call of method similar to <see cref="string.Contains(string)"/> but case insensitive.
     /// </summary>
     /// <remarks>
-    /// Uses <see cref="Regex.IsMatch(string, string, RegexOptions)"/> with <see cref="RegexOptions.IgnoreCase"/>.
+    /// Uses <see cref="string.ToUpper()"/> to achieve case insensitive search.
     /// </remarks>
     private static Expression GetContainsCaseInsensitiveMethodCall(
         MemberExpression propertyExpression, string searchEntry)
@@ -274,9 +271,15 @@ public class EfCoreDataService : IOrmDataService
         var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
         var entryConstant = Expression.Constant(searchEntry);
 
-        // entity => Regex.IsMatch(((entityType)entity).propertyName, searchWord, RegexOptions.IgnoreCase)
-        return Expression.Call(
-            isMatch, property, entryConstant, Expression.Constant(RegexOptions.IgnoreCase));
+        Expression<Func<string, string, bool>> containsExpression =
+            (property, value) => property.ToUpper().Contains(value.ToUpper());
+
+        var body = containsExpression.Body;
+
+        body = ReplacingExpressionVisitor.Replace(containsExpression.Parameters[0], property, body);
+        body = ReplacingExpressionVisitor.Replace(containsExpression.Parameters[1], entryConstant, body);
+
+        return body;
     }
 
     /// <summary>
@@ -289,6 +292,7 @@ public class EfCoreDataService : IOrmDataService
         MemberExpression propertyExpression, string searchEntry)
     {
         var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
+        var startsWith = typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string) })!;
         var entryConstant = Expression.Constant(searchEntry);
 
         // entity => ((entityType)entity).propertyName.StartsWith(searchConstant)
@@ -300,8 +304,7 @@ public class EfCoreDataService : IOrmDataService
     /// If provided search entry is <c>None</c>, then this method will perform <c>IS NULL</c> check.
     /// </summary>
     /// <remarks>
-    /// Adds <c>^</c> at the start and <c>$</c> at the end of search entry to make exact match.
-    /// Uses <see cref="Regex.IsMatch(string, string, RegexOptions)"/> with <see cref="RegexOptions.IgnoreCase"/>.
+    /// Uses <see cref="string.ToUpper()"/> to achieve case insensitive search.
     /// </remarks>
     private static Expression GetExactMatchCaseInsensitiveMethodCall(
         MemberExpression propertyExpression, string searchEntry)
@@ -311,13 +314,19 @@ public class EfCoreDataService : IOrmDataService
             return GetNullCheckExpression(propertyExpression);
         }
 
-        var entryConstant = Expression.Constant($"^{searchEntry}$");
-
         var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
 
-        // entity => Regex.IsMatch(((entityType)entity).propertyName, ^searchWord$, RegexOptions.IgnoreCase)
-        return Expression.Call(
-            isMatch, property, entryConstant, Expression.Constant(RegexOptions.IgnoreCase));
+        Expression<Func<string, string, bool>> equalsExpression =
+            (property, value) => property.ToUpper().Equals(value.ToUpper());
+
+        var body = equalsExpression.Body;
+
+        body = ReplacingExpressionVisitor.Replace(equalsExpression.Parameters[0], property, body);
+
+        var entryConstant = Expression.Constant(searchEntry);
+        body = ReplacingExpressionVisitor.Replace(equalsExpression.Parameters[1], entryConstant, body);
+
+        return body;
     }
 
     /// <summary>
@@ -395,13 +404,44 @@ public class EfCoreDataService : IOrmDataService
     }
 
     /// <inheritdoc />
-    public async Task UpdateAsync(object entity, object originalEntity, CancellationToken cancellationToken)
+    public async Task<object> UpdateAsync(
+        object entity,
+        object originalEntity,
+        Action<IServiceProvider?, object, object>? afterUpdateAction,
+        CancellationToken cancellationToken)
     {
         var entityType = entity.GetType();
         var dbContext = GetDbContextThatContainsEntity(entityType);
 
+        if (afterUpdateAction is not null)
+        {
+            var originalEntityClone = originalEntity.CloneJson();
+            await UpdateAsync(dbContext, entity, originalEntity, cancellationToken);
+
+            afterUpdateAction.Invoke(serviceProvider, originalEntityClone!, originalEntity);
+        }
+        else
+        {
+            await UpdateAsync(dbContext, entity, originalEntity, cancellationToken);
+        }
+
+        dbContext.ChangeTracker.Clear();
+        return originalEntity;
+    }
+
+    private static async Task UpdateAsync(
+        DbContext dbContext, object entity, object originalEntity, CancellationToken cancellationToken)
+    {
         dbContext.Attach(originalEntity);
 
+        UpdateNavigations(dbContext, entity, originalEntity);
+
+        dbContext.Entry(originalEntity).CurrentValues.SetValues(entity);
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    private static void UpdateNavigations(DbContext dbContext, object entity, object originalEntity)
+    {
         // By default, EF does not track removed items from navigation collections
         // when you just change reference to another collection.
         // We use this foreach to explicitly remove items from navigation collection
@@ -419,67 +459,72 @@ public class EfCoreDataService : IOrmDataService
 
             if (!navigationEntry.Metadata.IsCollection)
             {
-                // Case when the user want to remove navigation value
-                if (navigationEntry.CurrentValue is null && originalNavigationEntry.CurrentValue is not null)
-                {
-                    originalNavigationEntry.CurrentValue = navigationEntry.CurrentValue;
-                }
-                else
-                {
-                    var isTracked = dbContext.IsTracked(navigationEntry.CurrentValue!);
-
-                    if (!isTracked)
-                    {
-                        dbContext.Attach(navigationEntry.CurrentValue!);
-                        originalNavigationEntry.CurrentValue = navigationEntry.CurrentValue;
-                    }
-                }
+                UpdateNavigationReference(dbContext, navigationEntry, originalNavigationEntry);
 
                 continue;
             }
 
-            var navigationCollectionInstance = (IEnumerable<object>)navigationEntry.CurrentValue!;
+            UpdateNavigationCollection(dbContext, originalNavigationEntry, navigationEntry);
+        }
+    }
 
-            // Track added elements
-            foreach (var element in navigationCollectionInstance)
+    private static void UpdateNavigationReference(
+        DbContext dbContext, NavigationEntry navigationEntry, NavigationEntry originalNavigationEntry)
+    {
+        // Case when the user want to remove navigation value
+        if (navigationEntry.CurrentValue is null && originalNavigationEntry.CurrentValue is not null)
+        {
+            originalNavigationEntry.CurrentValue = navigationEntry.CurrentValue;
+        }
+        else
+        {
+            var isTracked = dbContext.IsTracked(navigationEntry.CurrentValue!);
+
+            if (!isTracked)
             {
-                var isTracked = dbContext.IsTracked(element);
-
-                if (!isTracked)
-                {
-                    dbContext.Attach(element);
-                }
+                dbContext.Attach(navigationEntry.CurrentValue!);
+                originalNavigationEntry.CurrentValue = navigationEntry.CurrentValue;
             }
+        }
+    }
 
-            var originalNavigationCollectionInstance = (IEnumerable<object>)originalNavigationEntry.CurrentValue!;
+    private static void UpdateNavigationCollection(
+        DbContext dbContext, NavigationEntry originalNavigationEntry, NavigationEntry navigationEntry)
+    {
+        var navigationCollectionInstance = (IEnumerable<object>)navigationEntry.CurrentValue!;
 
-            var objectComparer = new ObjectComparer<object>();
+        // Track added elements
+        foreach (var element in navigationCollectionInstance)
+        {
+            var isTracked = dbContext.IsTracked(element);
 
-            var addedElements = navigationCollectionInstance
-                .Except(originalNavigationCollectionInstance, objectComparer);
-
-            var removedElements = originalNavigationCollectionInstance
-                .Except(navigationCollectionInstance, objectComparer);
-
-            var actualElements = originalNavigationCollectionInstance
-                .Union(addedElements)
-                .Except(removedElements);
-
-            var underlyingTypeOfCollection = navigationEntry.Metadata.TargetEntityType.ClrType;
-
-            var castCollection = actualElements.Cast(underlyingTypeOfCollection);
-
-            var listCollection = typeof(Enumerable)
-                .GetMethod(nameof(Enumerable.ToList))!
-                .MakeGenericMethod(underlyingTypeOfCollection)
-                .Invoke(null, new object[] { castCollection });
-
-            originalNavigationEntry.CurrentValue = listCollection;
+            if (!isTracked)
+            {
+                dbContext.Attach(element);
+            }
         }
 
-        dbContext.Entry(originalEntity).CurrentValues.SetValues(entity);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        var originalNavigationCollectionInstance = (IEnumerable<object>)originalNavigationEntry.CurrentValue!;
 
-        dbContext.ChangeTracker.Clear();
+        var objectComparer = new ObjectComparer<object>();
+
+        var addedElements = navigationCollectionInstance
+            .Except(originalNavigationCollectionInstance, objectComparer);
+
+        var removedElements = originalNavigationCollectionInstance
+            .Except(navigationCollectionInstance, objectComparer);
+
+        var actualElements = originalNavigationCollectionInstance
+            .Union(addedElements)
+            .Except(removedElements);
+
+        var underlyingTypeOfCollection = navigationEntry.Metadata.TargetEntityType.ClrType;
+
+        var castCollection = actualElements.Cast(underlyingTypeOfCollection);
+
+        originalNavigationEntry.CurrentValue = typeof(Enumerable)
+            .GetMethod(nameof(Enumerable.ToList))!
+            .MakeGenericMethod(underlyingTypeOfCollection)
+            .Invoke(null, [castCollection]);
     }
 }

@@ -8,4 +8,6 @@
                  HideSpinButtons="true"
                  HelperText="@Property.Description"
                  Disabled="IsReadOnly"
-                 @bind-Value="PropertyValue"/>
+                 @bind-Value="PropertyValue"
+                 Error="@FieldErrorModel.IsError"
+                 ErrorText="@FieldErrorModel.ErrorMessage"/>

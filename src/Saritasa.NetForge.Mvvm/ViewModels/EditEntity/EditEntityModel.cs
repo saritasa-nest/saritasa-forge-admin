@@ -32,4 +32,9 @@ public record EditEntityModel
     /// Original unchanged entity instance.
     /// </summary>
     public object? OriginalEntityInstance { get; set; }
+
+    /// <summary>
+    /// Action that called after entity update.
+    /// </summary>
+    public Action<IServiceProvider?, object, object>? AfterUpdateAction { get; init; }
 }
