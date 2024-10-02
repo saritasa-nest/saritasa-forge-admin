@@ -48,9 +48,6 @@ internal static class NetForgeModule
                                 });
                         });
                 });
-            optionsBuilder.SetDateOnlyFormat("yyyy-MM-dd");
-            optionsBuilder.SetDateTimeFormat("yyyy-MM-dd HH:mm:ss");
-            optionsBuilder.SetTimeOnlyFormat("HH:mm");
         });
     }
 }
