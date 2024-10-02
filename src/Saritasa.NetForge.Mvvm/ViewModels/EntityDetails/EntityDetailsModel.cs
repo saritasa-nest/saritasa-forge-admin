@@ -40,4 +40,13 @@ public record EntityDetailsModel
 
     /// <inheritdoc cref="EntityMetadata.IsKeyless"/>
     public bool IsKeyless { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.CanAdd"/>
+    public bool CanAdd { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.CanEdit"/>
+    public bool CanEdit { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.CanDelete"/>
+    public bool CanDelete { get; set; }
 }

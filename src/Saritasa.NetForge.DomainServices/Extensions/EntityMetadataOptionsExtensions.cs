@@ -52,6 +52,21 @@ public static class EntityMetadataOptionsExtensions
             entityMetadata.AfterUpdateAction = entityOptions.AfterUpdateAction;
         }
 
+        if (entityOptions.CanAdd.HasValue)
+        {
+            entityMetadata.CanAdd = entityOptions.CanAdd.Value;
+        }
+
+        if (entityOptions.CanEdit.HasValue)
+        {
+            entityMetadata.CanEdit = entityOptions.CanEdit.Value;
+        }
+
+        if (entityOptions.CanDelete.HasValue)
+        {
+            entityMetadata.CanDelete = entityOptions.CanDelete.Value;
+        }
+
         foreach (var option in entityOptions.PropertyOptions)
         {
             var property = entityMetadata.Properties

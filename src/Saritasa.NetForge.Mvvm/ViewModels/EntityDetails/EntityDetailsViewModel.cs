@@ -107,9 +107,9 @@ public class EntityDetailsViewModel : BaseViewModel
                                    })
                                    || Model.SearchFunction is not null;
 
-            CanAdd = !Model.IsKeyless;
-            CanEdit = !Model.IsKeyless;
-            CanDelete = !Model.IsKeyless;
+            CanAdd = Model is { CanAdd: true, IsKeyless: false };
+            CanEdit = Model is { CanEdit: true, IsKeyless: false };
+            CanDelete = Model is { CanDelete: true, IsKeyless: false };
         }
         catch (NotFoundException)
         {
@@ -129,7 +129,10 @@ public class EntityDetailsViewModel : BaseViewModel
             Properties = entity.Properties,
             SearchFunction = entity.SearchFunction,
             CustomQueryFunction = entity.CustomQueryFunction,
-            IsKeyless = entity.IsKeyless
+            IsKeyless = entity.IsKeyless,
+            CanAdd = entity.CanAdd,
+            CanEdit = entity.CanEdit,
+            CanDelete = entity.CanDelete
         };
     }
 
