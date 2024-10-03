@@ -11,7 +11,7 @@
 
 @{
     var allProperties = new List<(PropertyMetadataDto Property, NavigationMetadataDto? Navigation)>();
-    foreach (var property in Properties)
+    foreach (var property in Properties.Where(property => property is { IsHidden: false, IsHiddenFromListView: false }))
     {
         if (property is NavigationMetadataDto navigation)
         {
@@ -22,7 +22,9 @@
 
             if (!navigation.IsCollection)
             {
-                foreach (var targetProperty in navigation.TargetEntityProperties)
+                var targetNavigationProperties = navigation.TargetEntityProperties
+                    .Where(targetProperty => targetProperty is { IsHidden: false, IsHiddenFromListView: false });
+                foreach (var targetProperty in targetNavigationProperties)
                 {
                     allProperties.Add((targetProperty, navigation));
                 }
