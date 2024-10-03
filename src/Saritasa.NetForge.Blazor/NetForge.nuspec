@@ -64,6 +64,9 @@
     <file src="bin\Release\net6.0\*.dll" target="lib\net6.0" />
     <file src="bin\Release\net7.0\*.dll" target="lib\net7.0" />
     <file src="bin\Release\net8.0\*.dll" target="lib\net8.0" />
+    <file src="bin\Release\net6.0\*.xml" target="lib\net6.0" />
+    <file src="bin\Release\net7.0\*.xml" target="lib\net7.0" />
+    <file src="bin\Release\net8.0\*.xml" target="lib\net8.0" />
     <file src="..\..\README.md" target="README.md" />
     <file src="..\..\LICENSE.txt" target="LICENSE.txt" />
     <file src="..\..\icon.png" target="icon.png" />
