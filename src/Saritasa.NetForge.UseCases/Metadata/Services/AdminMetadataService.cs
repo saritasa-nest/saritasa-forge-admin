@@ -77,9 +77,11 @@ public class AdminMetadataService
         {
             case true when entityOptions.IncludedProperties.Any():
                 entityMetadata.Properties.RemoveAll(p => !entityOptions.IncludedProperties.Contains(p.Name));
+                entityMetadata.Navigations.RemoveAll(p => !entityOptions.IncludedProperties.Contains(p.Name));
                 break;
             case true:
                 entityMetadata.Properties.Clear();
+                entityMetadata.Navigations.Clear();
                 break;
         }
     }

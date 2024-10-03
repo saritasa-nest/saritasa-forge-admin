@@ -89,9 +89,9 @@ public class EntityDetailsViewModel : BaseViewModel
                                    })
                                    || Model.SearchFunction is not null;
 
-            CanAdd = Model is { CanAdd: true, IsKeyless: false };
-            CanEdit = Model is { CanEdit: true, IsKeyless: false };
-            CanDelete = Model is { CanDelete: true, IsKeyless: false };
+            CanAdd = Model is { CanAdd: true, IsKeyless: false } && Model.Properties.Any();
+            CanEdit = Model is { CanEdit: true, IsKeyless: false } && Model.Properties.Any();
+            CanDelete = Model is { CanDelete: true, IsKeyless: false } && Model.Properties.Any();
         }
         catch (NotFoundException)
         {
