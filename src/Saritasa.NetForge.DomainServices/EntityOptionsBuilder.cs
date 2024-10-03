@@ -184,4 +184,28 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         options.CanDelete = canDelete;
         return this;
     }
+
+    /// <summary>
+    /// Excludes all properties by default.
+    /// This method can be used in conjunction with <see cref="IncludeProperties"/> to include specific properties
+    /// after excluding all.
+    /// </summary>
+    public EntityOptionsBuilder<TEntity> ExcludeAllProperties()
+    {
+        options.ExcludeAllProperties = true;
+        return this;
+    }
+
+    /// <summary>
+    /// Includes specific properties.
+    /// This method can be used in conjunction with <see cref="ExcludeAllProperties"/> to include specific
+    /// properties after excluding all.
+    /// </summary>
+    /// <param name="propertyExpressions">The expressions representing the properties to include.</param>
+    public EntityOptionsBuilder<TEntity> IncludeProperties(params Expression<Func<TEntity, object?>>[] propertyExpressions)
+    {
+        var propertyNames = propertyExpressions.Select(expression => expression.GetMemberName());
+        options.IncludedProperties.AddRange(propertyNames);
+        return this;
+    }
 }
