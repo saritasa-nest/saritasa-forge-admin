@@ -1,9 +1,9 @@
-﻿namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
+namespace Saritasa.NetForge.Blazor.Controls.CustomFields.DateTimeFields;
 
 /// <summary>
-/// Represents date field.
+/// Represents DateTime field.
 /// </summary>
-public partial class DateField : CustomField
+public partial class DateTimeField : CustomField
 {
     /// <summary>
     /// Property date value.
@@ -48,10 +48,6 @@ public partial class DateField : CustomField
         if (actualPropertyType == typeof(DateTimeOffset))
         {
             property.SetValue(EntityInstance, new DateTimeOffset(value.Value));
-        }
-        else if (actualPropertyType == typeof(DateOnly))
-        {
-            property.SetValue(EntityInstance, DateOnly.FromDateTime(value.Value));
         }
         else
         {

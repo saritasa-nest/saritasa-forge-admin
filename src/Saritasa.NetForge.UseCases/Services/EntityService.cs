@@ -444,13 +444,15 @@ public class EntityService : IEntityService
         Validator.TryValidateObject(instance, context, errors, validateAllProperties: true);
 
         var isNotNullableProperties = properties
-            .Where(property => !property.IsNullable)
+            .Where(property => property is { IsNullable: false, IsReadOnly: false })
             .Select(e => e.Name)
             .ToList();
 
         // Validate property that not have RequiredAttribute but have RequiredMemberAttribute or is not nullable (in ORM).
         var requiredProperties = instance.GetType().GetProperties()
-            .Where(prop => !prop.IsDefined(typeof(RequiredAttribute), false) && (prop.CustomAttributes.Any(attr => attr.AttributeType.Name == "RequiredMemberAttribute") || isNotNullableProperties.Contains(prop.Name)))
+            .Where(prop => !prop.IsDefined(typeof(RequiredAttribute), false) &&
+                           (prop.CustomAttributes.Any(attr => attr.AttributeType.Name == "RequiredMemberAttribute") ||
+                            isNotNullableProperties.Contains(prop.Name)))
             .ToList();
 
         var requiredErrors = new List<ValidationResult>();

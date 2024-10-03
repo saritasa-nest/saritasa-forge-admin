@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Blazor.Controls.CustomFields;
+using Saritasa.NetForge.Blazor.Controls.CustomFields.DateTimeFields;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.Blazor.Infrastructure.Helpers;
@@ -21,11 +22,21 @@ public static class CustomFieldHelper
         typeof(decimal), typeof(decimal?)
     };
 
-    private static readonly IEnumerable<Type> DateFieldTypes = new List<Type>
+    private static readonly IEnumerable<Type> DateOnlyFieldTypes = new List<Type>
+    {
+        typeof(DateOnly), typeof(DateOnly?)
+    };
+
+    private static readonly IEnumerable<Type> DateTimeFieldTypes = new List<Type>
     {
         typeof(DateTime), typeof(DateTime?),
-        typeof(DateTimeOffset), typeof(DateTimeOffset?),
-        typeof(DateOnly), typeof(DateOnly?)
+        typeof(DateTimeOffset), typeof(DateTimeOffset?)
+    };
+
+    private static readonly IEnumerable<Type> TimeOnlyFieldTypes = new List<Type>
+    {
+        typeof(TimeSpan), typeof(TimeSpan?),
+        typeof(TimeOnly), typeof(TimeOnly?)
     };
 
     private static readonly IEnumerable<Type> BooleanFieldTypes = new List<Type>
@@ -42,7 +53,9 @@ public static class CustomFieldHelper
         new Dictionary<IEnumerable<Type>, Type>
         {
             { NumberFieldTypes, typeof(NumberField<>) },
-            { DateFieldTypes, typeof(DateField) },
+            { DateTimeFieldTypes, typeof(DateTimeField) },
+            { DateOnlyFieldTypes, typeof(DateOnlyField) },
+            { TimeOnlyFieldTypes, typeof(TimeOnlyField) },
             { BooleanFieldTypes, typeof(BoolField) },
             { TextFieldTypes, typeof(TextField) }
         };
