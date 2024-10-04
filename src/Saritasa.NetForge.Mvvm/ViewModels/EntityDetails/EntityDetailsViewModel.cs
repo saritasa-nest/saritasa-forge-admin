@@ -65,6 +65,11 @@ public class EntityDetailsViewModel : BaseViewModel
     public bool CanDelete { get; set; }
 
     /// <summary>
+    /// Whether entity has properties included.
+    /// </summary>
+    public bool HasProperties => Model.Properties.Any();
+
+    /// <summary>
     /// Selected entities.
     /// </summary>
     public HashSet<object> SelectedEntities { get; set; } = new();

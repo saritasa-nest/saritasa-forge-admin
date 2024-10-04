@@ -50,22 +50,32 @@
             </MudItem>
         }
 
-        <MudItem xs="12">
-            <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true"
-                         MultiSelection="true" @bind-SelectedItems="ViewModel.SelectedEntities"
-                         @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple"
-                         @attributes="NonKeylessEntityDataGridAttributes">
-                <Columns>
-                    <EntityPropertyColumns Properties="ViewModel.Model.Properties"
-                                           DataGrid="ViewModel.DataGrid"
-                                           CanDelete="ViewModel.CanDelete"/>
-                </Columns>
+        @if (!ViewModel.HasProperties)
+        {
+            <MudItem xs="12">
+                <MudText Typo="Typo.body1">This entity doesn't have configured properties to display.</MudText>
+            </MudItem>
+        }
 
-                <PagerContent>
-                    <MudDataGridPager T="object"/>
-                </PagerContent>
-            </MudDataGrid>
-        </MudItem>
+        @if (ViewModel.HasProperties)
+        {
+            <MudItem xs="12">
+                <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true"
+                             MultiSelection="true" @bind-SelectedItems="ViewModel.SelectedEntities"
+                             @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple"
+                             @attributes="NonKeylessEntityDataGridAttributes">
+                    <Columns>
+                        <EntityPropertyColumns Properties="ViewModel.Model.Properties"
+                                               DataGrid="ViewModel.DataGrid"
+                                               CanDelete="ViewModel.CanDelete"/>
+                    </Columns>
+
+                    <PagerContent>
+                        <MudDataGridPager T="object"/>
+                    </PagerContent>
+                </MudDataGrid>
+            </MudItem>
+        }
     </MudGrid>
 }
 else
