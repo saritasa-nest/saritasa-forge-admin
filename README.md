@@ -506,6 +506,20 @@ public string Property { get; set; }
 
 You can read about navigation properties [here](docs/NAVIGATIONS.md).
 
+## Exclude All Properties and Include Specific Only
+
+You can exclude all properties and include only specific ones. It works with both ordinary and navigation properties.
+
+**Using Fluent API**
+
+```csharp
+optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
+{
+    entityOptionsBuilder.ExcludeAllProperties();
+    entityOptionsBuilder.IncludeProperties(user => user.Id, user => user.Name);
+});
+```
+
 ## Exclude Property from Query
 
 You can explicitly control whether a property should be excluded from the data query.
