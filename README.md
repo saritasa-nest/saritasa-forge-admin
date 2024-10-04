@@ -28,6 +28,7 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
   - [Display Properties as Title Case](#display-properties-as-title-case)
   - [Default Values](#default-values)
   - [Navigation Properties](#navigation-properties)
+  - [Exclude All Properties and Include Specific Only](#exclude-all-properties-and-include-specific-only)
   - [Exclude Property from Query](#exclude-property-from-query)
   - [Formatting Property as HTML](#formatting-property-as-html)
   - [Generated Properties](#generated-properties)
