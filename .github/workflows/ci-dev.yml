@@ -1,0 +1,16 @@
+# ==============================================================================
+# Build development version of the library.
+# ==============================================================================
+name: Dev Build
+
+on:
+  push:
+    branches:
+      - develop
+      - feature/ci-*
+
+jobs:
+  NetForge:
+    uses: ./.github/workflows/pack-library.yml
+    with:
+      version_postfix: dev
