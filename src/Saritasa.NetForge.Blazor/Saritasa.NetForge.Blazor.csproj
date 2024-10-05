@@ -8,7 +8,7 @@
     <PackageId>Saritasa.NetForge</PackageId>
     <StaticWebAssetBasePath>_content/$(PackageId)</StaticWebAssetBasePath>
     <Title>NetForge - Admin Panel for ASP.NET Core</Title>
-    <Version>0.1.0-alfa</Version>
+    <Version>0.1.0</Version>
     <Authors>Saritasa</Authors>
     <Description>The NetForge is a library that provides a user-friendly and intuitive user interface for performing CRUD operations on your database entities within your .NET applications.</Description>
     <Copyright>(c) Saritasa, 2023-2024</Copyright>
