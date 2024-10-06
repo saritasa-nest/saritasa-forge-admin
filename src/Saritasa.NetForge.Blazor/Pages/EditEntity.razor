@@ -66,14 +66,6 @@ else if (ViewModel.IsEntityExists)
                             </MudButton>
                         </div>
 
-                        @if (ViewModel.IsUpdated)
-                        {
-                            <MudAlert Variant="Variant.Outlined"
-                                      Severity="Severity.Success">
-                                Update was completed successfully
-                            </MudAlert>
-                        }
-
                     @if (ViewModel.Errors is not null && ViewModel.Errors.Count != 0)
                     {
                     <MudAlert Variant="Variant.Outlined"
