@@ -55,6 +55,12 @@ public class AdminMetadataService
                 var calculatedProperties = GetCalculatedPropertiesMetadata(entityOptions);
                 entityMetadata.Properties.AddRange(calculatedProperties);
                 entityMetadata.ApplyOptions(entityOptions, adminOptions);
+
+                if (entityOptions.ExcludeAllProperties)
+                {
+                    // Exclude properties if it was specified in the entity options.
+                    ExcludeProperties(entityMetadata, entityOptions);
+                }
             }
 
             entityMetadata.ApplyEntityAttributes(adminOptions);
@@ -63,6 +69,21 @@ public class AdminMetadataService
 
         CacheMetadata(metadata);
         return metadata;
+    }
+
+    private static void ExcludeProperties(EntityMetadata entityMetadata, EntityOptions entityOptions)
+    {
+        switch (entityOptions.ExcludeAllProperties)
+        {
+            case true when entityOptions.IncludedProperties.Any():
+                entityMetadata.Properties.RemoveAll(p => !entityOptions.IncludedProperties.Contains(p.Name));
+                entityMetadata.Navigations.RemoveAll(p => !entityOptions.IncludedProperties.Contains(p.Name));
+                break;
+            case true:
+                entityMetadata.Properties.Clear();
+                entityMetadata.Navigations.Clear();
+                break;
+        }
     }
 
     /// <summary>

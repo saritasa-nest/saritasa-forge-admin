@@ -65,6 +65,11 @@ public class EntityDetailsViewModel : BaseViewModel
     public bool CanDelete { get; set; }
 
     /// <summary>
+    /// Whether entity has properties included.
+    /// </summary>
+    public bool HasProperties => Model.Properties.Any();
+
+    /// <summary>
     /// Selected entities.
     /// </summary>
     public HashSet<object> SelectedEntities { get; set; } = new();
@@ -89,9 +94,9 @@ public class EntityDetailsViewModel : BaseViewModel
                                    })
                                    || Model.SearchFunction is not null;
 
-            CanAdd = Model is { CanAdd: true, IsKeyless: false };
-            CanEdit = Model is { CanEdit: true, IsKeyless: false };
-            CanDelete = Model is { CanDelete: true, IsKeyless: false };
+            CanAdd = Model is { CanAdd: true, IsKeyless: false } && HasProperties;
+            CanEdit = Model is { CanEdit: true, IsKeyless: false } && HasProperties;
+            CanDelete = Model is { CanDelete: true, IsKeyless: false } && HasProperties;
         }
         catch (NotFoundException)
         {

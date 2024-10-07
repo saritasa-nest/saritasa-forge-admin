@@ -1,2 +1,5 @@
 0.1.0-alpha [2024-08-16]
 [+] Initial release.
+
+0.2.0-alpha [2024-10-07]
+[+] Exclude all properties from entity.
