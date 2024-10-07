@@ -172,7 +172,8 @@ public class EntityService : IEntityService
             IsMultiline = navigation.IsMultiline,
             Lines = navigation.Lines,
             MaxLines = navigation.MaxLines,
-            IsAutoGrow = navigation.IsAutoGrow
+            IsAutoGrow = navigation.IsAutoGrow,
+            DisplayDetails = navigation.DisplayDetails
         };
     }
 
