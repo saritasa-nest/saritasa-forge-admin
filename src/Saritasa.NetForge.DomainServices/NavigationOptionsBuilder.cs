@@ -50,4 +50,13 @@ public class NavigationOptionsBuilder<TEntity>
         options.DisplayDetails = displayDetails;
         return this;
     }
+
+    /// <summary>
+    /// Sets whether edit navigation entity details.
+    /// </summary>
+    public NavigationOptionsBuilder<TEntity> SetAsEditable()
+    {
+        options.EditDetails = true;
+        return this;
+    }
 }

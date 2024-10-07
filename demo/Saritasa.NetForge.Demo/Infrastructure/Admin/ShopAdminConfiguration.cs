@@ -1,5 +1,4 @@
-﻿using Saritasa.NetForge.Demo.Infrastructure.UploadFiles;
-using Saritasa.NetForge.Demo.Infrastructure.UploadFiles.Strategies;
+﻿using Saritasa.NetForge.Demo.Infrastructure.UploadFiles.Strategies;
 using Saritasa.NetForge.Demo.Models;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.DomainServices;
@@ -65,7 +64,8 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                             .SetIsSortable(true)
                             .SetSearchType(SearchType.ContainsCaseInsensitive);
                     })
-                    .SetDisplayDetails(true);
+                    .SetDisplayDetails(true)
+                    .SetAsEditable();
             })
             .IncludeNavigation<Product>(shop => shop.Products, navigationOptionsBuilder =>
             {
