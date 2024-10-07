@@ -14,11 +14,13 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
     - [Create Groups for Entities](#create-groups-for-entities)
     - [Configuration](#configuration)
     - [Headers Expansion](#headers-expansion)
+  - [Exclude All Entities and Include Specific Only](#exclude-all-entities-and-include-specific-only)
 - [Customizing Entities](#customizing-entities)
   - [Fluent API](#fluent-api)
   - [Creating an Entity Configuration Class](#creating-an-entity-configuration-class)
   - [Data Attributes](#data-attributes)
   - [Custom Query](#custom-query)
+  - [After Update Action](#after-update-action)
 - [Customizing Entity Properties](#customizing-entity-properties)
   - [Fluent API](#fluent-api-1)
   - [Data Attributes](#data-attributes-1)
@@ -209,8 +211,26 @@ You can customize expanded header of all groups. By default, all groups are expa
 ```csharp
 services.AddNetForge(optionsBuilder =>
 {
-    optionsBuilder.SetGroupHeadersExpanded(true)
+    optionsBuilder.SetGroupHeadersExpanded(true);
 });
+```
+
+## Exclude All Entities and Include Specific Only
+
+You can exclude all entities and include only specific ones.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.ExcludeAllEntities();
+    optionsBuilder.IncludeEntities(typeof(Shop), typeof(Product));
+});
+```
+
+Or you can include specific entities using the data attribute:
+```csharp
+[NetForgeEntity]
+public class Shop
 ```
 
 # Customizing Entities
