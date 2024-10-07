@@ -75,4 +75,14 @@ public class AdminOptions
     /// Maximum number of characters. Exceeded characters will be truncated.
     /// </summary>
     public int TruncationMaxCharacters { get; set; } = 50;
+
+    /// <summary>
+    /// Whether to exclude all tables from the admin panel.
+    /// </summary>
+    public bool ExcludeAllEntities { get; set; }
+
+    /// <summary>
+    /// Entities to include in the admin panel.
+    /// </summary>
+    public List<Type> IncludedEntities { get; set; } = [];
 }
