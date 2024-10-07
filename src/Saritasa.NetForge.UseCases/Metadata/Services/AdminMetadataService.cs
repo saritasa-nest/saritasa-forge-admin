@@ -99,16 +99,28 @@ public class AdminMetadataService
 
     private static void ExcludeProperties(EntityMetadata entityMetadata, EntityOptions entityOptions)
     {
-        switch (entityOptions.ExcludeAllProperties)
+        if (!entityOptions.ExcludeAllProperties)
         {
-            case true when entityOptions.IncludedProperties.Any():
-                entityMetadata.Properties.RemoveAll(p => !entityOptions.IncludedProperties.Contains(p.Name));
-                entityMetadata.Navigations.RemoveAll(p => !entityOptions.IncludedProperties.Contains(p.Name));
-                break;
-            case true:
-                entityMetadata.Properties.Clear();
-                entityMetadata.Navigations.Clear();
-                break;
+            return;
+        }
+
+        ExcludePropertyItems(entityMetadata.Properties, entityOptions.IncludedProperties);
+        ExcludePropertyItems(entityMetadata.Navigations, entityOptions.IncludedProperties);
+    }
+
+    private static void ExcludePropertyItems<T>(List<T> items, List<string> includedProperties) where T :
+        PropertyMetadataBase
+    {
+        var initialCount = items.Count;
+
+        // Include only properties specified in the IncludedProperties list or those with NetForgePropertyAttribute.
+        items.RemoveAll(p => p.ClrType != null
+                             && !includedProperties.Contains(p.Name)
+                             && p.PropertyInformation?.GetCustomAttribute<NetForgePropertyAttribute>() == null);
+
+        if (items.Count == initialCount)
+        {
+            items.Clear();
         }
     }
 

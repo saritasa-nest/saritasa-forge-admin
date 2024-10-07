@@ -541,6 +541,12 @@ optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
 });
 ```
 
+Or you can include specific properties using the **Attribute**:
+```csharp
+[NetForgeProperty]
+public string Property { get; set; }
+```
+
 ## Exclude Property from Query
 
 You can explicitly control whether a property should be excluded from the data query.
