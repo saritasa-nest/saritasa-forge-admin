@@ -59,25 +59,12 @@ jobs:
       - name: Pack NetForge
         run: dotnet pack /p:NuspecFile=NetForge.nuspec --output ../artifacts
         working-directory: src
-        
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.getversion.outputs.version }}
-          release_name: NetForge ${{ steps.getversion.outputs.version }}
-          draft: false
-          prerelease: false
-          overwrite: true
 
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Release
+        uses: ncipollo/release-action@v1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/Saritasa.NetForge.${{ steps.getversion.outputs.version }}.nupkg
-          asset_name: Saritasa.NetForge.${{ steps.getversion.outputs.version }}.nupkg
-          asset_content_type: application/x-nupkg
+          artifacts: ./artifacts/Saritasa.NetForge.${{ steps.getversion.outputs.version }}.nupkg
+          commit: ${{ github.sha }}
+          tag: ${{ steps.getversion.outputs.version }}
+          token: ${{ secrets.GITHUB_TOKEN }} # Secret is created automatically by GitHub
+          allowUpdates: true
