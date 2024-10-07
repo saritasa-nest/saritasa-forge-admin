@@ -1,0 +1,83 @@
+# ==============================================================================
+# Pack the library.
+# ==============================================================================
+name: Pack NetForge
+
+on:
+  workflow_call:
+    inputs:
+      version_postfix:
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: |
+            6.0.x
+            7.0.x
+            8.0.x
+
+      - name: Checkout Source
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Read VERSION file
+        id: getversion
+        run: |
+          version=$(cat VERSION.txt)
+          if [ -n "${{ inputs.version_postfix }}" ]; then
+            version="${version}-${{ inputs.version_postfix }}"
+          fi
+          echo "::set-output name=version::${version}"
+        
+      - name: Update .csproj version
+        uses: vers-one/dotnet-project-version-updater@v1.6
+        with:
+          file: "src/**/*.csproj"
+          version: ${{ steps.getversion.outputs.version }}
+
+      - name: Update .nuspec version
+        uses: vers-one/dotnet-project-version-updater@v1.6
+        with:
+          file: "src/Saritasa.NetForge.Blazor/NetForge.nuspec"
+          version: ${{ steps.getversion.outputs.version }}
+
+      - name: Restore Packages
+        run: dotnet restore src/Saritasa.NetForge.sln
+        
+      - name: Build NetForge solution
+        run: dotnet build src/Saritasa.NetForge.sln
+
+      - name: Pack NetForge
+        run: dotnet pack /p:NuspecFile=NetForge.nuspec --output ../artifacts
+        working-directory: src
+        
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.getversion.outputs.version }}
+          release_name: NetForge ${{ steps.getversion.outputs.version }}
+          draft: false
+          prerelease: false
+          overwrite: true
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/Saritasa.NetForge.${{ steps.getversion.outputs.version }}.nupkg
+          asset_name: Saritasa.NetForge.${{ steps.getversion.outputs.version }}.nupkg
+          asset_content_type: application/x-nupkg
