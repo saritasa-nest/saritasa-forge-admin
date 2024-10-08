@@ -107,7 +107,7 @@ public void Configure(EntityOptionsBuilder<Shop> entityOptionsBuilder)
                     builder.SetDisplayName("Address Id");
                 })
                 .SetIsDisplayDetails(true)
-				.SetAsEditable();
+                .SetAsEditable();
         })
 }
 ```
