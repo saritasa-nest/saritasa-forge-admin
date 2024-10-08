@@ -7,6 +7,7 @@ using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using System.ComponentModel.DataAnnotations;
 using Saritasa.NetForge.Mvvm.Utils;
 using System.Reflection;
+using MudBlazor;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 
@@ -28,6 +29,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
     private readonly IEntityService entityService;
     private readonly IOrmDataService dataService;
     private readonly IServiceProvider serviceProvider;
+    private readonly ISnackbar snackbar;
 
     /// <summary>
     /// Constructor.
@@ -37,7 +39,8 @@ public class EditEntityViewModel : ValidationEntityViewModel
         string instancePrimaryKey,
         IEntityService entityService,
         IOrmDataService dataService,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider,
+        ISnackbar snackbar)
     {
         Model = new EditEntityModel { StringId = stringId };
         InstancePrimaryKey = instancePrimaryKey;
@@ -45,17 +48,13 @@ public class EditEntityViewModel : ValidationEntityViewModel
         this.entityService = entityService;
         this.dataService = dataService;
         this.serviceProvider = serviceProvider;
+        this.snackbar = snackbar;
     }
 
     /// <summary>
     /// Whether the entity exists.
     /// </summary>
     public bool IsEntityExists { get; private set; } = true;
-
-    /// <summary>
-    /// Is entity was updated.
-    /// </summary>
-    public bool IsUpdated { get; set; }
 
     /// <summary>
     /// Errors encountered while entity updating.
@@ -165,6 +164,6 @@ public class EditEntityViewModel : ValidationEntityViewModel
         // We do clone because UpdateAsync method returns Model.OriginalEntityInstance
         // so we don't want Model.EntityInstance and Model.OriginalEntityInstance to have the same reference.
         Model.EntityInstance = updatedEntity.CloneJson();
-        IsUpdated = true;
+        snackbar.Add("Update was completed successfully", Severity.Success);
     }
 }

@@ -23,7 +23,10 @@ internal static class ApplicationModule
 
         services.AddRazorPages();
         services.AddServerSideBlazor();
-        services.AddMudServices();
+        services.AddMudServices(config =>
+        {
+            config.SnackbarConfiguration.PreventDuplicates = false;
+        });
         services.AddMemoryCache();
         services.AddScoped<INavigationService, NavigationService>();
         services.AddScoped<IEntityService, EntityService>();
