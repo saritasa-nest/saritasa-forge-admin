@@ -4,7 +4,7 @@
     <id>Saritasa.NetForge</id>
     <title>Saritasa.NetForge</title>
     <summary>NetForge - Admin Panel for ASP.NET Core 6,7,8</summary>
-    <version>0.1.0-alpha</version>
+    <version>0.1.0</version>
     <description>The NetForge is a library that provides a user-friendly and intuitive user interface for performing CRUD operations on your database entities within your .NET applications.</description>
     <authors>Saritasa</authors>
     <owners>Saritasa</owners>

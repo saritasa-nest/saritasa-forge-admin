@@ -1,0 +1,78 @@
+# ==============================================================================
+# Pack the library.
+# ==============================================================================
+name: Pack NetForge
+
+on:
+  workflow_call:
+    inputs:
+      version_postfix:
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: |
+            6.0.x
+            7.0.x
+            8.0.x
+
+      - name: Checkout Source
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Read VERSION file
+        id: getversion
+        run: |
+          version=$(cat VERSION.txt)
+          if [ -n "${{ inputs.version_postfix }}" ]; then
+            version="${version}-${{ inputs.version_postfix }}"
+          fi
+          echo "::set-output name=version::${version}"
+        
+      - name: Update .csproj version
+        uses: vers-one/dotnet-project-version-updater@v1.6
+        with:
+          file: "src/**/*.csproj"
+          version: ${{ steps.getversion.outputs.version }}
+
+      - name: Update .nuspec version
+        uses: vers-one/dotnet-project-version-updater@v1.6
+        with:
+          file: "src/Saritasa.NetForge.Blazor/NetForge.nuspec"
+          version: ${{ steps.getversion.outputs.version }}
+
+      - name: Restore Packages
+        run: dotnet restore src/Saritasa.NetForge.sln
+        
+      - name: Build NetForge solution
+        run: dotnet build src/Saritasa.NetForge.sln
+
+      - name: Pack NetForge
+        run: dotnet pack /p:NuspecFile=NetForge.nuspec --output ../artifacts
+        working-directory: src
+
+      - name: Upload Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: ./artifacts/Saritasa.NetForge.${{ steps.getversion.outputs.version }}.nupkg
+          commit: ${{ github.sha }}
+          tag: ${{ steps.getversion.outputs.version }}
+          token: ${{ secrets.GITHUB_TOKEN }} # Secret is created automatically by GitHub
+          allowUpdates: true
+
+      - uses: dev-drprasad/delete-older-releases@v0.2.0
+        with:
+          keep_latest: 10
+          delete_tag_pattern: dev
+          delete_tags: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

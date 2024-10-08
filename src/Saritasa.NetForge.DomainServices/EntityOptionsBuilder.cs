@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices.Extensions;
 
@@ -182,6 +183,28 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     public EntityOptionsBuilder<TEntity> SetCanDelete(bool canDelete)
     {
         options.CanDelete = canDelete;
+        return this;
+    }
+
+    /// <summary>
+    /// Excludes all properties by default.
+    /// This method can be used in conjunction with <see cref="IncludeProperties"/>
+    /// or <see cref="NetForgePropertyAttribute"/> to include specific properties after excluding all.
+    /// </summary>
+    public EntityOptionsBuilder<TEntity> ExcludeAllProperties()
+    {
+        options.ExcludeAllProperties = true;
+        return this;
+    }
+
+    /// <summary>
+    /// Includes specific properties.
+    /// </summary>
+    /// <param name="propertyExpressions">The expressions representing the properties to include.</param>
+    public EntityOptionsBuilder<TEntity> IncludeProperties(params Expression<Func<TEntity, object?>>[] propertyExpressions)
+    {
+        var propertyNames = propertyExpressions.Select(expression => expression.GetMemberName());
+        options.IncludedProperties.AddRange(propertyNames);
         return this;
     }
 }

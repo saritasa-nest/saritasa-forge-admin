@@ -84,4 +84,14 @@ public class EntityOptions
 
     /// <inheritdoc cref="EntityMetadata.CanDelete"/>
     public bool? CanDelete { get; set; }
+
+    /// <summary>
+    /// Whether to exclude all properties from displaying.
+    /// </summary>
+    public bool ExcludeAllProperties { get; set; }
+
+    /// <summary>
+    /// Properties to include.
+    /// </summary>
+    public List<string> IncludedProperties { get; set; } = new();
 }
