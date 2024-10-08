@@ -111,9 +111,17 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             var dbContext = serviceProvider!.GetRequiredService<ShopDbContext>();
 
             var randomNumber = Random.Shared.Next(0, 100);
-            modifiedEntity.Address!.City = $"Berlin {randomNumber}";
-            modifiedEntity.Suppliers[0].IsActive = !modifiedEntity.Suppliers[0].IsActive;
 
+            if (modifiedEntity.Address != null)
+            {
+                modifiedEntity.Address.City = $"Berlin {randomNumber}";
+            }
+
+            if (modifiedEntity.Suppliers.Count != 0)
+            {
+                modifiedEntity.Suppliers[0].IsActive = !modifiedEntity.Suppliers[0].IsActive;
+            }
+            
             dbContext.SaveChanges();
         });
 
