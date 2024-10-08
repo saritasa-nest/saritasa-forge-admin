@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices.Extensions;
 
@@ -187,8 +188,8 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
 
     /// <summary>
     /// Excludes all properties by default.
-    /// This method can be used in conjunction with <see cref="IncludeProperties"/> to include specific properties
-    /// after excluding all.
+    /// This method can be used in conjunction with <see cref="IncludeProperties"/>
+    /// or <see cref="NetForgePropertyAttribute"/> to include specific properties after excluding all.
     /// </summary>
     public EntityOptionsBuilder<TEntity> ExcludeAllProperties()
     {
@@ -198,8 +199,6 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
 
     /// <summary>
     /// Includes specific properties.
-    /// This method can be used in conjunction with <see cref="ExcludeAllProperties"/> to include specific
-    /// properties after excluding all.
     /// </summary>
     /// <param name="propertyExpressions">The expressions representing the properties to include.</param>
     public EntityOptionsBuilder<TEntity> IncludeProperties(params Expression<Func<TEntity, object?>>[] propertyExpressions)
