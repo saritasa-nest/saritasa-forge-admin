@@ -192,7 +192,7 @@ public partial class EntityPropertyColumns : ComponentBase
     /// <summary>
     /// Edit navigation entity by its identifier.
     /// </summary>
-    private async Task NavigateToEditing(NavigationMetadataDto navigationMetadata, object navigationIdentifier)
+    private async Task NavigateToEditEntityDetails(NavigationMetadataDto navigationMetadata, object navigationIdentifier)
     {
         var entityMetadata = await EntityService.GetEntityByTypeAsync(navigationMetadata.ClrType!, CancellationToken.None);
 
