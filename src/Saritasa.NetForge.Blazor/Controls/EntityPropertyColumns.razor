@@ -120,6 +120,15 @@
                     {
                         @((MarkupString)propertyValue!)
                     }
+                    else if (navigation is not null && navigation.EditDetails
+                            && property.IsPrimaryKey)
+                    {
+                        <MudButton Variant="Variant.Text" Color="Color.Primary"
+                                   OnClick="() => NavigateToEditing(navigationMetadata: navigation,
+                                       navigationIdentifier: propertyValue)">
+                            @propertyValue
+                        </MudButton>
+                    }
                     else if (navigation is not null
                              && (navigation.DisplayDetails && property.IsPrimaryKey
                                  || navigation.IsCollection))

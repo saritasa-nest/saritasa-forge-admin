@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices.Extensions;
+using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.Utils;
 using Saritasa.NetForge.UseCases.Constants;
 using Saritasa.NetForge.UseCases.Interfaces;
@@ -29,6 +30,9 @@ public partial class EntityPropertyColumns : ComponentBase
 
     [Inject]
     private IEntityService EntityService { get; set; } = null!;
+
+    [Inject]
+    private INavigationService NavigationService { get; set; } = null!;
 
     /// <summary>
     /// Properties of the entity.
@@ -183,6 +187,17 @@ public partial class EntityPropertyColumns : ComponentBase
             { nameof(navigationMetadata), navigationMetadata }
         };
         await DialogService.ShowAsync<NavigationDialog>(title: string.Empty, parameters, options);
+    }
+
+    /// <summary>
+    /// Edit navigation entity by its identifier.
+    /// </summary>
+    private async Task NavigateToEditing(NavigationMetadataDto navigationMetadata, object navigationIdentifier)
+    {
+        var entityMetadata = await EntityService.GetEntityByTypeAsync(navigationMetadata.ClrType!, CancellationToken.None);
+
+        NavigationService.NavigateTo<Mvvm.ViewModels.EditEntity.EditEntityViewModel>(
+            parameters: [entityMetadata.PluralName, navigationIdentifier]);
     }
 
     /// <summary>

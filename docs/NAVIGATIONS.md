@@ -85,3 +85,29 @@ public void Configure(EntityOptionsBuilder<Shop> entityOptionsBuilder)
 ### Collection
 
 Collection navigations have this behavior by default.
+
+## Edit navigation data
+
+You can edit navigation data directly from parent entity list view page by click on the navigation link.
+
+### Reference
+
+For reference edit of navigation data you need to configure it via `Fluent API`. Note that only primary key of the entity is clickable to edit navigation data.
+Note that if both navigation methods are called, the .SetAsEditable() method has higher priority than .SetIsDisplayDetails(true).
+
+```csharp
+public void Configure(EntityOptionsBuilder<Shop> entityOptionsBuilder)
+{
+    entityOptionsBuilder
+        .IncludeNavigation<Address>(shop => shop.Address, navigationOptionsBuilder =>
+        {
+            navigationOptionsBuilder
+                .IncludeProperty(address => address.Id, builder =>
+                {
+                    builder.SetDisplayName("Address Id");
+                })
+                .SetIsDisplayDetails(true)
+                .SetAsEditable();
+        })
+}
+```
