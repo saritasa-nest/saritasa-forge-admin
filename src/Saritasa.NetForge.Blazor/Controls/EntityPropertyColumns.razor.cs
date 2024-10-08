@@ -197,7 +197,7 @@ public partial class EntityPropertyColumns : ComponentBase
         var entityMetadata = await EntityService.GetEntityByTypeAsync(navigationMetadata.ClrType!, CancellationToken.None);
 
         NavigationService.NavigateTo<Mvvm.ViewModels.EditEntity.EditEntityViewModel>(
-            parameters: new[] { entityMetadata.PluralName, navigationIdentifier });
+            parameters: [entityMetadata.PluralName, navigationIdentifier]);
     }
 
     /// <summary>
