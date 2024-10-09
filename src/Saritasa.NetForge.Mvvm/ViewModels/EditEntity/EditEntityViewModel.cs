@@ -6,7 +6,7 @@ using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using System.ComponentModel.DataAnnotations;
 using Saritasa.NetForge.Mvvm.Utils;
-using System.Reflection;
+using Microsoft.Extensions.Logging;
 using MudBlazor;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
@@ -26,6 +26,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
     /// </summary>
     public string InstancePrimaryKey { get; set; }
 
+    private readonly ILogger<EditEntityViewModel> logger;
     private readonly IEntityService entityService;
     private readonly IOrmDataService dataService;
     private readonly IServiceProvider serviceProvider;
@@ -37,6 +38,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
     public EditEntityViewModel(
         string stringId,
         string instancePrimaryKey,
+        ILogger<EditEntityViewModel> logger,
         IEntityService entityService,
         IOrmDataService dataService,
         IServiceProvider serviceProvider,
@@ -45,6 +47,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
         Model = new EditEntityModel { StringId = stringId };
         InstancePrimaryKey = instancePrimaryKey;
 
+        this.logger = logger;
         this.entityService = entityService;
         this.dataService = dataService;
         this.serviceProvider = serviceProvider;
@@ -158,12 +161,21 @@ public class EditEntityViewModel : ValidationEntityViewModel
             return;
         }
 
-        var updatedEntity = await dataService
-            .UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, Model.AfterUpdateAction, CancellationToken);
+        try
+        {
+            var updatedEntity = await dataService
+                .UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, Model.AfterUpdateAction, CancellationToken);
 
-        // We do clone because UpdateAsync method returns Model.OriginalEntityInstance
-        // so we don't want Model.EntityInstance and Model.OriginalEntityInstance to have the same reference.
-        Model.EntityInstance = updatedEntity.CloneJson();
-        snackbar.Add("Update was completed successfully", Severity.Success);
+            // We do clone because UpdateAsync method returns Model.OriginalEntityInstance
+            // so we don't want Model.EntityInstance and Model.OriginalEntityInstance to have the same reference.
+            Model.EntityInstance = updatedEntity.CloneJson();
+            snackbar.Add("Update was completed successfully", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{handler}: {message}", nameof(EditEntityViewModel), ex.Message);
+
+            GeneralError = ex.InnerException is not null ? ex.InnerException.Message : ex.Message;
+        }
     }
 }

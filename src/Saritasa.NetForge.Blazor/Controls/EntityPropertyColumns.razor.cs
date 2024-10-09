@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Saritasa.NetForge.Blazor.Pages;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Mvvm.Navigation;
@@ -205,9 +206,19 @@ public partial class EntityPropertyColumns : ComponentBase
     /// </summary>
     private async Task DeleteEntityAsync(object entity, CancellationToken cancellationToken)
     {
-        await EntityService.DeleteEntityAsync(entity, entity.GetType(), cancellationToken);
+        try
+        {
+            await EntityService.DeleteEntityAsync(entity, entity.GetType(), cancellationToken);
 
-        DataGrid?.ReloadServerData();
+            DataGrid?.ReloadServerData();
+        }
+        catch (Exception ex)
+        {
+            var message = ex.InnerException is not null ? ex.InnerException.Message : ex.Message;
+            Snackbar.Add($"Failed to delete record due to error: {message}", Severity.Error);
+
+            Logger.LogError(ex, "{Handler}: Failed to delete record {EntityType}", nameof(EntityDetails), entity.GetType());
+        }
     }
 
     private async Task ShowDeleteEntityConfirmationAsync(object source)

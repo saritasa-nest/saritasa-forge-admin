@@ -24,20 +24,26 @@ else if (ViewModel.IsEntityExists)
     {
         <MudGrid Justify="Justify.Center">
             <MudItem xs="6">
+                @if (!string.IsNullOrEmpty(ViewModel.GeneralError))
+                {
+                    <MudAlert Severity="Severity.Error" Class="mb-5">@ViewModel.GeneralError</MudAlert>
+                }
+
                 <EditForm Model="ViewModel.Model.EntityInstance" OnValidSubmit="ViewModel.UpdateEntityAsync">
                     <div class="d-flex flex-column flex-grow-1 gap-4">
                         @foreach (var property in ViewModel.Model.Properties)
                         {
-                        // If there is no error view model for the property, create a new one
-                        var fieldError = ViewModel.FieldErrorModels.FirstOrDefault(e => e.Property.Name == property.Name);
-                        if (fieldError == null)
-                        {
-                            fieldError = new FieldErrorModel
+                            // If there is no error view model for the property, create a new one
+                            var fieldError = ViewModel.FieldErrorModels.FirstOrDefault(e => e.Property.Name == property.Name);
+                            if (fieldError == null)
                             {
-                                Property = property
-                            };
-                            ViewModel.FieldErrorModels.Add(fieldError);
-                        }
+                                fieldError = new FieldErrorModel
+                                {
+                                    Property = property
+                                };
+                                ViewModel.FieldErrorModels.Add(fieldError);
+                            }
+
                             var componentType = CustomFieldHelper.GetComponentType(property);
                             var parameters = new Dictionary<string, object>
                             {
@@ -47,12 +53,12 @@ else if (ViewModel.IsEntityExists)
                                 { "FieldErrorModel", fieldError }
                             };
 
-                        if (property.UploadFileStrategy is not null)
-                        {
-                            parameters.Add(
-                                nameof(UploadImage.OnFileSelected),
-                                (Action<PropertyMetadataDto, IBrowserFile?>)ViewModel.HandleSelectedFile);
-                        }
+                            if (property.UploadFileStrategy is not null)
+                            {
+                                parameters.Add(
+                                    nameof(UploadImage.OnFileSelected),
+                                    (Action<PropertyMetadataDto, IBrowserFile?>)ViewModel.HandleSelectedFile);
+                            }
 
                             <DynamicComponent Type="componentType" Parameters="parameters"/>
                         }
@@ -66,17 +72,17 @@ else if (ViewModel.IsEntityExists)
                             </MudButton>
                         </div>
 
-                    @if (ViewModel.Errors is not null && ViewModel.Errors.Count != 0)
-                    {
-                    <MudAlert Variant="Variant.Outlined"
-                              Severity="Severity.Error"
-                              NoIcon>
-                        @foreach (var error in ViewModel.Errors)
+                        @if (ViewModel.Errors is not null && ViewModel.Errors.Count != 0)
                         {
-                        <MudText>@error.ErrorMessage</MudText>
+                            <MudAlert Variant="Variant.Outlined"
+                                      Severity="Severity.Error"
+                                      NoIcon>
+                                @foreach (var error in ViewModel.Errors)
+                                {
+                                    <MudText>@error.ErrorMessage</MudText>
+                                }
+                            </MudAlert>
                         }
-                    </MudAlert>
-                    }
                     </div>
                 </EditForm>
             </MudItem>

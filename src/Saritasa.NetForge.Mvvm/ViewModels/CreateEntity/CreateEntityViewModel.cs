@@ -6,6 +6,7 @@ using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Logging;
 using Saritasa.NetForge.Mvvm.Utils;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
@@ -20,6 +21,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
     /// </summary>
     public CreateEntityModel Model { get; private set; }
 
+    private readonly ILogger<CreateEntityViewModel> logger;
     private readonly IEntityService entityService;
     private readonly INavigationService navigationService;
 
@@ -28,11 +30,13 @@ public class CreateEntityViewModel : ValidationEntityViewModel
     /// </summary>
     public CreateEntityViewModel(
         string stringId,
+        ILogger<CreateEntityViewModel> logger,
         IEntityService entityService,
         INavigationService navigationService)
     {
         Model = new CreateEntityModel { StringId = stringId };
 
+        this.logger = logger;
         this.entityService = entityService;
         this.navigationService = navigationService;
     }
@@ -129,7 +133,16 @@ public class CreateEntityViewModel : ValidationEntityViewModel
             return;
         }
 
-        await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
-        navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
+        try
+        {
+            await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
+            navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{handler}: {message}", nameof(CreateEntityViewModel), ex.Message);
+
+            GeneralError = ex.InnerException is not null ? ex.InnerException.Message : ex.Message;
+        }
     }
 }

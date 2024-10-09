@@ -359,13 +359,24 @@ public class EfCoreDataService : IOrmDataService
     public async Task AddAsync(object entity, Type entityType, CancellationToken cancellationToken)
     {
         var dbContext = GetDbContextThatContainsEntity(entityType);
+        try
+        {
+            // We use Attach instead of Add because
+            // EF will try to create new entity and create all navigation (even when they are exist in database).
+            // Attach resolves this problem by explicitly attaching navigation to EF change tracker.
+            dbContext.Attach(entity);
+            dbContext.Add(entity);
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception)
+        {
+            // Need to clear because when we re-add the same entity
+            // EF will throw an exception that entity is already tracked.
+            dbContext.ChangeTracker.Clear();
 
-        // We use Attach instead of Add because
-        // EF will try to create new entity and create all navigations (even when they are exist in database).
-        // Attach resolves this problem by explicitly attaching navigations to EF change tracker.
-        dbContext.Attach(entity);
-        dbContext.Add(entity);
-        await dbContext.SaveChangesAsync(cancellationToken);
+            throw;
+        }
+
         // Since we use different dbContext instances for operations, an error can occur if a dbContext
         // instance is used before the last dbContext instance is disposed. For example: If a user creates
         // a record and deletes it immediately, there will be an error because within the same viewmodel
