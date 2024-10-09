@@ -1,2 +1,12 @@
 0.1.0-alpha [2024-08-16]
 [+] Initial release.
+
+0.2.0-alpha [2024-10-07]
+[+] Exclude all properties from entity.
+
+0.3.0-alpha [2024-10-07]
+[+] Exclude all entities from admin panel.
+[+} Include entity properties if NetForgeProperty attribute is set.
+
+0.3.1-alpha [2024-10-08]
+[*] Replaced MudAlert with Snackbar control on edit entity page

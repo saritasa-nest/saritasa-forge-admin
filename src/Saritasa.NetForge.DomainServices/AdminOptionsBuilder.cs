@@ -1,4 +1,5 @@
-﻿using Saritasa.NetForge.Domain.Entities.Options;
+﻿using Saritasa.NetForge.Domain.Attributes;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices.Interfaces;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
@@ -242,6 +243,27 @@ public class AdminOptionsBuilder
     public AdminOptionsBuilder DisableCharactersTruncation()
     {
         options.TruncationMaxCharacters = default;
+        return this;
+    }
+
+    /// <summary>
+    /// Excludes all tables by default.
+    /// This method can be used in conjunction with <see cref="IncludeEntities"/>
+    /// or <see cref="NetForgeEntityAttribute"/> to include specific entities after excluding all.
+    /// </summary>
+    public AdminOptionsBuilder ExcludeAllEntities()
+    {
+        options.ExcludeAllEntities = true;
+        return this;
+    }
+
+    /// <summary>
+    /// Includes specific entities to the admin panel.
+    /// </summary>
+    /// <param name="tableTypes">The types of the entities to include.</param>
+    public AdminOptionsBuilder IncludeEntities(params Type[] tableTypes)
+    {
+        options.IncludedEntities.AddRange(tableTypes);
         return this;
     }
 }

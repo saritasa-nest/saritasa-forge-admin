@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using System.Reflection;
+using Microsoft.Extensions.Caching.Memory;
 using PluralizeService.Core;
+using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices.Extensions;
@@ -33,15 +35,16 @@ public class AdminMetadataService
     /// </summary>
     public IEnumerable<EntityMetadata> GetMetadata()
     {
-        var metadata = GetEntitiesMetadataFromCache();
+        var cachedMetadata = GetEntitiesMetadataFromCache();
 
-        if (metadata != null)
+        if (cachedMetadata != null)
         {
-            return metadata;
+            return cachedMetadata;
         }
 
         // If not found in cache, fetch from ormMetadataService.
-        metadata = ormMetadataService.GetMetadata().ToList();
+        var metadata = ormMetadataService.GetMetadata().ToList();
+        ExcludeEntities(metadata, adminOptions);
 
         foreach (var entityMetadata in metadata)
         {
@@ -55,6 +58,12 @@ public class AdminMetadataService
                 var calculatedProperties = GetCalculatedPropertiesMetadata(entityOptions);
                 entityMetadata.Properties.AddRange(calculatedProperties);
                 entityMetadata.ApplyOptions(entityOptions, adminOptions);
+
+                if (entityOptions.ExcludeAllProperties)
+                {
+                    // Exclude properties if it was specified in the entity options.
+                    ExcludeProperties(entityMetadata, entityOptions);
+                }
             }
 
             entityMetadata.ApplyEntityAttributes(adminOptions);
@@ -63,6 +72,56 @@ public class AdminMetadataService
 
         CacheMetadata(metadata);
         return metadata;
+    }
+
+    private static void ExcludeEntities(List<EntityMetadata> entityMetadatas, AdminOptions adminOptions)
+    {
+        // Exclude entities if it was specified in the admin options.
+        if (!adminOptions.ExcludeAllEntities)
+        {
+            return;
+        }
+
+        var initialCount = entityMetadatas.Count;
+
+        // Include only entities specified in the IncludedEntities list or those with NetForgeEntityAttribute.
+        entityMetadatas.RemoveAll(e =>
+            e.ClrType != null &&
+            !adminOptions.IncludedEntities.Contains(e.ClrType) &&
+            e.ClrType.GetCustomAttribute<NetForgeEntityAttribute>() == null);
+
+        // If no entities in the IncludedEntities list or with NetForgeEntityAttribute, clear all entities.
+        if (entityMetadatas.Count == initialCount)
+        {
+            entityMetadatas.Clear();
+        }
+    }
+
+    private static void ExcludeProperties(EntityMetadata entityMetadata, EntityOptions entityOptions)
+    {
+        if (!entityOptions.ExcludeAllProperties)
+        {
+            return;
+        }
+
+        ExcludePropertyItems(entityMetadata.Properties, entityOptions.IncludedProperties);
+        ExcludePropertyItems(entityMetadata.Navigations, entityOptions.IncludedProperties);
+    }
+
+    private static void ExcludePropertyItems<T>(List<T> items, List<string> includedProperties) where T :
+        PropertyMetadataBase
+    {
+        var initialCount = items.Count;
+
+        // Include only properties specified in the IncludedProperties list or those with NetForgePropertyAttribute.
+        items.RemoveAll(p => p.ClrType != null
+                             && !includedProperties.Contains(p.Name)
+                             && p.PropertyInformation?.GetCustomAttribute<NetForgePropertyAttribute>() == null);
+
+        if (items.Count == initialCount)
+        {
+            items.Clear();
+        }
     }
 
     /// <summary>

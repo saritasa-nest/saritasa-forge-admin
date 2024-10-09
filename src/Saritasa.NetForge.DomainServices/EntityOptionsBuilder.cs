@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices.Extensions;
 
@@ -142,6 +143,68 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         var navigationOptions = navigationOptionsBuilder.Create(includedPropertyName);
 
         options.NavigationOptions.Add(navigationOptions);
+        return this;
+    }
+
+    /// <summary>
+    /// Sets action that will be called after entity update.
+    /// </summary>
+    /// <param name="action">Action to call.</param>
+    public EntityOptionsBuilder<TEntity> SetAfterUpdateAction(Action<IServiceProvider?, TEntity, TEntity> action)
+    {
+        options.AfterUpdateAction = (serviceProvider, x, y) => action(serviceProvider, (TEntity)x, (TEntity)y);
+        return this;
+    }
+
+    /// <summary>
+    /// Sets possibility to add a new entity.
+    /// </summary>
+    /// <param name="canAdd">Whether an entity can be added.</param>
+    public EntityOptionsBuilder<TEntity> SetCanAdd(bool canAdd)
+    {
+        options.CanAdd = canAdd;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets possibility to edit an entity.
+    /// </summary>
+    /// <param name="canEdit">Whether an entity can be edited.</param>
+    public EntityOptionsBuilder<TEntity> SetCanEdit(bool canEdit)
+    {
+        options.CanEdit = canEdit;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets possibility to delete an entity.
+    /// </summary>
+    /// <param name="canDelete">Whether an entity can be deleted.</param>
+    public EntityOptionsBuilder<TEntity> SetCanDelete(bool canDelete)
+    {
+        options.CanDelete = canDelete;
+        return this;
+    }
+
+    /// <summary>
+    /// Excludes all properties by default.
+    /// This method can be used in conjunction with <see cref="IncludeProperties"/>
+    /// or <see cref="NetForgePropertyAttribute"/> to include specific properties after excluding all.
+    /// </summary>
+    public EntityOptionsBuilder<TEntity> ExcludeAllProperties()
+    {
+        options.ExcludeAllProperties = true;
+        return this;
+    }
+
+    /// <summary>
+    /// Includes specific properties.
+    /// </summary>
+    /// <param name="propertyExpressions">The expressions representing the properties to include.</param>
+    public EntityOptionsBuilder<TEntity> IncludeProperties(params Expression<Func<TEntity, object?>>[] propertyExpressions)
+    {
+        var propertyNames = propertyExpressions.Select(expression => expression.GetMemberName());
+        options.IncludedProperties.AddRange(propertyNames);
         return this;
     }
 }

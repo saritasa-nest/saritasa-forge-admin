@@ -1,0 +1,13 @@
+# ==============================================================================
+# Build production version of the library.
+# ==============================================================================
+name: Prod Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  NetForge:
+    uses: ./.github/workflows/pack-library.yml

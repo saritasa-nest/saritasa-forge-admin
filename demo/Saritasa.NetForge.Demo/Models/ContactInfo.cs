@@ -29,7 +29,12 @@ public class ContactInfo
     /// The phone number of the contact person.
     /// </summary>
     public required string PhoneNumber { get; set; }
-
+    
+    /// <summary>
+    /// The duration of the contact's availability.
+    /// </summary>
+    public TimeSpan? AvailabilityDuration { get; set; }
+    
     /// <summary>
     /// Date when contact was created.
     /// </summary>

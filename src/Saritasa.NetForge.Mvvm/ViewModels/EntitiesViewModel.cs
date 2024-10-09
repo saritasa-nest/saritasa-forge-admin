@@ -16,6 +16,11 @@ public class EntitiesViewModel : BaseViewModel
     public IEnumerable<EntityMetadataDto> EntitiesMetadata { get; set; } = new List<EntityMetadataDto>();
 
     /// <summary>
+    /// Whether there are any entities to display.
+    /// </summary>
+    public bool HasEntities => EntitiesMetadata.Any();
+
+    /// <summary>
     /// Constructor.
     /// </summary>
     public EntitiesViewModel(IEntityService entityService)

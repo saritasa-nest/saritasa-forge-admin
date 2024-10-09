@@ -14,11 +14,13 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
     - [Create Groups for Entities](#create-groups-for-entities)
     - [Configuration](#configuration)
     - [Headers Expansion](#headers-expansion)
+  - [Exclude All Entities and Include Specific Only](#exclude-all-entities-and-include-specific-only)
 - [Customizing Entities](#customizing-entities)
   - [Fluent API](#fluent-api)
   - [Creating an Entity Configuration Class](#creating-an-entity-configuration-class)
   - [Data Attributes](#data-attributes)
   - [Custom Query](#custom-query)
+  - [After Update Action](#after-update-action)
 - [Customizing Entity Properties](#customizing-entity-properties)
   - [Fluent API](#fluent-api-1)
   - [Data Attributes](#data-attributes-1)
@@ -28,6 +30,7 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
   - [Display Properties as Title Case](#display-properties-as-title-case)
   - [Default Values](#default-values)
   - [Navigation Properties](#navigation-properties)
+  - [Exclude All Properties and Include Specific Only](#exclude-all-properties-and-include-specific-only)
   - [Exclude Property from Query](#exclude-property-from-query)
   - [Formatting Property as HTML](#formatting-property-as-html)
   - [Generated Properties](#generated-properties)
@@ -208,8 +211,26 @@ You can customize expanded header of all groups. By default, all groups are expa
 ```csharp
 services.AddNetForge(optionsBuilder =>
 {
-    optionsBuilder.SetGroupHeadersExpanded(true)
+    optionsBuilder.SetGroupHeadersExpanded(true);
 });
+```
+
+## Exclude All Entities and Include Specific Only
+
+You can exclude all entities and include only specific ones.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.ExcludeAllEntities();
+    optionsBuilder.IncludeEntities(typeof(Shop), typeof(Product));
+});
+```
+
+Or you can include specific entities using the data attribute:
+```csharp
+[NetForgeEntity]
+public class Shop
 ```
 
 # Customizing Entities
@@ -301,6 +322,33 @@ You can configure your query for specific entity.
     entityOptionsBuilder.ConfigureCustomQuery((serviceProvider, query) =>
     {
         return query.Where(e => e.IsOpen == true);
+    });
+})
+```
+
+## After Update Action
+
+You can configure action that will be performed after entity update.
+
+```csharp
+.ConfigureEntity<Address>(entityOptionsBuilder =>
+{
+    entityOptionsBuilder.SetAfterUpdateAction((serviceProvider, originalEntity, modifiedEntity) =>
+    {
+        var dbContext = serviceProvider!.GetRequiredService<ShopDbContext>();
+
+        const string country = "Germany";
+        if (originalEntity.Country == country)
+        {
+            return;
+        }
+
+        if (modifiedEntity.Country == country)
+        {
+            modifiedEntity.PostalCode = "99998";
+        }
+
+        dbContext.SaveChanges();
     });
 })
 ```
@@ -478,6 +526,26 @@ public string Property { get; set; }
 ## Navigation Properties
 
 You can read about navigation properties [here](docs/NAVIGATIONS.md).
+
+## Exclude All Properties and Include Specific Only
+
+You can exclude all properties and include only specific ones. It works with both ordinary and navigation properties.
+
+**Using Fluent API**
+
+```csharp
+optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
+{
+    entityOptionsBuilder.ExcludeAllProperties();
+    entityOptionsBuilder.IncludeProperties(user => user.Id, user => user.Name);
+});
+```
+
+Or you can include specific properties using the **Attribute**:
+```csharp
+[NetForgeProperty]
+public string Property { get; set; }
+```
 
 ## Exclude Property from Query
 

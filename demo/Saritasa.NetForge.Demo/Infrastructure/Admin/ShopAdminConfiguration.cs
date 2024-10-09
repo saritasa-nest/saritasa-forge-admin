@@ -1,5 +1,4 @@
-﻿using Saritasa.NetForge.Demo.Infrastructure.UploadFiles;
-using Saritasa.NetForge.Demo.Infrastructure.UploadFiles.Strategies;
+﻿using Saritasa.NetForge.Demo.Infrastructure.UploadFiles.Strategies;
 using Saritasa.NetForge.Demo.Models;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.DomainServices;
@@ -49,21 +48,24 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             .IncludeNavigation<Address>(shop => shop.Address, navigationOptionsBuilder =>
             {
                 navigationOptionsBuilder
-                    .SetOrder(1)
                     .IncludeProperty(address => address.Id, builder =>
                     {
-                        builder.SetDisplayName("Address Id");
+                        builder
+                            .SetOrder(3)
+                            .SetDisplayName("Address Id");
                     })
                     .IncludeProperty(address => address.Street, builder =>
                     {
                         builder
+                            .SetOrder(4)
                             .SetDisplayName("Address Street")
                             .SetDescription("Address street name.")
                             .SetEmptyValueDisplay("N/A")
                             .SetIsSortable(true)
                             .SetSearchType(SearchType.ContainsCaseInsensitive);
                     })
-                    .SetDisplayDetails(true);
+                    .SetDisplayDetails(true)
+                    .SetAsEditable();
             })
             .IncludeNavigation<Product>(shop => shop.Products, navigationOptionsBuilder =>
             {
@@ -88,7 +90,7 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             var cloudStorage = serviceProvider.GetRequiredService<ICloudBlobStorageService>();
             builder
                 .SetIsImage(true)
-                .SetOrder(3)
+                .SetOrder(1)
                 .SetUploadFileStrategy(new UploadFileToS3Strategy(s3Storage, cloudStorage));
         });
 
@@ -103,5 +105,31 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
         {
             builder.SetTruncationMaxCharacters(25);
         });
+
+        entityOptionsBuilder.SetAfterUpdateAction((serviceProvider, _, modifiedEntity) =>
+        {
+            var dbContext = serviceProvider!.GetRequiredService<ShopDbContext>();
+
+            var randomNumber = Random.Shared.Next(0, 100);
+
+            if (modifiedEntity.Address != null)
+            {
+                modifiedEntity.Address.City = $"Berlin {randomNumber}";
+            }
+
+            if (modifiedEntity.Suppliers.Count != 0)
+            {
+                modifiedEntity.Suppliers[0].IsActive = !modifiedEntity.Suppliers[0].IsActive;
+            }
+            
+            dbContext.SaveChanges();
+        });
+
+        entityOptionsBuilder.ConfigureProperty(shop => shop.Suppliers, builder =>
+        {
+            builder.SetIsHidden(true);
+        });
+
+        entityOptionsBuilder.AddCalculatedProperties(shop => shop.SupplierCount);
     }
 }

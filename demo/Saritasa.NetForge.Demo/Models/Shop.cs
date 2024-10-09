@@ -35,6 +35,16 @@ public class Shop
     /// The date when the shop was opened.
     /// </summary>
     public DateTime OpenedDate { get; set; }
+    
+    /// <summary>
+    /// The open time of the shop.
+    /// </summary>
+    public TimeOnly? OpenTime { get; set; }
+    
+    /// <summary>
+    /// The close time of the shop.
+    /// </summary>
+    public TimeOnly? CloseTime { get; set; }
 
     /// <summary>
     /// The total sales amount for the shop.
@@ -68,6 +78,11 @@ public class Shop
     public List<Supplier> Suppliers { get; set; } = new();
 
     /// <summary>
+    /// Count of suppliers.
+    /// </summary>
+    public int SupplierCount => Suppliers.Count;
+
+    /// <summary>
     /// Path to image file.
     /// </summary>
     public string? Logo { get; set; }
@@ -75,7 +90,7 @@ public class Shop
     /// <summary>
     /// Bytes that represents image.
     /// </summary>
-    [NetForgeProperty(Order = 4, Description = "Photo of the shop from the outside.")]
+    [NetForgeProperty(Order = 2, Description = "Photo of the shop from the outside.")]
     public string? BuildingPhoto { get; set; }
 
     /// <inheritdoc />

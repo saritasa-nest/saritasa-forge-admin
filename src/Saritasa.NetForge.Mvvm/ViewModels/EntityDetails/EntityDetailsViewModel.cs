@@ -65,6 +65,11 @@ public class EntityDetailsViewModel : BaseViewModel
     public bool CanDelete { get; set; }
 
     /// <summary>
+    /// Whether entity has properties included.
+    /// </summary>
+    public bool HasProperties => Model.Properties.Any();
+
+    /// <summary>
     /// Selected entities.
     /// </summary>
     public HashSet<object> SelectedEntities { get; set; } = new();
@@ -76,24 +81,6 @@ public class EntityDetailsViewModel : BaseViewModel
         {
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
             Model = MapModel(entity);
-
-            Model = Model with
-            {
-                Properties = Model.Properties
-                    .Where(property =>
-                    {
-                        if (property is NavigationMetadataDto navigation)
-                        {
-                            navigation.TargetEntityProperties = navigation.TargetEntityProperties
-                                .Where(targetProperty
-                                    => targetProperty is { IsHidden: false, IsHiddenFromListView: false })
-                                .ToList();
-                        }
-
-                        return property is { IsHidden: false, IsHiddenFromListView: false };
-                    })
-                    .ToList()
-            };
 
             IsDisplaySearchInput = Model.Properties.Any(property =>
                                    {
@@ -107,9 +94,9 @@ public class EntityDetailsViewModel : BaseViewModel
                                    })
                                    || Model.SearchFunction is not null;
 
-            CanAdd = !Model.IsKeyless;
-            CanEdit = !Model.IsKeyless;
-            CanDelete = !Model.IsKeyless;
+            CanAdd = Model is { CanAdd: true, IsKeyless: false } && HasProperties;
+            CanEdit = Model is { CanEdit: true, IsKeyless: false } && HasProperties;
+            CanDelete = Model is { CanDelete: true, IsKeyless: false } && HasProperties;
         }
         catch (NotFoundException)
         {
@@ -129,7 +116,10 @@ public class EntityDetailsViewModel : BaseViewModel
             Properties = entity.Properties,
             SearchFunction = entity.SearchFunction,
             CustomQueryFunction = entity.CustomQueryFunction,
-            IsKeyless = entity.IsKeyless
+            IsKeyless = entity.IsKeyless,
+            CanAdd = entity.CanAdd,
+            CanEdit = entity.CanEdit,
+            CanDelete = entity.CanDelete
         };
     }
 

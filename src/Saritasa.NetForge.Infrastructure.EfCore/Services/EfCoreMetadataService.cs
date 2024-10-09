@@ -96,6 +96,7 @@ internal class EfCoreMetadataService : IOrmMetadataService
             IsShadow = property.IsShadowProperty(),
             IsValueGeneratedOnAdd = property.ValueGenerated.HasFlag(ValueGenerated.OnAdd),
             IsValueGeneratedOnUpdate = property.ValueGenerated.HasFlag(ValueGenerated.OnUpdate),
+            IsReadOnly = property.PropertyInfo?.SetMethod is null || property.PropertyInfo.SetMethod.IsPrivate
         };
         return propertyMetadata;
     }
@@ -114,7 +115,7 @@ internal class EfCoreMetadataService : IOrmMetadataService
         }
         else if (navigation is IReadOnlyNavigation readOnlyNavigation)
         {
-            isNullable = !(readOnlyNavigation.ForeignKey.IsRequired || readOnlyNavigation.ForeignKey.IsRequiredDependent);
+            isNullable = !readOnlyNavigation.ForeignKey.IsRequiredDependent;
         }
 
         var navigationMetadata = new NavigationMetadata

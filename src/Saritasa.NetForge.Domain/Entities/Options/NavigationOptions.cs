@@ -20,4 +20,7 @@ public class NavigationOptions
 
     /// <inheritdoc cref="NavigationMetadata.DisplayDetails"/>
     public bool DisplayDetails { get; set; }
+
+    /// <inheritdoc cref="NavigationMetadata.EditDetails"/>
+    public bool EditDetails { get; set; }
 }

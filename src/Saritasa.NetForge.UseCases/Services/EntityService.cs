@@ -105,13 +105,7 @@ public class EntityService : IEntityService
 
         propertyDtos = propertyDtos.Union(navigationDtos);
 
-        var orderedProperties = propertyDtos
-            .OrderByDescending(property => property is { IsPrimaryKey: true, Order: null })
-            .ThenByDescending(property => property.Order.HasValue)
-            .ThenBy(property => property.Order)
-            .ToList();
-
-        return MapGetEntityDto(metadata) with { Properties = orderedProperties };
+        return MapGetEntityDto(metadata) with { Properties = propertyDtos.ToList() };
     }
 
     private static PropertyMetadataDto MapProperty(PropertyMetadata property)
@@ -178,7 +172,9 @@ public class EntityService : IEntityService
             IsMultiline = navigation.IsMultiline,
             Lines = navigation.Lines,
             MaxLines = navigation.MaxLines,
-            IsAutoGrow = navigation.IsAutoGrow
+            IsAutoGrow = navigation.IsAutoGrow,
+            DisplayDetails = navigation.DisplayDetails,
+            EditDetails = navigation.EditDetails
         };
     }
 
@@ -194,7 +190,11 @@ public class EntityService : IEntityService
             ClrType = entity.ClrType,
             SearchFunction = entity.SearchFunction,
             CustomQueryFunction = entity.CustomQueryFunction,
-            IsKeyless = entity.IsKeyless
+            IsKeyless = entity.IsKeyless,
+            AfterUpdateAction = entity.AfterUpdateAction,
+            CanAdd = entity.CanAdd,
+            CanEdit = entity.CanEdit,
+            CanDelete = entity.CanDelete
         };
     }
 
@@ -251,7 +251,7 @@ public class EntityService : IEntityService
         var convertedEntity = Expression.Convert(entity, entityType);
 
         var bindings = properties
-            .Select(property => Expression.Property(convertedEntity, property.Name))
+            .Select(property => GetActualPropertyExpression(convertedEntity, property))
             .Select(member => Expression.Bind(member.Member, member));
 
         var ctor = entityType.GetConstructors()[0];
@@ -263,6 +263,30 @@ public class EntityService : IEntityService
         var selectLambda = Expression.Lambda<Func<object, object>>(memberInit, entity);
 
         return query.Select(selectLambda);
+    }
+
+    /// <summary>
+    /// Gets property expression.
+    /// When <paramref name="property"/> contains inside parent class,
+    /// then <paramref name="entityExpression"/> will be converted to that class.
+    /// </summary>
+    /// <remarks>
+    /// Use case: when a parent class property has <see langword="private set"/>,
+    /// then child class cannot access that <see langword="set"/>.
+    /// </remarks>
+    private static MemberExpression GetActualPropertyExpression(
+        Expression entityExpression, PropertyMetadataDto property)
+    {
+        var propertyExpression = Expression.Property(entityExpression, property.Name);
+        var propertyInfo = propertyExpression.Member;
+
+        if (propertyInfo.DeclaringType == propertyInfo.ReflectedType)
+        {
+            return propertyExpression;
+        }
+
+        var parentEntity = Expression.Convert(entityExpression, propertyInfo.DeclaringType!);
+        return Expression.Property(parentEntity, property.Name);
     }
 
     private IQueryable<object> Search(
@@ -422,13 +446,15 @@ public class EntityService : IEntityService
         Validator.TryValidateObject(instance, context, errors, validateAllProperties: true);
 
         var isNotNullableProperties = properties
-            .Where(property => !property.IsNullable)
+            .Where(property => property is { IsNullable: false, IsReadOnly: false })
             .Select(e => e.Name)
             .ToList();
 
         // Validate property that not have RequiredAttribute but have RequiredMemberAttribute or is not nullable (in ORM).
         var requiredProperties = instance.GetType().GetProperties()
-            .Where(prop => !prop.IsDefined(typeof(RequiredAttribute), false) && (prop.CustomAttributes.Any(attr => attr.AttributeType.Name == "RequiredMemberAttribute") || isNotNullableProperties.Contains(prop.Name)))
+            .Where(prop => !prop.IsDefined(typeof(RequiredAttribute), false) &&
+                           (prop.CustomAttributes.Any(attr => attr.AttributeType.Name == "RequiredMemberAttribute") ||
+                            isNotNullableProperties.Contains(prop.Name)))
             .ToList();
 
         var requiredErrors = new List<ValidationResult>();

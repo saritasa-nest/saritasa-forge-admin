@@ -7,6 +7,7 @@ using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using System.ComponentModel.DataAnnotations;
 using Saritasa.NetForge.Mvvm.Utils;
 using Microsoft.Extensions.Logging;
+using MudBlazor;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 
@@ -28,6 +29,8 @@ public class EditEntityViewModel : ValidationEntityViewModel
     private readonly ILogger<EditEntityViewModel> logger;
     private readonly IEntityService entityService;
     private readonly IOrmDataService dataService;
+    private readonly IServiceProvider serviceProvider;
+    private readonly ISnackbar snackbar;
 
     /// <summary>
     /// Constructor.
@@ -37,7 +40,9 @@ public class EditEntityViewModel : ValidationEntityViewModel
         string instancePrimaryKey,
         ILogger<EditEntityViewModel> logger,
         IEntityService entityService,
-        IOrmDataService dataService)
+        IOrmDataService dataService,
+        IServiceProvider serviceProvider,
+        ISnackbar snackbar)
     {
         Model = new EditEntityModel { StringId = stringId };
         InstancePrimaryKey = instancePrimaryKey;
@@ -45,6 +50,8 @@ public class EditEntityViewModel : ValidationEntityViewModel
         this.logger = logger;
         this.entityService = entityService;
         this.dataService = dataService;
+        this.serviceProvider = serviceProvider;
+        this.snackbar = snackbar;
     }
 
     /// <summary>
@@ -53,9 +60,9 @@ public class EditEntityViewModel : ValidationEntityViewModel
     public bool IsEntityExists { get; private set; } = true;
 
     /// <summary>
-    /// Is entity was updated.
+    /// Errors encountered while entity updating.
     /// </summary>
-    public bool IsUpdated { get; set; }
+    public List<ValidationResult>? Errors { get; set; }
 
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
@@ -125,7 +132,8 @@ public class EditEntityViewModel : ValidationEntityViewModel
             DisplayName = entity.DisplayName,
             PluralName = entity.PluralName,
             ClrType = entity.ClrType,
-            Properties = entity.Properties
+            Properties = entity.Properties,
+            AfterUpdateAction = entity.AfterUpdateAction
         };
     }
 
@@ -148,14 +156,20 @@ public class EditEntityViewModel : ValidationEntityViewModel
         if (!entityService.ValidateEntity(Model.EntityInstance!, Model.Properties, ref errors))
         {
             FieldErrorModels.MappingErrorToCorrectField(errors);
+            Errors = errors;
 
             return;
         }
 
         try
         {
-            await dataService.UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, CancellationToken);
-            IsUpdated = true;
+            var updatedEntity = await dataService
+                .UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, Model.AfterUpdateAction, CancellationToken);
+
+            // We do clone because UpdateAsync method returns Model.OriginalEntityInstance
+            // so we don't want Model.EntityInstance and Model.OriginalEntityInstance to have the same reference.
+            Model.EntityInstance = updatedEntity.CloneJson();
+            snackbar.Add("Update was completed successfully", Severity.Success);
         }
         catch (Exception ex)
         {
