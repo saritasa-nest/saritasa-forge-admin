@@ -6,7 +6,10 @@
 
 0.3.0-alpha [2024-10-07]
 [+] Exclude all entities from admin panel.
-[+} Include entity properties if NetForgeProperty attribute is set.
+[+] Include entity properties if NetForgeProperty attribute is set.
 
 0.3.1-alpha [2024-10-08]
-[*] Replaced MudAlert with Snackbar control on edit entity page
+[*] Replaced MudAlert with Snackbar control on edit entity page.
+
+0.4.0-alpha [2024-10-10]
+[+] Added support for the admin panel layout overriding.
