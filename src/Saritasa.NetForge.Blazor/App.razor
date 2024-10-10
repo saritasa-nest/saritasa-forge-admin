@@ -1,8 +1,9 @@
 ﻿@using Saritasa.NetForge.Blazor.Controls
+@using Saritasa.NetForge.Domain.Entities.Options
 
 <Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@(AdminOptions?.CustomLayoutType ?? typeof(MainLayout))">
             <NotAuthorized>
                 <h1>Sorry</h1>
                 <p>You're not authorized to reach this page.</p>
@@ -14,9 +15,15 @@
     </Found>
     <NotFound>
         <CascadingAuthenticationState>
-            <LayoutView Layout="@typeof(MainLayout)">
+            <LayoutView Layout="@(AdminOptions?.CustomLayoutType ?? typeof(MainLayout))">
                 <NotFound/>
             </LayoutView>
         </CascadingAuthenticationState>
     </NotFound>
 </Router>
+
+@code
+{
+    [Inject]
+    AdminOptions? AdminOptions { get; set; }
+}
