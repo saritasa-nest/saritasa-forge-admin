@@ -266,4 +266,14 @@ public class AdminOptionsBuilder
         options.IncludedEntities.AddRange(tableTypes);
         return this;
     }
+
+    /// <summary>
+    /// Sets the custom layout for the admin panel.
+    /// </summary>
+    /// <param name="layoutType">Type of the custom layout.</param>
+    public AdminOptionsBuilder SetCustomLayout(Type layoutType)
+    {
+        options.CustomLayoutType = layoutType;
+        return this;
+    }
 }
