@@ -85,4 +85,9 @@ public class AdminOptions
     /// Entities to include in the admin panel.
     /// </summary>
     public List<Type> IncludedEntities { get; set; } = [];
+
+    /// <summary>
+    /// The optional type of custom layout for the admin panel.
+    /// </summary>
+    public Type? CustomLayoutType { get; set; }
 }

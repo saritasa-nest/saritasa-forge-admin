@@ -15,6 +15,8 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
     - [Configuration](#configuration)
     - [Headers Expansion](#headers-expansion)
   - [Exclude All Entities and Include Specific Only](#exclude-all-entities-and-include-specific-only)
+  - [Customizing the UI](#customizing-the-ui)
+    - [Main Layout Overriding](#main-layout-overriding)
 - [Customizing Entities](#customizing-entities)
   - [Fluent API](#fluent-api)
   - [Creating an Entity Configuration Class](#creating-an-entity-configuration-class)
@@ -146,6 +148,54 @@ services.AddNetForge(optionsBuilder =>
 ## Grouping
 
 Group rows of entities into categories and make it easier for users to navigate and understand the data presented.
+
+## Customizing the UI
+
+### Main Layout Overriding
+
+You can override the default layout of the admin panel.
+To do this, create a new layout in your host project and specify its type in the configuration.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetCustomLayout(typeof(CustomLayout));
+});
+```
+
+Your custom layout should inherit from the `AdminBaseLayout` class.
+
+The example of the custom component with navigation bar and footer:
+```csharp
+@using MudBlazor
+@inherits Saritasa.NetForge.Blazor.Shared.AdminBaseLayout
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudAppBar Color="Color.Primary" Elevation="4">
+    <MudText Typo="Typo.h6">My Application</MudText>
+    <MudSpacer />
+    <MudNavMenu>
+        <MudNavLink Href="/about">About</MudNavLink>
+        <MudNavLink Href="/contact">Contact</MudNavLink>
+    </MudNavMenu>
+</MudAppBar>
+
+@Body
+
+<footer>
+    <MudPaper Class="pa-4" Elevation="4">
+        <MudText Typo="Typo.body2">My Application</MudText>
+        <MudSpacer />
+        <MudNavMenu>
+            <MudNavLink Href="/privacy">Privacy Policy</MudNavLink>
+            <MudNavLink Href="/terms">Terms of Service</MudNavLink>
+        </MudNavMenu>
+    </MudPaper>
+</footer>
+```
 
 ### Create Groups for Entities
 
