@@ -79,7 +79,8 @@ public class EditEntityViewModel : ValidationEntityViewModel
                         IsCalculatedProperty: false,
                         IsValueGeneratedOnAdd: false,
                         IsValueGeneratedOnUpdate: false,
-                        IsHiddenFromListView: false,
+                        IsHidden: false,
+                        IsHiddenFromDetails: false
                     })
                     .ToList()
             };
