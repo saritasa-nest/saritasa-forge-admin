@@ -13,3 +13,6 @@
 
 0.4.0-alpha [2024-10-10]
 [+] Added support for the admin panel layout overriding.
+
+0.4.1-alpha [2024-10-15]
+[+] Fix properties can't be hidden using configuration.
