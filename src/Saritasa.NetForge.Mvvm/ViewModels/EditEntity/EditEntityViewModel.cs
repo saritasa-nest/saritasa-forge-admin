@@ -80,7 +80,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
                         IsValueGeneratedOnAdd: false,
                         IsValueGeneratedOnUpdate: false,
                         IsHiddenFromListView: false,
-                    })
+                    } || (property is NavigationMetadataDto && property.IsHidden == false))
                     .ToList()
             };
 
