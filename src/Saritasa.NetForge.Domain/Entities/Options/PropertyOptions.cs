@@ -77,6 +77,9 @@ public class PropertyOptions
     /// <inheritdoc cref="PropertyMetadata.UploadFileStrategy"/>
     public IUploadFileStrategy? UploadFileStrategy { get; set; }
 
+    /// <inheritdoc cref="PropertyMetadata.CanDisplayDetails"/>
+    public bool CanDisplayDetails { get; set; }
+
     /// <inheritdoc cref="PropertyMetadata.CanBeNavigatedToDetails"/>
     public bool CanBeNavigatedToDetails { get; set; }
 }

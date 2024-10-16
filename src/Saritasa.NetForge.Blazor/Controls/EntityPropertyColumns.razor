@@ -128,9 +128,7 @@
                             @propertyValue
                         </MudButton>
                     }
-                    else if (navigation is not null
-                             && (navigation.DisplayDetails && property.IsPrimaryKey
-                                 || navigation.IsCollection))
+                    else if (navigation is not null && (property.CanDisplayDetails || navigation.IsCollection))
                     {
                         var navigationInstance = cell.Item.GetPropertyValue(navigation.Name)!;
                         <MudButton @onclick="() => OpenDialogAsync(navigationInstance, navigation)"

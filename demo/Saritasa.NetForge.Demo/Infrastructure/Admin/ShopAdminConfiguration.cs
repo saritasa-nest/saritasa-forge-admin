@@ -57,13 +57,13 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                             .SetEmptyValueDisplay("N/A")
                             .SetIsSortable(true)
                             .SetSearchType(SearchType.ContainsCaseInsensitive)
-                            .SetCanBeNavigatedToDetails();
+                            .SetShowNavigationDetails(isReadonly: false);
                     })
                     .IncludeProperty(address => address.City, builder =>
                     {
                         builder
                             .SetOrder(5)
-                            .SetCanBeNavigatedToDetails();
+                            .SetShowNavigationDetails(isReadonly: true);
                     });
             })
             .IncludeNavigation<Product>(shop => shop.Products, navigationOptionsBuilder =>

@@ -149,6 +149,11 @@ public static class EntityMetadataOptionsExtensions
             propertyMetadata.IsImage = propertyOptions.IsImage;
             propertyMetadata.UploadFileStrategy = propertyOptions.UploadFileStrategy;
 
+            if (propertyOptions.CanDisplayDetails)
+            {
+                propertyMetadata.CanDisplayDetails = propertyOptions.CanDisplayDetails;
+            }
+
             if (propertyOptions.CanBeNavigatedToDetails)
             {
                 propertyMetadata.CanBeNavigatedToDetails = propertyOptions.CanBeNavigatedToDetails;
@@ -193,7 +198,5 @@ public static class EntityMetadataOptionsExtensions
 
             property?.ApplyPropertyOptions(propertyOptions);
         }
-
-        navigation.DisplayDetails = navigationOptions.DisplayDetails;
     }
 }

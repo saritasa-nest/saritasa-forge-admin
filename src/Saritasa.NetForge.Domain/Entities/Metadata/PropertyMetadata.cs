@@ -55,6 +55,12 @@ public class PropertyMetadata : PropertyMetadataBase
 
     /// <summary>
     /// Determines that this property will have
+    /// feature to display a corresponding navigation entity details on List View page.
+    /// </summary>
+    public bool CanDisplayDetails { get; set; }
+
+    /// <summary>
+    /// Determines that this property will have
     /// feature to navigate to a corresponding navigation entity details page on List View page.
     /// </summary>
     public bool CanBeNavigatedToDetails { get; set; }
