@@ -148,6 +148,11 @@ public static class EntityMetadataOptionsExtensions
         {
             propertyMetadata.IsImage = propertyOptions.IsImage;
             propertyMetadata.UploadFileStrategy = propertyOptions.UploadFileStrategy;
+
+            if (propertyOptions.CanBeNavigatedToDetails)
+            {
+                propertyMetadata.CanBeNavigatedToDetails = propertyOptions.CanBeNavigatedToDetails;
+            }
         }
 
         if (propertyOptions.IsMultiline)
@@ -180,11 +185,6 @@ public static class EntityMetadataOptionsExtensions
         {
             navigation.Order = navigationOptions.Order.Value;
         }
-
-        navigation.TargetEntityProperties = navigation.TargetEntityProperties
-            .Where(property => navigationOptions.PropertyOptions
-                .Any(includedProperty => includedProperty.PropertyName.Equals(property.Name)))
-            .ToList();
 
         foreach (var propertyOptions in navigationOptions.PropertyOptions)
         {

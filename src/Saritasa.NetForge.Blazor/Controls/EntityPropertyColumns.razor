@@ -121,11 +121,16 @@
                         @((MarkupString)propertyValue!)
                     }
                     else if (navigation is not null && navigation.EditDetails
-                            && property.IsPrimaryKey)
+                            && property.CanBeNavigatedToDetails)
                     {
+                        var navigationInstance = cell.Item.GetPropertyValue(navigation.Name)!;
+                        var primaryKeyProperty = navigation.TargetEntityProperties
+                            .First(property => property.IsPrimaryKey);
+                        var primaryKeyValue =  GetPropertyValue(navigationInstance, primaryKeyProperty);
+
                         <MudButton Variant="Variant.Text" Color="Color.Primary"
                                    OnClick="() => NavigateToEditing(navigationMetadata: navigation,
-                                       navigationIdentifier: propertyValue)">
+                                       navigationIdentifier: primaryKeyValue)">
                             @propertyValue
                         </MudButton>
                     }

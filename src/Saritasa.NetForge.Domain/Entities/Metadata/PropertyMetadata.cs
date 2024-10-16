@@ -52,4 +52,10 @@ public class PropertyMetadata : PropertyMetadataBase
     /// Upload file strategy.
     /// </summary>
     public IUploadFileStrategy? UploadFileStrategy { get; set; }
+
+    /// <summary>
+    /// Determines that this property will have
+    /// feature to navigate to a corresponding navigation entity details page on List View page.
+    /// </summary>
+    public bool CanBeNavigatedToDetails { get; set; }
 }

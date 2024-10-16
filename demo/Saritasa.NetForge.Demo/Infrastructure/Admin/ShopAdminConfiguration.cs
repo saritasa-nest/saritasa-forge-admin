@@ -48,12 +48,6 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             .IncludeNavigation<Address>(shop => shop.Address, navigationOptionsBuilder =>
             {
                 navigationOptionsBuilder
-                    .IncludeProperty(address => address.Id, builder =>
-                    {
-                        builder
-                            .SetOrder(3)
-                            .SetDisplayName("Address Id");
-                    })
                     .IncludeProperty(address => address.Street, builder =>
                     {
                         builder
@@ -62,9 +56,15 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                             .SetDescription("Address street name.")
                             .SetEmptyValueDisplay("N/A")
                             .SetIsSortable(true)
-                            .SetSearchType(SearchType.ContainsCaseInsensitive);
+                            .SetSearchType(SearchType.ContainsCaseInsensitive)
+                            .SetCanBeNavigatedToDetails();
                     })
-                    .SetDisplayDetails(true)
+                    .IncludeProperty(address => address.City, builder =>
+                    {
+                        builder
+                            .SetOrder(5)
+                            .SetCanBeNavigatedToDetails();
+                    })
                     .SetAsEditable();
             })
             .IncludeNavigation<Product>(shop => shop.Products, navigationOptionsBuilder =>
@@ -131,5 +131,7 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
         });
 
         entityOptionsBuilder.AddCalculatedProperties(shop => shop.SupplierCount);
+
+        entityOptionsBuilder.ConfigureProperty(shop => shop.Id, builder => builder.SetIsHidden(true));
     }
 }

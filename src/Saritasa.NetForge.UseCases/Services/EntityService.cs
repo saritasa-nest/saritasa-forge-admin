@@ -140,7 +140,8 @@ public class EntityService : IEntityService
             IsMultiline = property.IsMultiline,
             Lines = property.Lines,
             MaxLines = property.MaxLines,
-            IsAutoGrow = property.IsAutoGrow
+            IsAutoGrow = property.IsAutoGrow,
+            CanBeNavigatedToDetails = property.CanBeNavigatedToDetails
         };
     }
 

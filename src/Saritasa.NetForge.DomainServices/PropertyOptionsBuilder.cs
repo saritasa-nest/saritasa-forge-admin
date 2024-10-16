@@ -209,4 +209,14 @@ public class PropertyOptionsBuilder
 
         return this;
     }
+
+    /// <summary>
+    /// Enables feature to navigate to a corresponding navigation entity details page on List View page
+    /// when this property displayed as part of some navigation.
+    /// </summary>
+    public PropertyOptionsBuilder SetCanBeNavigatedToDetails()
+    {
+        options.CanBeNavigatedToDetails = true;
+        return this;
+    }
 }
