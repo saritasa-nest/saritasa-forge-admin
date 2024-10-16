@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Saritasa.NetForge.Blazor.Infrastructure.Helpers;
 using Saritasa.NetForge.Blazor.Pages;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.Utils;
+using Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 using Saritasa.NetForge.UseCases.Constants;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
@@ -193,12 +195,13 @@ public partial class EntityPropertyColumns : ComponentBase
     /// <summary>
     /// Edit navigation entity by its identifier.
     /// </summary>
-    private async Task NavigateToEditing(NavigationMetadataDto navigationMetadata, object navigationIdentifier)
+    private async Task NavigateToEditing(object navigationInstance, NavigationMetadataDto navigationMetadata)
     {
-        var entityMetadata = await EntityService.GetEntityByTypeAsync(navigationMetadata.ClrType!, CancellationToken.None);
+        var entityMetadata = await EntityService
+            .GetEntityByTypeAsync(navigationMetadata.ClrType!, CancellationToken.None);
 
-        NavigationService.NavigateTo<Mvvm.ViewModels.EditEntity.EditEntityViewModel>(
-            parameters: [entityMetadata.PluralName, navigationIdentifier]);
+        var primaryKeyValues = navigationInstance.GetPrimaryKeyValues(navigationMetadata.TargetEntityProperties);
+        NavigationService.NavigateTo<EditEntityViewModel>(parameters: [entityMetadata.StringId, primaryKeyValues]);
     }
 
     /// <summary>

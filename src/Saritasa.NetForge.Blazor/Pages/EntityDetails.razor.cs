@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Saritasa.NetForge.Blazor.Controls;
+using Saritasa.NetForge.Blazor.Infrastructure.Helpers;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
@@ -98,11 +99,7 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
 
     private void NavigateToEditing(DataGridRowClickEventArgs<object> row)
     {
-        var primaryKeyValues = ViewModel.Model.Properties
-            .Where(property => property.IsPrimaryKey)
-            .Select(primaryKey => row.Item.GetPropertyValue(primaryKey.Name)!.ToString()!);
-
-        NavigationService.NavigateTo<EditEntityViewModel>(
-            parameters: new[] { StringId, string.Join("--", primaryKeyValues) });
+        var primaryKeyValues = row.Item.GetPrimaryKeyValues(ViewModel.Model.Properties);
+        NavigationService.NavigateTo<EditEntityViewModel>(parameters: [StringId, primaryKeyValues]);
     }
 }
