@@ -64,8 +64,7 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                         builder
                             .SetOrder(5)
                             .SetCanBeNavigatedToDetails();
-                    })
-                    .SetAsEditable();
+                    });
             })
             .IncludeNavigation<Product>(shop => shop.Products, navigationOptionsBuilder =>
             {

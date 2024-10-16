@@ -195,6 +195,5 @@ public static class EntityMetadataOptionsExtensions
         }
 
         navigation.DisplayDetails = navigationOptions.DisplayDetails;
-        navigation.EditDetails = navigationOptions.EditDetails;
     }
 }

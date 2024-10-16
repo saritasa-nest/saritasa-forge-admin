@@ -120,8 +120,7 @@
                     {
                         @((MarkupString)propertyValue!)
                     }
-                    else if (navigation is not null && navigation.EditDetails
-                            && property.CanBeNavigatedToDetails)
+                    else if (navigation is not null && property.CanBeNavigatedToDetails)
                     {
                         var navigationInstance = cell.Item.GetPropertyValue(navigation.Name)!;
                         var primaryKeyProperty = navigation.TargetEntityProperties
