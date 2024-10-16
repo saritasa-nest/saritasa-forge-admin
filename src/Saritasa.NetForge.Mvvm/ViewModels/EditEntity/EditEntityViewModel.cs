@@ -161,9 +161,27 @@ public class EditEntityViewModel : ValidationEntityViewModel
         var updatedEntity = await dataService
             .UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, Model.AfterUpdateAction, CancellationToken);
 
+        await UpdateNavigationProperties();
+
         // We do clone because UpdateAsync method returns Model.OriginalEntityInstance
         // so we don't want Model.EntityInstance and Model.OriginalEntityInstance to have the same reference.
         Model.EntityInstance = updatedEntity.CloneJson();
         snackbar.Add("Update was completed successfully", Severity.Success);
+    }
+
+    private async Task UpdateNavigationProperties()
+    {
+        foreach (var property in Model.Properties)
+        {
+            if (property is not NavigationMetadataDto navigation
+                || !navigation.EditDetails)
+            {
+                continue;
+            }
+
+            var entityInstance = Model.ClrType.GetProperty(navigation.Name).GetValue(Model.EntityInstance);
+            var originalEntityInstance = Model.ClrType.GetProperty(navigation.Name).GetValue(Model.OriginalEntityInstance);
+            await dataService.UpdateAsync(entityInstance, originalEntityInstance, null, CancellationToken);
+        }
     }
 }

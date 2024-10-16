@@ -28,16 +28,17 @@ else if (ViewModel.IsEntityExists)
                     <div class="d-flex flex-column flex-grow-1 gap-4">
                         @foreach (var property in ViewModel.Model.Properties)
                         {
-                        // If there is no error view model for the property, create a new one
-                        var fieldError = ViewModel.FieldErrorModels.FirstOrDefault(e => e.Property.Name == property.Name);
-                        if (fieldError == null)
-                        {
-                            fieldError = new FieldErrorModel
+                            // If there is no error view model for the property, create a new one
+                            var fieldError = ViewModel.FieldErrorModels.FirstOrDefault(e => e.Property.Name == property.Name);
+                            if (fieldError == null)
                             {
-                                Property = property
-                            };
-                            ViewModel.FieldErrorModels.Add(fieldError);
-                        }
+                                fieldError = new FieldErrorModel
+                                {
+                                    Property = property
+                                };
+                                ViewModel.FieldErrorModels.Add(fieldError);
+                            }
+
                             var componentType = CustomFieldHelper.GetComponentType(property);
                             var parameters = new Dictionary<string, object>
                             {
@@ -47,14 +48,29 @@ else if (ViewModel.IsEntityExists)
                                 { "FieldErrorModel", fieldError }
                             };
 
-                        if (property.UploadFileStrategy is not null)
-                        {
-                            parameters.Add(
-                                nameof(UploadImage.OnFileSelected),
-                                (Action<PropertyMetadataDto, IBrowserFile?>)ViewModel.HandleSelectedFile);
-                        }
+                            if (property.UploadFileStrategy is not null)
+                            {
+                                parameters.Add(
+                                    nameof(UploadImage.OnFileSelected),
+                                    (Action<PropertyMetadataDto, IBrowserFile?>)ViewModel.HandleSelectedFile);
+                            }
 
-                            <DynamicComponent Type="componentType" Parameters="parameters"/>
+                            if (property is NavigationMetadataDto navigation
+                                && navigation.EditDetails)
+                            {
+                                //var propertyValue = GetPropertyValue(cell.Item, property).ToString();
+                                //navigation.IsPrimaryKey
+                                //navigation.Name
+
+                                var propertyValue = ViewModel.Model.ClrType
+                                    .GetProperty(property.Name)
+                                    .GetValue(ViewModel.Model.EntityInstance);
+
+                                <NavigationEntityDetails NavigationMetadata="navigation"
+                                    EntityInstance = "propertyValue" />
+                            }
+
+                            <DynamicComponent Type="componentType" Parameters="parameters" />
                         }
 
                         <div class="d-flex flex-row gap-4 pt-4">

@@ -1,0 +1,76 @@
+﻿@using Saritasa.NetForge.Blazor.Controls.CustomFields
+@using Saritasa.NetForge.Blazor.Infrastructure.Helpers
+@using Saritasa.NetForge.Mvvm.ViewModels
+@using Saritasa.NetForge.UseCases.Metadata.GetEntityById
+
+<MudPaper Class="mud-background-gray">
+    <MudPaper Class="my-4 mx-2 pa-4">
+@{
+
+        var title = $"Edit {NavigationMetadata.Name}";
+            <MudText Class="pb-4" Typo="Typo.h4">@title</MudText>
+
+            //var entityMetadata = await EntityService.GetEntityByTypeAsync(Property.ClrType!, CancellationToken.None);
+
+            // var allProperties = new List<(PropertyMetadataDto Property, NavigationMetadataDto? Navigation)>();
+
+        var editedProperties = Properties
+            .Where(property => property is { IsPrimaryKey: false, IsReadOnly: false });
+
+        foreach (var property in editedProperties)
+        {
+            var componentType = CustomFieldHelper.GetComponentType(property);
+
+            var fieldError = new FieldErrorModel
+            {
+                Property = property
+            };
+
+            var parameters = new Dictionary<string, object>
+            {
+                { "Property", property },
+                { "EntityInstance", EntityInstance },
+                //{ "IsReadOnly", property.IsPrimaryKey || property.IsReadOnly },
+                { "FieldErrorModel", fieldError }
+            };
+
+            // if (property.UploadFileStrategy is not null)
+            // {
+            //     //parameters.Add(nameof(UploadImage.OnFileSelected),
+            //     //    (Action<PropertyMetadataDto, IBrowserFile?>)ViewModel.HandleSelectedFile);
+            // }
+
+            <DynamicComponent Type="componentType" Parameters="parameters" />
+        }
+        // <MudDivider />
+
+        //     if (property is NavigationMetadataDto navigation)
+        //     {
+        //         if (IsNavigationEntity)
+        //         {
+        //             continue;
+        //         }
+
+        //         if (!navigation.IsCollection)
+        //         {
+        //             var targetNavigationProperties = navigation.TargetEntityProperties
+        //                 .Where(targetProperty => targetProperty is { IsHidden: false, IsHiddenFromListView: false });
+        //             foreach (var targetProperty in targetNavigationProperties)
+        //             {
+        //                 allProperties.Add((targetProperty, navigation));
+        //             }
+        //         }
+        //         else
+        //         {
+        //             allProperties.Add((property, navigation));
+        //         }
+
+        //     }
+        //     else
+        //     {
+        //         allProperties.Add((property, null));
+        //     }
+
+}
+    </MudPaper>
+</MudPaper>
