@@ -209,4 +209,25 @@ public class PropertyOptionsBuilder
 
         return this;
     }
+
+    /// <summary>
+    /// Enables feature to show a corresponding navigation entity details on List View page
+    /// when this property displayed as part of some navigation.
+    /// </summary>
+    /// <param name="isReadonly">
+    /// When true a navigation entity details will be displayed as modal window,
+    /// otherwise you will be navigated to edit page.
+    /// </param>
+    public PropertyOptionsBuilder SetShowNavigationDetails(bool isReadonly)
+    {
+        if (isReadonly)
+        {
+            options.CanDisplayDetails = true;
+        }
+        else
+        {
+            options.CanBeNavigatedToDetails = true;
+        }
+        return this;
+    }
 }

@@ -120,18 +120,15 @@
                     {
                         @((MarkupString)propertyValue!)
                     }
-                    else if (navigation is not null && navigation.EditDetails
-                            && property.IsPrimaryKey)
+                    else if (navigation is not null && property.CanBeNavigatedToDetails)
                     {
+                        var navigationInstance = cell.Item.GetPropertyValue(navigation.Name)!;
                         <MudButton Variant="Variant.Text" Color="Color.Primary"
-                                   OnClick="() => NavigateToEditing(navigationMetadata: navigation,
-                                       navigationIdentifier: propertyValue)">
+                                   OnClick="() => NavigateToEditing(navigationInstance, navigation)">
                             @propertyValue
                         </MudButton>
                     }
-                    else if (navigation is not null
-                             && (navigation.DisplayDetails && property.IsPrimaryKey
-                                 || navigation.IsCollection))
+                    else if (navigation is not null && (property.CanDisplayDetails || navigation.IsCollection))
                     {
                         var navigationInstance = cell.Item.GetPropertyValue(navigation.Name)!;
                         <MudButton @onclick="() => OpenDialogAsync(navigationInstance, navigation)"

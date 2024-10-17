@@ -140,7 +140,9 @@ public class EntityService : IEntityService
             IsMultiline = property.IsMultiline,
             Lines = property.Lines,
             MaxLines = property.MaxLines,
-            IsAutoGrow = property.IsAutoGrow
+            IsAutoGrow = property.IsAutoGrow,
+            CanDisplayDetails = property.CanDisplayDetails,
+            CanBeNavigatedToDetails = property.CanBeNavigatedToDetails
         };
     }
 
@@ -172,9 +174,7 @@ public class EntityService : IEntityService
             IsMultiline = navigation.IsMultiline,
             Lines = navigation.Lines,
             MaxLines = navigation.MaxLines,
-            IsAutoGrow = navigation.IsAutoGrow,
-            DisplayDetails = navigation.DisplayDetails,
-            EditDetails = navigation.EditDetails
+            IsAutoGrow = navigation.IsAutoGrow
         };
     }
 

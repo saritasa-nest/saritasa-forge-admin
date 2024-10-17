@@ -19,14 +19,4 @@ public class NavigationMetadata : PropertyMetadataBase
     /// Whether this navigation included to an entity.
     /// </summary>
     public bool IsIncluded { get; set; }
-
-    /// <summary>
-    /// Whether display details of navigation's data.
-    /// </summary>
-    public bool DisplayDetails { get; set; }
-
-    /// <summary>
-    /// Whether edit details of navigation's data.
-    /// </summary>
-    public bool EditDetails { get; set; }
 }

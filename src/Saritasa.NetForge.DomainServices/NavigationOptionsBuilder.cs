@@ -41,22 +41,4 @@ public class NavigationOptionsBuilder<TEntity>
         options.PropertyOptions.Add(propertyOptions);
         return this;
     }
-
-    /// <summary>
-    /// Sets whether display navigation entity details.
-    /// </summary>
-    public NavigationOptionsBuilder<TEntity> SetDisplayDetails(bool displayDetails)
-    {
-        options.DisplayDetails = displayDetails;
-        return this;
-    }
-
-    /// <summary>
-    /// Sets whether edit navigation entity details.
-    /// </summary>
-    public NavigationOptionsBuilder<TEntity> SetAsEditable()
-    {
-        options.EditDetails = true;
-        return this;
-    }
 }
