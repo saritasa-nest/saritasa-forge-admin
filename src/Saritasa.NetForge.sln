@@ -31,6 +31,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5D2DF5E1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.Tests", "Saritasa.NetForge.Tests\Saritasa.NetForge.Tests.csproj", "{26BBDB9F-643A-487C-BAD5-2DD5748D276C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FFB9A65A-051F-4B09-9EA6-50DD7C1C462E}"
+	ProjectSection(SolutionItems) = preProject
+		..\CHANGELOG.txt = ..\CHANGELOG.txt
+		..\INSTALL.md = ..\INSTALL.md
+		..\README.md = ..\README.md
+		..\VERSION.txt = ..\VERSION.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
