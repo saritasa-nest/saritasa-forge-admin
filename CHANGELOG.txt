@@ -19,3 +19,6 @@
 
 0.4.2-alpha [2024-10-17]
 [*] Change way of displaying navigation details on List View page.
+
+0.4.3-alpha [2024-10-17]
+[*] Fix problem with displaying not included navigation's properties.
