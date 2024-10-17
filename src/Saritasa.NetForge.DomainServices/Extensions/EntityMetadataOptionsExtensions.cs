@@ -198,5 +198,12 @@ public static class EntityMetadataOptionsExtensions
 
             property?.ApplyPropertyOptions(propertyOptions);
         }
+
+        var notIncludedProperties = navigation.TargetEntityProperties
+            .Where(p => !navigationOptions.PropertyOptions.Any(option => option.PropertyName == p.Name));
+        foreach (var notIncludedProperty in notIncludedProperties)
+        {
+            notIncludedProperty.IsHidden = true;
+        }
     }
 }
