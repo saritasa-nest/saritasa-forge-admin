@@ -7,7 +7,7 @@ using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 namespace Saritasa.NetForge.Infrastructure.EfCore.Services;
 
 /// <inheritdoc/>
-internal class EfCoreMetadataService : IOrmMetadataService
+public class EfCoreMetadataService : IOrmMetadataService
 {
     private readonly EfCoreOptions efCoreOptions;
     private readonly IServiceProvider serviceProvider;
