@@ -22,3 +22,6 @@
 
 0.4.3-alpha [2024-10-17]
 [*] Fix problem with displaying not included navigation's properties.
+
+0.4.4-alpha [2024-11-02]
+[*] Fix importing static files.
