@@ -67,6 +67,6 @@ public class DecimalJsonConverter : JsonConverter<decimal>
     /// <inheritdoc />
     public override void WriteJson(JsonWriter writer, decimal value, JsonSerializer serializer)
     {
-        writer.WriteRawValue(value.ToString());
+        writer.WriteValue(value.ToString(System.Globalization.CultureInfo.InvariantCulture));
     }
 }

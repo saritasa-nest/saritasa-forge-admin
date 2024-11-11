@@ -44,12 +44,6 @@ jobs:
           file: "src/**/*.csproj"
           version: ${{ steps.getversion.outputs.version }}
 
-      - name: Update .nuspec version
-        uses: vers-one/dotnet-project-version-updater@v1.6
-        with:
-          file: "src/Saritasa.NetForge.Blazor/NetForge.nuspec"
-          version: ${{ steps.getversion.outputs.version }}
-
       - name: Restore Packages
         run: dotnet restore src/Saritasa.NetForge.sln
         
@@ -57,7 +51,7 @@ jobs:
         run: dotnet build src/Saritasa.NetForge.sln
 
       - name: Pack NetForge
-        run: dotnet pack /p:NuspecFile=NetForge.nuspec --output ../artifacts
+        run: dotnet pack --output ../artifacts
         working-directory: src
 
       - name: Upload Release
