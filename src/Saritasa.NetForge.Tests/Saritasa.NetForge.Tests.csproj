@@ -30,7 +30,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Saritasa.NetForge.Blazor\Saritasa.NetForge.Blazor.csproj" />
-    <ProjectReference Include="..\Saritasa.NetForge.Infrastructure.EfCore\Saritasa.NetForge.Infrastructure.EfCore.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
