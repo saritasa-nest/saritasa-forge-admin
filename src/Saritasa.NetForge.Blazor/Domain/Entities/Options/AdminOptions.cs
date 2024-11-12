@@ -77,9 +77,9 @@ public class AdminOptions
     public int TruncationMaxCharacters { get; set; } = 50;
 
     /// <summary>
-    /// Whether to exclude all tables from the admin panel.
+    /// Whether to include all tables from the admin panel.
     /// </summary>
-    public bool ExcludeAllEntities { get; set; }
+    public bool IncludeAllEntities { get; set; } = true;
 
     /// <summary>
     /// Entities to include in the admin panel.

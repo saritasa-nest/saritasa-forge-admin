@@ -272,7 +272,7 @@ You can exclude all entities and include only specific ones.
 ```csharp
 services.AddNetForge(optionsBuilder =>
 {
-    optionsBuilder.ExcludeAllEntities();
+    optionsBuilder.SetIncludeAllEntities(false);
     optionsBuilder.IncludeEntities(typeof(Shop), typeof(Product));
 });
 ```

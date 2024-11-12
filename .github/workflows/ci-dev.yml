@@ -13,4 +13,4 @@ jobs:
   NetForge:
     uses: ./.github/workflows/pack-library.yml
     with:
-      version_postfix: dev
+      version_postfix: dev-${{ github.run_number }}

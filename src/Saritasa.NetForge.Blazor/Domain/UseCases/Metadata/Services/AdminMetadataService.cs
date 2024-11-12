@@ -77,7 +77,7 @@ public class AdminMetadataService
     private static void ExcludeEntities(List<EntityMetadata> entityMetadatas, AdminOptions adminOptions)
     {
         // Exclude entities if it was specified in the admin options.
-        if (!adminOptions.ExcludeAllEntities)
+        if (adminOptions.IncludeAllEntities)
         {
             return;
         }

@@ -247,13 +247,13 @@ public class AdminOptionsBuilder
     }
 
     /// <summary>
-    /// Excludes all tables by default.
+    /// Specifies whether to include all entities in the admin panel.
     /// This method can be used in conjunction with <see cref="IncludeEntities"/>
     /// or <see cref="NetForgeEntityAttribute"/> to include specific entities after excluding all.
     /// </summary>
-    public AdminOptionsBuilder ExcludeAllEntities()
+    public AdminOptionsBuilder SetIncludeAllEntities(bool includeAllEntities)
     {
-        options.ExcludeAllEntities = true;
+        options.IncludeAllEntities = includeAllEntities;
         return this;
     }
 
