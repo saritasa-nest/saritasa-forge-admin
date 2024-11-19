@@ -11,12 +11,13 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
   - [Search](#search)
   - [View Site URL](#view-site-url)
   - [Grouping](#grouping)
+  - [Customizing the UI](#customizing-the-ui)
+    - [Main Layout Overriding](#main-layout-overriding)
+    - [Head Tag Overriding](#head-tag-overriding)
     - [Create Groups for Entities](#create-groups-for-entities)
     - [Configuration](#configuration)
     - [Headers Expansion](#headers-expansion)
   - [Exclude All Entities and Include Specific Only](#exclude-all-entities-and-include-specific-only)
-  - [Customizing the UI](#customizing-the-ui)
-    - [Main Layout Overriding](#main-layout-overriding)
 - [Customizing Entities](#customizing-entities)
   - [Fluent API](#fluent-api)
   - [Creating an Entity Configuration Class](#creating-an-entity-configuration-class)
@@ -39,12 +40,14 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
   - [Rich Text Field](#rich-text-field)
   - [Image Properties](#image-properties)
     - [Configuration](#configuration-1)
+    - [Max image size](#max-image-size)
   - [Read-only Properties](#read-only-properties)
     - [Configuration](#configuration-2)
   - [String Truncate](#string-truncate)
     - [Configuration](#configuration-3)
   - [Multiline Text Field Property](#multiline-text-field-property)
     - [Configuration](#configuration-4)
+  - [License](#license)
 
 # How to Use
 
@@ -195,6 +198,61 @@ The example of the custom component with navigation bar and footer:
         </MudNavMenu>
     </MudPaper>
 </footer>
+```
+
+### Head Tag Overriding
+
+You can inject custom meta tags or page title into the head tag of the admin panel.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetCustomHeadType(typeof(CustomHead));
+});
+```
+
+Example of injecting custom meta tags or a page title into the head tag of the admin panel.
+```csharp
+﻿@using Microsoft.AspNetCore.Components.Web
+
+<PageTitle>This is the custom page title.</PageTitle>
+<meta name="custom-meta" content="content-meta">
+```
+
+**Note:** If you are using a `Custom Layout`, you must add the dynamic component into the custom layout:
+
+```csharp
+@using Saritasa.NetForge.Domain.Entities.Options
+@inject AdminOptions AdminOptions;
+
+<HeadContent>
+    @if (AdminOptions.CustomHeadType is not null)
+    {
+        <DynamicComponent Type="AdminOptions.CustomHeadType" />
+    }
+</HeadContent>
+```
+
+Example:
+
+```csharp
+@using MudBlazor
+@using Saritasa.NetForge.Domain.Entities.Options
+@using Microsoft.AspNetCore.Components.Web
+@inherits Saritasa.NetForge.Blazor.Shared.AdminBaseLayout
+@inject AdminOptions AdminOptions;
+
+<HeadContent>
+    @if (AdminOptions.CustomHeadType is not null)
+    {
+        <DynamicComponent Type="AdminOptions.CustomHeadType" />
+    }
+</HeadContent>
+
+<MudThemeProvider />
+<MudDialogProvider />
+...
+...
 ```
 
 ### Create Groups for Entities
@@ -822,7 +880,7 @@ public required string Street { get; set; }
 ```csharp
 entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
 {
-	builder.SetIsMultiline(maxLines: 15); // sets the max lines value as 15
+    builder.SetIsMultiline(maxLines: 15); // sets the max lines value as 15
 });
 ```
 
