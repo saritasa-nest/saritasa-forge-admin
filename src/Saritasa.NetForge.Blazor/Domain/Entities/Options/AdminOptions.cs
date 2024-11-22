@@ -90,4 +90,9 @@ public class AdminOptions
     /// The optional type of custom layout for the admin panel.
     /// </summary>
     public Type? CustomLayoutType { get; set; }
+
+    /// <summary>
+    /// The optional type of custom head for the admin panel.
+    /// </summary>
+    public Type? CustomHeadType { get; set; }
 }

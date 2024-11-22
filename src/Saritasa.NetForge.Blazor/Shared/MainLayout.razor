@@ -2,6 +2,13 @@
 @inherits MainLayoutComponent
 @inject AdminOptions AdminOptions;
 
+<HeadContent>
+    @if (AdminOptions.CustomHeadType is not null)
+    {
+        <DynamicComponent Type="AdminOptions.CustomHeadType" />
+    }
+</HeadContent>
+
 <MudThemeProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />

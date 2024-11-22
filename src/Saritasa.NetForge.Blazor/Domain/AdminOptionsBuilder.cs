@@ -276,4 +276,15 @@ public class AdminOptionsBuilder
         options.CustomLayoutType = layoutType;
         return this;
     }
+
+    /// <summary>
+    /// Sets the custom head type for the admin panel.
+    /// </summary>
+    /// <param name="headType">The type of the custom head.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public AdminOptionsBuilder SetCustomHeadType(Type headType)
+    {
+        options.CustomHeadType = headType;
+        return this;
+    }
 }
