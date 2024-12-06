@@ -62,5 +62,5 @@ export function InitCKEditor(element, id, isReadOnly, dotnetReference) {
                 }, 50);
             });
         }
-    })
+    });
 }

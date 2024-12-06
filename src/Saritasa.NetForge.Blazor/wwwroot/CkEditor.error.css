@@ -1,0 +1,3 @@
+﻿.ck .ck-editor__main > .ck-editor__editable:not(.ck-focused) {
+    border-color: var(--mud-palette-error) !important;
+}
