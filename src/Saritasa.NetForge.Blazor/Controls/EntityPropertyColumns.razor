@@ -123,7 +123,7 @@
                     else if (navigation is not null && property.CanBeNavigatedToDetails)
                     {
                         var navigationInstance = cell.Item.GetPropertyValue(navigation.Name)!;
-                        <MudButton Variant="Variant.Text" Color="Color.Primary"
+                        <MudButton Variant="Variant.Text" Color="Color.Primary" Class="text-tranform-none"
                                    OnClick="() => NavigateToEditing(navigationInstance, navigation)">
                             @propertyValue
                         </MudButton>
@@ -131,9 +131,8 @@
                     else if (navigation is not null && (property.CanDisplayDetails || navigation.IsCollection))
                     {
                         var navigationInstance = cell.Item.GetPropertyValue(navigation.Name)!;
-                        <MudButton @onclick="() => OpenDialogAsync(navigationInstance, navigation)"
-                                   Variant="Variant.Text"
-                                   Color="Color.Primary">
+                        <MudButton Variant="Variant.Text" Color="Color.Primary" Class="text-tranform-none"
+                                   @onclick="() => OpenDialogAsync(navigationInstance, navigation)">
                             @propertyValue
                         </MudButton>
                     }
