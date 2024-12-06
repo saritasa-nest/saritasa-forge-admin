@@ -35,12 +35,12 @@ public class Shop
     /// The date when the shop was opened.
     /// </summary>
     public DateTime OpenedDate { get; set; }
-    
+
     /// <summary>
     /// The open time of the shop.
     /// </summary>
     public TimeOnly? OpenTime { get; set; }
-    
+
     /// <summary>
     /// The close time of the shop.
     /// </summary>
