@@ -343,7 +343,7 @@ public class Shop
 
 # Customizing Entities
 
-In the admin panel, you can customize the way entities are displayed using the Fluent API or special attribites. This enables you to set various properties for your entities, such as their name, description, plural name, etc.
+In the admin panel, you can customize the way entities are displayed using the Fluent API or special attributes. This enables you to set various properties for your entities, such as their name, description, plural name, etc.
 
 ## Fluent API
 
@@ -737,7 +737,7 @@ You can add properties that will be displayed as images.
 
 **Using Fluent API**
 
-You can create your own implementaion of `IUploadFileStrategy` interface and pass it to `SetUploadFileStrategy` configuration method.
+You can create your own implementation of `IUploadFileStrategy` interface and pass it to `SetUploadFileStrategy` configuration method.
 
 This interface has methods `UploadFileAsync` that is calling when file is uploaded and `GetFileSource` that is calling when file should be displayed.
 
