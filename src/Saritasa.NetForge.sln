@@ -20,6 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\CHANGELOG.txt = ..\CHANGELOG.txt
 		..\INSTALL.md = ..\INSTALL.md
 		..\VERSION.txt = ..\VERSION.txt
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{A1EF2098-C576-488D-BABF-8C76685CAFBD}"
