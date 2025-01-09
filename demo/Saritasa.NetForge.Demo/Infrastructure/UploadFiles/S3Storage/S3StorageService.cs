@@ -52,7 +52,7 @@ public class S3StorageService : IBlobStorageService, ICloudBlobStorageService, I
             };
 
             await transferUtility.UploadAsync(uploadRequest, cancellationToken);
-            logger.LogInformation("File: '{key}' is uploaded successfully.", key);
+            logger.LogInformation("File: '{Key}' is uploaded successfully.", key);
         }
         catch (Exception ex)
         {
@@ -67,7 +67,7 @@ public class S3StorageService : IBlobStorageService, ICloudBlobStorageService, I
         try
         {
             var response = await s3Client.GetObjectAsync(bucketName, key, cancellationToken);
-            logger.LogInformation("File: '{key}' is received successfully.", key);
+            logger.LogInformation("File: '{Key}' is received successfully.", key);
             return response.ResponseStream;
         }
         catch (Exception ex)
@@ -112,7 +112,7 @@ public class S3StorageService : IBlobStorageService, ICloudBlobStorageService, I
         try
         {
             await s3Client.DeleteObjectAsync(bucketName, key, cancellationToken);
-            logger.LogInformation("File: '{key}' is removed successfully.", key);
+            logger.LogInformation("File: '{Key}' is removed successfully.", key);
         }
         catch (Exception ex)
         {
@@ -132,7 +132,7 @@ public class S3StorageService : IBlobStorageService, ICloudBlobStorageService, I
         };
         var preSignedUrl = s3Client.GetPreSignedURL(preSignedUrlRequest);
 
-        logger.LogInformation("Pre-signed URL for the file '{key}' was received successfully.", key);
+        logger.LogInformation("Pre-signed URL for the file '{Key}' was received successfully.", key);
         return preSignedUrl;
     }
 
@@ -172,12 +172,12 @@ public class S3StorageService : IBlobStorageService, ICloudBlobStorageService, I
             if (ex.StatusCode == HttpStatusCode.NotFound)
             {
                 message = $"File: '{key}' is not exist.";
-                logger.LogError("File: '{key}' is not exist.", key);
+                logger.LogError("File: '{Key}' is not exist.", key);
                 throw new NotFoundException(message, ex);
             }
 
             message = $"Cannot get file metadata with key {key}.";
-            logger.LogError(ex, "Cannot get file metadata with key {key}.", key);
+            logger.LogError(ex, "Cannot get file metadata with key {Key}.", key);
             throw new InfrastructureException(message, ex);
         }
         catch (Exception ex)

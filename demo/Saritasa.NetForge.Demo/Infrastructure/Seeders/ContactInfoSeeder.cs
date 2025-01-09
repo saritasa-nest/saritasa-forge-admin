@@ -44,7 +44,7 @@ internal class ContactInfoSeeder
             count += await shopDbContext.SaveChangesAsync(cancellationToken);
         }
         
-        logger.LogInformation("Created {count} contacts.", count);
+        logger.LogInformation("Created {Count} contacts.", count);
         return count;
     }
 

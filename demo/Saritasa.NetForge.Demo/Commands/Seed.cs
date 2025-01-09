@@ -77,7 +77,7 @@ public class Seed
         var seeder = CreateSeederFromType(classType);
         if (seeder == null)
         {
-            logger.LogError("Cannot instantiate seeder {name}.", classType.Name);
+            logger.LogError("Cannot instantiate seeder {Name}.", classType.Name);
             return;
         }
 
@@ -102,7 +102,7 @@ public class Seed
 
         if (ctor == null)
         {
-            logger.LogError("Cannot find any public constructor for {name} type.", type.Name);
+            logger.LogError("Cannot find any public constructor for {Name} type.", type.Name);
             return null;
         }
 
@@ -152,7 +152,7 @@ public class Seed
 
         if (seedMethod == null)
         {
-            logger.LogError("Class {objectName} must contain Seed method.", objType.Name);
+            logger.LogError("Class {ObjectName} must contain Seed method.", objType.Name);
             return;
         }
 

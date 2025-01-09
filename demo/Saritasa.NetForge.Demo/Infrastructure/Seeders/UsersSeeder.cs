@@ -42,7 +42,7 @@ internal class UsersSeeder
                 var result = await userManager.CreateAsync(GenerateUser(), password);
                 if (!result.Succeeded)
                 {
-                    logger.LogWarning("Cannot create user: {result}.", result);
+                    logger.LogWarning("Cannot create user: {Result}.", result);
                 }
                 else
                 {
@@ -50,7 +50,7 @@ internal class UsersSeeder
                 }
             }
         }
-        logger.LogInformation("Created {count} users.", count);
+        logger.LogInformation("Created {Count} users.", count);
         return count;
     }
 

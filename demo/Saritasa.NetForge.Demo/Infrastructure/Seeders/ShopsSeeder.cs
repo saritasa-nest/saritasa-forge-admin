@@ -46,7 +46,7 @@ internal class ShopsSeeder
             count += await shopDbContext.SaveChangesAsync(cancellationToken);
         }
         
-        logger.LogInformation("Created {count} shops.", count);
+        logger.LogInformation("Created {Count} shops.", count);
         return count;
     }
 

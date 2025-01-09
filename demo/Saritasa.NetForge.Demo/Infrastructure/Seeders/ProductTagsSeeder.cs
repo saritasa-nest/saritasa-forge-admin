@@ -44,7 +44,7 @@ internal class ProductTagsSeeder
             count += await shopDbContext.SaveChangesAsync(cancellationToken);
         }
         
-        logger.LogInformation("Created {count} product tags.", count);
+        logger.LogInformation("Created {Count} product tags.", count);
         return count;
     }
 
