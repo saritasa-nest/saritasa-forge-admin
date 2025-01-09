@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using MudBlazor;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Mvvm.Navigation;
@@ -18,6 +19,9 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
 
     [Inject]
     private AdminOptions? AdminOptions { get; set; }
+
+    [Inject]
+    private IJSRuntime JsRuntime { get; set; } = null!;
 
     /// <summary>
     /// Entity id.
@@ -53,8 +57,8 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
         breadcrumbItems.Add(new BreadcrumbItem($"Edit {ViewModel.Model.DisplayName}", editEntityEndpoint));
     }
 
-    private void NavigateToEntityDetails()
+    private async Task NavigateToPreviousPage()
     {
-        NavigationService.NavigateTo<EntityDetailsViewModel>(parameters: StringId);
+        await JsRuntime.InvokeVoidAsync("history.back");
     }
 }

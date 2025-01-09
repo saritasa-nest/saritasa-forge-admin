@@ -5,7 +5,7 @@ namespace Saritasa.NetForge.Blazor.Shared;
 /// <summary>
 /// Main layout page.
 /// </summary>
-public class MainLayoutComponent : Microsoft.AspNetCore.Components.LayoutComponentBase
+public class MainLayoutComponent : AdminBaseLayout
 {
     /// <summary>
     /// Get home page route.

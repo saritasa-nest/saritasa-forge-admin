@@ -37,6 +37,16 @@ public class Shop
     public DateTime OpenedDate { get; set; }
 
     /// <summary>
+    /// The open time of the shop.
+    /// </summary>
+    public TimeOnly? OpenTime { get; set; }
+
+    /// <summary>
+    /// The close time of the shop.
+    /// </summary>
+    public TimeOnly? CloseTime { get; set; }
+
+    /// <summary>
     /// The total sales amount for the shop.
     /// </summary>
     [NetForgeProperty(
@@ -66,6 +76,11 @@ public class Shop
     /// The list of suppliers.
     /// </summary>
     public List<Supplier> Suppliers { get; set; } = new();
+
+    /// <summary>
+    /// Count of suppliers.
+    /// </summary>
+    public int SupplierCount => Suppliers.Count;
 
     /// <summary>
     /// Path to image file.

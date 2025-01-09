@@ -1,2 +1,27 @@
 0.1.0-alpha [2024-08-16]
 [+] Initial release.
+
+0.2.0-alpha [2024-10-07]
+[+] Exclude all properties from entity.
+
+0.3.0-alpha [2024-10-07]
+[+] Exclude all entities from admin panel.
+[+] Include entity properties if NetForgeProperty attribute is set.
+
+0.3.1-alpha [2024-10-08]
+[*] Replaced MudAlert with Snackbar control on edit entity page.
+
+0.4.0-alpha [2024-10-10]
+[+] Added support for the admin panel layout overriding.
+
+0.4.1-alpha [2024-10-15]
+[+] Fix properties can't be hidden using configuration.
+
+0.4.2-alpha [2024-10-17]
+[*] Change way of displaying navigation details on List View page.
+
+0.4.3-alpha [2024-10-17]
+[*] Fix problem with displaying not included navigation's properties.
+
+0.4.4-alpha [2024-11-02]
+[*] Fix importing static files.

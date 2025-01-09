@@ -298,6 +298,10 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<TimeSpan?>("AvailabilityDuration")
+                        .HasColumnType("interval")
+                        .HasColumnName("availability_duration");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
@@ -498,6 +502,10 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                         .HasColumnType("text")
                         .HasColumnName("building_photo");
 
+                    b.Property<TimeOnly?>("CloseTime")
+                        .HasColumnType("time without time zone")
+                        .HasColumnName("close_time");
+
                     b.Property<bool>("IsOpen")
                         .HasColumnType("boolean")
                         .HasColumnName("is_open");
@@ -512,6 +520,10 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                         .IsUnicode(false)
                         .HasColumnType("text")
                         .HasColumnName("name");
+
+                    b.Property<TimeOnly?>("OpenTime")
+                        .HasColumnType("time without time zone")
+                        .HasColumnName("open_time");
 
                     b.Property<DateTime>("OpenedDate")
                         .HasColumnType("timestamp without time zone")
@@ -781,7 +793,7 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
 
             modelBuilder.Entity("Saritasa.NetForge.Demo.Models.Product", b =>
                 {
-                    b.HasOne("Saritasa.NetForge.Demo.Models.Shop", null)
+                    b.HasOne("Saritasa.NetForge.Demo.Models.Shop", "Shop")
                         .WithMany("Products")
                         .HasForeignKey("ShopId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -792,6 +804,8 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                         .HasForeignKey("SupplierName", "SupplierCity")
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_products_suppliers_supplier_name_supplier_city");
+
+                    b.Navigation("Shop");
 
                     b.Navigation("Supplier");
                 });

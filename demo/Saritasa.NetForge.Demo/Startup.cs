@@ -37,14 +37,14 @@ public class Startup
         var connectionString = configuration.GetConnectionString("AppDatabase")
                                ?? throw new ArgumentNullException("ConnectionStrings:AppDatabase",
                                    "Database connection string is not initialized");
-        
+
         services.AddDbContext<ShopDbContext>(options =>
         {
             options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
         });
         services.AddAsyncInitializer<DatabaseInitializer>();
         services.AddHealthChecks().AddNpgSql(connectionString);
-        
+
         // Identity.
         services.AddIdentity<User, IdentityRole>()
             .AddEntityFrameworkStores<ShopDbContext>()

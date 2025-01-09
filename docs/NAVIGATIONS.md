@@ -58,30 +58,36 @@ public override string ToString()
 }
 ```
 
-## Display navigation data on the entity details page
+## Display navigation data on the entity List View page
 
-You can click on the navigation on the entity details to see navigation data in dialog.
+You can click on the navigation on the entity details to see navigation details.
 
 ### Reference
 
-For reference navigation you need to configure it via `Fluent API`. Note that only primary key of the entity is clickable to see navigation data.
+For reference navigation you need to configure it via `Fluent API` using `SetShowNavigationDetails` method.
+When you use this method to a navigation's property, then this property will be rendered as button.
+This method accepts `isReadonly` parameter, when it is `true`, then by pressing the button dialog with navigation details appears.
+Otherwise, when it is `false` you will be redirected to edit corresponding entity page.
 
 ```csharp
 public void Configure(EntityOptionsBuilder<Shop> entityOptionsBuilder)
 {
     entityOptionsBuilder
-        .IncludeNavigation<Address>(shop => shop.Address, navigationOptionsBuilder =>
-        {
-            navigationOptionsBuilder
-                .IncludeProperty(address => address.Id, builder =>
-                {
-                    builder.SetDisplayName("Address Id");
-                })
-                .SetIsDisplayDetails(true);
-        })
+            .IncludeNavigation<Address>(shop => shop.Address, navigationOptionsBuilder =>
+            {
+                navigationOptionsBuilder
+                    .IncludeProperty(address => address.Street, builder =>
+                    {
+                        builder.SetShowNavigationDetails(isReadonly: false);
+                    })
+                    .IncludeProperty(address => address.City, builder =>
+                    {
+                        builder.SetShowNavigationDetails(isReadonly: true);
+                    });
+            })
 }
 ```
 
 ### Collection
 
-Collection navigations have this behavior by default.
+Collection navigations have this behavior by default like it was configured using `SetShowNavigationDetails(isReadonly: true)`.

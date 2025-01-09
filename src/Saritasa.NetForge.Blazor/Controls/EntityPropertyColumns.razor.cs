@@ -1,9 +1,13 @@
 ﻿using System.Collections;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Saritasa.NetForge.Blazor.Infrastructure.Helpers;
+using Saritasa.NetForge.Blazor.Pages;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices.Extensions;
+using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.Utils;
+using Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
 using Saritasa.NetForge.UseCases.Constants;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
@@ -29,6 +33,9 @@ public partial class EntityPropertyColumns : ComponentBase
 
     [Inject]
     private IEntityService EntityService { get; set; } = null!;
+
+    [Inject]
+    private INavigationService NavigationService { get; set; } = null!;
 
     /// <summary>
     /// Properties of the entity.
@@ -186,13 +193,35 @@ public partial class EntityPropertyColumns : ComponentBase
     }
 
     /// <summary>
+    /// Edit navigation entity by its identifier.
+    /// </summary>
+    private async Task NavigateToEditing(object navigationInstance, NavigationMetadataDto navigationMetadata)
+    {
+        var entityMetadata = await EntityService
+            .GetEntityByTypeAsync(navigationMetadata.ClrType!, CancellationToken.None);
+
+        var primaryKeyValues = navigationInstance.GetPrimaryKeyValues(navigationMetadata.TargetEntityProperties);
+        NavigationService.NavigateTo<EditEntityViewModel>(parameters: [entityMetadata.StringId, primaryKeyValues]);
+    }
+
+    /// <summary>
     /// Delete entity.
     /// </summary>
     private async Task DeleteEntityAsync(object entity, CancellationToken cancellationToken)
     {
-        await EntityService.DeleteEntityAsync(entity, entity.GetType(), cancellationToken);
+        try
+        {
+            await EntityService.DeleteEntityAsync(entity, entity.GetType(), cancellationToken);
 
-        DataGrid?.ReloadServerData();
+            DataGrid?.ReloadServerData();
+        }
+        catch (Exception ex)
+        {
+            var message = ex.InnerException is not null ? ex.InnerException.Message : ex.Message;
+            Snackbar.Add($"Failed to delete record due to error: {message}", Severity.Error);
+
+            Logger.LogError(ex, "{Handler}: Failed to delete record {EntityType}", nameof(EntityDetails), entity.GetType());
+        }
     }
 
     private async Task ShowDeleteEntityConfirmationAsync(object source)

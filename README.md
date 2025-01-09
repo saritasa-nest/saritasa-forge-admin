@@ -11,14 +11,19 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
   - [Search](#search)
   - [View Site URL](#view-site-url)
   - [Grouping](#grouping)
+  - [Customizing the UI](#customizing-the-ui)
+    - [Main Layout Overriding](#main-layout-overriding)
+    - [Head Tag Overriding](#head-tag-overriding)
     - [Create Groups for Entities](#create-groups-for-entities)
     - [Configuration](#configuration)
     - [Headers Expansion](#headers-expansion)
+  - [Exclude All Entities and Include Specific Only](#exclude-all-entities-and-include-specific-only)
 - [Customizing Entities](#customizing-entities)
   - [Fluent API](#fluent-api)
   - [Creating an Entity Configuration Class](#creating-an-entity-configuration-class)
   - [Data Attributes](#data-attributes)
   - [Custom Query](#custom-query)
+  - [After Update Action](#after-update-action)
 - [Customizing Entity Properties](#customizing-entity-properties)
   - [Fluent API](#fluent-api-1)
   - [Data Attributes](#data-attributes-1)
@@ -28,18 +33,21 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
   - [Display Properties as Title Case](#display-properties-as-title-case)
   - [Default Values](#default-values)
   - [Navigation Properties](#navigation-properties)
+  - [Exclude All Properties and Include Specific Only](#exclude-all-properties-and-include-specific-only)
   - [Exclude Property from Query](#exclude-property-from-query)
   - [Formatting Property as HTML](#formatting-property-as-html)
   - [Generated Properties](#generated-properties)
   - [Rich Text Field](#rich-text-field)
   - [Image Properties](#image-properties)
     - [Configuration](#configuration-1)
+    - [Max image size](#max-image-size)
   - [Read-only Properties](#read-only-properties)
     - [Configuration](#configuration-2)
   - [String Truncate](#string-truncate)
     - [Configuration](#configuration-3)
   - [Multiline Text Field Property](#multiline-text-field-property)
     - [Configuration](#configuration-4)
+  - [License](#license)
 
 # How to Use
 
@@ -144,6 +152,109 @@ services.AddNetForge(optionsBuilder =>
 
 Group rows of entities into categories and make it easier for users to navigate and understand the data presented.
 
+## Customizing the UI
+
+### Main Layout Overriding
+
+You can override the default layout of the admin panel.
+To do this, create a new layout in your host project and specify its type in the configuration.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetCustomLayout(typeof(CustomLayout));
+});
+```
+
+Your custom layout should inherit from the `AdminBaseLayout` class.
+
+The example of the custom component with navigation bar and footer:
+```csharp
+@using MudBlazor
+@inherits Saritasa.NetForge.Blazor.Shared.AdminBaseLayout
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudAppBar Color="Color.Primary" Elevation="4">
+    <MudText Typo="Typo.h6">My Application</MudText>
+    <MudSpacer />
+    <MudNavMenu>
+        <MudNavLink Href="/about">About</MudNavLink>
+        <MudNavLink Href="/contact">Contact</MudNavLink>
+    </MudNavMenu>
+</MudAppBar>
+
+@Body
+
+<footer>
+    <MudPaper Class="pa-4" Elevation="4">
+        <MudText Typo="Typo.body2">My Application</MudText>
+        <MudSpacer />
+        <MudNavMenu>
+            <MudNavLink Href="/privacy">Privacy Policy</MudNavLink>
+            <MudNavLink Href="/terms">Terms of Service</MudNavLink>
+        </MudNavMenu>
+    </MudPaper>
+</footer>
+```
+
+### Head Tag Overriding
+
+You can inject custom meta tags or page title into the head tag of the admin panel.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetCustomHeadType(typeof(CustomHead));
+});
+```
+
+Example of injecting custom meta tags or a page title into the head tag of the admin panel.
+```csharp
+﻿@using Microsoft.AspNetCore.Components.Web
+
+<PageTitle>This is the custom page title.</PageTitle>
+<meta name="custom-meta" content="content-meta">
+```
+
+**Note:** If you are using a `Custom Layout`, you must add the dynamic component into the custom layout:
+
+```csharp
+@using Saritasa.NetForge.Domain.Entities.Options
+@inject AdminOptions AdminOptions;
+
+<HeadContent>
+    @if (AdminOptions.CustomHeadType is not null)
+    {
+        <DynamicComponent Type="AdminOptions.CustomHeadType" />
+    }
+</HeadContent>
+```
+
+Example:
+
+```csharp
+@using MudBlazor
+@using Saritasa.NetForge.Domain.Entities.Options
+@using Microsoft.AspNetCore.Components.Web
+@inherits Saritasa.NetForge.Blazor.Shared.AdminBaseLayout
+@inject AdminOptions AdminOptions;
+
+<HeadContent>
+    @if (AdminOptions.CustomHeadType is not null)
+    {
+        <DynamicComponent Type="AdminOptions.CustomHeadType" />
+    }
+</HeadContent>
+
+<MudThemeProvider />
+<MudDialogProvider />
+...
+...
+```
+
 ### Create Groups for Entities
 
 Before assigning entities to specific groups, users need to define the groups to which the entities will belong.
@@ -208,13 +319,31 @@ You can customize expanded header of all groups. By default, all groups are expa
 ```csharp
 services.AddNetForge(optionsBuilder =>
 {
-    optionsBuilder.SetGroupHeadersExpanded(true)
+    optionsBuilder.SetGroupHeadersExpanded(true);
 });
+```
+
+## Exclude All Entities and Include Specific Only
+
+You can exclude all entities and include only specific ones.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetIncludeAllEntities(false);
+    optionsBuilder.IncludeEntities(typeof(Shop), typeof(Product));
+});
+```
+
+Or you can include specific entities using the data attribute:
+```csharp
+[NetForgeEntity]
+public class Shop
 ```
 
 # Customizing Entities
 
-In the admin panel, you can customize the way entities are displayed using the Fluent API or special attribites. This enables you to set various properties for your entities, such as their name, description, plural name, etc.
+In the admin panel, you can customize the way entities are displayed using the Fluent API or special attributes. This enables you to set various properties for your entities, such as their name, description, plural name, etc.
 
 ## Fluent API
 
@@ -502,6 +631,26 @@ public string Property { get; set; }
 
 You can read about navigation properties [here](docs/NAVIGATIONS.md).
 
+## Exclude All Properties and Include Specific Only
+
+You can exclude all properties and include only specific ones. It works with both ordinary and navigation properties.
+
+**Using Fluent API**
+
+```csharp
+optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
+{
+    entityOptionsBuilder.ExcludeAllProperties();
+    entityOptionsBuilder.IncludeProperties(user => user.Id, user => user.Name);
+});
+```
+
+Or you can include specific properties using the **Attribute**:
+```csharp
+[NetForgeProperty]
+public string Property { get; set; }
+```
+
 ## Exclude Property from Query
 
 You can explicitly control whether a property should be excluded from the data query.
@@ -584,7 +733,7 @@ You can add properties that will be displayed as images.
 
 **Using Fluent API**
 
-You can create your own implementaion of `IUploadFileStrategy` interface and pass it to `SetUploadFileStrategy` configuration method.
+You can create your own implementation of `IUploadFileStrategy` interface and pass it to `SetUploadFileStrategy` configuration method.
 
 This interface has methods `UploadFileAsync` that is calling when file is uploaded and `GetFileSource` that is calling when file should be displayed.
 
@@ -727,7 +876,7 @@ public required string Street { get; set; }
 ```csharp
 entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
 {
-	builder.SetIsMultiline(maxLines: 15); // sets the max lines value as 15
+    builder.SetIsMultiline(maxLines: 15); // sets the max lines value as 15
 });
 ```
 

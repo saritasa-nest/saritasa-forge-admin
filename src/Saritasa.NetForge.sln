@@ -3,33 +3,31 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.Domain", "Saritasa.NetForge.Domain\Saritasa.NetForge.Domain.csproj", "{2F6AA3E8-C95D-4463-9AE3-41C1C293CAD7}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.Infrastructure.Abstractions", "Saritasa.NetForge.Infrastructure.Abstractions\Saritasa.NetForge.Infrastructure.Abstractions.csproj", "{811B15E4-19A0-49B0-AD2E-98787190D50B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.Infrastructure.EfCore", "Saritasa.NetForge.Infrastructure.EfCore\Saritasa.NetForge.Infrastructure.EfCore.csproj", "{DF212AD9-94C1-48BA-9C70-4F5E08BC5EFE}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.Demo", "..\demo\Saritasa.NetForge.Demo\Saritasa.NetForge.Demo.csproj", "{E7273DBF-A83A-4D0C-A1AF-A63D3069B685}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.UseCases", "Saritasa.NetForge.UseCases\Saritasa.NetForge.UseCases.csproj", "{41C5E508-3FE1-4359-9A4B-AD0F6237B4E9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{51D6022E-3DD7-4345-891C-711FA4B57FCA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{7D2CAD10-C8CC-48F2-992B-E2E52D9D8379}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{448B6392-162C-44AB-9E79-96666A994B84}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{6CF8C46F-4181-4D7C-929A-526F3D3B6845}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.Blazor", "Saritasa.NetForge.Blazor\Saritasa.NetForge.Blazor.csproj", "{DC095BA1-A950-4432-A328-5FA75DBF03F3}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.Mvvm", "Saritasa.NetForge.Mvvm\Saritasa.NetForge.Mvvm.csproj", "{354621B9-E572-4303-B58B-976F16918342}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.DomainServices", "Saritasa.NetForge.DomainServices\Saritasa.NetForge.DomainServices.csproj", "{45931B67-08DD-4192-B4D6-098452304DFD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5D2DF5E1-DF2A-491E-833B-F63D0E156F2C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.Tests", "Saritasa.NetForge.Tests\Saritasa.NetForge.Tests.csproj", "{26BBDB9F-643A-487C-BAD5-2DD5748D276C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FFB9A65A-051F-4B09-9EA6-50DD7C1C462E}"
+	ProjectSection(SolutionItems) = preProject
+		..\CHANGELOG.txt = ..\CHANGELOG.txt
+		..\INSTALL.md = ..\INSTALL.md
+		..\VERSION.txt = ..\VERSION.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{A1EF2098-C576-488D-BABF-8C76685CAFBD}"
+	ProjectSection(SolutionItems) = preProject
+		..\docs\NAVIGATIONS.md = ..\docs\NAVIGATIONS.md
+		..\README.md = ..\README.md
+		..\docs\SEARCH.md = ..\docs\SEARCH.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,38 +35,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2F6AA3E8-C95D-4463-9AE3-41C1C293CAD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2F6AA3E8-C95D-4463-9AE3-41C1C293CAD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2F6AA3E8-C95D-4463-9AE3-41C1C293CAD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2F6AA3E8-C95D-4463-9AE3-41C1C293CAD7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{811B15E4-19A0-49B0-AD2E-98787190D50B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{811B15E4-19A0-49B0-AD2E-98787190D50B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{811B15E4-19A0-49B0-AD2E-98787190D50B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{811B15E4-19A0-49B0-AD2E-98787190D50B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DF212AD9-94C1-48BA-9C70-4F5E08BC5EFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DF212AD9-94C1-48BA-9C70-4F5E08BC5EFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DF212AD9-94C1-48BA-9C70-4F5E08BC5EFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DF212AD9-94C1-48BA-9C70-4F5E08BC5EFE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E7273DBF-A83A-4D0C-A1AF-A63D3069B685}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E7273DBF-A83A-4D0C-A1AF-A63D3069B685}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7273DBF-A83A-4D0C-A1AF-A63D3069B685}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7273DBF-A83A-4D0C-A1AF-A63D3069B685}.Release|Any CPU.Build.0 = Release|Any CPU
-		{41C5E508-3FE1-4359-9A4B-AD0F6237B4E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{41C5E508-3FE1-4359-9A4B-AD0F6237B4E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{41C5E508-3FE1-4359-9A4B-AD0F6237B4E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{41C5E508-3FE1-4359-9A4B-AD0F6237B4E9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DC095BA1-A950-4432-A328-5FA75DBF03F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DC095BA1-A950-4432-A328-5FA75DBF03F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC095BA1-A950-4432-A328-5FA75DBF03F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC095BA1-A950-4432-A328-5FA75DBF03F3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{354621B9-E572-4303-B58B-976F16918342}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{354621B9-E572-4303-B58B-976F16918342}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{354621B9-E572-4303-B58B-976F16918342}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{354621B9-E572-4303-B58B-976F16918342}.Release|Any CPU.Build.0 = Release|Any CPU
-		{45931B67-08DD-4192-B4D6-098452304DFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{45931B67-08DD-4192-B4D6-098452304DFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{45931B67-08DD-4192-B4D6-098452304DFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{45931B67-08DD-4192-B4D6-098452304DFD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{26BBDB9F-643A-487C-BAD5-2DD5748D276C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{26BBDB9F-643A-487C-BAD5-2DD5748D276C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26BBDB9F-643A-487C-BAD5-2DD5748D276C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -78,15 +52,10 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{2F6AA3E8-C95D-4463-9AE3-41C1C293CAD7} = {7D2CAD10-C8CC-48F2-992B-E2E52D9D8379}
-		{811B15E4-19A0-49B0-AD2E-98787190D50B} = {6CF8C46F-4181-4D7C-929A-526F3D3B6845}
-		{DF212AD9-94C1-48BA-9C70-4F5E08BC5EFE} = {6CF8C46F-4181-4D7C-929A-526F3D3B6845}
 		{E7273DBF-A83A-4D0C-A1AF-A63D3069B685} = {51D6022E-3DD7-4345-891C-711FA4B57FCA}
-		{41C5E508-3FE1-4359-9A4B-AD0F6237B4E9} = {7D2CAD10-C8CC-48F2-992B-E2E52D9D8379}
 		{DC095BA1-A950-4432-A328-5FA75DBF03F3} = {448B6392-162C-44AB-9E79-96666A994B84}
-		{354621B9-E572-4303-B58B-976F16918342} = {448B6392-162C-44AB-9E79-96666A994B84}
-		{45931B67-08DD-4192-B4D6-098452304DFD} = {7D2CAD10-C8CC-48F2-992B-E2E52D9D8379}
 		{26BBDB9F-643A-487C-BAD5-2DD5748D276C} = {5D2DF5E1-DF2A-491E-833B-F63D0E156F2C}
+		{A1EF2098-C576-488D-BABF-8C76685CAFBD} = {FFB9A65A-051F-4B09-9EA6-50DD7C1C462E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0E58DD2B-6CF5-460A-BC26-048C50808B1B}

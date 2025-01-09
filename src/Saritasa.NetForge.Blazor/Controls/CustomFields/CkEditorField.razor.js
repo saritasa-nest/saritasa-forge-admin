@@ -1,4 +1,4 @@
-﻿import "/_content/Saritasa.NetForge/ckeditor.js";
+﻿import "../../ckeditor.js";
 
 const timeouts = [];
 const editorConfig = {
@@ -62,5 +62,5 @@ export function InitCKEditor(element, id, isReadOnly, dotnetReference) {
                 }, 50);
             });
         }
-    })
+    });
 }

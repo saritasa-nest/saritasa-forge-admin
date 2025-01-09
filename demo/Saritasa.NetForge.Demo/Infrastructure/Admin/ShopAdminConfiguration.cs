@@ -1,5 +1,4 @@
-﻿using Saritasa.NetForge.Demo.Infrastructure.UploadFiles;
-using Saritasa.NetForge.Demo.Infrastructure.UploadFiles.Strategies;
+﻿using Saritasa.NetForge.Demo.Infrastructure.UploadFiles.Strategies;
 using Saritasa.NetForge.Demo.Models;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.DomainServices;
@@ -49,12 +48,6 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             .IncludeNavigation<Address>(shop => shop.Address, navigationOptionsBuilder =>
             {
                 navigationOptionsBuilder
-                    .IncludeProperty(address => address.Id, builder =>
-                    {
-                        builder
-                            .SetOrder(3)
-                            .SetDisplayName("Address Id");
-                    })
                     .IncludeProperty(address => address.Street, builder =>
                     {
                         builder
@@ -63,7 +56,14 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                             .SetDescription("Address street name.")
                             .SetEmptyValueDisplay("N/A")
                             .SetIsSortable(true)
-                            .SetSearchType(SearchType.ContainsCaseInsensitive);
+                            .SetSearchType(SearchType.ContainsCaseInsensitive)
+                            .SetShowNavigationDetails(isReadonly: false);
+                    })
+                    .IncludeProperty(address => address.City, builder =>
+                    {
+                        builder
+                            .SetOrder(5)
+                            .SetShowNavigationDetails(isReadonly: true);
                     })
                     .IncludeProperty(address => address.FullAddress, builder =>
                     {
@@ -117,10 +117,27 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             var dbContext = serviceProvider!.GetRequiredService<ShopDbContext>();
 
             var randomNumber = Random.Shared.Next(0, 100);
-            modifiedEntity.Address!.City = $"Berlin {randomNumber}";
-            modifiedEntity.Suppliers[0].IsActive = !modifiedEntity.Suppliers[0].IsActive;
+
+            if (modifiedEntity.Address != null)
+            {
+                modifiedEntity.Address.City = $"Berlin {randomNumber}";
+            }
+
+            if (modifiedEntity.Suppliers.Count != 0)
+            {
+                modifiedEntity.Suppliers[0].IsActive = !modifiedEntity.Suppliers[0].IsActive;
+            }
 
             dbContext.SaveChanges();
         });
+
+        entityOptionsBuilder.ConfigureProperty(shop => shop.Suppliers, builder =>
+        {
+            builder.SetIsHidden(true);
+        });
+
+        entityOptionsBuilder.AddCalculatedProperties(shop => shop.SupplierCount);
+
+        entityOptionsBuilder.ConfigureProperty(shop => shop.Id, builder => builder.SetIsHidden(true));
     }
 }
