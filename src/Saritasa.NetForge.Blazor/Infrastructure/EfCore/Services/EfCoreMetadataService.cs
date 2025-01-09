@@ -118,6 +118,7 @@ public class EfCoreMetadataService : IOrmMetadataService
             .Select(propertyInfo => new PropertyMetadata
             {
                 Name = propertyInfo.Name,
+                ClrType = propertyInfo.PropertyType,
                 IsEditable = false,
                 PropertyInformation = propertyInfo,
                 IsCalculatedProperty = true

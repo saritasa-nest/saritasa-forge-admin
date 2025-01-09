@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Saritasa.NetForge.Blazor.Domain;
 using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices.Extensions;
@@ -112,6 +113,27 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         var propertyOptions = propertyOptionsBuilder.Create(propertyName);
 
         options.PropertyOptions.Add(propertyOptions);
+        return this;
+    }
+
+    /// <summary>
+    /// Configures options for specific entity's calculated property.
+    /// </summary>
+    /// <param name="calculatedPropertyExpression">
+    /// Expression that represents calculated property. For example: <c>entity => entity.FullName</c>.
+    /// </param>
+    /// <param name="calculatedPropertyOptionsBuilderAction">An action that builds calculated property options.</param>
+    public EntityOptionsBuilder<TEntity> ConfigureCalculatedProperty(
+        Expression<Func<TEntity, object?>> calculatedPropertyExpression,
+        Action<CalculatedPropertyOptionsBuilder> calculatedPropertyOptionsBuilderAction)
+    {
+        var calculatedPropertyOptionsBuilder = new CalculatedPropertyOptionsBuilder();
+        calculatedPropertyOptionsBuilderAction.Invoke(calculatedPropertyOptionsBuilder);
+
+        var calculatedPropertyName = calculatedPropertyExpression.GetMemberName();
+        var calculatedPropertyOptions = calculatedPropertyOptionsBuilder.Create(calculatedPropertyName);
+
+        options.CalculatedPropertyOptions.Add(calculatedPropertyOptions);
         return this;
     }
 
