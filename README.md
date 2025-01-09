@@ -583,10 +583,10 @@ Sorting can be cancelled by pressing on it with `ALT`.
 
 Calculated properties are properties that don't have a direct representation in your database but are computed based on other existing properties. These properties can be useful for displaying calculated values in the admin panel.
 
-They behave just like an ordinary property, and you can configure them in the similar way:
+They behave like an ordinary property, but have less functionality.
 
 ```csharp
-entityOptionsBuilder.ConfigureProperty(address => address.FullAddress, propertyBuilder =>
+entityOptionsBuilder.ConfigureCalculatedProperty(address => address.FullAddress, propertyBuilder =>
 {
     propertyBuilder.SetDisplayName("Full Address");
 });
