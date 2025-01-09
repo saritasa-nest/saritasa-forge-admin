@@ -132,13 +132,15 @@ public class AdminOptionsBuilder
         var properties = type.GetProperties();
         foreach (var property in properties)
         {
-            if (property is { CanRead: true, CanWrite: true })
+            if (property is not { CanRead: true, CanWrite: true })
             {
-                var value = property.GetValue(source);
-                if (value != null && string.IsNullOrEmpty(property.GetValue(destination).ToString()))
-                {
-                    property.SetValue(destination, value);
-                }
+                continue;
+            }
+
+            var value = property.GetValue(source);
+            if (value != null && string.IsNullOrEmpty(property.GetValue(destination)?.ToString()))
+            {
+                property.SetValue(destination, value);
             }
         }
     }
