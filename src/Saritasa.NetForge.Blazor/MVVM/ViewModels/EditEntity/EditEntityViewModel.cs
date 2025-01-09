@@ -138,7 +138,8 @@ public class EditEntityViewModel : ValidationEntityViewModel
             PluralName = entity.PluralName,
             ClrType = entity.ClrType,
             Properties = entity.Properties,
-            AfterUpdateAction = entity.AfterUpdateAction
+            AfterUpdateAction = entity.AfterUpdateAction,
+            EntitySaveMessage = entity.EntitySaveMessage
         };
     }
 
@@ -174,7 +175,9 @@ public class EditEntityViewModel : ValidationEntityViewModel
             // We do clone because UpdateAsync method returns Model.OriginalEntityInstance
             // so we don't want Model.EntityInstance and Model.OriginalEntityInstance to have the same reference.
             Model.EntityInstance = updatedEntity.CloneJson();
-            var saveMessage = adminOptions.EntitySaveMessage ?? "Update was completed successfully";
+            var saveMessage = (Model.EntitySaveMessage ?? adminOptions.EntitySaveMessage)
+                              ?? "Update was completed successfully.";
+
             snackbar.Add(saveMessage, Severity.Success);
         }
         catch (Exception ex)
