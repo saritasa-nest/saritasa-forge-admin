@@ -1,4 +1,6 @@
-﻿namespace Saritasa.NetForge.Domain.Entities.Options;
+﻿using Microsoft.AspNetCore.Components;
+
+namespace Saritasa.NetForge.Domain.Entities.Options;
 
 /// <summary>
 /// Admin panel options.
@@ -95,4 +97,9 @@ public class AdminOptions
     /// The optional type of custom head for the admin panel.
     /// </summary>
     public Type? CustomHeadType { get; set; }
+
+    /// <summary>
+    /// Content that will be in the bottom of the body.
+    /// </summary>
+    public RenderFragment? CustomBodyContent { get; set; }
 }

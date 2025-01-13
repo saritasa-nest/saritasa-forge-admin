@@ -27,6 +27,10 @@ internal static class NetForgeModule
                     new() { Name = GroupConstants.Shops }
                 })
                 .SetGroupHeadersExpanded(true)
+                .SetCustomBodyContent(builder =>
+                {
+                    builder.AddContent(0, "Custom body content from demo configuration.");
+                })
                 .ConfigureEntity(new ShopAdminConfiguration(services))
                 .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
                 {

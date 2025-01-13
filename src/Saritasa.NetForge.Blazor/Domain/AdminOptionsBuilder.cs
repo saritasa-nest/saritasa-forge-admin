@@ -1,4 +1,5 @@
-﻿using Saritasa.NetForge.Domain.Attributes;
+﻿using Microsoft.AspNetCore.Components;
+using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices.Interfaces;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
@@ -285,6 +286,17 @@ public class AdminOptionsBuilder
     public AdminOptionsBuilder SetCustomHeadType(Type headType)
     {
         options.CustomHeadType = headType;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets content that will be in the bottom of the body.
+    /// </summary>
+    /// <param name="customBodyContent">Content to render.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public AdminOptionsBuilder SetCustomBodyContent(RenderFragment customBodyContent)
+    {
+        options.CustomBodyContent = customBodyContent;
         return this;
     }
 }

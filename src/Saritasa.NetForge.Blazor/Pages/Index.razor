@@ -4,3 +4,12 @@
 
 <PageTitle>@AdminOptions.AdminPanelHtmlTitle</PageTitle>
 <Entities />
+
+@if (AdminOptions.CustomBodyContent is not null)
+{
+    <CustomBodyContent>
+        <Content>
+            @AdminOptions.CustomBodyContent
+        </Content>
+    </CustomBodyContent>
+}
