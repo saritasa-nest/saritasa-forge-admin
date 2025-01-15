@@ -8,6 +8,7 @@ using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Logging;
 using MudBlazor;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Mvvm.Utils;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
@@ -26,6 +27,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
     private readonly IEntityService entityService;
     private readonly INavigationService navigationService;
     private readonly ISnackbar snackbar;
+    private readonly AdminOptions adminOptions;
 
     /// <summary>
     /// Constructor.
@@ -35,7 +37,8 @@ public class CreateEntityViewModel : ValidationEntityViewModel
         ILogger<CreateEntityViewModel> logger,
         IEntityService entityService,
         INavigationService navigationService,
-        ISnackbar snackbar)
+        ISnackbar snackbar,
+        AdminOptions adminOptions)
     {
         Model = new CreateEntityModel { StringId = stringId };
 
@@ -43,6 +46,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
         this.entityService = entityService;
         this.navigationService = navigationService;
         this.snackbar = snackbar;
+        this.adminOptions = adminOptions;
     }
 
     /// <summary>
@@ -141,7 +145,15 @@ public class CreateEntityViewModel : ValidationEntityViewModel
         {
             await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
             navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
-            snackbar.Add("Entity was created successfully.", Severity.Success);
+
+            if (!string.IsNullOrEmpty(adminOptions.EntityCreateMessage))
+            {
+                snackbar.Add(adminOptions.EntityCreateMessage, Severity.Success);
+            }
+            else
+            {
+                snackbar.Add("Entity was created successfully.", Severity.Success);
+            }
         }
         catch (Exception ex)
         {

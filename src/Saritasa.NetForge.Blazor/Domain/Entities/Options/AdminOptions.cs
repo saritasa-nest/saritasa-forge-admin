@@ -95,4 +95,9 @@ public class AdminOptions
     /// The optional type of custom head for the admin panel.
     /// </summary>
     public Type? CustomHeadType { get; set; }
+
+    /// <summary>
+    /// Message indicating that entity was created successfully.
+    /// </summary>
+    public string? EntityCreateMessage { get; set; }
 }
