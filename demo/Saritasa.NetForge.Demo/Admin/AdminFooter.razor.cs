@@ -6,8 +6,10 @@ namespace Saritasa.NetForge.Demo.Admin;
 /// <summary>
 /// Footer for admin panel.
 /// </summary>
-public partial class AdminFooter : ComponentBase
+public partial class AdminFooter : ComponentBase, IAsyncDisposable
 {
+    private IJSObjectReference? module;
+
     [Inject]
     private IJSRuntime Js { get; set; } = null!;
 
@@ -21,7 +23,27 @@ public partial class AdminFooter : ComponentBase
     /// <inheritdoc />
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await base.OnAfterRenderAsync(firstRender);
-        await Js.InvokeVoidAsync("setVisitsCount");
+        if (firstRender)
+        {
+            module = await Js.InvokeAsync<IJSObjectReference>("import", "./Admin/AdminFooter.razor.js");
+            await module.InvokeVoidAsync("incrementVisitsCount");
+        }
+
+    }
+
+    /// <inheritdoc />
+    public async ValueTask DisposeAsync()
+    {
+        if (module is not null)
+        {
+            try
+            {
+                await module.DisposeAsync();
+            }
+            catch (JSDisconnectedException)
+            {
+                // Required in Blazor Server but can be removed in WebAssembly.
+            }
+        }
     }
 }
