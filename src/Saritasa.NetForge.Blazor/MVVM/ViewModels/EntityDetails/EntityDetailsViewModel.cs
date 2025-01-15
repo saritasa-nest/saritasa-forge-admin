@@ -119,7 +119,8 @@ public class EntityDetailsViewModel : BaseViewModel
             IsKeyless = entity.IsKeyless,
             CanAdd = entity.CanAdd,
             CanEdit = entity.CanEdit,
-            CanDelete = entity.CanDelete
+            CanDelete = entity.CanDelete,
+            EntityDeleteMessage = entity.EntityDeleteMessage,
         };
     }
 

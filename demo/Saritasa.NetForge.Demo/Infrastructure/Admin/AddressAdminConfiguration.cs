@@ -64,5 +64,6 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
         });
 
         entityOptionsBuilder.SetEntityCreateMessage("Address was created.");
+        entityOptionsBuilder.SetEntityDeleteMessage("Address was deleted.");
     }
 }

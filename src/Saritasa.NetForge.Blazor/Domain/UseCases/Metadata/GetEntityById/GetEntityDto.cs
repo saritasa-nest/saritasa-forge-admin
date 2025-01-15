@@ -52,5 +52,8 @@ public record GetEntityDto
     public bool CanDelete { get; set; }
 
     /// <inheritdoc cref="EntityMetadata.EntityCreateMessage"/>
-    public string? EntityCreateMessage { get; set; }
+    public string? EntityCreateMessage { get; init; }
+
+    /// <inheritdoc cref="EntityMetadata.EntityDeleteMessage"/>
+    public string? EntityDeleteMessage { get; init; }
 }

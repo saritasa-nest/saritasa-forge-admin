@@ -101,4 +101,9 @@ public class EntityMetadata
     /// Message indicating that entity was created successfully.
     /// </summary>
     public string? EntityCreateMessage { get; set; }
+
+    /// <summary>
+    /// Message indicating that entity was deleted successfully.
+    /// </summary>
+    public string? EntityDeleteMessage { get; set; }
 }

@@ -49,4 +49,7 @@ public record EntityDetailsModel
 
     /// <inheritdoc cref="EntityMetadata.CanDelete"/>
     public bool CanDelete { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.EntityDeleteMessage"/>
+    public string? EntityDeleteMessage { get; set; }
 }

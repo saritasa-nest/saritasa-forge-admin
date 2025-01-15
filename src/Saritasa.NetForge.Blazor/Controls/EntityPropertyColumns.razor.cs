@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Saritasa.NetForge.Blazor.Infrastructure.Helpers;
 using Saritasa.NetForge.Blazor.Pages;
+using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Mvvm.Navigation;
@@ -67,6 +68,10 @@ public partial class EntityPropertyColumns : ComponentBase
     /// </summary>
     [Parameter]
     public bool CanDelete { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.EntityDeleteMessage"/>
+    [Parameter]
+    public string? EntityDeleteMessage { get; set; }
 
     /// <summary>
     /// Gets property's display name.
@@ -252,7 +257,11 @@ public partial class EntityPropertyColumns : ComponentBase
     private void ShowEntityDeleteMessage()
     {
         string entityDeleteMessage;
-        if (!string.IsNullOrEmpty(AdminOptions.EntityDeleteMessage))
+        if (!string.IsNullOrEmpty(EntityDeleteMessage))
+        {
+            entityDeleteMessage = EntityDeleteMessage;
+        }
+        else if (!string.IsNullOrEmpty(AdminOptions.EntityDeleteMessage))
         {
             entityDeleteMessage = AdminOptions.EntityDeleteMessage;
         }
