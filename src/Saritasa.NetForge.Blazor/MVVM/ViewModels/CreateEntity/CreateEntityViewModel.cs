@@ -115,6 +115,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
             PluralName = entity.PluralName,
             ClrType = entity.ClrType,
             Properties = entity.Properties,
+            EntityCreateMessage = entity.EntityCreateMessage,
         };
     }
 
@@ -145,15 +146,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
         {
             await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
             navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
-
-            if (!string.IsNullOrEmpty(adminOptions.EntityCreateMessage))
-            {
-                snackbar.Add(adminOptions.EntityCreateMessage, Severity.Success);
-            }
-            else
-            {
-                snackbar.Add("Entity was created successfully.", Severity.Success);
-            }
+            ShowEntityCreateMessage();
         }
         catch (Exception ex)
         {
@@ -161,5 +154,24 @@ public class CreateEntityViewModel : ValidationEntityViewModel
 
             GeneralError = ex.InnerException is not null ? ex.InnerException.Message : ex.Message;
         }
+    }
+
+    private void ShowEntityCreateMessage()
+    {
+        string entityCreateMessage;
+        if (!string.IsNullOrEmpty(Model.EntityCreateMessage))
+        {
+            entityCreateMessage = Model.EntityCreateMessage;
+        }
+        else if (!string.IsNullOrEmpty(adminOptions.EntityCreateMessage))
+        {
+            entityCreateMessage = adminOptions.EntityCreateMessage;
+        }
+        else
+        {
+            entityCreateMessage = "Entity was created successfully.";
+        }
+
+        snackbar.Add(entityCreateMessage, Severity.Success);
     }
 }

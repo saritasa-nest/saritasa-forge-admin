@@ -94,4 +94,7 @@ public class EntityOptions
     /// Properties to include.
     /// </summary>
     public List<string> IncludedProperties { get; set; } = new();
+
+    /// <inheritdoc cref="EntityMetadata.EntityCreateMessage"/>
+    public string? EntityCreateMessage { get; set; }
 }

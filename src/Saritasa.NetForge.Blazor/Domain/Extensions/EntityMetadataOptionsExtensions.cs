@@ -67,6 +67,11 @@ public static class EntityMetadataOptionsExtensions
             entityMetadata.CanDelete = entityOptions.CanDelete.Value;
         }
 
+        if (!string.IsNullOrEmpty(entityOptions.EntityCreateMessage))
+        {
+            entityMetadata.EntityCreateMessage = entityOptions.EntityCreateMessage;
+        }
+
         foreach (var option in entityOptions.PropertyOptions)
         {
             var property = entityMetadata.Properties

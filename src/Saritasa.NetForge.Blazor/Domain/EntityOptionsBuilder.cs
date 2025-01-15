@@ -207,4 +207,15 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         options.IncludedProperties.AddRange(propertyNames);
         return this;
     }
+
+    /// <summary>
+    /// Sets entity created message.
+    /// </summary>
+    /// <param name="entityCreateMessage">Message.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public EntityOptionsBuilder<TEntity> SetEntityCreateMessage(string entityCreateMessage)
+    {
+        options.EntityCreateMessage = entityCreateMessage;
+        return this;
+    }
 }

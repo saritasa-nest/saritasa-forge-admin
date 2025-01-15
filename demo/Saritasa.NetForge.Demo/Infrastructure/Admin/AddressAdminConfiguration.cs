@@ -62,5 +62,7 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
 
             dbContext.SaveChanges();
         });
+
+        entityOptionsBuilder.SetEntityCreateMessage("Address was created.");
     }
 }

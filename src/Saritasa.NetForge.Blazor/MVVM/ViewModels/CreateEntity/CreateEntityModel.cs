@@ -27,4 +27,7 @@ public record CreateEntityModel
     /// Entity instance.
     /// </summary>
     public object EntityInstance { get; set; } = null!;
+
+    /// <inheritdoc cref="EntityMetadata.EntityCreateMessage"/>
+    public string? EntityCreateMessage { get; set; }
 }
