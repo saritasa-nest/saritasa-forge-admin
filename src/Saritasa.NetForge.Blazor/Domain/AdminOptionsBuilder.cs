@@ -298,4 +298,15 @@ public class AdminOptionsBuilder
         options.EntityCreateMessage = entityCreateMessage;
         return this;
     }
+
+    /// <summary>
+    /// Sets entity deleted message.
+    /// </summary>
+    /// <param name="entityDeleteMessage">Message.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public AdminOptionsBuilder SetEntityDeleteMessage(string entityDeleteMessage)
+    {
+        options.EntityDeleteMessage = entityDeleteMessage;
+        return this;
+    }
 }

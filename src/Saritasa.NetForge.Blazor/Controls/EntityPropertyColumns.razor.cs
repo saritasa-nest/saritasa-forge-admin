@@ -239,6 +239,7 @@ public partial class EntityPropertyColumns : ComponentBase
             try
             {
                 await DeleteEntityAsync(source, CancellationToken.None);
+                ShowEntityDeleteMessage();
             }
             catch (Exception ex)
             {
@@ -246,5 +247,20 @@ public partial class EntityPropertyColumns : ComponentBase
                 Logger.LogError("Failed to delete record due to error: {ex.Message}", ex.Message);
             }
         }
+    }
+
+    private void ShowEntityDeleteMessage()
+    {
+        string entityDeleteMessage;
+        if (!string.IsNullOrEmpty(AdminOptions.EntityDeleteMessage))
+        {
+            entityDeleteMessage = AdminOptions.EntityDeleteMessage;
+        }
+        else
+        {
+            entityDeleteMessage = "Entity was deleted successfully.";
+        }
+
+        Snackbar.Add(entityDeleteMessage, Severity.Success);
     }
 }

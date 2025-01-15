@@ -28,6 +28,7 @@ internal static class NetForgeModule
                 })
                 .SetGroupHeadersExpanded(true)
                 .SetEntityCreateMessage("The entity was created.")
+                .SetEntityDeleteMessage("The entity was deleted.")
                 .ConfigureEntity(new ShopAdminConfiguration(services))
                 .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
                 {
