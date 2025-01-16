@@ -77,6 +77,11 @@ public static class EntityMetadataOptionsExtensions
             entityMetadata.EntityDeleteMessage = entityOptions.EntityDeleteMessage;
         }
 
+        if (!string.IsNullOrEmpty(entityOptions.EntityBulkDeleteMessage))
+        {
+            entityMetadata.EntityBulkDeleteMessage = entityOptions.EntityBulkDeleteMessage;
+        }
+
         foreach (var option in entityOptions.PropertyOptions)
         {
             var property = entityMetadata.Properties

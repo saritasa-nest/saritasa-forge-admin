@@ -311,7 +311,7 @@ public class AdminOptionsBuilder
     }
 
     /// <summary>
-    /// Sets entity bulkDeleted message.
+    /// Sets entities bulk deleted message.
     /// </summary>
     /// <param name="entityBulkDeleteMessage">Message.</param>
     /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>

@@ -33,4 +33,7 @@ public record CreateEntityModel
 
     /// <inheritdoc cref="EntityMetadata.EntityDeleteMessage"/>
     public string? EntityDeleteMessage { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.EntityBulkDeleteMessage"/>
+    public string? EntityBulkDeleteMessage { get; set; }
 }

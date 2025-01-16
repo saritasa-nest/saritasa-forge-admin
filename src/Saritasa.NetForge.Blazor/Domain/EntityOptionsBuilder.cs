@@ -229,4 +229,15 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         options.EntityDeleteMessage = entityDeleteMessage;
         return this;
     }
+
+    /// <summary>
+    /// Sets entities bulk deleted message.
+    /// </summary>
+    /// <param name="entityBulkDeleteMessage">Message.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public EntityOptionsBuilder<TEntity> SetEntityBulkDeleteMessage(string entityBulkDeleteMessage)
+    {
+        options.EntityBulkDeleteMessage = entityBulkDeleteMessage;
+        return this;
+    }
 }

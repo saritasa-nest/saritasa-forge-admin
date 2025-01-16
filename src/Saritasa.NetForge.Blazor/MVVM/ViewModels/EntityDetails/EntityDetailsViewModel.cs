@@ -127,6 +127,7 @@ public class EntityDetailsViewModel : BaseViewModel
             CanEdit = entity.CanEdit,
             CanDelete = entity.CanDelete,
             EntityDeleteMessage = entity.EntityDeleteMessage,
+            EntityBulkDeleteMessage = entity.EntityBulkDeleteMessage,
         };
     }
 
@@ -210,7 +211,11 @@ public class EntityDetailsViewModel : BaseViewModel
     private void ShowEntityBulkDeleteMessage()
     {
         string entityBulkDeleteMessage;
-        if (!string.IsNullOrEmpty(adminOptions.EntityBulkDeleteMessage))
+        if (!string.IsNullOrEmpty(Model.EntityBulkDeleteMessage))
+        {
+            entityBulkDeleteMessage = Model.EntityBulkDeleteMessage;
+        }
+        else if (!string.IsNullOrEmpty(adminOptions.EntityBulkDeleteMessage))
         {
             entityBulkDeleteMessage = adminOptions.EntityBulkDeleteMessage;
         }

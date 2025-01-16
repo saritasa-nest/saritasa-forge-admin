@@ -56,4 +56,7 @@ public record GetEntityDto
 
     /// <inheritdoc cref="EntityMetadata.EntityDeleteMessage"/>
     public string? EntityDeleteMessage { get; init; }
+
+    /// <inheritdoc cref="EntityMetadata.EntityBulkDeleteMessage"/>
+    public string? EntityBulkDeleteMessage { get; set; }
 }
