@@ -105,4 +105,9 @@ public class AdminOptions
     /// Message indicating that entity was deleted successfully.
     /// </summary>
     public string? EntityDeleteMessage { get; set; }
+
+    /// <summary>
+    /// Message indicating that multiple entities were deleted successfully.
+    /// </summary>
+    public string? EntityBulkDeleteMessage { get; set; }
 }

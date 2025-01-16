@@ -309,4 +309,15 @@ public class AdminOptionsBuilder
         options.EntityDeleteMessage = entityDeleteMessage;
         return this;
     }
+
+    /// <summary>
+    /// Sets entity bulkDeleted message.
+    /// </summary>
+    /// <param name="entityBulkDeleteMessage">Message.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public AdminOptionsBuilder SetEntityBulkDeleteMessage(string entityBulkDeleteMessage)
+    {
+        options.EntityBulkDeleteMessage = entityBulkDeleteMessage;
+        return this;
+    }
 }
