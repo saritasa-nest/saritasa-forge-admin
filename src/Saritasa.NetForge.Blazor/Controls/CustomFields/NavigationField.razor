@@ -1,6 +1,7 @@
 ﻿@inherits CustomField
 
 <MudSelect @bind-Value="PropertyValue"
+           ToStringFunc="navigation => ConvertNavigationToString(navigation)"
            Label="@Property.Name"
            Variant="Variant.Outlined"
            HelperText="@Property.Description"

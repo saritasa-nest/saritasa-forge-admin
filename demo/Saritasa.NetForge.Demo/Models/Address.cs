@@ -24,6 +24,7 @@ public class Address
     [NetForgeProperty(DisplayName = "Street name", Description = "Street name without street number.",
         Order = 3, SearchType = SearchType.StartsWithCaseSensitive)]
     [Required]
+    [Display]
     public required string Street { get; set; }
 
     /// <summary>
@@ -31,6 +32,7 @@ public class Address
     /// </summary>
     [NetForgeProperty(Order = 4, SearchType = SearchType.StartsWithCaseSensitive)]
     [Required]
+    [Display]
     public required string City { get; set; }
 
     /// <summary>
