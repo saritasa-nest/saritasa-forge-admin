@@ -69,4 +69,18 @@ public class Address
     /// </summary>
     [Required]
     public required string ContactPhone { get; set; }
+
+    /// <inheritdoc />
+    public override bool Equals(object? obj)
+    {
+        if (obj is not Address address)
+        {
+            return false;
+        }
+
+        return address.Street == Street && address.City == City;
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode() => Street.GetHashCode() + City.GetHashCode();
 }
