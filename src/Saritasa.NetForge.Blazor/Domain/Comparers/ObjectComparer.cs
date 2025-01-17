@@ -1,4 +1,6 @@
-﻿namespace Saritasa.NetForge.DomainServices.Comparers;
+﻿using Saritasa.NetForge.Blazor.Infrastructure.Helpers;
+
+namespace Saritasa.NetForge.DomainServices.Comparers;
 
 /// <summary>
 /// Comparer for objects. Uses their <see cref="object.ToString()"/> methods.
@@ -11,14 +13,12 @@ public class ObjectComparer<T> : IEqualityComparer<T>
     /// <inheritdoc />
     public bool Equals(T? x, T? y)
     {
-        return x?.ToString() == y?.ToString();
+        return x.ConvertToString() == y.ConvertToString();
     }
 
     /// <inheritdoc />
-    public int GetHashCode(T? obj)
+    public int GetHashCode(T obj)
     {
-        return obj is null
-            ? 0
-            : obj.ToString()!.GetHashCode();
+        return obj.ConvertToString().GetHashCode();
     }
 }

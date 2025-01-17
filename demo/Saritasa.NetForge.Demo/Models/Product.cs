@@ -19,7 +19,7 @@ public class Product
     /// <summary>
     /// The name of the product.
     /// </summary>
-    [NetForgeProperty(TruncationMaxCharacters = 20, IsSortable = true)]
+    [NetForgeProperty(TruncationMaxCharacters = 20, IsSortable = true, UseToDisplayNavigation = true)]
     public required string Name { get; set; }
 
     /// <summary>
@@ -32,7 +32,7 @@ public class Product
     /// <summary>
     /// The price of the product.
     /// </summary>
-    [NetForgeProperty(DisplayFormat = "{0:C}")]
+    [NetForgeProperty(DisplayFormat = "{0:C}", UseToDisplayNavigation = true)]
     public decimal Price { get; set; }
 
     /// <summary>
@@ -143,10 +143,4 @@ public class Product
     /// The shop where this product can be bought.
     /// </summary>
     public Shop? Shop { get; set; }
-
-    /// <inheritdoc />
-    public override string ToString()
-    {
-        return $"{Id} - {Name}";
-    }
 }
