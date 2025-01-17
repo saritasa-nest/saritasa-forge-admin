@@ -69,10 +69,4 @@ public class Address
     /// </summary>
     [Required]
     public required string ContactPhone { get; set; }
-
-    /// <inheritdoc />
-    public override string ToString()
-    {
-        return DisplayName;
-    }
 }
