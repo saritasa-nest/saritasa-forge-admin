@@ -57,4 +57,7 @@ public class NetForgePropertyAttribute : Attribute
 
     /// <inheritdoc cref="PropertyMetadataBase.TruncationMaxCharacters"/>
     public int TruncationMaxCharacters { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.UseToDisplayNavigation"/>
+    public bool UseToDisplayNavigation { get; set; }
 }

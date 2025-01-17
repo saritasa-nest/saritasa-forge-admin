@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Reflection;
+﻿using System.Reflection;
 using Saritasa.NetForge.Domain.Attributes;
 
 namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
@@ -37,21 +36,22 @@ public partial class NavigationField : CustomField
             return string.Empty;
         }
 
-        var instanceType = navigation.GetType();
-        var attributes = instanceType.GetCustomAttributes(false);
-        var attributes2 = instanceType.GetCustomAttributesData();
-        var attributes3 = instanceType.GetCustomAttribute(typeof(NetForgeEntityAttribute));
-        var propertiesToDisplay = instanceType
+        var propertiesToDisplay = navigation
+            .GetType()
             .GetProperties()
-            .Where(property => property.GetCustomAttribute(typeof(DisplayAttribute)) is not null);
+            .Select(property =>
+            {
+                var propertyAttribute = property.GetCustomAttribute<NetForgePropertyAttribute>();
+                return (property, propertyAttribute);
+            })
+            .Where(property => property.propertyAttribute is not null && property.propertyAttribute.UseToDisplayNavigation);
         List<object> propertyValues = [];
         foreach (var property in propertiesToDisplay)
         {
-            var value = property.GetValue(navigation);
-            propertyValues.Add(value);
+            var value = property.property.GetValue(navigation);
+            propertyValues.Add(value ?? property.propertyAttribute!.EmptyValueDisplay);
         }
 
-        var navigationInstanceToDisplay = string.Join(';', propertyValues);
-        return navigationInstanceToDisplay;
+        return string.Join("; ", propertyValues);
     }
 }
