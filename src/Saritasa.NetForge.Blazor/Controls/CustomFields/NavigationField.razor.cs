@@ -36,6 +36,11 @@ public partial class NavigationField : CustomField
             return string.Empty;
         }
 
+        if (HasToStringOverride(navigation))
+        {
+            return navigation.ToString()!;
+        }
+
         var propertiesToDisplay = navigation
             .GetType()
             .GetProperties()
@@ -45,13 +50,23 @@ public partial class NavigationField : CustomField
                 return (property, propertyAttribute);
             })
             .Where(property => property.propertyAttribute is not null && property.propertyAttribute.UseToDisplayNavigation);
+
         List<object> propertyValues = [];
         foreach (var property in propertiesToDisplay)
         {
-            var value = property.property.GetValue(navigation);
-            propertyValues.Add(value ?? property.propertyAttribute!.EmptyValueDisplay);
+            var propertyValue = property.property.GetValue(navigation);
+            propertyValues.Add(propertyValue ?? property.propertyAttribute!.EmptyValueDisplay);
         }
 
         return string.Join("; ", propertyValues);
+    }
+
+    private static bool HasToStringOverride(object obj)
+    {
+        var type = obj.GetType();
+        var toStringMethod = type.GetMethod("ToString")!;
+
+        // If DeclaringType is not object then it's overridden.
+        return toStringMethod.DeclaringType != typeof(object);
     }
 }
