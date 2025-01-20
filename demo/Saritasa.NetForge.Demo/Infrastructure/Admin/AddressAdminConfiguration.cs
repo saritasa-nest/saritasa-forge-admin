@@ -30,10 +30,14 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
             propertyBuilder.SetIsHidden(true);
         }).ConfigureProperty(address => address.City, propertyBuilder =>
         {
-            propertyBuilder.SetDisplayName("Town");
+            propertyBuilder
+                .SetDisplayName("Town")
+                .UsePropertyToDisplay();
         }).ConfigureProperty(address => address.Street, propertyBuilder =>
         {
-            propertyBuilder.SetIsMultiline(autoGrow: true, maxLines: 10);
+            propertyBuilder
+                .SetIsMultiline(autoGrow: true, maxLines: 10)
+                .UsePropertyToDisplay();
         }).ConfigureProperty(address => address.Longitude, propertyBuilder =>
         {
             propertyBuilder

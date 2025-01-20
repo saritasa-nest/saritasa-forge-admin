@@ -158,6 +158,8 @@ public static class EntityMetadataOptionsExtensions
             {
                 propertyMetadata.CanBeNavigatedToDetails = propertyOptions.CanBeNavigatedToDetails;
             }
+
+            propertyMetadata.UseToDisplayNavigation = propertyOptions.UseToDisplayNavigation;
         }
 
         if (propertyOptions.IsMultiline)

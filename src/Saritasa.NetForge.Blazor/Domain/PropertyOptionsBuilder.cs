@@ -230,4 +230,10 @@ public class PropertyOptionsBuilder
         }
         return this;
     }
+
+    public PropertyOptionsBuilder UsePropertyToDisplay()
+    {
+        options.UseToDisplayNavigation = true;
+        return this;
+    }
 }

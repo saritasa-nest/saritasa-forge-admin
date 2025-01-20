@@ -22,14 +22,14 @@ public class Address
     /// The street name and number.
     /// </summary>
     [NetForgeProperty(DisplayName = "Street name", Description = "Street name without street number.",
-        Order = 3, SearchType = SearchType.StartsWithCaseSensitive, UseToDisplayNavigation = true)]
+        Order = 3, SearchType = SearchType.StartsWithCaseSensitive)]
     [Required]
     public required string Street { get; set; }
 
     /// <summary>
     /// The city where the address is located.
     /// </summary>
-    [NetForgeProperty(Order = 4, SearchType = SearchType.StartsWithCaseSensitive, UseToDisplayNavigation = true)]
+    [NetForgeProperty(Order = 4, SearchType = SearchType.StartsWithCaseSensitive)]
     [Required]
     public required string City { get; set; }
 
@@ -48,7 +48,7 @@ public class Address
     /// <summary>
     /// The name of the country.
     /// </summary>
-    [NetForgeProperty(Description = "Country name.", Order = 5, UseToDisplayNavigation = true)]
+    [NetForgeProperty(Description = "Country name.", Order = 5)]
     [Required]
     public required string Country { get; set; }
 
