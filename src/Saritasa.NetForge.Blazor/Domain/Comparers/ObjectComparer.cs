@@ -13,6 +13,9 @@ public class ObjectComparer<T> : IEqualityComparer<T>
 {
     private ICollection<PropertyMetadataDto> EntityProperties { get; set; }
 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
     public ObjectComparer(ICollection<PropertyMetadataDto> entityProperties)
     {
         EntityProperties = entityProperties;

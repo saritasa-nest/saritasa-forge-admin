@@ -79,6 +79,7 @@ public interface IOrmDataService
     /// <param name="searchOptions">Search options.</param>
     /// <param name="searchFunction">Custom search function.</param>
     /// <param name="customQueryFunction">Custom query function.</param>
+    /// <returns>Entity instances with pages metadata.</returns>
     Task<PagedListMetadataDto<object>> SearchDataForEntityAsync(
         Type? entityType,
         ICollection<PropertyMetadataDto> properties,
