@@ -1,9 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Saritasa.NetForge.Domain.Entities.Metadata;
-using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Metadata.DTOs;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
-using Saritasa.Tools.Common.Pagination;
 
 namespace Saritasa.NetForge.UseCases.Interfaces;
 
@@ -32,21 +30,6 @@ public interface IEntityService
     /// <param name="cancellationToken">Token for cancelling async operation.</param>
     /// <returns>Entity DTO.</returns>
     Task<GetEntityDto> GetEntityByTypeAsync(Type entityType, CancellationToken cancellationToken);
-
-    /// <summary>
-    /// Get the data for the specific entity type.
-    /// </summary>
-    /// <param name="entityType">Entity type to search data. For example, search all data for entity with type <c>Address</c>.</param>
-    /// <param name="properties">Entity properties metadata to be included in returned data.</param>
-    /// <param name="searchOptions">Search options.</param>
-    /// <param name="searchFunction">Custom search function.</param>
-    /// <param name="customQueryFunction">Custom query function.</param>
-    Task<PagedListMetadataDto<object>> SearchDataForEntityAsync(
-        Type? entityType,
-        ICollection<PropertyMetadataDto> properties,
-        SearchOptions searchOptions,
-        Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? searchFunction,
-        Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? customQueryFunction);
 
     /// <summary>
     /// Validates the specified entity instance and populates the provided list of validation errors.

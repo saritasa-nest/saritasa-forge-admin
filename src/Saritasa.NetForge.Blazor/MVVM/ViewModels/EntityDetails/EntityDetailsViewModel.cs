@@ -169,7 +169,7 @@ public class EntityDetailsViewModel : BaseViewModel
             OrderBy = orderBy
         };
 
-        var entityData = await entityService
+        var entityData = await dataService
             .SearchDataForEntityAsync(Model.ClrType, Model.Properties, searchOptions, Model.SearchFunction, Model.CustomQueryFunction);
 
         var data = new GridData<object>

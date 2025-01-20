@@ -104,7 +104,7 @@ public class SearchTests : TestBed<NetForgeFixture>
     }
 
     /// <summary>
-    /// Test for <seealso cref="IOrmDataService.Search"/>
+    /// Test for <seealso cref="IOrmDataService.SearchByExpressions"/>
     /// using <see cref="SearchType.ContainsCaseInsensitive"/>.
     /// </summary>
     [Fact]
@@ -122,7 +122,7 @@ public class SearchTests : TestBed<NetForgeFixture>
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
+            dataService.SearchByExpressions(testDbContext.Addresses, searchString, entityType, properties);
 
         // Assert
 
@@ -131,7 +131,7 @@ public class SearchTests : TestBed<NetForgeFixture>
     }
 
     /// <summary>
-    /// Test for <seealso cref="IOrmDataService.Search"/>
+    /// Test for <seealso cref="IOrmDataService.SearchByExpressions"/>
     /// using <see cref="SearchType.StartsWithCaseSensitive"/>.
     /// </summary>
     [Fact]
@@ -149,7 +149,7 @@ public class SearchTests : TestBed<NetForgeFixture>
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
+            dataService.SearchByExpressions(testDbContext.Addresses, searchString, entityType, properties);
 
         // Assert
 
@@ -158,7 +158,7 @@ public class SearchTests : TestBed<NetForgeFixture>
     }
 
     /// <summary>
-    /// Test for <seealso cref="IOrmDataService.Search"/>
+    /// Test for <seealso cref="IOrmDataService.SearchByExpressions"/>
     /// using <see cref="SearchType.ExactMatchCaseInsensitive"/>.
     /// </summary>
     [Fact]
@@ -176,7 +176,7 @@ public class SearchTests : TestBed<NetForgeFixture>
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
+            dataService.SearchByExpressions(testDbContext.Addresses, searchString, entityType, properties);
 
         // Assert
 
@@ -185,7 +185,7 @@ public class SearchTests : TestBed<NetForgeFixture>
     }
 
     /// <summary>
-    /// Test for <seealso cref="IOrmDataService.Search"/>
+    /// Test for <seealso cref="IOrmDataService.SearchByExpressions"/>
     /// using <see cref="SearchType.ExactMatchCaseInsensitive"/> to search values that contain <see langword="null"/>.
     /// </summary>
     [Fact]
@@ -203,7 +203,7 @@ public class SearchTests : TestBed<NetForgeFixture>
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Products, searchString, entityType, properties);
+            dataService.SearchByExpressions(testDbContext.Products, searchString, entityType, properties);
 
         // Assert
 
@@ -212,7 +212,7 @@ public class SearchTests : TestBed<NetForgeFixture>
     }
 
     /// <summary>
-    /// Test for <seealso cref="IOrmDataService.Search"/> when <see cref="SearchType.None"/>.
+    /// Test for <seealso cref="IOrmDataService.SearchByExpressions"/> when <see cref="SearchType.None"/>.
     /// </summary>
     [Fact]
     public async Task Search_WithoutSearch_ShouldFindAll()
@@ -229,7 +229,7 @@ public class SearchTests : TestBed<NetForgeFixture>
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
+            dataService.SearchByExpressions(testDbContext.Addresses, searchString, entityType, properties);
 
         // Assert
 
@@ -238,7 +238,7 @@ public class SearchTests : TestBed<NetForgeFixture>
     }
 
     /// <summary>
-    /// Test for <seealso cref="IOrmDataService.Search"/> when search string contains multiple words.
+    /// Test for <seealso cref="IOrmDataService.SearchByExpressions"/> when search string contains multiple words.
     /// </summary>
     [Fact]
     public async Task Search_WithMultipleWords_ShouldFind2()
@@ -256,7 +256,7 @@ public class SearchTests : TestBed<NetForgeFixture>
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
+            dataService.SearchByExpressions(testDbContext.Addresses, searchString, entityType, properties);
 
         // Assert
 
@@ -265,7 +265,7 @@ public class SearchTests : TestBed<NetForgeFixture>
     }
 
     /// <summary>
-    /// Test for <seealso cref="IOrmDataService.Search"/> when search string contains quoted phrase.
+    /// Test for <seealso cref="IOrmDataService.SearchByExpressions"/> when search string contains quoted phrase.
     /// </summary>
     [Fact]
     public async Task Search_WithQuotedPhrase_ShouldFind2()
@@ -282,7 +282,7 @@ public class SearchTests : TestBed<NetForgeFixture>
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
+            dataService.SearchByExpressions(testDbContext.Addresses, searchString, entityType, properties);
 
         // Assert
         var actualCount = await searchedData.CountAsync();
@@ -290,7 +290,7 @@ public class SearchTests : TestBed<NetForgeFixture>
     }
 
     /// <summary>
-    /// Test for <seealso cref="IOrmDataService.Search"/> when searched property is not <see cref="string"/>.
+    /// Test for <seealso cref="IOrmDataService.SearchByExpressions"/> when searched property is not <see cref="string"/>.
     /// </summary>
     [Fact]
     public async Task Search_NotStringType_ShouldFind4()
@@ -307,7 +307,7 @@ public class SearchTests : TestBed<NetForgeFixture>
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Addresses, searchString, entityType, properties);
+            dataService.SearchByExpressions(testDbContext.Addresses, searchString, entityType, properties);
 
         // Assert
         var actualCount = await searchedData.CountAsync();
@@ -315,7 +315,7 @@ public class SearchTests : TestBed<NetForgeFixture>
     }
 
     /// <summary>
-    /// Test for <seealso cref="IOrmDataService.Search"/> when searched property is not <see cref="string"/>.
+    /// Test for <seealso cref="IOrmDataService.SearchByExpressions"/> when searched property is not <see cref="string"/>.
     /// </summary>
     [Fact]
     public async Task Search_ByPropertyInsideNavigation_ShouldFind1()
@@ -337,7 +337,7 @@ public class SearchTests : TestBed<NetForgeFixture>
 
         // Act
         var searchedData =
-            dataService.Search(testDbContext.Products, searchString, entityType, properties);
+            dataService.SearchByExpressions(testDbContext.Products, searchString, entityType, properties);
 
         // Assert
         var actualCount = await searchedData.CountAsync();
