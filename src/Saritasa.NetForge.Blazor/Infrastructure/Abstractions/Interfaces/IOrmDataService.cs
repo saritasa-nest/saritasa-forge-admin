@@ -97,6 +97,6 @@ public interface IOrmDataService
         Type? entityType,
         ICollection<PropertyMetadataDto> properties,
         SearchOptions searchOptions,
-        Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? searchFunction,
-        Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? customQueryFunction);
+        Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? searchFunction = null,
+        Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? customQueryFunction = null);
 }
