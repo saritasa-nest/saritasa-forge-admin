@@ -35,20 +35,6 @@ public interface IOrmDataService
         CancellationToken cancellationToken);
 
     /// <summary>
-    /// Performs search.
-    /// </summary>
-    /// <param name="query">Query to search.</param>
-    /// <param name="searchString">Search string.</param>
-    /// <param name="entityType">Entity type.</param>
-    /// <param name="properties">Properties.</param>
-    /// <returns>Query with searched data.</returns>
-    IQueryable<object> SearchByExpressions(
-        IQueryable<object> query,
-        string searchString,
-        Type entityType,
-        IEnumerable<PropertySearchDto> properties);
-
-    /// <summary>
     /// Adds entity to the database.
     /// </summary>
     /// <param name="entity">Entity to add.</param>

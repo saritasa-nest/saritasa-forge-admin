@@ -1,8 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moq;
+using Saritasa.NetForge.DomainServices;
 using Saritasa.NetForge.Infrastructure.EfCore;
 using Saritasa.NetForge.Infrastructure.EfCore.Services;
 using Saritasa.NetForge.Tests.Domain;
+using Saritasa.NetForge.UseCases.Metadata.Services;
+using Saritasa.NetForge.UseCases.Services;
 
 namespace Saritasa.NetForge.Tests.Helpers;
 
@@ -34,7 +37,14 @@ internal static class EfCoreHelper
         var efCoreOptions = CreateEfCoreOptions(dbContext);
         var serviceProvider = CreateServiceProvider(dbContext);
 
-        return new EfCoreDataService(efCoreOptions, serviceProvider);
+        var adminOptionsBuilder = new AdminOptionsBuilder();
+        var adminMetadataService = new AdminMetadataService(
+            CreateEfCoreMetadataService(dbContext),
+            adminOptionsBuilder.Create(),
+            MemoryCacheHelper.CreateMemoryCache());
+        var entityService = new EntityService(adminMetadataService, serviceProvider);
+
+        return new EfCoreDataService(efCoreOptions, serviceProvider, entityService);
     }
 
     /// <summary>

@@ -1,10 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Saritasa.NetForge.Domain.Dtos;
+using Microsoft.Extensions.DependencyInjection;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Tests.Domain;
 using Saritasa.NetForge.Tests.Domain.Models;
 using Saritasa.NetForge.Tests.Fixtures;
+using Saritasa.NetForge.Tests.Helpers;
+using Saritasa.NetForge.UseCases.Common;
+using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
@@ -29,9 +32,12 @@ public class SearchTests : TestBed<NetForgeFixture>
         : base(testOutputHelper, netForgeFixture)
     {
         testDbContext = netForgeFixture.GetService<TestDbContext>(testOutputHelper)!;
-        dataService = netForgeFixture.GetScopedService<IOrmDataService>(testOutputHelper)!;
+        dataService = EfCoreHelper.CreateEfCoreDataService(testDbContext);
 
         PopulateDatabaseWithTestData();
+
+        var services = new ServiceCollection();
+        services.AddScoped<TestDbContext>();
     }
 
     private void PopulateDatabaseWithTestData()
@@ -104,243 +110,207 @@ public class SearchTests : TestBed<NetForgeFixture>
     }
 
     /// <summary>
-    /// Test for <seealso cref="IOrmDataService.SearchByExpressions"/>
+    /// Test for <seealso cref="IOrmDataService.SearchDataForEntityAsync"/>
     /// using <see cref="SearchType.ContainsCaseInsensitive"/>.
     /// </summary>
     [Fact]
-    public async Task Search_ContainsCaseInsensitive_ShouldFind3()
+    public async Task SearchDataForEntity_ContainsCaseInsensitive_ShouldFind3()
     {
         // Arrange
-        const string searchString = "ain";
         var entityType = typeof(Address);
-        var properties = new List<PropertySearchDto>
+        var properties = new List<PropertyMetadataDto>
         {
-            new() { PropertyName = nameof(Address.Street), SearchType = SearchType.ContainsCaseInsensitive }
+            new() { Name = nameof(Address.Street), SearchType = SearchType.ContainsCaseInsensitive }
         };
+        var searchOptions = new SearchOptions { SearchString = "ain" };
 
         const int expectedCount = 3;
 
         // Act
-        var searchedData =
-            dataService.SearchByExpressions(testDbContext.Addresses, searchString, entityType, properties);
+        var searchedData = await dataService.SearchDataForEntityAsync(entityType, properties, searchOptions);
 
         // Assert
-
-        var actualCount = await searchedData.CountAsync();
+        var actualCount = searchedData.Metadata.TotalCount;
         Assert.Equal(expectedCount, actualCount);
     }
 
     /// <summary>
-    /// Test for <seealso cref="IOrmDataService.SearchByExpressions"/>
-    /// using <see cref="SearchType.StartsWithCaseSensitive"/>.
-    /// </summary>
-    [Fact]
-    public async Task Search_StartsWithCaseSensitive_ShouldFind2()
-    {
-        // Arrange
-        const string searchString = "Second";
-        var entityType = typeof(Address);
-        var properties = new List<PropertySearchDto>
-        {
-            new() { PropertyName = nameof(Address.Street), SearchType = SearchType.StartsWithCaseSensitive }
-        };
-
-        const int expectedCount = 2;
-
-        // Act
-        var searchedData =
-            dataService.SearchByExpressions(testDbContext.Addresses, searchString, entityType, properties);
-
-        // Assert
-
-        var actualCount = await searchedData.CountAsync();
-        Assert.Equal(expectedCount, actualCount);
-    }
-
-    /// <summary>
-    /// Test for <seealso cref="IOrmDataService.SearchByExpressions"/>
+    /// Test for <seealso cref="IOrmDataService.SearchDataForEntityAsync"/>
     /// using <see cref="SearchType.ExactMatchCaseInsensitive"/>.
     /// </summary>
     [Fact]
-    public async Task Search_ExactMatchCaseInsensitive_ShouldFind1()
+    public async Task SearchDataForEntity_ExactMatchCaseInsensitive_ShouldFind1()
     {
         // Arrange
-        const string searchString = "Central";
         var entityType = typeof(Address);
-        var properties = new List<PropertySearchDto>
+        var properties = new List<PropertyMetadataDto>
         {
-            new() { PropertyName = nameof(Address.Street), SearchType = SearchType.ExactMatchCaseInsensitive }
+            new() { Name = nameof(Address.Street), SearchType = SearchType.ExactMatchCaseInsensitive }
         };
+        var searchOptions = new SearchOptions { SearchString = "Central" };
 
         const int expectedCount = 1;
 
         // Act
-        var searchedData =
-            dataService.SearchByExpressions(testDbContext.Addresses, searchString, entityType, properties);
+        var searchedData = await dataService.SearchDataForEntityAsync(entityType, properties, searchOptions);
 
         // Assert
-
-        var actualCount = await searchedData.CountAsync();
+        var actualCount = searchedData.Metadata.TotalCount;
         Assert.Equal(expectedCount, actualCount);
     }
 
     /// <summary>
-    /// Test for <seealso cref="IOrmDataService.SearchByExpressions"/>
+    /// Test for <seealso cref="IOrmDataService.SearchDataForEntityAsync"/>
     /// using <see cref="SearchType.ExactMatchCaseInsensitive"/> to search values that contain <see langword="null"/>.
     /// </summary>
     [Fact]
-    public async Task Search_ExactMatchCaseInsensitive_WithNoneSearchString_ShouldFind1()
+    public async Task SearchDataForEntity_ExactMatchCaseInsensitive_WithNoneSearchString_ShouldFind1()
     {
         // Arrange
-        const string searchString = "None";
         var entityType = typeof(Product);
-        var properties = new List<PropertySearchDto>
+        var properties = new List<PropertyMetadataDto>
         {
-            new() { PropertyName = nameof(Product.WeightInGrams), SearchType = SearchType.ExactMatchCaseInsensitive }
+            new() { Name = nameof(Product.WeightInGrams), SearchType = SearchType.ExactMatchCaseInsensitive }
         };
+        var searchOptions = new SearchOptions { SearchString = "None" };
 
         const int expectedCount = 1;
 
         // Act
-        var searchedData =
-            dataService.SearchByExpressions(testDbContext.Products, searchString, entityType, properties);
+        var searchedData = await dataService.SearchDataForEntityAsync(entityType, properties, searchOptions);
 
         // Assert
-
-        var actualCount = await searchedData.CountAsync();
+        var actualCount = searchedData.Metadata.TotalCount;
         Assert.Equal(expectedCount, actualCount);
     }
 
     /// <summary>
-    /// Test for <seealso cref="IOrmDataService.SearchByExpressions"/> when <see cref="SearchType.None"/>.
+    /// Test for <seealso cref="IOrmDataService.SearchDataForEntityAsync"/> when <see cref="SearchType.None"/>.
     /// </summary>
     [Fact]
-    public async Task Search_WithoutSearch_ShouldFindAll()
+    public async Task SearchDataForEntity_WithoutSearch_ShouldFindAll()
     {
         // Arrange
-        var searchString = "SearchString";
         var entityType = typeof(Address);
-        var properties = new List<PropertySearchDto>
+        var properties = new List<PropertyMetadataDto>
         {
-            new() { PropertyName = nameof(Address.Street), SearchType = SearchType.None }
+            new() { Name = nameof(Address.Street), SearchType = SearchType.None }
         };
+        var searchOptions = new SearchOptions { SearchString = "SearchString" };
 
         var expectedCount = await testDbContext.Addresses.CountAsync();
 
         // Act
-        var searchedData =
-            dataService.SearchByExpressions(testDbContext.Addresses, searchString, entityType, properties);
+        var searchedData = await dataService.SearchDataForEntityAsync(entityType, properties, searchOptions);
 
         // Assert
-
-        var actualCount = await searchedData.CountAsync();
+        var actualCount = searchedData.Metadata.TotalCount;
         Assert.Equal(expectedCount, actualCount);
     }
 
     /// <summary>
-    /// Test for <seealso cref="IOrmDataService.SearchByExpressions"/> when search string contains multiple words.
+    /// Test for <seealso cref="IOrmDataService.SearchDataForEntityAsync"/> when search string contains multiple words.
     /// </summary>
     [Fact]
-    public async Task Search_WithMultipleWords_ShouldFind2()
+    public async Task SearchDataForEntity_WithMultipleWords_ShouldFind2()
     {
         // Arrange
-        const string searchString = "sq lond";
         var entityType = typeof(Address);
-        var properties = new List<PropertySearchDto>
+        var properties = new List<PropertyMetadataDto>
         {
-            new() { PropertyName = nameof(Address.Street), SearchType = SearchType.ContainsCaseInsensitive },
-            new() { PropertyName = nameof(Address.City), SearchType = SearchType.ContainsCaseInsensitive },
+            new() { Name = nameof(Address.Street), SearchType = SearchType.ContainsCaseInsensitive },
+            new() { Name = nameof(Address.City), SearchType = SearchType.ContainsCaseInsensitive }
         };
+        var searchOptions = new SearchOptions { SearchString = "sq lond" };
 
         const int expectedCount = 2;
 
         // Act
-        var searchedData =
-            dataService.SearchByExpressions(testDbContext.Addresses, searchString, entityType, properties);
+        var searchedData = await dataService.SearchDataForEntityAsync(entityType, properties, searchOptions);
 
         // Assert
-
-        var actualCount = await searchedData.CountAsync();
+        var actualCount = searchedData.Metadata.TotalCount;
         Assert.Equal(expectedCount, actualCount);
     }
 
     /// <summary>
-    /// Test for <seealso cref="IOrmDataService.SearchByExpressions"/> when search string contains quoted phrase.
+    /// Test for <seealso cref="IOrmDataService.SearchDataForEntityAsync"/> when search string contains quoted phrase.
     /// </summary>
     [Fact]
-    public async Task Search_WithQuotedPhrase_ShouldFind2()
+    public async Task SearchDataForEntity_WithQuotedPhrase_ShouldFind2()
     {
         // Arrange
-        const string searchString = "\"main St.\"";
         var entityType = typeof(Address);
-        var properties = new List<PropertySearchDto>
+        var properties = new List<PropertyMetadataDto>
         {
-            new() { PropertyName = nameof(Address.Street), SearchType = SearchType.ContainsCaseInsensitive }
+            new() { Name = nameof(Address.Street), SearchType = SearchType.ContainsCaseInsensitive }
         };
+        var searchOptions = new SearchOptions { SearchString = "\"main St.\"" };
 
         const int expectedCount = 2;
 
         // Act
-        var searchedData =
-            dataService.SearchByExpressions(testDbContext.Addresses, searchString, entityType, properties);
+        var searchedData = await dataService.SearchDataForEntityAsync(entityType, properties, searchOptions);
 
         // Assert
-        var actualCount = await searchedData.CountAsync();
+        var actualCount = searchedData.Metadata.TotalCount;
         Assert.Equal(expectedCount, actualCount);
     }
 
     /// <summary>
-    /// Test for <seealso cref="IOrmDataService.SearchByExpressions"/> when searched property is not <see cref="string"/>.
+    /// Test for <seealso cref="IOrmDataService.SearchDataForEntityAsync"/> when searched property is not <see cref="string"/>.
     /// </summary>
     [Fact]
-    public async Task Search_NotStringType_ShouldFind4()
+    public async Task SearchDataForEntity_NotStringType_ShouldFind4()
     {
         // Arrange
-        const string searchString = "10";
         var entityType = typeof(Address);
-        var properties = new List<PropertySearchDto>
+        var properties = new List<PropertyMetadataDto>
         {
-            new() { PropertyName = nameof(Address.Latitude), SearchType = SearchType.ContainsCaseInsensitive }
+            new() { Name = nameof(Address.Latitude), SearchType = SearchType.ContainsCaseInsensitive }
         };
+        var searchOptions = new SearchOptions { SearchString = "10" };
 
         const int expectedCount = 4;
 
         // Act
-        var searchedData =
-            dataService.SearchByExpressions(testDbContext.Addresses, searchString, entityType, properties);
+        var searchedData = await dataService.SearchDataForEntityAsync(entityType, properties, searchOptions);
 
         // Assert
-        var actualCount = await searchedData.CountAsync();
+        var actualCount = searchedData.Metadata.TotalCount;
         Assert.Equal(expectedCount, actualCount);
     }
 
     /// <summary>
-    /// Test for <seealso cref="IOrmDataService.SearchByExpressions"/> when searched property is not <see cref="string"/>.
+    /// Test for <seealso cref="IOrmDataService.SearchDataForEntityAsync"/> when searched property is not <see cref="string"/>.
     /// </summary>
     [Fact]
-    public async Task Search_ByPropertyInsideNavigation_ShouldFind1()
+    public async Task SearchDataForEntity_ByPropertyInsideNavigation_ShouldFind1()
     {
         // Arrange
-        const string searchString = "London";
         var entityType = typeof(Product);
-        var properties = new List<PropertySearchDto>
+        var properties = new List<PropertyMetadataDto>
         {
-            new()
+            new NavigationMetadataDto
             {
-                PropertyName = nameof(Supplier.City),
-                SearchType = SearchType.ContainsCaseInsensitive,
-                NavigationName = nameof(Product.Supplier)
+                Name = nameof(Product.Supplier),
+                TargetEntityProperties = [new PropertyMetadataDto
+                {
+                    Name = nameof(Supplier.City),
+                    SearchType = SearchType.ContainsCaseInsensitive
+                }
+                ]
             }
         };
+        var searchOptions = new SearchOptions { SearchString = "London" };
 
         const int expectedCount = 1;
 
         // Act
-        var searchedData =
-            dataService.SearchByExpressions(testDbContext.Products, searchString, entityType, properties);
+        var searchedData = await dataService.SearchDataForEntityAsync(entityType, properties, searchOptions);
 
         // Assert
-        var actualCount = await searchedData.CountAsync();
+        var actualCount = searchedData.Metadata.TotalCount;
         Assert.Equal(expectedCount, actualCount);
     }
 }

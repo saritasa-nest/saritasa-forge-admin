@@ -441,36 +441,43 @@ public class EfCoreDataService : IOrmDataService
             return query;
         }
 
-        if (properties.Any(property => property.SearchType != SearchType.None))
-        {
-            var propertySearches = new List<PropertySearchDto>();
+        var propertySearches = new List<PropertySearchDto>();
 
-            foreach (var property in properties)
+        foreach (var property in properties)
+        {
+            if (property is NavigationMetadataDto navigation)
             {
-                if (property is NavigationMetadataDto navigation)
+                foreach (var targetProperty in navigation.TargetEntityProperties)
                 {
-                    foreach (var targetProperty in navigation.TargetEntityProperties)
+                    if (targetProperty.SearchType == SearchType.None)
                     {
-                        propertySearches.Add(new PropertySearchDto
-                        {
-                            PropertyName = targetProperty.Name,
-                            SearchType = targetProperty.SearchType,
-                            NavigationName = navigation.Name
-                        });
+                        continue;
                     }
-                }
-                else
-                {
+
                     propertySearches.Add(new PropertySearchDto
                     {
-                        PropertyName = property.Name,
-                        SearchType = property.SearchType
+                        PropertyName = targetProperty.Name,
+                        SearchType = targetProperty.SearchType,
+                        NavigationName = navigation.Name
                     });
                 }
             }
+            else
+            {
+                if (property.SearchType == SearchType.None)
+                {
+                    continue;
+                }
 
-            query = SearchByExpressions(query, searchString, entityType, propertySearches);
+                propertySearches.Add(new PropertySearchDto
+                {
+                    PropertyName = property.Name,
+                    SearchType = property.SearchType
+                });
+            }
         }
+
+        query = SearchByExpressions(query, searchString, entityType, propertySearches);
 
         if (searchFunction is not null)
         {
@@ -480,8 +487,7 @@ public class EfCoreDataService : IOrmDataService
         return query;
     }
 
-    /// <inheritdoc />
-    public IQueryable<object> SearchByExpressions(
+    private static IQueryable<object> SearchByExpressions(
         IQueryable<object> query,
         string searchString,
         Type entityType,
@@ -547,11 +553,6 @@ public class EfCoreDataService : IOrmDataService
         Expression? singleEntrySearchExpression = null;
         foreach (var property in properties)
         {
-            if (property.SearchType == SearchType.None)
-            {
-                continue;
-            }
-
             var propertyName = property.NavigationName is null
                 ? property.PropertyName
                 : $"{property.NavigationName}.{property.PropertyName}";
