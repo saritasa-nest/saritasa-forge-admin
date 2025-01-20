@@ -66,7 +66,7 @@ public class PropertyMetadata : PropertyMetadataBase
     public bool CanBeNavigatedToDetails { get; set; }
 
     /// <summary>
-    /// Determines that this property used to represent a navigation of another entity.
+    /// Determines order in which a property displayed when entity used as navigation.
     /// </summary>
-    public bool UseToDisplayNavigation { get; set; }
+    public int? NavigationDisplayOrder { get; set; }
 }

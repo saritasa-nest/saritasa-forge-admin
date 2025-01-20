@@ -19,7 +19,7 @@ public class Product
     /// <summary>
     /// The name of the product.
     /// </summary>
-    [NetForgeProperty(TruncationMaxCharacters = 20, IsSortable = true, UseToDisplayNavigation = true)]
+    [NetForgeProperty(TruncationMaxCharacters = 20, IsSortable = true, NavigationDisplayOrder = 1)]
     public required string Name { get; set; }
 
     /// <summary>
@@ -32,7 +32,7 @@ public class Product
     /// <summary>
     /// The price of the product.
     /// </summary>
-    [NetForgeProperty(DisplayFormat = "{0:C}", UseToDisplayNavigation = true)]
+    [NetForgeProperty(DisplayFormat = "{0:C}", NavigationDisplayOrder = 2)]
     public decimal Price { get; set; }
 
     /// <summary>

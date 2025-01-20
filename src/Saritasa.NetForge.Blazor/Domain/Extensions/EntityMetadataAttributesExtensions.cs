@@ -174,9 +174,9 @@ public static class EntityMetadataAttributesExtensions
 
         if (property is PropertyMetadata propertyMetadata)
         {
-            if (netForgePropertyAttribute.UseToDisplayNavigation)
+            if (netForgePropertyAttribute.NavigationDisplayOrder > 0)
             {
-                propertyMetadata.UseToDisplayNavigation = netForgePropertyAttribute.UseToDisplayNavigation;
+                propertyMetadata.NavigationDisplayOrder = netForgePropertyAttribute.NavigationDisplayOrder;
             }
         }
     }

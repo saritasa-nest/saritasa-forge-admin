@@ -32,12 +32,12 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
         {
             propertyBuilder
                 .SetDisplayName("Town")
-                .UsePropertyToDisplay();
+                .SetNavigationDisplayOrder(2);
         }).ConfigureProperty(address => address.Street, propertyBuilder =>
         {
             propertyBuilder
                 .SetIsMultiline(autoGrow: true, maxLines: 10)
-                .UsePropertyToDisplay();
+                .SetNavigationDisplayOrder(1);
         }).ConfigureProperty(address => address.Longitude, propertyBuilder =>
         {
             propertyBuilder

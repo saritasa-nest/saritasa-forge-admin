@@ -83,6 +83,6 @@ public class PropertyOptions
     /// <inheritdoc cref="PropertyMetadata.CanBeNavigatedToDetails"/>
     public bool CanBeNavigatedToDetails { get; set; }
 
-    /// <inheritdoc cref="PropertyMetadata.UseToDisplayNavigation"/>
-    public bool UseToDisplayNavigation { get; set; }
+    /// <inheritdoc cref="PropertyMetadata.NavigationDisplayOrder"/>
+    public int NavigationDisplayOrder { get; set; }
 }

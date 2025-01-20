@@ -1,4 +1,3 @@
-using System.Reflection;
 using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
@@ -25,7 +24,7 @@ public static class EntityInstanceExtensions
     }
 
     /// <summary>
-    /// Uses properties with <see cref="NetForgePropertyAttribute.UseToDisplayNavigation"/>
+    /// Uses properties with <see cref="NetForgePropertyAttribute.NavigationDisplayOrder"/>
     /// to convert an instance to string.
     /// </summary>
     /// <param name="instance">Instance to convert.</param>
@@ -47,7 +46,8 @@ public static class EntityInstanceExtensions
         }
 
         var propertiesToDisplay = properties
-            .Where(property => property.UseToDisplayNavigation)
+            .Where(property => property.NavigationDisplayOrder is not null)
+            .OrderBy(property => property.NavigationDisplayOrder)
             .ToList();
 
         if (propertiesToDisplay.Count == 0)
