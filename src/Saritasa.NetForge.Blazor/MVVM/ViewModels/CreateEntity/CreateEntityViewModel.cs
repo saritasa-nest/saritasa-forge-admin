@@ -7,6 +7,7 @@ using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Logging;
+using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Mvvm.Utils;
 
 namespace Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
@@ -24,6 +25,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
     private readonly ILogger<CreateEntityViewModel> logger;
     private readonly IEntityService entityService;
     private readonly INavigationService navigationService;
+    private readonly IOrmDataService dataService;
 
     /// <summary>
     /// Constructor.
@@ -32,13 +34,15 @@ public class CreateEntityViewModel : ValidationEntityViewModel
         string stringId,
         ILogger<CreateEntityViewModel> logger,
         IEntityService entityService,
-        INavigationService navigationService)
+        INavigationService navigationService,
+        IOrmDataService dataService)
     {
         Model = new CreateEntityModel { StringId = stringId };
 
         this.logger = logger;
         this.entityService = entityService;
         this.navigationService = navigationService;
+        this.dataService = dataService;
     }
 
     /// <summary>
@@ -135,7 +139,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
 
         try
         {
-            await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
+            await dataService.AddAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
             navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
         }
         catch (Exception ex)

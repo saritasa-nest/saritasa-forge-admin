@@ -1,6 +1,7 @@
 ﻿using MudBlazor;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Domain.Exceptions;
+using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.UseCases.Common;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
@@ -18,15 +19,17 @@ public class EntityDetailsViewModel : BaseViewModel
     public EntityDetailsModel Model { get; private set; }
 
     private readonly IEntityService entityService;
+    private readonly IOrmDataService dataService;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public EntityDetailsViewModel(string stringId, IEntityService entityService)
+    public EntityDetailsViewModel(string stringId, IEntityService entityService, IOrmDataService dataService)
     {
         Model = new EntityDetailsModel { StringId = stringId };
 
         this.entityService = entityService;
+        this.dataService = dataService;
     }
 
     /// <summary>
@@ -191,8 +194,7 @@ public class EntityDetailsViewModel : BaseViewModel
     /// </summary>
     public async Task DeleteSelectedEntitiesAsync(CancellationToken cancellationToken)
     {
-        await entityService.DeleteEntitiesAsync(
-            SelectedEntities, SelectedEntities.First().GetType(), cancellationToken);
+        await dataService.BulkDeleteAsync(SelectedEntities, SelectedEntities.First().GetType(), cancellationToken);
 
         DataGrid?.ReloadServerData();
         SelectedEntities.Clear();

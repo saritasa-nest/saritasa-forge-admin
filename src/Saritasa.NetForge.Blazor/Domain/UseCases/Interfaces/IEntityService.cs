@@ -49,30 +49,6 @@ public interface IEntityService
         Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? customQueryFunction);
 
     /// <summary>
-    /// Creates entity.
-    /// </summary>
-    /// <param name="entity">Entity to create.</param>
-    /// <param name="entityType">Entity type.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    Task CreateEntityAsync(object entity, Type entityType, CancellationToken cancellationToken);
-
-    /// <summary>
-    /// Deletes entity.
-    /// </summary>
-    /// <param name="entity">Entity to delete.</param>
-    /// <param name="entityType">Entity type.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    Task DeleteEntityAsync(object entity, Type entityType, CancellationToken cancellationToken);
-
-    /// <summary>
-    /// Deletes all provided entities.
-    /// </summary>
-    /// <param name="entities">Entities to delete.</param>
-    /// <param name="entityType">Entity type.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    Task DeleteEntitiesAsync(IEnumerable<object> entities, Type entityType, CancellationToken cancellationToken);
-
-    /// <summary>
     /// Validates the specified entity instance and populates the provided list of validation errors.
     /// </summary>
     /// <param name="instance">The object instance to be validated.</param>

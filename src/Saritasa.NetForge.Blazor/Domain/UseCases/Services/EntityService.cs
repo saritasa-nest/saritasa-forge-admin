@@ -420,25 +420,6 @@ public class EntityService : IEntityService
     }
 
     /// <inheritdoc />
-    public async Task CreateEntityAsync(object entity, Type entityType, CancellationToken cancellationToken)
-    {
-        await dataService.AddAsync(entity, entityType, cancellationToken);
-    }
-
-    /// <inheritdoc />
-    public Task DeleteEntityAsync(object entity, Type entityType, CancellationToken cancellationToken)
-    {
-        return dataService.DeleteAsync(entity, entityType, cancellationToken);
-    }
-
-    /// <inheritdoc />
-    public Task DeleteEntitiesAsync(
-        IEnumerable<object> entities, Type entityType, CancellationToken cancellationToken)
-    {
-        return dataService.BulkDeleteAsync(entities, entityType, cancellationToken);
-    }
-
-    /// <inheritdoc />
     public bool ValidateEntity(object instance, ICollection<PropertyMetadataDto> properties, ref List<ValidationResult> errors)
     {
         var context = new ValidationContext(instance, serviceProvider, items: null);

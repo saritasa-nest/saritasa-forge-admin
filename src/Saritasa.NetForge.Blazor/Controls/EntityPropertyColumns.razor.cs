@@ -5,6 +5,7 @@ using Saritasa.NetForge.Blazor.Infrastructure.Helpers;
 using Saritasa.NetForge.Blazor.Pages;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.DomainServices.Extensions;
+using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.Utils;
 using Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
@@ -36,6 +37,9 @@ public partial class EntityPropertyColumns : ComponentBase
 
     [Inject]
     private INavigationService NavigationService { get; set; } = null!;
+
+    [Inject]
+    private IOrmDataService DataService { get; set; } = null!;
 
     /// <summary>
     /// Properties of the entity.
@@ -211,7 +215,7 @@ public partial class EntityPropertyColumns : ComponentBase
     {
         try
         {
-            await EntityService.DeleteEntityAsync(entity, entity.GetType(), cancellationToken);
+            await DataService.DeleteAsync(entity, entity.GetType(), cancellationToken);
 
             DataGrid?.ReloadServerData();
         }
