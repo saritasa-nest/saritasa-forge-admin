@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Blazor.Infrastructure.Helpers;
+using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.DomainServices.Comparers;
 
@@ -10,15 +11,32 @@ namespace Saritasa.NetForge.DomainServices.Comparers;
 /// </remarks>
 public class ObjectComparer<T> : IEqualityComparer<T>
 {
+    private ICollection<PropertyMetadataDto> EntityProperties { get; set; }
+
+    public ObjectComparer(ICollection<PropertyMetadataDto> entityProperties)
+    {
+        EntityProperties = entityProperties;
+    }
+
     /// <inheritdoc />
     public bool Equals(T? x, T? y)
     {
-        return x.ConvertToString() == y.ConvertToString();
+        if (x is null && y is null)
+        {
+            return true;
+        }
+
+        if (x is null || y is null || x.GetType() != y.GetType())
+        {
+            return false;
+        }
+
+        return x.ConvertToString(EntityProperties) == y.ConvertToString(EntityProperties);
     }
 
     /// <inheritdoc />
     public int GetHashCode(T obj)
     {
-        return obj.ConvertToString().GetHashCode();
+        return obj.ConvertToString(EntityProperties).GetHashCode();
     }
 }

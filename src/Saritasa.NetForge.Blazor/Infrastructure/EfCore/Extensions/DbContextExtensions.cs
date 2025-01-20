@@ -34,14 +34,15 @@ public static class DbContextExtensions
     /// </summary>
     /// <param name="context">Database context.</param>
     /// <param name="entity">Entity type.</param>
+    /// <param name="comparer">Used to compare entity instances in change tracker.</param>
     /// <returns>
     /// When <paramref name="entity"/> tracked - <see langword="true"/>, otherwise <see langword="false"/>.
     /// </returns>
-    public static bool IsTracked(this DbContext context, object entity)
+    public static bool IsTracked(this DbContext context, object entity, IEqualityComparer<object> comparer)
     {
         return context.ChangeTracker
             .Entries()
             .Select(entry => entry.Entity)
-            .Contains(entity, new ObjectComparer<object>());
+            .Contains(entity, comparer);
     }
 }

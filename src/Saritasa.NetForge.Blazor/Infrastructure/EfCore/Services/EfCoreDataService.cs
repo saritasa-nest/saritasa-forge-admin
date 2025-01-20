@@ -13,6 +13,7 @@ using Saritasa.NetForge.DomainServices.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 using Saritasa.NetForge.UseCases.Common;
+using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 using Saritasa.Tools.Common.Pagination;
 using Saritasa.Tools.Common.Utils;
@@ -29,14 +30,16 @@ public class EfCoreDataService : IOrmDataService
 
     private readonly EfCoreOptions efCoreOptions;
     private readonly IServiceProvider serviceProvider;
+    private readonly IEntityService entityService;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public EfCoreDataService(EfCoreOptions efCoreOptions, IServiceProvider serviceProvider)
+    public EfCoreDataService(EfCoreOptions efCoreOptions, IServiceProvider serviceProvider, IEntityService entityService)
     {
         this.efCoreOptions = efCoreOptions;
         this.serviceProvider = serviceProvider;
+        this.entityService = entityService;
     }
 
     /// <inheritdoc/>
@@ -211,18 +214,18 @@ public class EfCoreDataService : IOrmDataService
         return originalEntity;
     }
 
-    private static async Task UpdateAsync(
+    private async Task UpdateAsync(
         DbContext dbContext, object entity, object originalEntity, CancellationToken cancellationToken)
     {
         dbContext.Attach(originalEntity);
 
-        UpdateNavigations(dbContext, entity, originalEntity);
+        await UpdateNavigations(dbContext, entity, originalEntity);
 
         dbContext.Entry(originalEntity).CurrentValues.SetValues(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    private static void UpdateNavigations(DbContext dbContext, object entity, object originalEntity)
+    private async Task UpdateNavigations(DbContext dbContext, object entity, object originalEntity)
     {
         // By default, EF does not track removed items from navigation collections
         // when you just change reference to another collection.
@@ -239,19 +242,28 @@ public class EfCoreDataService : IOrmDataService
                 continue;
             }
 
+            var entityType = !navigationEntry.Metadata.IsCollection
+                ? originalNavigationEntry.Metadata.ClrType
+                : originalNavigationEntry.Metadata.ClrType.GetGenericArguments()[0];
+            var entityMetadata = await entityService.GetEntityByTypeAsync(entityType, CancellationToken.None);
+            var objectComparer = new ObjectComparer<object>(entityMetadata.Properties);
+
             if (!navigationEntry.Metadata.IsCollection)
             {
-                UpdateNavigationReference(dbContext, navigationEntry, originalNavigationEntry);
+                UpdateNavigationReference(dbContext, navigationEntry, originalNavigationEntry, objectComparer);
 
                 continue;
             }
 
-            UpdateNavigationCollection(dbContext, originalNavigationEntry, navigationEntry);
+            UpdateNavigationCollection(dbContext, originalNavigationEntry, navigationEntry, objectComparer);
         }
     }
 
     private static void UpdateNavigationReference(
-        DbContext dbContext, NavigationEntry navigationEntry, NavigationEntry originalNavigationEntry)
+        DbContext dbContext,
+        NavigationEntry navigationEntry,
+        NavigationEntry originalNavigationEntry,
+        IEqualityComparer<object> comparer)
     {
         // Case when the user want to remove navigation value
         if (navigationEntry.CurrentValue is null && originalNavigationEntry.CurrentValue is not null)
@@ -260,7 +272,7 @@ public class EfCoreDataService : IOrmDataService
         }
         else
         {
-            var isTracked = dbContext.IsTracked(navigationEntry.CurrentValue!);
+            var isTracked = dbContext.IsTracked(navigationEntry.CurrentValue!, comparer);
 
             if (!isTracked)
             {
@@ -271,14 +283,17 @@ public class EfCoreDataService : IOrmDataService
     }
 
     private static void UpdateNavigationCollection(
-        DbContext dbContext, NavigationEntry originalNavigationEntry, NavigationEntry navigationEntry)
+        DbContext dbContext,
+        NavigationEntry originalNavigationEntry,
+        NavigationEntry navigationEntry,
+        IEqualityComparer<object> comparer)
     {
         var navigationCollectionInstance = (IEnumerable<object>)navigationEntry.CurrentValue!;
 
         // Track added elements
         foreach (var element in navigationCollectionInstance)
         {
-            var isTracked = dbContext.IsTracked(element);
+            var isTracked = dbContext.IsTracked(element, comparer);
 
             if (!isTracked)
             {
@@ -288,13 +303,11 @@ public class EfCoreDataService : IOrmDataService
 
         var originalNavigationCollectionInstance = (IEnumerable<object>)originalNavigationEntry.CurrentValue!;
 
-        var objectComparer = new ObjectComparer<object>();
-
         var addedElements = navigationCollectionInstance
-            .Except(originalNavigationCollectionInstance, objectComparer);
+            .Except(originalNavigationCollectionInstance, comparer);
 
         var removedElements = originalNavigationCollectionInstance
-            .Except(navigationCollectionInstance, objectComparer);
+            .Except(navigationCollectionInstance, comparer);
 
         var actualElements = originalNavigationCollectionInstance
             .Union(addedElements)

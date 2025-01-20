@@ -139,7 +139,8 @@ public class EntityService : IEntityService
             MaxLines = property.MaxLines,
             IsAutoGrow = property.IsAutoGrow,
             CanDisplayDetails = property.CanDisplayDetails,
-            CanBeNavigatedToDetails = property.CanBeNavigatedToDetails
+            CanBeNavigatedToDetails = property.CanBeNavigatedToDetails,
+            UseToDisplayNavigation = property.UseToDisplayNavigation,
         };
     }
 

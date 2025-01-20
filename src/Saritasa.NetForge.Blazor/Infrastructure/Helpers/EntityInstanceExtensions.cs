@@ -29,11 +29,12 @@ public static class EntityInstanceExtensions
     /// to convert an instance to string.
     /// </summary>
     /// <param name="instance">Instance to convert.</param>
+    /// <param name="properties">Metadata for properties of an entity.</param>
     /// <returns>
     /// String representation of given instance. All suitable properties will be separated by <c>;</c>.
     /// For example: Main Street; New-York; United States.
     /// </returns>
-    public static string ConvertToString(this object? instance)
+    public static string ConvertToString(this object? instance, ICollection<PropertyMetadataDto> properties)
     {
         if (instance is null)
         {
@@ -45,17 +46,20 @@ public static class EntityInstanceExtensions
             return instance.ToString()!;
         }
 
-        var propertiesToDisplay = instance
-            .GetType()
-            .GetProperties()
-            .Select(property => (PropertyInfo: property, Attribute: property.GetCustomAttribute<NetForgePropertyAttribute>()))
-            .Where(property => property.Attribute is not null && property.Attribute.UseToDisplayNavigation);
+        var propertiesToDisplay = properties
+            .Where(property => property.UseToDisplayNavigation)
+            .ToList();
+
+        if (propertiesToDisplay.Count == 0)
+        {
+            return instance.GetPrimaryKeyValues(properties);
+        }
 
         List<object> propertyValues = [];
         foreach (var property in propertiesToDisplay)
         {
-            var propertyValue = property.PropertyInfo.GetValue(instance);
-            propertyValues.Add(propertyValue ?? property.Attribute!.EmptyValueDisplay);
+            var propertyValue = instance.GetPropertyValue(property.Name);
+            propertyValues.Add(propertyValue ?? property.EmptyValueDisplay);
         }
 
         return string.Join("; ", propertyValues);
