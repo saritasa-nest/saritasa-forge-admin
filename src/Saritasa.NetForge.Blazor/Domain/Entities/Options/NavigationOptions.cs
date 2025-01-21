@@ -16,5 +16,10 @@ public class NavigationOptions
     /// <summary>
     /// Property options for the navigation properties.
     /// </summary>
-    public ICollection<PropertyOptions> PropertyOptions { get; set; } = new List<PropertyOptions>();
+    public ICollection<PropertyOptions> PropertyOptions { get; set; } = [];
+
+    /// <summary>
+    /// Property options for the navigation calculated properties.
+    /// </summary>
+    public ICollection<CalculatedPropertyOptions> CalculatedPropertyOptions { get; set; } = [];
 }
