@@ -174,7 +174,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
             // We do clone because UpdateAsync method returns Model.OriginalEntityInstance
             // so we don't want Model.EntityInstance and Model.OriginalEntityInstance to have the same reference.
             Model.EntityInstance = updatedEntity.CloneJson();
-            var saveMessage = (Model.EntitySaveMessage ?? adminOptions.EntitySaveMessage)
+            var saveMessage = (Model.EntitySaveMessage ?? adminOptions.MessageOptions.EntitySaveMessage)
                               ?? "Update was completed successfully.";
 
             snackbar.Add(saveMessage, Severity.Success);

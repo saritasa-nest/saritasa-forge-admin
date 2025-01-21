@@ -97,22 +97,7 @@ public class AdminOptions
     public Type? CustomHeadType { get; set; }
 
     /// <summary>
-    /// Message indicating that entity was created successfully.
+    /// Contains global level custom messages.
     /// </summary>
-    public string? EntityCreateMessage { get; set; }
-
-    /// <summary>
-    /// Custom message when an entity was saved successfully.
-    /// </summary>
-    public string? EntitySaveMessage { get; set; }
-
-    /// <summary>
-    /// Message indicating that entity was deleted successfully.
-    /// </summary>
-    public string? EntityDeleteMessage { get; set; }
-
-    /// <summary>
-    /// Message indicating that multiple entities were deleted successfully.
-    /// </summary>
-    public string? EntityBulkDeleteMessage { get; set; }
+    public MessageOptions MessageOptions { get; set; } = new();
 }

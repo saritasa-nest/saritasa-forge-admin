@@ -295,7 +295,7 @@ public class AdminOptionsBuilder
     /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
     public AdminOptionsBuilder SetEntityCreateMessage(string entityCreateMessage)
     {
-        options.EntityCreateMessage = entityCreateMessage;
+        options.MessageOptions.EntityCreateMessage = entityCreateMessage;
         return this;
     }
 
@@ -306,7 +306,7 @@ public class AdminOptionsBuilder
     /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
     public AdminOptionsBuilder SetEntitySaveMessage(string entitySaveMessage)
     {
-        options.EntitySaveMessage = entitySaveMessage;
+        options.MessageOptions.EntitySaveMessage = entitySaveMessage;
         return this;
     }
 
@@ -317,7 +317,7 @@ public class AdminOptionsBuilder
     /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
     public AdminOptionsBuilder SetEntityDeleteMessage(string entityDeleteMessage)
     {
-        options.EntityDeleteMessage = entityDeleteMessage;
+        options.MessageOptions.EntityDeleteMessage = entityDeleteMessage;
         return this;
     }
 
@@ -328,7 +328,7 @@ public class AdminOptionsBuilder
     /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
     public AdminOptionsBuilder SetEntityBulkDeleteMessage(string entityBulkDeleteMessage)
     {
-        options.EntityBulkDeleteMessage = entityBulkDeleteMessage;
+        options.MessageOptions.EntityBulkDeleteMessage = entityBulkDeleteMessage;
         return this;
     }
 }

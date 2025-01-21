@@ -215,9 +215,9 @@ public class EntityDetailsViewModel : BaseViewModel
         {
             entityBulkDeleteMessage = Model.EntityBulkDeleteMessage;
         }
-        else if (!string.IsNullOrEmpty(adminOptions.EntityBulkDeleteMessage))
+        else if (!string.IsNullOrEmpty(adminOptions.MessageOptions.EntityBulkDeleteMessage))
         {
-            entityBulkDeleteMessage = adminOptions.EntityBulkDeleteMessage;
+            entityBulkDeleteMessage = adminOptions.MessageOptions.EntityBulkDeleteMessage;
         }
         else
         {

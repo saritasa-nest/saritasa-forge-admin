@@ -260,9 +260,9 @@ public partial class EntityPropertyColumns : ComponentBase
         {
             entityDeleteMessage = EntityDeleteMessage;
         }
-        else if (!string.IsNullOrEmpty(AdminOptions.EntityDeleteMessage))
+        else if (!string.IsNullOrEmpty(AdminOptions.MessageOptions.EntityDeleteMessage))
         {
-            entityDeleteMessage = AdminOptions.EntityDeleteMessage;
+            entityDeleteMessage =AdminOptions.MessageOptions.EntityDeleteMessage;
         }
         else
         {

@@ -162,9 +162,9 @@ public class CreateEntityViewModel : ValidationEntityViewModel
         {
             entityCreateMessage = Model.EntityCreateMessage;
         }
-        else if (!string.IsNullOrEmpty(adminOptions.EntityCreateMessage))
+        else if (!string.IsNullOrEmpty(adminOptions.MessageOptions.EntityCreateMessage))
         {
-            entityCreateMessage = adminOptions.EntityCreateMessage;
+            entityCreateMessage = adminOptions.MessageOptions.EntityCreateMessage;
         }
         else
         {
