@@ -1,8 +1,7 @@
-﻿using Saritasa.NetForge.Blazor.Domain.Entities.Options;
-using Saritasa.NetForge.Domain.Entities.Metadata;
-using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Blazor.Domain.Entities.Options;
+using Saritasa.NetForge.Blazor.Domain.Entities.Metadata;
 
-namespace Saritasa.NetForge.DomainServices.Extensions;
+namespace Saritasa.NetForge.Blazor.Domain.Extensions;
 
 /// <summary>
 /// Provides extension methods to apply entity-specific options to <see cref="EntityMetadata"/>.
