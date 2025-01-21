@@ -174,10 +174,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
             // We do clone because UpdateAsync method returns Model.OriginalEntityInstance
             // so we don't want Model.EntityInstance and Model.OriginalEntityInstance to have the same reference.
             Model.EntityInstance = updatedEntity.CloneJson();
-            var saveMessage = (Model.EntitySaveMessage ?? adminOptions.MessageOptions.EntitySaveMessage)
-                              ?? "Update was completed successfully.";
-
-            snackbar.Add(saveMessage, Severity.Success);
+            ShowEntitySaveMessage();
         }
         catch (Exception ex)
         {
@@ -185,5 +182,24 @@ public class EditEntityViewModel : ValidationEntityViewModel
 
             GeneralError = ex.InnerException is not null ? ex.InnerException.Message : ex.Message;
         }
+    }
+
+    private void ShowEntitySaveMessage()
+    {
+        string entitySaveMessage;
+        if (!string.IsNullOrEmpty(Model.EntitySaveMessage))
+        {
+            entitySaveMessage = Model.EntitySaveMessage;
+        }
+        else if (!string.IsNullOrEmpty(adminOptions.MessageOptions.EntityCreateMessage))
+        {
+            entitySaveMessage = adminOptions.MessageOptions.EntitySaveMessage;
+        }
+        else
+        {
+            entitySaveMessage = "Entity was saved successfully.";
+        }
+
+        snackbar.Add(entitySaveMessage, Severity.Success);
     }
 }
