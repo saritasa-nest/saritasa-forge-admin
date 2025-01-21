@@ -263,7 +263,7 @@ Static and interactive content can be added separately.
 
 #### Static Content
 
-Interactive content will be rendered by your custom component type.
+Static content will be rendered by your custom component type.
 
 ```csharp
 services.AddNetForge(optionsBuilder =>
