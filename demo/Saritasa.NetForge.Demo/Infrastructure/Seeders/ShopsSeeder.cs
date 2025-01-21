@@ -38,7 +38,7 @@ internal class ShopsSeeder
         foreach (var chunk in Tools.Common.Utils.CollectionUtils
                      .ChunkSelectRange(Enumerable.Range(0, numberOfItems), chunkSize: 50))
         {
-            foreach (var chunkRange in chunk)
+            foreach (var _ in chunk)
             {
                 var shop = GenerateShop();
                 shopDbContext.Shops.Add(shop);

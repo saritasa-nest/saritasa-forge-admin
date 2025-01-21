@@ -92,7 +92,7 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
         catch (Exception ex)
         {
             Snackbar.Add($"Failed to delete selected records due to error: {ex.Message}", Severity.Error);
-            Logger.LogError("Failed to delete selected records due to error: {ex.Message}", ex.Message);
+            Logger.LogError(ex, "Failed to delete selected records due to error: {Message}", ex.Message);
         }
     }
 

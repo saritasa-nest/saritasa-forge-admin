@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Saritasa.NetForge.Blazor.Domain.Entities.Options;
 using Saritasa.NetForge.Demo.ViewModels;

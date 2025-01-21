@@ -20,15 +20,10 @@ public class EditEntityViewModel : ValidationEntityViewModel
     /// </summary>
     public EditEntityModel Model { get; set; }
 
-    /// <summary>
-    /// Instance primary key.
-    /// </summary>
-    public string InstancePrimaryKey { get; set; }
-
+    private readonly string instancePrimaryKey;
     private readonly ILogger<EditEntityViewModel> logger;
     private readonly IEntityService entityService;
     private readonly IOrmDataService dataService;
-    private readonly IServiceProvider serviceProvider;
     private readonly ISnackbar snackbar;
 
     /// <summary>
@@ -40,16 +35,14 @@ public class EditEntityViewModel : ValidationEntityViewModel
         ILogger<EditEntityViewModel> logger,
         IEntityService entityService,
         IOrmDataService dataService,
-        IServiceProvider serviceProvider,
         ISnackbar snackbar)
     {
         Model = new EditEntityModel { StringId = stringId };
-        InstancePrimaryKey = instancePrimaryKey;
 
+        this.instancePrimaryKey = instancePrimaryKey;
         this.logger = logger;
         this.entityService = entityService;
         this.dataService = dataService;
-        this.serviceProvider = serviceProvider;
         this.snackbar = snackbar;
     }
 
@@ -89,7 +82,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
                 .Select(property => property.Name);
 
             Model.EntityInstance = await dataService
-                .GetInstanceAsync(InstancePrimaryKey, Model.ClrType!, includedNavigationNames, CancellationToken);
+                .GetInstanceAsync(instancePrimaryKey, Model.ClrType!, includedNavigationNames, CancellationToken);
 
             Model.OriginalEntityInstance = Model.EntityInstance.CloneJson();
 
@@ -173,7 +166,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "{handler}: {message}", nameof(EditEntityViewModel), ex.Message);
+            logger.LogError(ex, "{Handler}: {Message}", nameof(EditEntityViewModel), ex.Message);
 
             GeneralError = ex.InnerException is not null ? ex.InnerException.Message : ex.Message;
         }

@@ -139,7 +139,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "{handler}: {message}", nameof(CreateEntityViewModel), ex.Message);
+            logger.LogError(ex, "{Handler}: {Message}", nameof(CreateEntityViewModel), ex.Message);
 
             GeneralError = ex.InnerException is not null ? ex.InnerException.Message : ex.Message;
         }

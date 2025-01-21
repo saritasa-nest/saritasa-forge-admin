@@ -37,7 +37,7 @@ internal class ContactInfoSeeder
         foreach (var chunk in Tools.Common.Utils.CollectionUtils
                      .ChunkSelectRange(Enumerable.Range(0, numberOfItems), chunkSize: 50))
         {
-            foreach (var chunkRange in chunk)
+            foreach (var _ in chunk)
             {
                 shopDbContext.ContactInfos.Add(GenerateContactInfo());
             }

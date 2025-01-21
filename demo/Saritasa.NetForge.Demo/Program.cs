@@ -37,7 +37,7 @@ internal sealed class Program
     }
 
     /// <summary>
-    /// This options is there to allow running the application with `--urls` parameter.
+    /// This option is there to allow running the application with `--urls` parameter.
     /// https://paketo.io/docs/reference/dotnet-core-reference/#self-contained-deployment-and-framework-dependent-executables.
     /// </summary>
     [Option]
