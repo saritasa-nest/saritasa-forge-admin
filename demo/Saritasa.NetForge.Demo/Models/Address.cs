@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
+using Saritasa.NetForge.Blazor.Domain.Attributes;
+using Saritasa.NetForge.Blazor.Domain.Enums;
 using Saritasa.NetForge.Demo.Constants;
-using Saritasa.NetForge.Domain.Attributes;
-using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.Demo.Models;
 
@@ -51,6 +51,11 @@ public class Address
     [NetForgeProperty(Description = "Country name.", Order = 5)]
     [Required]
     public required string Country { get; set; }
+
+    /// <summary>
+    /// Full address.
+    /// </summary>
+    public string FullAddress => $"{Country}, {Street}, {City}";
 
     /// <summary>
     /// The latitude coordinate of the address location.

@@ -1,7 +1,7 @@
-﻿using Saritasa.NetForge.Domain.Entities.Metadata;
-using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
+﻿using Saritasa.NetForge.Blazor.Domain.Entities.Metadata;
+using Saritasa.NetForge.Blazor.Domain.UseCases.Metadata.GetEntityById;
 
-namespace Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
+namespace Saritasa.NetForge.Blazor.MVVM.ViewModels.EditEntity;
 
 /// <summary>
 /// Model for edit entity page.
@@ -37,4 +37,7 @@ public record EditEntityModel
     /// Action that called after entity update.
     /// </summary>
     public Action<IServiceProvider?, object, object>? AfterUpdateAction { get; init; }
+
+    /// <inheritdoc cref="EntityMetadata.EntitySaveMessage"/>
+    public string? EntitySaveMessage { get; init; }
 }

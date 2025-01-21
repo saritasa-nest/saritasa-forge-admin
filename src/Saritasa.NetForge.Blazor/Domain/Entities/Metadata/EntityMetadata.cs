@@ -1,6 +1,6 @@
-﻿using Saritasa.NetForge.Domain.Entities.Options;
+﻿using Saritasa.NetForge.Blazor.Domain.Entities.Options;
 
-namespace Saritasa.NetForge.Domain.Entities.Metadata;
+namespace Saritasa.NetForge.Blazor.Domain.Entities.Metadata;
 
 /// <summary>
 /// Metadata of the Database Entity.
@@ -101,6 +101,11 @@ public class EntityMetadata
     /// Message indicating that entity was created successfully.
     /// </summary>
     public string? EntityCreateMessage { get; set; }
+
+    /// <summary>
+    /// Custom message when the entity was saved successfully.
+    /// </summary>
+    public string? EntitySaveMessage { get; set; }
 
     /// <summary>
     /// Message indicating that entity was deleted successfully.

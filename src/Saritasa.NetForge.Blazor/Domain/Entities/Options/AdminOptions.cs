@@ -1,4 +1,4 @@
-﻿namespace Saritasa.NetForge.Domain.Entities.Options;
+﻿namespace Saritasa.NetForge.Blazor.Domain.Entities.Options;
 
 /// <summary>
 /// Admin panel options.
@@ -100,6 +100,11 @@ public class AdminOptions
     /// Message indicating that entity was created successfully.
     /// </summary>
     public string? EntityCreateMessage { get; set; }
+
+    /// <summary>
+    /// Custom message when an entity was saved successfully.
+    /// </summary>
+    public string? EntitySaveMessage { get; set; }
 
     /// <summary>
     /// Message indicating that entity was deleted successfully.

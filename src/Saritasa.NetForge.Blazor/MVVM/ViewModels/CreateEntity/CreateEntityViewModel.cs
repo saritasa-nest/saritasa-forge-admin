@@ -1,17 +1,16 @@
-﻿using Saritasa.NetForge.Domain.Exceptions;
-using Microsoft.AspNetCore.Components.Forms;
-using Saritasa.NetForge.DomainServices.Extensions;
-using Saritasa.NetForge.Mvvm.Navigation;
-using Saritasa.NetForge.Mvvm.ViewModels.EntityDetails;
-using Saritasa.NetForge.UseCases.Interfaces;
-using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.Extensions.Logging;
+﻿using System.ComponentModel.DataAnnotations;
 using MudBlazor;
-using Saritasa.NetForge.Domain.Entities.Options;
-using Saritasa.NetForge.Mvvm.Utils;
+using Microsoft.AspNetCore.Components.Forms;
+using Saritasa.NetForge.Blazor.Domain.Entities.Options;
+using Saritasa.NetForge.Blazor.Domain.Exceptions;
+using Saritasa.NetForge.Blazor.Domain.Extensions;
+using Saritasa.NetForge.Blazor.Domain.UseCases.Interfaces;
+using Saritasa.NetForge.Blazor.Domain.UseCases.Metadata.GetEntityById;
+using Saritasa.NetForge.Blazor.MVVM.Navigation;
+using Saritasa.NetForge.Blazor.MVVM.Utils;
+using Saritasa.NetForge.Blazor.MVVM.ViewModels.EntityDetails;
 
-namespace Saritasa.NetForge.Mvvm.ViewModels.CreateEntity;
+namespace Saritasa.NetForge.Blazor.MVVM.ViewModels.CreateEntity;
 
 /// <summary>
 /// View model for create entity page.

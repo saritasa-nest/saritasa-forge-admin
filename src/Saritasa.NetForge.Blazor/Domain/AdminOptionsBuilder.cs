@@ -1,9 +1,9 @@
-﻿using Saritasa.NetForge.Domain.Attributes;
-using Saritasa.NetForge.Domain.Entities.Options;
-using Saritasa.NetForge.DomainServices.Interfaces;
-using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
+﻿using Saritasa.NetForge.Blazor.Domain.Attributes;
+using Saritasa.NetForge.Blazor.Domain.Entities.Options;
+using Saritasa.NetForge.Blazor.Domain.Interfaces;
+using Saritasa.NetForge.Blazor.Infrastructure.Abstractions.Interfaces;
 
-namespace Saritasa.NetForge.DomainServices;
+namespace Saritasa.NetForge.Blazor.Domain;
 
 /// <summary>
 /// Builds the admin options.
@@ -296,6 +296,17 @@ public class AdminOptionsBuilder
     public AdminOptionsBuilder SetEntityCreateMessage(string entityCreateMessage)
     {
         options.EntityCreateMessage = entityCreateMessage;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets custom save message that displayed when an entity was saved successfully.
+    /// </summary>
+    /// <param name="entitySaveMessage">Entity save message.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public AdminOptionsBuilder SetEntitySaveMessage(string entitySaveMessage)
+    {
+        options.EntitySaveMessage = entitySaveMessage;
         return this;
     }
 

@@ -1,6 +1,6 @@
-﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+﻿using Saritasa.NetForge.Blazor.Domain.Entities.Metadata;
 
-namespace Saritasa.NetForge.UseCases.Metadata.GetEntityById;
+namespace Saritasa.NetForge.Blazor.Domain.UseCases.Metadata.GetEntityById;
 
 /// <summary>
 /// DTO for <see cref="EntityMetadata"/>.
@@ -53,6 +53,9 @@ public record GetEntityDto
 
     /// <inheritdoc cref="EntityMetadata.EntityCreateMessage"/>
     public string? EntityCreateMessage { get; init; }
+
+    /// <inheritdoc cref="EntityMetadata.EntitySaveMessage"/>
+    public string? EntitySaveMessage { get; set; }
 
     /// <inheritdoc cref="EntityMetadata.EntityDeleteMessage"/>
     public string? EntityDeleteMessage { get; init; }
