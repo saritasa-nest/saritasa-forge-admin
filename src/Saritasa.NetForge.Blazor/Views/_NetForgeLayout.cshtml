@@ -19,6 +19,9 @@
     @RenderBody()
     <script src="_framework/blazor.server.js"></script>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
-    <component type="AdminOptions.StaticBodyComponentType" render-mode="Static"/>
+    @if (AdminOptions.StaticBodyComponentType is not null)
+    {
+      <component type="AdminOptions.StaticBodyComponentType" render-mode="Static"/>
+    }
 </body>
 </html>
