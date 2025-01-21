@@ -91,3 +91,58 @@ public void Configure(EntityOptionsBuilder<Shop> entityOptionsBuilder)
 ### Collection
 
 Collection navigations have this behavior by default like it was configured using `SetShowNavigationDetails(isReadonly: true)`.
+
+## Display navigation data on the entity Edit page
+
+You can choose which properties to use when displaying navigation on edit page.
+Also, you can determine an order of displaying such properties.
+
+### Using Data Attribute
+
+```csharp
+[NetForgeProperty(NavigationDisplayOrder = 1)]
+public string Name { get; set; }
+ 
+[NetForgeProperty(NavigationDisplayOrder = 2)]
+public decimal Price { get; set; }
+```
+
+### Using Fluent API
+
+```csharp
+    public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+    {
+        entityOptionsBuilder
+            .ConfigureProperty(address => address.City, propertyBuilder =>
+        {
+            propertyBuilder.SetNavigationDisplayOrder(2);
+        })
+            .ConfigureProperty(address => address.Street, propertyBuilder =>
+        {
+            propertyBuilder.SetNavigationDisplayOrder(1);
+        });
+    }
+```
+
+### ToString Override
+
+If you have `ToString` overridden then it will be used to display navigation even when `NavigationDisplayOrder` is used.
+
+### Equals and GetHashCode Override
+
+To display currently selected item in select input when navigation reference is used you have to override `Equals` and `GetHashCode`.
+It is restriction of `MudBlazor` library. See code of `Custom converter` section [here](https://www.mudblazor.com/components/select).
+
+```csharp
+    public override bool Equals(object? obj)
+    {
+        if (obj is not Address address)
+        {
+            return false;
+        }
+
+        return address.Street == Street && address.City == City;
+    }
+
+    public override int GetHashCode() => Street.GetHashCode() + City.GetHashCode();
+```
