@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace Saritasa.NetForge.Demo.Admin;
+namespace Saritasa.NetForge.Demo.Views.Admin;
 
 /// <summary>
 /// Footer for admin panel.
