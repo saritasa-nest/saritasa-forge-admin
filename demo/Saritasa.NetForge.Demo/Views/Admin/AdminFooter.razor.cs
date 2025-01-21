@@ -25,7 +25,7 @@ public partial class AdminFooter : ComponentBase, IAsyncDisposable
     {
         if (firstRender)
         {
-            module = await Js.InvokeAsync<IJSObjectReference>("import", "./Admin/AdminFooter.razor.js");
+            module = await Js.InvokeAsync<IJSObjectReference>("import", "../Views/Admin/AdminFooter.razor.js");
             await module.InvokeVoidAsync("incrementVisitsCount");
         }
     }
