@@ -1,6 +1,6 @@
-﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+﻿using Saritasa.NetForge.Blazor.Domain.Entities.Metadata;
 
-namespace Saritasa.NetForge.Domain.Entities.Options;
+namespace Saritasa.NetForge.Blazor.Domain.Entities.Options;
 
 /// <summary>
 /// Configure entity in the admin panel.
@@ -48,12 +48,12 @@ public class EntityOptions
     /// <summary>
     /// Options for properties of entity.
     /// </summary>
-    public ICollection<PropertyOptions> PropertyOptions { get; set; } = new List<PropertyOptions>();
+    public ICollection<PropertyOptions> PropertyOptions { get; set; } = [];
 
     /// <summary>
-    /// Collection of the calculated property names.
+    /// Options for calculated properties of entity.
     /// </summary>
-    public List<string> CalculatedPropertyNames { get; } = new();
+    public ICollection<CalculatedPropertyOptions> CalculatedPropertyOptions { get; set; } = [];
 
     /// <inheritdoc cref="EntityMetadata.SearchFunction"/>
     public Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? SearchFunction { get; set; }

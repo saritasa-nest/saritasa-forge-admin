@@ -1,7 +1,7 @@
-﻿using Saritasa.NetForge.Demo.Models;
-using Saritasa.NetForge.Domain.Enums;
-using Saritasa.NetForge.DomainServices;
-using Saritasa.NetForge.DomainServices.Interfaces;
+﻿using Saritasa.NetForge.Blazor.Domain;
+using Saritasa.NetForge.Blazor.Domain.Enums;
+using Saritasa.NetForge.Blazor.Domain.Interfaces;
+using Saritasa.NetForge.Demo.Models;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.Admin;
 
@@ -34,6 +34,11 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
         }).ConfigureProperty(address => address.Street, propertyBuilder =>
         {
             propertyBuilder.SetIsMultiline(autoGrow: true, maxLines: 10);
+        }).ConfigureCalculatedProperty(address => address.FullAddress, propertyBuilder =>
+        {
+            propertyBuilder
+                .SetDescription("Contains street, city and country.")
+                .SetOrder(5);
         }).ConfigureProperty(address => address.Longitude, propertyBuilder =>
         {
             propertyBuilder
