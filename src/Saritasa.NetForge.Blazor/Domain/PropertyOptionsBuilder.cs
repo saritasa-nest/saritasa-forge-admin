@@ -1,8 +1,7 @@
-﻿using Saritasa.NetForge.Domain;
-using Saritasa.NetForge.Domain.Entities.Options;
-using Saritasa.NetForge.Domain.Enums;
+﻿using Saritasa.NetForge.Blazor.Domain.Entities.Options;
+using Saritasa.NetForge.Blazor.Domain.Enums;
 
-namespace Saritasa.NetForge.DomainServices;
+namespace Saritasa.NetForge.Blazor.Domain;
 
 /// <summary>
 /// Builder class for configuring entity's property options.
@@ -137,7 +136,7 @@ public class PropertyOptionsBuilder
     }
 
     /// <summary>
-    /// Sets the value to display when value of property is empty.
+    /// Sets the value to display the property as HTML.
     /// </summary>
     public PropertyOptionsBuilder SetDisplayAsHtml(bool displayAsHtml)
     {
