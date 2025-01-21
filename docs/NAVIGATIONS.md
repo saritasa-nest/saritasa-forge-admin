@@ -132,6 +132,7 @@ If you have `ToString` overridden then it will be used to display navigation eve
 
 To display currently selected item in select input when navigation reference is used you have to override `Equals` and `GetHashCode`.
 It is restriction of `MudBlazor` library. See code of `Custom converter` section [here](https://www.mudblazor.com/components/select).
+It is not necessary for displaying navigation collection.
 
 ```csharp
     public override bool Equals(object? obj)
