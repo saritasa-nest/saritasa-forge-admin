@@ -29,7 +29,6 @@ internal static class NetForgeModule
                 })
                 .SetGroupHeadersExpanded(true)
                 .SetCustomHeadType(typeof(AdminHead))
-                .SetStaticBodyComponentType(typeof(AdminFooterStatic))
                 .SetInteractiveBodyContent(builder =>
                 {
                     builder.OpenComponent<AdminFooter>(0);
