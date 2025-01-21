@@ -1,7 +1,7 @@
-﻿using Saritasa.NetForge.Blazor.Infrastructure.Helpers;
-using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
+using Saritasa.NetForge.Blazor.Domain.UseCases.Metadata.GetEntityById;
+using Saritasa.NetForge.Blazor.Infrastructure.Helpers;
 
-namespace Saritasa.NetForge.DomainServices.Comparers;
+namespace Saritasa.NetForge.Blazor.Domain.Comparers;
 
 /// <summary>
 /// Comparer for objects. Uses their <see cref="object.ToString()"/> methods.

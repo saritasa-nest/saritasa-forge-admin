@@ -1,9 +1,8 @@
-﻿using Saritasa.NetForge.Domain.Dtos;
-using Saritasa.NetForge.UseCases.Common;
-using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
+using Saritasa.NetForge.Blazor.Domain.UseCases.Common;
+using Saritasa.NetForge.Blazor.Domain.UseCases.Metadata.GetEntityById;
 using Saritasa.Tools.Common.Pagination;
 
-namespace Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
+namespace Saritasa.NetForge.Blazor.Infrastructure.Abstractions.Interfaces;
 
 /// <summary>
 /// Service for retrieving data from ORM.

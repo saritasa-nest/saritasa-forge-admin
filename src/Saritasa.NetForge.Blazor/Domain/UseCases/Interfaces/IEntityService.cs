@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Saritasa.NetForge.Domain.Entities.Metadata;
-using Saritasa.NetForge.UseCases.Metadata.DTOs;
-using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
+using Saritasa.NetForge.Blazor.Domain.Entities.Metadata;
+using Saritasa.NetForge.Blazor.Domain.UseCases.Metadata.DTOs;
+using Saritasa.NetForge.Blazor.Domain.UseCases.Metadata.GetEntityById;
 
-namespace Saritasa.NetForge.UseCases.Interfaces;
+namespace Saritasa.NetForge.Blazor.Domain.UseCases.Interfaces;
 
 /// <summary>
 /// Handle operations related to entities.

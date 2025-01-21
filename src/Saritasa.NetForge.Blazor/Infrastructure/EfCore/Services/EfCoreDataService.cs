@@ -5,21 +5,21 @@ using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
-using Saritasa.NetForge.Domain.Dtos;
-using Saritasa.NetForge.Domain.Enums;
-using Saritasa.NetForge.Domain.Exceptions;
-using Saritasa.NetForge.DomainServices.Comparers;
-using Saritasa.NetForge.DomainServices.Extensions;
-using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
-using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
-using Saritasa.NetForge.UseCases.Common;
-using Saritasa.NetForge.UseCases.Interfaces;
-using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
+using Saritasa.NetForge.Blazor.Domain.Comparers;
+using Saritasa.NetForge.Blazor.Domain.Dtos;
+using Saritasa.NetForge.Blazor.Domain.Enums;
+using Saritasa.NetForge.Blazor.Domain.Exceptions;
+using Saritasa.NetForge.Blazor.Domain.Extensions;
+using Saritasa.NetForge.Blazor.Domain.UseCases.Common;
+using Saritasa.NetForge.Blazor.Domain.UseCases.Interfaces;
+using Saritasa.NetForge.Blazor.Domain.UseCases.Metadata.GetEntityById;
 using Saritasa.Tools.Common.Pagination;
 using Saritasa.Tools.Common.Utils;
-using ExpressionExtensions = Saritasa.NetForge.DomainServices.Extensions.ExpressionExtensions;
+using ExpressionExtensions = Saritasa.NetForge.Blazor.Domain.Extensions.ExpressionExtensions;
+using Saritasa.NetForge.Blazor.Infrastructure.Abstractions.Interfaces;
+using Saritasa.NetForge.Blazor.Infrastructure.EfCore.Extensions;
 
-namespace Saritasa.NetForge.Infrastructure.EfCore.Services;
+namespace Saritasa.NetForge.Blazor.Infrastructure.EfCore.Services;
 
 /// <summary>
 /// Data service for EF core.

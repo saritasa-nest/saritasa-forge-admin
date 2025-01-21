@@ -1,6 +1,6 @@
-using Saritasa.NetForge.Domain.Attributes;
-using Saritasa.NetForge.DomainServices.Extensions;
-using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
+using Saritasa.NetForge.Blazor.Domain.Attributes;
+using Saritasa.NetForge.Blazor.Domain.Extensions;
+using Saritasa.NetForge.Blazor.Domain.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.Blazor.Infrastructure.Helpers;
 
