@@ -1,4 +1,4 @@
-﻿using Saritasa.NetForge.Blazor.Domain;
+﻿using Saritasa.NetForge.Domain;
 using Saritasa.NetForge.Tests.Domain.Models;
 using Xunit;
 

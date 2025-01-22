@@ -1,0 +1,18 @@
+﻿@using Saritasa.NetForge.Extensions
+@inherits CustomField
+
+<MudTextField T="string"
+              Label="@Property.Name.ToMeaningfulName()"
+              Variant="Variant.Outlined"
+              InputType="InputType.Text"
+              HelperText="@Property.Description"
+              Disabled="IsReadOnly"
+              @bind-Value="PropertyValue"
+              Lines="Lines"
+              MaxLines="MaxLines"
+              AutoGrow="IsAutoGrow"
+              Error="@FieldErrorModel.IsError"
+              ErrorText="@FieldErrorModel.ErrorMessage">
+</MudTextField>
+
+
