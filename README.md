@@ -18,7 +18,10 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
     - [Configuration](#configuration)
     - [Headers Expansion](#headers-expansion)
     - [Success Messages](#success-messages)
+      - [Create](#create)
       - [Save](#save)
+      - [Delete](#delete)
+      - [Bulk Delete](#bulk-delete)
   - [Exclude All Entities and Include Specific Only](#exclude-all-entities-and-include-specific-only)
 - [Customizing Entities](#customizing-entities)
   - [Fluent API](#fluent-api)
@@ -330,6 +333,26 @@ services.AddNetForge(optionsBuilder =>
 You can customize success messages on operations with entities.
 It can be customized on Global and Per-Model levels. Per-Model takes precedence on Global level.
 
+#### Create
+
+##### Global Level
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetEntityCreateMessage("The entity was created.");
+});
+```
+
+##### Per-Model Level
+
+```csharp
+  public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+  {
+      entityOptionsBuilder.SetEntityCreateMessage("Address was created.");
+  }
+```
+
 #### Save
 
 ##### Global Level
@@ -346,7 +369,47 @@ services.AddNetForge(optionsBuilder =>
 ```csharp
   public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
   {
-      entityOptionsBuilder.SetEntitySaveMessage("Address was saved successfully.");
+      entityOptionsBuilder.SetEntitySaveMessage("Address was saved.");
+  }
+```
+
+#### Delete
+
+##### Global Level
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetEntityDeleteMessage("The entity was deleted.");
+});
+```
+
+##### Per-Model Level
+
+```csharp
+  public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+  {
+      entityOptionsBuilder.SetEntityDeleteMessage("Address was deleted.");
+  }
+```
+
+#### Bulk Delete
+
+##### Global Level
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetEntityBulkDeleteMessage("The entities were deleted.");
+});
+```
+
+##### Per-Model Level
+
+```csharp
+  public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+  {
+      entityOptionsBuilder.SetEntityBulkDeleteMessage("Selected addresses were deleted.");
   }
 ```
 
