@@ -70,7 +70,7 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
 
         entityOptionsBuilder
             .SetEntityCreateMessage("Address was created.")
-            .SetEntitySaveMessage("Address was saved successfully.")
+            .SetEntitySaveMessage("Address was saved.")
             .SetEntityDeleteMessage("Address was deleted.")
             .SetEntityBulkDeleteMessage("Selected addresses were deleted.");
     }
