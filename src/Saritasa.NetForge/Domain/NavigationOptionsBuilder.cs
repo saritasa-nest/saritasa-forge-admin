@@ -41,4 +41,23 @@ public class NavigationOptionsBuilder<TEntity>
         options.PropertyOptions.Add(propertyOptions);
         return this;
     }
+
+    /// <summary>
+    /// Includes navigation's calculated property.
+    /// </summary>
+    /// <param name="calculatedPropertyExpression">Lambda expression representing calculated property to include.</param>
+    /// <param name="calculatedPropertyOptionsBuilderAction">An action that builds calculated property options.</param>
+    public NavigationOptionsBuilder<TEntity> IncludeCalculatedProperty(
+        Expression<Func<TEntity, object?>> calculatedPropertyExpression,
+        Action<CalculatedPropertyOptionsBuilder>? calculatedPropertyOptionsBuilderAction = null)
+    {
+        var calculatedPropertyOptionsBuilder = new CalculatedPropertyOptionsBuilder();
+        calculatedPropertyOptionsBuilderAction?.Invoke(calculatedPropertyOptionsBuilder);
+
+        var calculatedPropertyName = calculatedPropertyExpression.GetMemberName();
+        var calculatedPropertyOptions = calculatedPropertyOptionsBuilder.Create(calculatedPropertyName);
+
+        options.CalculatedPropertyOptions.Add(calculatedPropertyOptions);
+        return this;
+    }
 }

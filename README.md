@@ -17,6 +17,8 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
     - [Create Groups for Entities](#create-groups-for-entities)
     - [Configuration](#configuration)
     - [Headers Expansion](#headers-expansion)
+    - [Success Messages](#success-messages)
+      - [Save](#save)
   - [Exclude All Entities and Include Specific Only](#exclude-all-entities-and-include-specific-only)
 - [Customizing Entities](#customizing-entities)
   - [Fluent API](#fluent-api)
@@ -324,6 +326,31 @@ services.AddNetForge(optionsBuilder =>
 });
 ```
 
+### Success Messages
+
+You can customize success messages on operations with entities.
+It can be customized on Global and Per-Model levels. Per-Model takes precedence on Global level.
+
+#### Save
+
+##### Global Level
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetEntitySaveMessage("Entity was saved.");
+});
+```
+
+##### Per-Model Level
+
+```csharp
+  public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+  {
+      entityOptionsBuilder.SetEntitySaveMessage("Address was saved successfully.");
+  }
+```
+
 ## Exclude All Entities and Include Specific Only
 
 You can exclude all entities and include only specific ones.
@@ -581,19 +608,15 @@ You can sort multiple properties at once. It can be achieved by pressing sort bu
 Sorting can be cancelled by pressing on it with `ALT`.
 
 ## Calculated Properties
+
 Calculated properties are properties that don't have a direct representation in your database but are computed based on other existing properties. These properties can be useful for displaying calculated values in the admin panel.
 
-You can add calculated properties to your entities using the Fluent API:
+They behave like an ordinary property, but have less functionality.
 
 ```csharp
-services.AddNetForge(optionsBuilder =>
+entityOptionsBuilder.ConfigureCalculatedProperty(address => address.FullAddress, propertyBuilder =>
 {
-    optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
-    {
-        entityOptionsBuilder.AddCalculatedProperties(user => user.FullName, user => user.Age);
-    });
-
-    // Other settings...
+    propertyBuilder.SetDisplayName("Full Address");
 });
 ```
 

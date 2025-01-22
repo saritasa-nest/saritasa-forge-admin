@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.Extensions;
 using Saritasa.NetForge.MVVM.Utils;
 using Saritasa.NetForge.Domain.Exceptions;
@@ -25,6 +26,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
     private readonly IEntityService entityService;
     private readonly IOrmDataService dataService;
     private readonly ISnackbar snackbar;
+    private readonly AdminOptions adminOptions;
 
     /// <summary>
     /// Constructor.
@@ -35,7 +37,8 @@ public class EditEntityViewModel : ValidationEntityViewModel
         ILogger<EditEntityViewModel> logger,
         IEntityService entityService,
         IOrmDataService dataService,
-        ISnackbar snackbar)
+        ISnackbar snackbar,
+        AdminOptions adminOptions)
     {
         Model = new EditEntityModel { StringId = stringId };
 
@@ -44,6 +47,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
         this.entityService = entityService;
         this.dataService = dataService;
         this.snackbar = snackbar;
+        this.adminOptions = adminOptions;
     }
 
     /// <summary>
@@ -126,7 +130,8 @@ public class EditEntityViewModel : ValidationEntityViewModel
             PluralName = entity.PluralName,
             ClrType = entity.ClrType,
             Properties = entity.Properties,
-            AfterUpdateAction = entity.AfterUpdateAction
+            AfterUpdateAction = entity.AfterUpdateAction,
+            EntitySaveMessage = entity.EntitySaveMessage
         };
     }
 
@@ -162,7 +167,10 @@ public class EditEntityViewModel : ValidationEntityViewModel
             // We do clone because UpdateAsync method returns Model.OriginalEntityInstance
             // so we don't want Model.EntityInstance and Model.OriginalEntityInstance to have the same reference.
             Model.EntityInstance = updatedEntity.CloneJson();
-            snackbar.Add("Update was completed successfully", Severity.Success);
+            var saveMessage = (Model.EntitySaveMessage ?? adminOptions.EntitySaveMessage)
+                              ?? "Update was completed successfully.";
+
+            snackbar.Add(saveMessage, Severity.Success);
         }
         catch (Exception ex)
         {

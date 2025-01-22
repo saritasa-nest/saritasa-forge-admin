@@ -34,6 +34,11 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
         }).ConfigureProperty(address => address.Street, propertyBuilder =>
         {
             propertyBuilder.SetIsMultiline(autoGrow: true, maxLines: 10);
+        }).ConfigureCalculatedProperty(address => address.FullAddress, propertyBuilder =>
+        {
+            propertyBuilder
+                .SetDescription("Contains street, city and country.")
+                .SetOrder(5);
         }).ConfigureProperty(address => address.Longitude, propertyBuilder =>
         {
             propertyBuilder
@@ -62,5 +67,7 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
 
             dbContext.SaveChanges();
         });
+
+        entityOptionsBuilder.SetEntitySaveMessage("Address was saved successfully.");
     }
 }

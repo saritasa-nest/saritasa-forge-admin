@@ -116,14 +116,23 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
-    /// Adds calculated properties for the specified entity type.
+    /// Configures options for specific entity's calculated property.
     /// </summary>
-    /// <param name="propertyExpressions">An array of lambda expressions representing calculated properties.</param>
-    public EntityOptionsBuilder<TEntity> AddCalculatedProperties(
-        params Expression<Func<TEntity, object?>>[] propertyExpressions)
+    /// <param name="calculatedPropertyExpression">
+    /// Expression that represents calculated property. For example: <c>entity => entity.FullName</c>.
+    /// </param>
+    /// <param name="calculatedPropertyOptionsBuilderAction">An action that builds calculated property options.</param>
+    public EntityOptionsBuilder<TEntity> ConfigureCalculatedProperty(
+        Expression<Func<TEntity, object?>> calculatedPropertyExpression,
+        Action<CalculatedPropertyOptionsBuilder> calculatedPropertyOptionsBuilderAction)
     {
-        var propertyNames = propertyExpressions.Select(expression => expression.GetMemberName());
-        options.CalculatedPropertyNames.AddRange(propertyNames);
+        var calculatedPropertyOptionsBuilder = new CalculatedPropertyOptionsBuilder();
+        calculatedPropertyOptionsBuilderAction.Invoke(calculatedPropertyOptionsBuilder);
+
+        var calculatedPropertyName = calculatedPropertyExpression.GetMemberName();
+        var calculatedPropertyOptions = calculatedPropertyOptionsBuilder.Create(calculatedPropertyName);
+
+        options.CalculatedPropertyOptions.Add(calculatedPropertyOptions);
         return this;
     }
 
@@ -205,6 +214,17 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     {
         var propertyNames = propertyExpressions.Select(expression => expression.GetMemberName());
         options.IncludedProperties.AddRange(propertyNames);
+        return this;
+    }
+
+    /// <summary>
+    /// Sets custom save message that displayed when the entity was saved successfully.
+    /// </summary>
+    /// <param name="entitySaveMessage">Entity save message.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public EntityOptionsBuilder<TEntity> SetEntitySaveMessage(string entitySaveMessage)
+    {
+        options.EntitySaveMessage = entitySaveMessage;
         return this;
     }
 }
