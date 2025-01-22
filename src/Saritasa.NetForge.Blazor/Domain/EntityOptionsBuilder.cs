@@ -224,7 +224,7 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
     public EntityOptionsBuilder<TEntity> SetEntityCreateMessage(string entityCreateMessage)
     {
-        options.EntityCreateMessage = entityCreateMessage;
+        options.MessageOptions.EntityCreateMessage = entityCreateMessage;
         return this;
     }
 
@@ -235,7 +235,7 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
     public EntityOptionsBuilder<TEntity> SetEntitySaveMessage(string entitySaveMessage)
     {
-        options.EntitySaveMessage = entitySaveMessage;
+        options.MessageOptions.EntitySaveMessage = entitySaveMessage;
         return this;
     }
 
@@ -246,7 +246,7 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
     public EntityOptionsBuilder<TEntity> SetEntityDeleteMessage(string entityDeleteMessage)
     {
-        options.EntityDeleteMessage = entityDeleteMessage;
+        options.MessageOptions.EntityDeleteMessage = entityDeleteMessage;
         return this;
     }
 
@@ -257,7 +257,7 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
     public EntityOptionsBuilder<TEntity> SetEntityBulkDeleteMessage(string entityBulkDeleteMessage)
     {
-        options.EntityBulkDeleteMessage = entityBulkDeleteMessage;
+        options.MessageOptions.EntityBulkDeleteMessage = entityBulkDeleteMessage;
         return this;
     }
 }

@@ -138,7 +138,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
             ClrType = entity.ClrType,
             Properties = entity.Properties,
             AfterUpdateAction = entity.AfterUpdateAction,
-            EntitySaveMessage = entity.EntitySaveMessage
+            EntitySaveMessage = entity.MessageOptions.EntitySaveMessage
         };
     }
 

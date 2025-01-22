@@ -114,7 +114,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
             PluralName = entity.PluralName,
             ClrType = entity.ClrType,
             Properties = entity.Properties,
-            EntityCreateMessage = entity.EntityCreateMessage,
+            EntityCreateMessage = entity.MessageOptions.EntityCreateMessage,
         };
     }
 

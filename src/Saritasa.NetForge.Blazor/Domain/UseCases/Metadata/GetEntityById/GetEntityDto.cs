@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Blazor.Domain.Entities.Metadata;
+using Saritasa.NetForge.Blazor.Domain.Entities.Options;
 
 namespace Saritasa.NetForge.Blazor.Domain.UseCases.Metadata.GetEntityById;
 
@@ -51,15 +52,6 @@ public record GetEntityDto
     /// <inheritdoc cref="EntityMetadata.CanDelete"/>
     public bool CanDelete { get; set; }
 
-    /// <inheritdoc cref="EntityMetadata.EntityCreateMessage"/>
-    public string? EntityCreateMessage { get; init; }
-
-    /// <inheritdoc cref="EntityMetadata.EntitySaveMessage"/>
-    public string? EntitySaveMessage { get; set; }
-
-    /// <inheritdoc cref="EntityMetadata.EntityDeleteMessage"/>
-    public string? EntityDeleteMessage { get; init; }
-
-    /// <inheritdoc cref="EntityMetadata.EntityBulkDeleteMessage"/>
-    public string? EntityBulkDeleteMessage { get; set; }
+    /// <inheritdoc cref="EntityMetadata.MessageOptions"/>
+    public MessageOptions MessageOptions { get; set; } = new();
 }

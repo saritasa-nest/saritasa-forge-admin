@@ -67,25 +67,7 @@ public static class EntityMetadataOptionsExtensions
             entityMetadata.CanDelete = entityOptions.CanDelete.Value;
         }
 
-        if (!string.IsNullOrEmpty(entityOptions.EntityCreateMessage))
-        {
-            entityMetadata.EntityCreateMessage = entityOptions.EntityCreateMessage;
-        }
-
-        if (!string.IsNullOrEmpty(entityOptions.EntitySaveMessage))
-        {
-            entityMetadata.EntitySaveMessage = entityOptions.EntitySaveMessage;
-        }
-
-        if (!string.IsNullOrEmpty(entityOptions.EntityDeleteMessage))
-        {
-            entityMetadata.EntityDeleteMessage = entityOptions.EntityDeleteMessage;
-        }
-
-        if (!string.IsNullOrEmpty(entityOptions.EntityBulkDeleteMessage))
-        {
-            entityMetadata.EntityBulkDeleteMessage = entityOptions.EntityBulkDeleteMessage;
-        }
+        entityMetadata.MessageOptions = entityOptions.MessageOptions;
 
         foreach (var option in entityOptions.PropertyOptions)
         {

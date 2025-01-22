@@ -98,22 +98,7 @@ public class EntityMetadata
     public bool CanDelete { get; set; } = true;
 
     /// <summary>
-    /// Message indicating that entity was created successfully.
+    /// Contains per-model level custom messages.
     /// </summary>
-    public string? EntityCreateMessage { get; set; }
-
-    /// <summary>
-    /// Custom message when the entity was saved successfully.
-    /// </summary>
-    public string? EntitySaveMessage { get; set; }
-
-    /// <summary>
-    /// Message indicating that entity was deleted successfully.
-    /// </summary>
-    public string? EntityDeleteMessage { get; set; }
-
-    /// <summary>
-    /// Message indicating that multiple entities were deleted successfully.
-    /// </summary>
-    public string? EntityBulkDeleteMessage { get; set; }
+    public MessageOptions MessageOptions { get; set; } = new();
 }

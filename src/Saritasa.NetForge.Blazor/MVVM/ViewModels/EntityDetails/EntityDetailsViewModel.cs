@@ -126,8 +126,8 @@ public class EntityDetailsViewModel : BaseViewModel
             CanAdd = entity.CanAdd,
             CanEdit = entity.CanEdit,
             CanDelete = entity.CanDelete,
-            EntityDeleteMessage = entity.EntityDeleteMessage,
-            EntityBulkDeleteMessage = entity.EntityBulkDeleteMessage,
+            EntityDeleteMessage = entity.MessageOptions.EntityDeleteMessage,
+            EntityBulkDeleteMessage = entity.MessageOptions.EntityBulkDeleteMessage,
         };
     }
 

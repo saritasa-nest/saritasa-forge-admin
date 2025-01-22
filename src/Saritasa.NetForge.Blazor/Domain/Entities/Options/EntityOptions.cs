@@ -95,15 +95,6 @@ public class EntityOptions
     /// </summary>
     public List<string> IncludedProperties { get; set; } = new();
 
-    /// <inheritdoc cref="EntityMetadata.EntityCreateMessage"/>
-    public string? EntityCreateMessage { get; set; }
-
-    /// <inheritdoc cref="EntityMetadata.EntitySaveMessage"/>
-    public string? EntitySaveMessage { get; set; }
-
-    /// <inheritdoc cref="EntityMetadata.EntityDeleteMessage"/>
-    public string? EntityDeleteMessage { get; set; }
-
-    /// <inheritdoc cref="EntityMetadata.EntityBulkDeleteMessage"/>
-    public string? EntityBulkDeleteMessage { get; set; }
+    /// <inheritdoc cref="EntityMetadata.MessageOptions"/>
+    public MessageOptions MessageOptions { get; set; } = new();
 }
