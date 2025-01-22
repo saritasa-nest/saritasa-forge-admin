@@ -191,7 +191,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
         {
             entitySaveMessage = Model.EntitySaveMessage;
         }
-        else if (!string.IsNullOrEmpty(adminOptions.MessageOptions.EntityCreateMessage))
+        else if (!string.IsNullOrEmpty(adminOptions.MessageOptions.EntitySaveMessage))
         {
             entitySaveMessage = adminOptions.MessageOptions.EntitySaveMessage;
         }
