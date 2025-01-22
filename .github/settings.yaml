@@ -1,7 +1,3 @@
 repository:
     description: Admin Panel for ASP.NET Core 6 & 7 & 8
     homepage: https://forge.saritasa.rocks/
-
-autolinks:
-  - key_prefix: SN
-    url_template: https://saritasa.atlassian.net/browse/SN-<num>
