@@ -1,11 +1,12 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Saritasa.NetForge.Blazor.Extensions;
-using Saritasa.NetForge.Blazor.Infrastructure.Abstractions.Interfaces;
+using Saritasa.NetForge.Extensions;
+using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Demo.Infrastructure.Startup;
 using Saritasa.NetForge.Demo.Infrastructure.Startup.HealthCheck;
 using Saritasa.NetForge.Demo.Infrastructure.UploadFiles.S3Storage;
+using Saritasa.NetForge.Demo.Infrastructure.Web;
 using Saritasa.NetForge.Demo.Models;
 
 namespace Saritasa.NetForge.Demo;
@@ -56,6 +57,9 @@ public class Startup
 
         services.AddScoped<IBlobStorageService, S3StorageService>();
         services.AddScoped<ICloudBlobStorageService, S3StorageService>();
+
+        // Other dependencies
+        services.AddSingleton<AppInitializationStatusStorage>();
 
         // Add NetForge admin panel.
         Infrastructure.DependencyInjection.NetForgeModule.Register(services, configuration);

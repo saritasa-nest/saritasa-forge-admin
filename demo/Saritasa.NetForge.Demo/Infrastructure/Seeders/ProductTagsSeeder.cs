@@ -37,14 +37,14 @@ internal class ProductTagsSeeder
         foreach (var chunk in Tools.Common.Utils.CollectionUtils
                      .ChunkSelectRange(Enumerable.Range(0, numberOfItems), chunkSize: 50))
         {
-            foreach (var chunkRange in chunk)
+            foreach (var _ in chunk)
             {
                 shopDbContext.ProductTags.Add(GenerateProductTag());
             }
             count += await shopDbContext.SaveChangesAsync(cancellationToken);
         }
         
-        logger.LogInformation("Created {count} product tags.", count);
+        logger.LogInformation("Created {Count} product tags.", count);
         return count;
     }
 

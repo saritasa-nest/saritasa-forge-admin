@@ -47,6 +47,7 @@ internal class TestDbContext : IdentityDbContext<User>
     /// </summary>
     public DbSet<Supplier> Suppliers { get; private set; } = null!;
 
+    /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
