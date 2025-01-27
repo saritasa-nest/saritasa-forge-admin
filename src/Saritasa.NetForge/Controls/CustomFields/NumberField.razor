@@ -1,0 +1,13 @@
+﻿@using Saritasa.NetForge.Extensions
+@inherits CustomField
+
+@typeparam T
+
+<MudNumericField Label="@Property.Name.ToMeaningfulName()"
+                 Variant="Variant.Outlined"
+                 HideSpinButtons="true"
+                 HelperText="@Property.Description"
+                 Disabled="IsReadOnly"
+                 @bind-Value="PropertyValue"
+                 Error="@FieldErrorModel.IsError"
+                 ErrorText="@FieldErrorModel.ErrorMessage"/>

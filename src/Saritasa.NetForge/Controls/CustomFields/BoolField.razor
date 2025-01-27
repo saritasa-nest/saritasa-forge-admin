@@ -1,0 +1,11 @@
+﻿@using Saritasa.NetForge.Extensions
+@inherits CustomField
+
+<MudCheckBox Label="@Property.Name.ToMeaningfulName()"
+             Disabled="IsReadOnly"
+             T="bool?"
+             @bind-Value="PropertyValue"
+             Error="@FieldErrorModel.IsError"
+             ErrorText="@FieldErrorModel.ErrorMessage">
+    <MudText class="mud-input-helper-text ml-3">@Property.Description</MudText>
+</MudCheckBox>

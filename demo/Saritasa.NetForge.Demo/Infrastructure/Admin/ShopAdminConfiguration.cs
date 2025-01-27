@@ -1,7 +1,7 @@
-﻿using Saritasa.NetForge.Blazor.Domain;
-using Saritasa.NetForge.Blazor.Domain.Enums;
-using Saritasa.NetForge.Blazor.Domain.Interfaces;
-using Saritasa.NetForge.Blazor.Infrastructure.Abstractions.Interfaces;
+﻿using Saritasa.NetForge.Domain;
+using Saritasa.NetForge.Domain.Enums;
+using Saritasa.NetForge.Domain.Interfaces;
+using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Demo.Infrastructure.UploadFiles.Strategies;
 using Saritasa.NetForge.Demo.Models;
 

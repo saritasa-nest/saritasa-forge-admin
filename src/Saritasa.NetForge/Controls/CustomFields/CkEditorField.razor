@@ -1,0 +1,16 @@
+﻿@inherits CustomField;
+
+@if (FieldErrorModel.IsError)
+{
+    <HeadContent>
+        <link href="_content/Saritasa.NetForge/CkEditor.error.css" rel="stylesheet" />
+    </HeadContent>
+}
+
+<div class="@(IsReadOnly ? "editor--disabled" : "")">
+    <MudText Typo="Typo.subtitle2" Class="px-2" Style="@(FieldErrorModel.IsError ? "color: var(--mud-palette-error)" : string.Empty)">@Property.Name</MudText>
+    <textarea @ref="editor">
+        @PropertyValue
+    </textarea>
+    <p class="@(string.Join(" ", "mud-input-helper-text px-2", !FieldErrorModel.IsError ? string.Empty : "mud-input-error"))">@(!FieldErrorModel.IsError ? Property.Description : FieldErrorModel.ErrorMessage)</p>
+</div>

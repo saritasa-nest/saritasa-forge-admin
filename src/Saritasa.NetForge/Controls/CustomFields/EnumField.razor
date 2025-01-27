@@ -1,0 +1,16 @@
+﻿@using Saritasa.NetForge.Extensions
+@inherits CustomField
+
+<MudSelect T="string"
+           Label="@Property.Name.ToMeaningfulName()"
+           Variant="Variant.Outlined"
+           HelperText="@Property.Description"
+           Disabled="IsReadOnly"
+           @bind-Value="PropertyValue"
+           Error="@FieldErrorModel.IsError"
+           ErrorText="@FieldErrorModel.ErrorMessage">
+    @foreach (var enumValue in Enum.GetNames(Property.ClrType!))
+    {
+        <MudSelectItem Value="enumValue" />
+    }
+</MudSelect>

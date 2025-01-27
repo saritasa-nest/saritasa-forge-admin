@@ -49,6 +49,7 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
     - [Configuration](#configuration-3)
   - [Multiline Text Field Property](#multiline-text-field-property)
     - [Configuration](#configuration-4)
+  - [Migration](#migration)
   - [License](#license)
 
 # How to Use
@@ -933,6 +934,10 @@ entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
 [MultilineText(IsAutoGrow = true)]
 public required string Street { get; set; }
 ```
+
+## Migration
+
+See how to update the library [here](MIGRATION.md).
 
 Contributors
 ------------

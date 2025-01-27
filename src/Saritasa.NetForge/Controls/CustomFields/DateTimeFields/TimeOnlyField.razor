@@ -1,0 +1,12 @@
+@using Saritasa.NetForge.Extensions
+@inherits CustomField
+
+<MudTimePicker Label="@Property.Name.ToMeaningfulName()"
+               Editable="true"
+               @bind-Time="@PropertyValue"
+               Variant="Variant.Outlined"
+               Error="@FieldErrorModel.IsError"
+               ErrorText="@FieldErrorModel.ErrorMessage"
+               HelperText="@Property.Description"
+               Disabled="IsReadOnly"
+/>

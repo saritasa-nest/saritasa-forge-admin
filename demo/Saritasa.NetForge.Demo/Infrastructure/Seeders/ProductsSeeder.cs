@@ -37,7 +37,7 @@ internal class ProductsSeeder
         foreach (var chunk in Tools.Common.Utils.CollectionUtils
                      .ChunkSelectRange(Enumerable.Range(0, numberOfItems), chunkSize: 50))
         {
-            foreach (var chunkRange in chunk)
+            foreach (var _ in chunk)
             {
                 var product = GenerateProduct();
                 shopDbContext.Products.Add(product);
@@ -46,7 +46,7 @@ internal class ProductsSeeder
             count += await shopDbContext.SaveChangesAsync(cancellationToken);
         }
         
-        logger.LogInformation("Created {count} products.", count);
+        logger.LogInformation("Created {Count} products.", count);
         return count;
     }
 
