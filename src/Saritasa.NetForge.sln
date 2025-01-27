@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{51D6022E-3
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{448B6392-162C-44AB-9E79-96666A994B84}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge.Blazor", "Saritasa.NetForge.Blazor\Saritasa.NetForge.Blazor.csproj", "{DC095BA1-A950-4432-A328-5FA75DBF03F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saritasa.NetForge", "Saritasa.NetForge\Saritasa.NetForge.csproj", "{DC095BA1-A950-4432-A328-5FA75DBF03F3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5D2DF5E1-DF2A-491E-833B-F63D0E156F2C}"
 EndProject
@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\CHANGELOG.txt = ..\CHANGELOG.txt
 		..\INSTALL.md = ..\INSTALL.md
 		..\VERSION.txt = ..\VERSION.txt
+		Directory.Build.props = Directory.Build.props
+		..\MIGRATION.md = ..\MIGRATION.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{A1EF2098-C576-488D-BABF-8C76685CAFBD}"

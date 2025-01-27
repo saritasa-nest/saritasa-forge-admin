@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Saritasa.NetForge.Blazor\Saritasa.NetForge.Blazor.csproj" />
+    <ProjectReference Include="..\Saritasa.NetForge\Saritasa.NetForge.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">

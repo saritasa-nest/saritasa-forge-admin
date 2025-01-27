@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Saritasa.NetForge.Blazor.Domain.Attributes;
+using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.Demo.Constants;
 
 namespace Saritasa.NetForge.Demo.Models;

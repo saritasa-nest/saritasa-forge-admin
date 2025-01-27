@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Saritasa.NetForge.Blazor.Infrastructure.Abstractions.Interfaces;
+using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Tests.Domain;
 using Saritasa.NetForge.Tests.Domain.Models;
 using Saritasa.NetForge.Tests.Fixtures;
@@ -14,7 +14,7 @@ namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 /// <summary>
 /// Delete entity tests.
 /// </summary>
-[TestCaseOrderer(Constants.OrdererTypeName, Constants.OrdererAssemblyName)]
+[TestCaseOrderer(Fixtures.Constants.OrdererTypeName, Fixtures.Constants.OrdererAssemblyName)]
 public class DeleteEntityTests : TestBed<NetForgeFixture>
 {
 #pragma warning disable CA2213
