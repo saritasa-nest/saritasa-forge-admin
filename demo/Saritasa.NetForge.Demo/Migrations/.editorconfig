@@ -1,0 +1,4 @@
+[*]
+generated_code = true
+
+dotnet_diagnostic.SA1600.severity = none

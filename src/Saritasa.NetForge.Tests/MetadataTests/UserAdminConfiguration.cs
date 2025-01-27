@@ -1,5 +1,5 @@
-﻿using Saritasa.NetForge.Blazor.Domain;
-using Saritasa.NetForge.Blazor.Domain.Interfaces;
+﻿using Saritasa.NetForge.Domain;
+using Saritasa.NetForge.Domain.Interfaces;
 using Saritasa.NetForge.Tests.Domain.Models;
 
 namespace Saritasa.NetForge.Tests.MetadataTests;

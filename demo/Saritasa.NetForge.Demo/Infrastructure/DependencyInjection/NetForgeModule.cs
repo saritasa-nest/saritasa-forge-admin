@@ -1,11 +1,11 @@
-﻿using Saritasa.NetForge.Blazor.Domain.Entities.Options;
-using Saritasa.NetForge.Blazor.Extensions;
-using Saritasa.NetForge.Blazor.Infrastructure.EfCore.Extensions;
-using Saritasa.NetForge.Demo.Constants;
+﻿using Saritasa.NetForge.Demo.Constants;
 using Saritasa.NetForge.Demo.Infrastructure.Admin;
 using Saritasa.NetForge.Demo.Infrastructure.Extensions;
 using Saritasa.NetForge.Demo.Models;
 using Saritasa.NetForge.Demo.Views.Admin;
+using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Extensions;
+using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.DependencyInjection;
 
@@ -28,6 +28,7 @@ internal static class NetForgeModule
                     new() { Name = GroupConstants.Shops }
                 })
                 .SetGroupHeadersExpanded(true)
+                .SetEntitySaveMessage("Entity was saved.")
                 .SetCustomHeadType(typeof(AdminHead))
                 .SetInteractiveBodyContent(builder =>
                 {

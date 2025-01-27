@@ -1,6 +1,6 @@
-﻿using Saritasa.NetForge.Blazor.Domain;
-using Saritasa.NetForge.Blazor.Domain.Enums;
-using Saritasa.NetForge.Blazor.Domain.Interfaces;
+﻿using Saritasa.NetForge.Domain;
+using Saritasa.NetForge.Domain.Enums;
+using Saritasa.NetForge.Domain.Interfaces;
 using Saritasa.NetForge.Demo.Models;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.Admin;
@@ -67,5 +67,7 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
 
             dbContext.SaveChanges();
         });
+
+        entityOptionsBuilder.SetEntitySaveMessage("Address was saved successfully.");
     }
 }

@@ -18,6 +18,8 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
     - [Create Groups for Entities](#create-groups-for-entities)
     - [Configuration](#configuration)
     - [Headers Expansion](#headers-expansion)
+    - [Success Messages](#success-messages)
+      - [Save](#save)
   - [Exclude All Entities and Include Specific Only](#exclude-all-entities-and-include-specific-only)
 - [Customizing Entities](#customizing-entities)
   - [Fluent API](#fluent-api)
@@ -48,6 +50,7 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
     - [Configuration](#configuration-3)
   - [Multiline Text Field Property](#multiline-text-field-property)
     - [Configuration](#configuration-4)
+  - [Migration](#migration)
   - [License](#license)
 
 # How to Use
@@ -368,6 +371,31 @@ services.AddNetForge(optionsBuilder =>
 {
     optionsBuilder.SetGroupHeadersExpanded(true);
 });
+```
+
+### Success Messages
+
+You can customize success messages on operations with entities.
+It can be customized on Global and Per-Model levels. Per-Model takes precedence on Global level.
+
+#### Save
+
+##### Global Level
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetEntitySaveMessage("Entity was saved.");
+});
+```
+
+##### Per-Model Level
+
+```csharp
+  public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+  {
+      entityOptionsBuilder.SetEntitySaveMessage("Address was saved successfully.");
+  }
 ```
 
 ## Exclude All Entities and Include Specific Only
@@ -953,6 +981,10 @@ entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
 [MultilineText(IsAutoGrow = true)]
 public required string Street { get; set; }
 ```
+
+## Migration
+
+See how to update the library [here](MIGRATION.md).
 
 Contributors
 ------------

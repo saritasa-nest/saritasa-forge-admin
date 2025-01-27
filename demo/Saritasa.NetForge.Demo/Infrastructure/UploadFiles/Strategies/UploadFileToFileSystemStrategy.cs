@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
-using Saritasa.NetForge.Blazor.Domain;
+using Saritasa.NetForge.Domain;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.UploadFiles.Strategies;
 

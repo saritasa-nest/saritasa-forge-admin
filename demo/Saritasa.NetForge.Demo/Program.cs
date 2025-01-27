@@ -1,5 +1,6 @@
 using McMaster.Extensions.CommandLineUtils;
 using Saritasa.NetForge.Demo.Commands;
+using Saritasa.NetForge.Demo.Infrastructure.Web;
 
 namespace Saritasa.NetForge.Demo;
 
@@ -36,7 +37,7 @@ internal sealed class Program
     }
 
     /// <summary>
-    /// This options is there to allow running the application with `--urls` parameter.
+    /// This option is there to allow running the application with `--urls` parameter.
     /// https://paketo.io/docs/reference/dotnet-core-reference/#self-contained-deployment-and-framework-dependent-executables.
     /// </summary>
     [Option]
@@ -50,11 +51,11 @@ internal sealed class Program
     {
         if (app == null)
         {
-            throw new InvalidOperationException("app is not initialized");
+            throw new InvalidOperationException("app is not initialized.");
         }
 
-        await app.InitAsync();
-        await app.RunAsync();
+        await app.RunAndInit();
+
         return 0;
     }
 }

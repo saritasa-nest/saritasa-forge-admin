@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
-using Saritasa.NetForge.Blazor.Domain.Attributes;
-using Saritasa.NetForge.Blazor.Domain.Enums;
+using Saritasa.NetForge.Domain.Attributes;
+using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Demo.Constants;
 
 namespace Saritasa.NetForge.Demo.Models;
