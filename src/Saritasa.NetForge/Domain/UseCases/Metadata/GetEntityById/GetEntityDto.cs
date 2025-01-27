@@ -1,5 +1,5 @@
-using Saritasa.NetForge.Blazor.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.Entities.Metadata;
+using Saritasa.NetForge.Domain.Entities.Options;
 
 namespace Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 

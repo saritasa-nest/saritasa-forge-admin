@@ -11,7 +11,6 @@ using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.MVVM.Navigation;
 using Saritasa.NetForge.MVVM.Utils;
 using Saritasa.NetForge.MVVM.ViewModels.EditEntity;
-using EntityDetails = Saritasa.NetForge.Pages.EntityDetails;
 
 namespace Saritasa.NetForge.Controls;
 
@@ -69,7 +68,7 @@ public partial class EntityPropertyColumns : ComponentBase
     [Parameter]
     public bool CanDelete { get; set; }
 
-    /// <inheritdoc cref="EntityMetadata.EntityDeleteMessage"/>
+    /// <inheritdoc cref="MessageOptions.EntityDeleteMessage"/>
     [Parameter]
     public string? EntityDeleteMessage { get; set; }
 

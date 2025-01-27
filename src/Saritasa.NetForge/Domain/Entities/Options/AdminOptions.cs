@@ -1,6 +1,4 @@
-﻿using Saritasa.NetForge.Blazor.Domain.Entities.Options;
-
-namespace Saritasa.NetForge.Domain.Entities.Options;
+﻿namespace Saritasa.NetForge.Domain.Entities.Options;
 
 /// <summary>
 /// Admin panel options.

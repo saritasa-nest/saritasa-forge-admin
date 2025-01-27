@@ -1,4 +1,4 @@
-namespace Saritasa.NetForge.Blazor.Domain.Entities.Options;
+namespace Saritasa.NetForge.Domain.Entities.Options;
 
 /// <summary>
 /// Contains custom messages for operations.
