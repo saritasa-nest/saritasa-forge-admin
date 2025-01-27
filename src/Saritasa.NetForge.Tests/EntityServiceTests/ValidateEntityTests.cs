@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Moq;
-using Saritasa.NetForge.Blazor.Domain;
-using Saritasa.NetForge.Blazor.Domain.UseCases.Interfaces;
-using Saritasa.NetForge.Blazor.Domain.UseCases.Metadata.Services;
-using Saritasa.NetForge.Blazor.Domain.UseCases.Services;
+using Saritasa.NetForge.Domain;
+using Saritasa.NetForge.Domain.UseCases.Interfaces;
+using Saritasa.NetForge.Domain.UseCases.Metadata.Services;
+using Saritasa.NetForge.Domain.UseCases.Services;
 using Saritasa.NetForge.Tests.Domain.Models;
 using Saritasa.NetForge.Tests.Helpers;
 using Xunit;

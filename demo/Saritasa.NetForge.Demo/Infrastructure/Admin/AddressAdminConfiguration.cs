@@ -1,6 +1,6 @@
-﻿using Saritasa.NetForge.Blazor.Domain;
-using Saritasa.NetForge.Blazor.Domain.Enums;
-using Saritasa.NetForge.Blazor.Domain.Interfaces;
+﻿using Saritasa.NetForge.Domain;
+using Saritasa.NetForge.Domain.Enums;
+using Saritasa.NetForge.Domain.Interfaces;
 using Saritasa.NetForge.Demo.Models;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.Admin;
@@ -38,6 +38,11 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
             propertyBuilder
                 .SetIsMultiline(autoGrow: true, maxLines: 10)
                 .SetNavigationDisplayOrder(1);
+        }).ConfigureCalculatedProperty(address => address.FullAddress, propertyBuilder =>
+        {
+            propertyBuilder
+                .SetDescription("Contains street, city and country.")
+                .SetOrder(5);
         }).ConfigureProperty(address => address.Longitude, propertyBuilder =>
         {
             propertyBuilder
@@ -66,5 +71,7 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
 
             dbContext.SaveChanges();
         });
+
+        entityOptionsBuilder.SetEntitySaveMessage("Address was saved successfully.");
     }
 }

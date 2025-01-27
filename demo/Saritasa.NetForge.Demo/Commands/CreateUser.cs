@@ -69,11 +69,11 @@ public class CreateUser
         };
         
         var result = await userManager.CreateAsync(user, Password);
-        logger.LogInformation("User creation result: {result}.", result);
+        logger.LogInformation("User creation result: {Result}.", result);
         
         if (result.Succeeded)
         {
-            logger.LogInformation("User id: {userId}.", user.Id);
+            logger.LogInformation("User id: {UserId}.", user.Id);
         }
     }
 }

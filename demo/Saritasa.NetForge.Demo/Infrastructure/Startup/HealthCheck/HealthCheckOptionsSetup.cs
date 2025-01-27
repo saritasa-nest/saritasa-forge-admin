@@ -9,9 +9,9 @@ namespace Saritasa.NetForge.Demo.Infrastructure.Startup.HealthCheck;
 /// The class returns configured health check.
 /// More health checks can be found here https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks .
 /// </summary>
-internal class HealthCheckOptionsSetup
+internal static class HealthCheckOptionsSetup
 {
-    private static readonly JsonSerializerOptions JsonSerializerOptions = new()
+    private static readonly JsonSerializerOptions jsonSerializerOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         Converters = { new JsonStringEnumConverter() }
@@ -20,7 +20,7 @@ internal class HealthCheckOptionsSetup
     /// <summary>
     /// Returns <see cref="HealthCheckOptions" />.
     /// </summary>
-    public HealthCheckOptions Setup(HealthCheckOptions options)
+    public static HealthCheckOptions Setup(HealthCheckOptions options)
     {
         options.ResponseWriter = WriteResponseAsync;
         return options;
@@ -38,6 +38,6 @@ internal class HealthCheckOptionsSetup
                     e.Value.Description
                 })
             },
-            JsonSerializerOptions);
+            jsonSerializerOptions);
     }
 }

@@ -37,12 +37,12 @@ internal class UsersSeeder
         foreach (var chunk in Tools.Common.Utils.CollectionUtils
                      .ChunkSelectRange(Enumerable.Range(0, numberOfItems), chunkSize: 50))
         {
-            foreach (var chunkRange in chunk)
+            foreach (var _ in chunk)
             {
                 var result = await userManager.CreateAsync(GenerateUser(), password);
                 if (!result.Succeeded)
                 {
-                    logger.LogWarning("Cannot create user: {result}.", result);
+                    logger.LogWarning("Cannot create user: {Result}.", result);
                 }
                 else
                 {
@@ -50,7 +50,7 @@ internal class UsersSeeder
                 }
             }
         }
-        logger.LogInformation("Created {count} users.", count);
+        logger.LogInformation("Created {Count} users.", count);
         return count;
     }
 

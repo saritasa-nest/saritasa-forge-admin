@@ -1,5 +1,5 @@
-﻿using Saritasa.NetForge.Blazor.Domain;
-using Saritasa.NetForge.Blazor.Domain.Interfaces;
+﻿using Saritasa.NetForge.Domain;
+using Saritasa.NetForge.Domain.Interfaces;
 using Saritasa.NetForge.Tests.Domain.Models;
 
 namespace Saritasa.NetForge.Tests.MetadataTests;
@@ -14,7 +14,6 @@ internal class UserAdminConfiguration : IEntityAdminConfiguration<User>
     {
         entityOptionsBuilder.SetGroup("Identity")
             .SetDescription("This is a description")
-            .AddCalculatedProperties(user => user.FullName, user => user.Age)
             .ConfigureProperty(user => user.FullName, builder => builder.SetOrder(1))
             .ConfigureProperty(user => user.ConcurrencyStamp, builder => builder.SetIsHidden(true))
             .ConfigureProperty(user => user.LockoutEnd, builder => builder.SetIsHidden(true))

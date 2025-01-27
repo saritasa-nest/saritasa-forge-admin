@@ -1,0 +1,81 @@
+﻿@using Saritasa.NetForge.Controls
+@using Saritasa.NetForge.Controls.CustomFields
+@using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById
+@using Saritasa.NetForge.Extensions
+@using Saritasa.NetForge.Infrastructure.Helpers
+@using Saritasa.NetForge.MVVM.ViewModels
+@using Saritasa.NetForge.MVVM.ViewModels.CreateEntity
+
+@inherits MvvmComponentBase<CreateEntityViewModel>
+
+@if (ViewModel.IsEntityExists)
+{
+    <MudBreadcrumbs Items="breadcrumbItems"></MudBreadcrumbs>
+
+    var title = $"Create {ViewModel.Model.DisplayName.ToMeaningfulName()}";
+    <PageTitle>@title</PageTitle>
+    <MudText Class="pb-4" Typo="Typo.h4">@title</MudText>
+    if (ViewModel.Model.Properties.Any())
+    {
+        <MudGrid Justify="Justify.Center">
+            <MudItem xs="6">
+                <EditForm Model="ViewModel.Model.EntityInstance" OnValidSubmit="ViewModel.CreateEntityAsync">
+                    <div class="d-flex flex-column flex-grow-1 gap-4">
+                        @foreach (var property in ViewModel.Model.Properties)
+                        {
+                            // If there is no error view model for the property, create a new one
+                            var fieldError = ViewModel.FieldErrorModels.FirstOrDefault(e => e.Property.Name == property.Name);
+                            if (fieldError == null)
+                            {
+                                fieldError = new FieldErrorModel
+                                {
+                                    Property = property
+                                };
+                                ViewModel.FieldErrorModels.Add(fieldError);
+                            }
+
+                            var componentType = CustomFieldHelper.GetComponentType(property);
+                            var parameters = new Dictionary<string, object>
+                            {
+                                { nameof(CustomField.Property), property },
+                                { nameof(CustomField.EntityInstance), ViewModel.Model.EntityInstance },
+                                { "FieldErrorModel", fieldError }
+                            };
+
+                            if (property.UploadFileStrategy is not null)
+                            {
+                                parameters.Add(
+                                    nameof(UploadImage.OnFileSelected),
+                                    (Action<PropertyMetadataDto, IBrowserFile?>)ViewModel.HandleSelectedFile);
+                            }
+
+                            <DynamicComponent Type="componentType" Parameters="parameters"/>
+                        }
+
+                        <div class="d-flex flex-row gap-4 pt-4">
+                            <MudButton Variant="Variant.Outlined" OnClick="NavigateToEntityDetails">
+                                Cancel
+                            </MudButton>
+                            <MudButton Variant="Variant.Outlined" Color="Color.Success" ButtonType="ButtonType.Submit">
+                                Save
+                            </MudButton>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(ViewModel.GeneralError))
+                        {
+                            <MudAlert Severity="Severity.Error" Class="mb-5">@ViewModel.GeneralError</MudAlert>
+                        }
+                    </div>
+                </EditForm>
+            </MudItem>
+        </MudGrid>
+    }
+    else
+    {
+        <MudText>There are no properties to display for the entity.</MudText>
+    }
+}
+else
+{
+    <NotFound/>
+}

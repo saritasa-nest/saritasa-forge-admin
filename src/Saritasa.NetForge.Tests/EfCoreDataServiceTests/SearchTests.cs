@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Saritasa.NetForge.Blazor.Domain.Enums;
-using Saritasa.NetForge.Blazor.Domain.UseCases.Common;
-using Saritasa.NetForge.Blazor.Domain.UseCases.Metadata.GetEntityById;
-using Saritasa.NetForge.Blazor.Infrastructure.Abstractions.Interfaces;
+using Saritasa.NetForge.Domain.Enums;
+using Saritasa.NetForge.Domain.UseCases.Common;
+using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
+using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Tests.Domain;
 using Saritasa.NetForge.Tests.Domain.Models;
 using Saritasa.NetForge.Tests.Fixtures;
@@ -17,7 +17,7 @@ namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 /// <summary>
 /// Searching tests.
 /// </summary>
-[CollectionDefinition(Constants.DependencyInjection)]
+[CollectionDefinition(Fixtures.Constants.DependencyInjection)]
 public class SearchTests : TestBed<NetForgeFixture>
 {
 #pragma warning disable CA2213

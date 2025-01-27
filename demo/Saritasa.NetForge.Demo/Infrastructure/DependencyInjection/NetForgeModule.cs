@@ -1,6 +1,6 @@
-﻿using Saritasa.NetForge.Blazor.Domain.Entities.Options;
-using Saritasa.NetForge.Blazor.Extensions;
-using Saritasa.NetForge.Blazor.Infrastructure.EfCore.Extensions;
+﻿using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Extensions;
+using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 using Saritasa.NetForge.Demo.Constants;
 using Saritasa.NetForge.Demo.Infrastructure.Admin;
 using Saritasa.NetForge.Demo.Infrastructure.Extensions;
@@ -27,6 +27,7 @@ internal static class NetForgeModule
                     new() { Name = GroupConstants.Shops }
                 })
                 .SetGroupHeadersExpanded(true)
+                .SetEntitySaveMessage("Entity was saved.")
                 .ConfigureEntity(new ShopAdminConfiguration(services))
                 .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
                 {

@@ -49,11 +49,11 @@ internal static class Fakers
         .RuleFor(p => p.CreatedDate, f => f.Date.Recent(10))
         .RuleFor(p => p.UpdatedDate, (f, p) => f.Date.Future(refDate: p.CreatedDate))
         .RuleFor(p => p.RemovedAt, (f, p) => f.Random.Bool() ? f.Date.Future(refDate: p.UpdatedDate) : null)
-        .RuleFor(p => p.EndOfSalesDate, (f, p) => p.IsSalesEnded ?? false ? p.UpdatedDate : null)
+        .RuleFor(p => p.EndOfSalesDate, (_, p) => p.IsSalesEnded ?? false ? p.UpdatedDate : null)
         .RuleFor(p => p.PreviousSupplyDate, f => f.Date.PastDateOnly())
         .RuleFor(p => p.NextSupplyDate, f => f.Date.FutureDateOnly())
         .RuleFor(p => p.Category, f => f.PickRandom(Enum.GetValues(typeof(Category)).Cast<Category>()))
-        .RuleFor(p => p.Supplier, f => SupplierFaker!.Generate())
+        .RuleFor(p => p.Supplier, _ => SupplierFaker!.Generate())
         .RuleFor(p => p.Tags, f => f.Make(3, () => ProductTagFaker!.Generate()));
 
     /// <summary>
@@ -68,12 +68,12 @@ internal static class Fakers
     /// </summary>
     public static readonly Faker<Shop> ShopFaker = new Faker<Shop>()
         .RuleFor(s => s.Name, f => f.Company.CompanyName())
-        .RuleFor(s => s.Address, f => AddressFaker.Generate())
+        .RuleFor(s => s.Address, _ => AddressFaker.Generate())
         .RuleFor(s => s.OpenedDate, f => f.Date.Past(5))
         .RuleFor(s => s.TotalSales, f => f.Finance.Amount(1000, 1000000))
         .RuleFor(s => s.IsOpen, f => f.Random.Bool())
-        .RuleFor(s => s.Products, (f, s) => f.Make(3, () => ProductFaker.Generate()))
-        .RuleFor(s => s.OwnerContact, f => ContactInfoFaker.Generate())
+        .RuleFor(s => s.Products, (f, _) => f.Make(3, () => ProductFaker.Generate()))
+        .RuleFor(s => s.OwnerContact, _ => ContactInfoFaker.Generate())
         .RuleFor(s => s.Suppliers, f => f.Make(3, () => SupplierFaker!.Generate()));
 
     /// <summary>

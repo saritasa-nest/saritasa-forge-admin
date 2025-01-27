@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moq;
-using Saritasa.NetForge.Blazor.Domain;
-using Saritasa.NetForge.Blazor.Domain.UseCases.Metadata.Services;
-using Saritasa.NetForge.Blazor.Domain.UseCases.Services;
-using Saritasa.NetForge.Blazor.Infrastructure.EfCore;
-using Saritasa.NetForge.Blazor.Infrastructure.EfCore.Services;
+using Saritasa.NetForge.Domain;
+using Saritasa.NetForge.Domain.UseCases.Metadata.Services;
+using Saritasa.NetForge.Domain.UseCases.Services;
+using Saritasa.NetForge.Infrastructure.EfCore;
+using Saritasa.NetForge.Infrastructure.EfCore.Services;
 using Saritasa.NetForge.Tests.Domain;
 
 namespace Saritasa.NetForge.Tests.Helpers;
