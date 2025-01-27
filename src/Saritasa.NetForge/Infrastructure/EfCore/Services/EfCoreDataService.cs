@@ -323,7 +323,6 @@ public class EfCoreDataService : IOrmDataService
             .Invoke(null, [castCollection]);
     }
 
-
     /// <inheritdoc />
     public Task<PagedListMetadataDto<object>> SearchDataForEntityAsync(
         Type? entityType,
