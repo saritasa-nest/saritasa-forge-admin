@@ -94,45 +94,34 @@ Collection navigations have this behavior by default like it was configured usin
 
 ## Display navigation data on the entity Edit page
 
-You can choose which properties to use when displaying navigation on edit page.
-Also, you can determine an order of displaying such properties.
-
-### Using Data Attribute
-
-```csharp
-[NetForgeProperty(NavigationDisplayOrder = 1)]
-public string Name { get; set; }
- 
-[NetForgeProperty(NavigationDisplayOrder = 2)]
-public decimal Price { get; set; }
-```
+You can set function to get string representation of an entity.
 
 ### Using Fluent API
 
 ```csharp
     public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
     {
-        entityOptionsBuilder
-            .ConfigureProperty(address => address.City, propertyBuilder =>
-        {
-            propertyBuilder.SetNavigationDisplayOrder(2);
-        })
-            .ConfigureProperty(address => address.Street, propertyBuilder =>
-        {
-            propertyBuilder.SetNavigationDisplayOrder(1);
-        });
+        entityOptionsBuilder.ConfigureToString(address => $"{address.Street}, {address.City}");
     }
 ```
 
 ### ToString Override
 
-If you have `ToString` overridden then it will be used to display navigation even when `NavigationDisplayOrder` is used.
+Also, if you have `ToString` overridden then it will be used to get string representation. 
+But `ConfigureToString` has precedence.
+
+### Primary Keys Display
+
+If, neither `ToString` and `ConfigureToString` are implemented, then primary keys will be displayed.
+In case of composite key `--` will be used as separator. For example:
+
+`Tokyo--Japan`
 
 ### Equals and GetHashCode Override
 
 To display currently selected item in select input when navigation reference is used you have to override `Equals` and `GetHashCode`.
 It is restriction of `MudBlazor` library. See code of `Custom converter` section [here](https://www.mudblazor.com/components/select).
-It is not necessary for displaying navigation collection.
+It is not working for displaying navigation collection.
 
 ```csharp
     public override bool Equals(object? obj)
