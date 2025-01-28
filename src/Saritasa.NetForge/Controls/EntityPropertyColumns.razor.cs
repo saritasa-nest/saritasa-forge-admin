@@ -262,7 +262,7 @@ public partial class EntityPropertyColumns : ComponentBase
         }
         else if (!string.IsNullOrEmpty(AdminOptions.MessageOptions.EntityDeleteMessage))
         {
-            entityDeleteMessage =AdminOptions.MessageOptions.EntityDeleteMessage;
+            entityDeleteMessage = AdminOptions.MessageOptions.EntityDeleteMessage;
         }
         else
         {
