@@ -171,14 +171,6 @@ public static class EntityMetadataAttributesExtensions
         {
             property.TruncationMaxCharacters = netForgePropertyAttribute.TruncationMaxCharacters;
         }
-
-        if (property is PropertyMetadata propertyMetadata)
-        {
-            if (netForgePropertyAttribute.NavigationDisplayOrder > 0)
-            {
-                propertyMetadata.NavigationDisplayOrder = netForgePropertyAttribute.NavigationDisplayOrder;
-            }
-        }
     }
 
     private static bool TryApplyMultilineTextAttributeValues(this PropertyMetadataBase property)

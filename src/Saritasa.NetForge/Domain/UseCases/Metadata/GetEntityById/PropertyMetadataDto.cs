@@ -100,7 +100,4 @@ public record PropertyMetadataDto
 
     /// <inheritdoc cref="PropertyMetadata.CanBeNavigatedToDetails"/>
     public bool CanBeNavigatedToDetails { get; set; }
-
-    /// <inheritdoc cref="PropertyMetadata.NavigationDisplayOrder"/>
-    public int? NavigationDisplayOrder { get; set; }
 }

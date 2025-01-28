@@ -229,15 +229,4 @@ public class PropertyOptionsBuilder
         }
         return this;
     }
-
-    /// <summary>
-    /// Sets order in which a property displayed when entity used as navigation.
-    /// </summary>
-    /// <param name="navigationDisplayOrder">Positive number that represents order.</param>
-    /// <remarks>Ascended order will be used.</remarks>
-    public PropertyOptionsBuilder SetNavigationDisplayOrder(int navigationDisplayOrder)
-    {
-        options.NavigationDisplayOrder = navigationDisplayOrder;
-        return this;
-    }
 }

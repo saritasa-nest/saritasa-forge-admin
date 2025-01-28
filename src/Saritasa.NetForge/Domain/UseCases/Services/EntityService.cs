@@ -140,7 +140,6 @@ public class EntityService : IEntityService
             IsAutoGrow = property.IsAutoGrow,
             CanDisplayDetails = property.CanDisplayDetails,
             CanBeNavigatedToDetails = property.CanBeNavigatedToDetails,
-            NavigationDisplayOrder = property.NavigationDisplayOrder,
         };
     }
 
