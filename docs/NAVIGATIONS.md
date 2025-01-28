@@ -12,11 +12,11 @@ When navigation represents a reference to another entity, then you can choose wh
 
 ### Collection
 
-In case of the collection navigation we support displaying only primary keys. For example: `[1, 15, 99]`.
+In case of the collection navigation we support displaying only primary keys. For example: `[1, 15, 99]`.a
 
-## Display navigations configuration
+## Include Navigation
 
-Displaying navigation properties are configurable via `Fluent API`.
+You can include navigation and its properties via `Fluent API`.
 
 ### Using Fluent API
 
@@ -44,17 +44,6 @@ public void Configure(EntityOptionsBuilder<Shop> entityOptionsBuilder)
                         .SetSearchType(SearchType.ContainsCaseInsensitive);
                 });
         });
-}
-```
-
-## Displaying navigations
-
-To display friendly name of a navigation on create/edit entity pages you need to override `ToString`.
-
-```csharp
-public override string ToString()
-{
-    return $"{Id}; {Name}";
 }
 ```
 
