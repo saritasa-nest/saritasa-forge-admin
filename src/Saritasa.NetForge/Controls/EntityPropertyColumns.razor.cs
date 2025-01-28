@@ -208,26 +208,6 @@ public partial class EntityPropertyColumns : ComponentBase
         NavigationService.NavigateTo<EditEntityViewModel>(parameters: [entityMetadata.StringId, primaryKeyValues]);
     }
 
-    /// <summary>
-    /// Delete entity.
-    /// </summary>
-    private async Task DeleteEntityAsync(object entity, CancellationToken cancellationToken)
-    {
-        try
-        {
-            await EntityService.DeleteEntityAsync(entity, entity.GetType(), cancellationToken);
-
-            DataGrid?.ReloadServerData();
-        }
-        catch (Exception ex)
-        {
-            var message = ex.InnerException is not null ? ex.InnerException.Message : ex.Message;
-            Snackbar.Add($"Failed to delete record due to error: {message}", Severity.Error);
-
-            Logger.LogError(ex, "{Handler}: Failed to delete record {EntityType}", nameof(EntityDetails), entity.GetType());
-        }
-    }
-
     private async Task ShowDeleteEntityConfirmationAsync(object source)
     {
         var parameters = new DialogParameters
@@ -242,7 +222,8 @@ public partial class EntityPropertyColumns : ComponentBase
         {
             try
             {
-                await DeleteEntityAsync(source, CancellationToken.None);
+                await EntityService.DeleteEntityAsync(source, source.GetType(), CancellationToken.None);
+                DataGrid?.ReloadServerData();
                 ShowEntityDeleteMessage();
             }
             catch (Exception ex)
