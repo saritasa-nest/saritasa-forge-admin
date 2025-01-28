@@ -228,8 +228,9 @@ public partial class EntityPropertyColumns : ComponentBase
             }
             catch (Exception ex)
             {
-                Snackbar.Add($"Failed to delete record due to error: {ex.Message}", Severity.Error);
-                Logger.LogError("Failed to delete record due to error: {ErrorMessage}", ex.Message);
+                var message = ex.InnerException is not null ? ex.InnerException.Message : ex.Message;
+                Snackbar.Add($"Failed to delete record due to error: {message}", Severity.Error);
+                Logger.LogError(ex, "Failed to delete record due to error: {ErrorMessage}", message);
             }
         }
     }
