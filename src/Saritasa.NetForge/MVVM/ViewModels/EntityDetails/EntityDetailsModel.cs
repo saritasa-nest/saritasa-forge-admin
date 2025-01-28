@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.MVVM.ViewModels.EntityDetails;
@@ -49,4 +50,10 @@ public record EntityDetailsModel
 
     /// <inheritdoc cref="EntityMetadata.CanDelete"/>
     public bool CanDelete { get; set; }
+
+    /// <inheritdoc cref="MessageOptions.EntityDeleteMessage"/>
+    public string? EntityDeleteMessage { get; set; }
+
+    /// <inheritdoc cref="MessageOptions.EntityBulkDeleteMessage"/>
+    public string? EntityBulkDeleteMessage { get; set; }
 }

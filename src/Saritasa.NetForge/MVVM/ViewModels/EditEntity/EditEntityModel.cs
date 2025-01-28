@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.MVVM.ViewModels.EditEntity;
@@ -38,6 +39,6 @@ public record EditEntityModel
     /// </summary>
     public Action<IServiceProvider?, object, object>? AfterUpdateAction { get; init; }
 
-    /// <inheritdoc cref="EntityMetadata.EntitySaveMessage"/>
+    /// <inheritdoc cref="MessageOptions.EntitySaveMessage"/>
     public string? EntitySaveMessage { get; init; }
 }

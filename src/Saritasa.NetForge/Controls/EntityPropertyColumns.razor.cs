@@ -11,7 +11,6 @@ using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.MVVM.Navigation;
 using Saritasa.NetForge.MVVM.Utils;
 using Saritasa.NetForge.MVVM.ViewModels.EditEntity;
-using EntityDetails = Saritasa.NetForge.Pages.EntityDetails;
 
 namespace Saritasa.NetForge.Controls;
 
@@ -68,6 +67,10 @@ public partial class EntityPropertyColumns : ComponentBase
     /// </summary>
     [Parameter]
     public bool CanDelete { get; set; }
+
+    /// <inheritdoc cref="MessageOptions.EntityDeleteMessage"/>
+    [Parameter]
+    public string? EntityDeleteMessage { get; set; }
 
     /// <summary>
     /// Gets property's display name.
@@ -240,6 +243,7 @@ public partial class EntityPropertyColumns : ComponentBase
             try
             {
                 await DeleteEntityAsync(source, CancellationToken.None);
+                ShowEntityDeleteMessage();
             }
             catch (Exception ex)
             {
@@ -247,5 +251,24 @@ public partial class EntityPropertyColumns : ComponentBase
                 Logger.LogError("Failed to delete record due to error: {ErrorMessage}", ex.Message);
             }
         }
+    }
+
+    private void ShowEntityDeleteMessage()
+    {
+        string entityDeleteMessage;
+        if (!string.IsNullOrEmpty(EntityDeleteMessage))
+        {
+            entityDeleteMessage = EntityDeleteMessage;
+        }
+        else if (!string.IsNullOrEmpty(AdminOptions.MessageOptions.EntityDeleteMessage))
+        {
+            entityDeleteMessage = AdminOptions.MessageOptions.EntityDeleteMessage;
+        }
+        else
+        {
+            entityDeleteMessage = "Entity was deleted successfully.";
+        }
+
+        Snackbar.Add(entityDeleteMessage, Severity.Success);
     }
 }

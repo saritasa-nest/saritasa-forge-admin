@@ -27,7 +27,10 @@ internal static class NetForgeModule
                     new() { Name = GroupConstants.Shops }
                 })
                 .SetGroupHeadersExpanded(true)
-                .SetEntitySaveMessage("Entity was saved.")
+                .SetEntityCreateMessage("The entity was created.")
+                .SetEntitySaveMessage("The entity was saved.")
+                .SetEntityDeleteMessage("The entity was deleted.")
+                .SetEntityBulkDeleteMessage("The entities were deleted.")
                 .ConfigureEntity(new ShopAdminConfiguration(services))
                 .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
                 {

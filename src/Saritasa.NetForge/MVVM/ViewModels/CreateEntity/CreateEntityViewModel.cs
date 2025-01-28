@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using MudBlazor;
 using Microsoft.AspNetCore.Components.Forms;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.Extensions;
 using Saritasa.NetForge.MVVM.Utils;
 using Saritasa.NetForge.Domain.Exceptions;
@@ -23,6 +25,8 @@ public class CreateEntityViewModel : ValidationEntityViewModel
     private readonly ILogger<CreateEntityViewModel> logger;
     private readonly IEntityService entityService;
     private readonly INavigationService navigationService;
+    private readonly ISnackbar snackbar;
+    private readonly AdminOptions adminOptions;
 
     /// <summary>
     /// Constructor.
@@ -31,13 +35,17 @@ public class CreateEntityViewModel : ValidationEntityViewModel
         string stringId,
         ILogger<CreateEntityViewModel> logger,
         IEntityService entityService,
-        INavigationService navigationService)
+        INavigationService navigationService,
+        ISnackbar snackbar,
+        AdminOptions adminOptions)
     {
         Model = new CreateEntityModel { StringId = stringId };
 
         this.logger = logger;
         this.entityService = entityService;
         this.navigationService = navigationService;
+        this.snackbar = snackbar;
+        this.adminOptions = adminOptions;
     }
 
     /// <summary>
@@ -106,6 +114,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
             PluralName = entity.PluralName,
             ClrType = entity.ClrType,
             Properties = entity.Properties,
+            EntityCreateMessage = entity.MessageOptions.EntityCreateMessage,
         };
     }
 
@@ -136,6 +145,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
         {
             await entityService.CreateEntityAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
             navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
+            ShowEntityCreateMessage();
         }
         catch (Exception ex)
         {
@@ -143,5 +153,24 @@ public class CreateEntityViewModel : ValidationEntityViewModel
 
             GeneralError = ex.InnerException is not null ? ex.InnerException.Message : ex.Message;
         }
+    }
+
+    private void ShowEntityCreateMessage()
+    {
+        string entityCreateMessage;
+        if (!string.IsNullOrEmpty(Model.EntityCreateMessage))
+        {
+            entityCreateMessage = Model.EntityCreateMessage;
+        }
+        else if (!string.IsNullOrEmpty(adminOptions.MessageOptions.EntityCreateMessage))
+        {
+            entityCreateMessage = adminOptions.MessageOptions.EntityCreateMessage;
+        }
+        else
+        {
+            entityCreateMessage = "Entity was created successfully.";
+        }
+
+        snackbar.Add(entityCreateMessage, Severity.Success);
     }
 }
