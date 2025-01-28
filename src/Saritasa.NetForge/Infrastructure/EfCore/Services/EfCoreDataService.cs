@@ -393,10 +393,15 @@ public class EfCoreDataService : IOrmDataService
     {
         var dbContext = GetDbContextThatContainsEntity(entityType);
 
-        dbContext.Remove(entity);
-        await dbContext.SaveChangesAsync(cancellationToken);
-
-        dbContext.ChangeTracker.Clear();
+        try
+        {
+            dbContext.Remove(entity);
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+        finally
+        {
+            dbContext.ChangeTracker.Clear();
+        }
     }
 
     /// <inheritdoc />
@@ -405,13 +410,18 @@ public class EfCoreDataService : IOrmDataService
     {
         var dbContext = GetDbContextThatContainsEntity(entityType);
 
-        foreach (var entity in entities)
+        try
         {
-            dbContext.Remove(entity);
+            foreach (var entity in entities)
+            {
+                dbContext.Remove(entity);
+            }
+            await dbContext.SaveChangesAsync(cancellationToken);
         }
-        await dbContext.SaveChangesAsync(cancellationToken);
-
-        dbContext.ChangeTracker.Clear();
+        finally
+        {
+            dbContext.ChangeTracker.Clear();
+        }
     }
 
     /// <inheritdoc />
@@ -424,19 +434,25 @@ public class EfCoreDataService : IOrmDataService
         var entityType = entity.GetType();
         var dbContext = GetDbContextThatContainsEntity(entityType);
 
-        if (afterUpdateAction is not null)
+        try
         {
-            var originalEntityClone = originalEntity.CloneJson();
-            await UpdateAsync(dbContext, entity, originalEntity, cancellationToken);
+            if (afterUpdateAction is not null)
+            {
+                var originalEntityClone = originalEntity.CloneJson();
+                await UpdateAsync(dbContext, entity, originalEntity, cancellationToken);
 
-            afterUpdateAction.Invoke(serviceProvider, originalEntityClone!, originalEntity);
+                afterUpdateAction.Invoke(serviceProvider, originalEntityClone!, originalEntity);
+            }
+            else
+            {
+                await UpdateAsync(dbContext, entity, originalEntity, cancellationToken);
+            }
         }
-        else
+        finally
         {
-            await UpdateAsync(dbContext, entity, originalEntity, cancellationToken);
+            dbContext.ChangeTracker.Clear();
         }
 
-        dbContext.ChangeTracker.Clear();
         return originalEntity;
     }
 
