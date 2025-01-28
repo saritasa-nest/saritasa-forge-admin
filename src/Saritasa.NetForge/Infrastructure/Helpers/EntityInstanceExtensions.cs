@@ -1,4 +1,3 @@
-using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.Domain.Extensions;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 
@@ -24,20 +23,37 @@ public static class EntityInstanceExtensions
     }
 
     /// <summary>
-    /// Uses properties with <see cref="NetForgePropertyAttribute.NavigationDisplayOrder"/>
-    /// to convert an instance to string.
+    /// Gets string representation of given instance.
     /// </summary>
     /// <param name="instance">Instance to convert.</param>
-    /// <param name="properties">Metadata for properties of an entity.</param>
+    /// <param name="entityMetadata">Entity metadata.</param>
     /// <returns>
-    /// String representation of given instance. All suitable properties will be separated by <c>;</c>.
-    /// For example: Main Street; New-York; United States.
+    /// String representation of given instance.
+    /// <list type="number">
+    ///     <item>
+    ///         If <paramref name="entityMetadata"/> has <see cref="GetEntityDto.ToStringFunc"/>, then it will be used.
+    ///     </item>
+    ///     <item>
+    ///         If <see cref="GetEntityDto.ToStringFunc"/> is <c>null</c>,
+    ///         then <see cref="object.ToString()"/> override will be used.
+    ///     </item>
+    ///     <item>
+    ///         If <see cref="GetEntityDto.ToStringFunc"/> is <c>null</c>
+    ///         and entity does not have <see cref="object.ToString()"/> override,
+    ///         then primary keys of an entity will be used.
+    ///     </item>
+    /// </list>
     /// </returns>
-    public static string ConvertToString(this object? instance, ICollection<PropertyMetadataDto> properties)
+    public static string ConvertToString(this object? instance, GetEntityDto entityMetadata)
     {
         if (instance is null)
         {
             return string.Empty;
+        }
+
+        if (entityMetadata.ToStringFunc is not null)
+        {
+            return entityMetadata.ToStringFunc.Invoke(instance);
         }
 
         if (HasToStringOverride(instance))
@@ -45,24 +61,7 @@ public static class EntityInstanceExtensions
             return instance.ToString()!;
         }
 
-        var propertiesToDisplay = properties
-            .Where(property => property.NavigationDisplayOrder is not null)
-            .OrderBy(property => property.NavigationDisplayOrder)
-            .ToList();
-
-        if (propertiesToDisplay.Count == 0)
-        {
-            return instance.GetPrimaryKeyValues(properties);
-        }
-
-        List<object> propertyValues = [];
-        foreach (var property in propertiesToDisplay)
-        {
-            var propertyValue = instance.GetPropertyValue(property.Name);
-            propertyValues.Add(propertyValue ?? property.EmptyValueDisplay);
-        }
-
-        return string.Join("; ", propertyValues);
+        return instance.GetPrimaryKeyValues(entityMetadata.Properties);
     }
 
     private static bool HasToStringOverride(object obj)

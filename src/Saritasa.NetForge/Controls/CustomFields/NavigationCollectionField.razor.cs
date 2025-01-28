@@ -24,7 +24,8 @@ public partial class NavigationCollectionField<T> : CustomField
 
     private IEnumerable<T> NavigationInstances { get; set; } = null!;
 
-    private ICollection<PropertyMetadataDto> EntityProperties { get; set; } = null!;
+
+    private GetEntityDto EntityMetadata { get; set; } = null!;
 
     /// <inheritdoc />
     protected override async Task OnInitializedAsync()
@@ -38,7 +39,6 @@ public partial class NavigationCollectionField<T> : CustomField
             .Cast<T>()
             .OrderBy(instance => instance);
 
-        var entity = await EntityService.GetEntityByTypeAsync(entityType, CancellationToken.None);
-        EntityProperties = entity.Properties;
+        EntityMetadata = await EntityService.GetEntityByTypeAsync(entityType, CancellationToken.None);
     }
 }

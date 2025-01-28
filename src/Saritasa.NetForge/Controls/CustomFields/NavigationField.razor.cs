@@ -23,7 +23,7 @@ public partial class NavigationField : CustomField
 
     private IEnumerable<object> NavigationInstances { get; set; } = null!;
 
-    private ICollection<PropertyMetadataDto> EntityProperties { get; set; } = null!;
+    private GetEntityDto EntityMetadata { get; set; } = null!;
 
     /// <inheritdoc />
     protected override async Task OnInitializedAsync()
@@ -34,7 +34,6 @@ public partial class NavigationField : CustomField
             .GetQuery(Property.ClrType!)
             .OrderBy(instance => instance);
 
-        var entity = await EntityService.GetEntityByTypeAsync(Property.ClrType!, CancellationToken.None);
-        EntityProperties = entity.Properties;
+        EntityMetadata = await EntityService.GetEntityByTypeAsync(Property.ClrType!, CancellationToken.None);
     }
 }

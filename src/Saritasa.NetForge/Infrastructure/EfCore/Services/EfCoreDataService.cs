@@ -246,7 +246,7 @@ public class EfCoreDataService : IOrmDataService
                 ? originalNavigationEntry.Metadata.ClrType
                 : originalNavigationEntry.Metadata.ClrType.GetGenericArguments()[0];
             var entityMetadata = await entityService.GetEntityByTypeAsync(entityType, CancellationToken.None);
-            var objectComparer = new ObjectComparer<object>(entityMetadata.Properties);
+            var objectComparer = new ObjectComparer<object>(entityMetadata);
 
             if (!navigationEntry.Metadata.IsCollection)
             {

@@ -142,4 +142,10 @@ public class Product
     /// The shop where this product can be bought.
     /// </summary>
     public Shop? Shop { get; set; }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"{Name} - {Price}$";
+    }
 }

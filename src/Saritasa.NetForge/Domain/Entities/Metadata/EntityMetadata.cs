@@ -101,4 +101,9 @@ public class EntityMetadata
     /// Custom message when the entity was saved successfully.
     /// </summary>
     public string? EntitySaveMessage { get; set; }
+
+    /// <summary>
+    /// Gets string representation of the entity.
+    /// </summary>
+    public Func<object, string>? ToStringFunc { get; set; }
 }

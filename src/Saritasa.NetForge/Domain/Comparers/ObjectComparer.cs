@@ -4,21 +4,19 @@ using Saritasa.NetForge.Infrastructure.Helpers;
 namespace Saritasa.NetForge.Domain.Comparers;
 
 /// <summary>
-/// Comparer for objects. Uses their <see cref="object.ToString()"/> methods.
+/// Comparer for objects.
+/// Uses <see cref="EntityInstanceExtensions.ConvertToString(object?, GetEntityDto)"/> to compare.
 /// </summary>
-/// <remarks>
-/// Useful to compare objects when they have <see cref="object.ToString()"/> overridden.
-/// </remarks>
 public class ObjectComparer<T> : IEqualityComparer<T>
 {
-    private ICollection<PropertyMetadataDto> EntityProperties { get; set; }
+    private GetEntityDto EntityMetadata { get; }
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public ObjectComparer(ICollection<PropertyMetadataDto> entityProperties)
+    public ObjectComparer(GetEntityDto entityMetadata)
     {
-        EntityProperties = entityProperties;
+        EntityMetadata = entityMetadata;
     }
 
     /// <inheritdoc />
@@ -34,12 +32,12 @@ public class ObjectComparer<T> : IEqualityComparer<T>
             return false;
         }
 
-        return x.ConvertToString(EntityProperties) == y.ConvertToString(EntityProperties);
+        return x.ConvertToString(EntityMetadata) == y.ConvertToString(EntityMetadata);
     }
 
     /// <inheritdoc />
     public int GetHashCode(T obj)
     {
-        return obj.ConvertToString(EntityProperties).GetHashCode();
+        return obj.ConvertToString(EntityMetadata).GetHashCode();
     }
 }

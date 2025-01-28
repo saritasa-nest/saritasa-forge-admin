@@ -227,4 +227,20 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         options.EntitySaveMessage = entitySaveMessage;
         return this;
     }
+
+    /// <summary>
+    /// Configures function to get string representation of the entity.
+    /// </summary>
+    /// <param name="toStringFunc">Function to get string representation.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public EntityOptionsBuilder<TEntity> ConfigureToString(Func<TEntity, string> toStringFunc)
+    {
+        options.ToStringFunc = CallToString;
+        return this;
+
+        string CallToString(object? entity)
+        {
+            return entity is not null ? toStringFunc.Invoke((TEntity)entity) : string.Empty;
+        }
+    }
 }
