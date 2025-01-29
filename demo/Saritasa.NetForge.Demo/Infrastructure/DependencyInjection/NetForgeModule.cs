@@ -1,10 +1,11 @@
-﻿using Saritasa.NetForge.Domain.Entities.Options;
-using Saritasa.NetForge.Extensions;
-using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
-using Saritasa.NetForge.Demo.Constants;
+﻿using Saritasa.NetForge.Demo.Constants;
 using Saritasa.NetForge.Demo.Infrastructure.Admin;
 using Saritasa.NetForge.Demo.Infrastructure.Extensions;
 using Saritasa.NetForge.Demo.Models;
+using Saritasa.NetForge.Demo.Views.Admin;
+using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Extensions;
+using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.DependencyInjection;
 
@@ -31,6 +32,13 @@ internal static class NetForgeModule
                 .SetEntitySaveMessage("The entity was saved.")
                 .SetEntityDeleteMessage("The entity was deleted.")
                 .SetEntityBulkDeleteMessage("The entities were deleted.")
+                .SetCustomHeadType(typeof(AdminHead))
+                .SetInteractiveBodyContent(builder =>
+                {
+                    builder.OpenComponent<AdminFooter>(0);
+                    builder.AddAttribute(1, nameof(AdminFooter.VisitorsCount), 1234);
+                    builder.CloseComponent();
+                })
                 .ConfigureEntity(new ShopAdminConfiguration(services))
                 .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
                 {
