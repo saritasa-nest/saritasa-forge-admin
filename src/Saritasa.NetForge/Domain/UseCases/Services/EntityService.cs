@@ -195,7 +195,7 @@ public class EntityService : IEntityService
             CanAdd = entity.CanAdd,
             CanEdit = entity.CanEdit,
             CanDelete = entity.CanDelete,
-            EntitySaveMessage = entity.EntitySaveMessage
+            MessageOptions = entity.MessageOptions,
         };
     }
 

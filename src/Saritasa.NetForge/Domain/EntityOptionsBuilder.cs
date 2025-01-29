@@ -218,13 +218,46 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
+    /// Sets entity created message.
+    /// </summary>
+    /// <param name="entityCreateMessage">Message.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public EntityOptionsBuilder<TEntity> SetEntityCreateMessage(string entityCreateMessage)
+    {
+        options.MessageOptions.EntityCreateMessage = entityCreateMessage;
+        return this;
+    }
+
+    /// <summary>
     /// Sets custom save message that displayed when the entity was saved successfully.
     /// </summary>
     /// <param name="entitySaveMessage">Entity save message.</param>
     /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
     public EntityOptionsBuilder<TEntity> SetEntitySaveMessage(string entitySaveMessage)
     {
-        options.EntitySaveMessage = entitySaveMessage;
+        options.MessageOptions.EntitySaveMessage = entitySaveMessage;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets entity deleted message.
+    /// </summary>
+    /// <param name="entityDeleteMessage">Message.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public EntityOptionsBuilder<TEntity> SetEntityDeleteMessage(string entityDeleteMessage)
+    {
+        options.MessageOptions.EntityDeleteMessage = entityDeleteMessage;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets entities bulk deleted message.
+    /// </summary>
+    /// <param name="entityBulkDeleteMessage">Message.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public EntityOptionsBuilder<TEntity> SetEntityBulkDeleteMessage(string entityBulkDeleteMessage)
+    {
+        options.MessageOptions.EntityBulkDeleteMessage = entityBulkDeleteMessage;
         return this;
     }
 }

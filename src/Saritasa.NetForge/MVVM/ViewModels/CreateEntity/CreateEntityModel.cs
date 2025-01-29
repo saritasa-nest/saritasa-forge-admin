@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.MVVM.ViewModels.CreateEntity;
@@ -27,4 +28,7 @@ public record CreateEntityModel
     /// Entity instance.
     /// </summary>
     public object EntityInstance { get; set; } = null!;
+
+    /// <inheritdoc cref="MessageOptions.EntityCreateMessage"/>
+    public string? EntityCreateMessage { get; set; }
 }

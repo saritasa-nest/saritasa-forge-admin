@@ -61,8 +61,7 @@ public class ShopDbContext : IdentityDbContext<User>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
-        RestrictCascadeDelete(modelBuilder);
+
         ForceHavingAllStringsAsVarchars(modelBuilder);
         
         modelBuilder.Entity<Product>()
@@ -71,15 +70,6 @@ public class ShopDbContext : IdentityDbContext<User>
         modelBuilder.Entity<Address>()
             .Property(address => address.DisplayName)
             .HasComputedColumnSql("city || ', ' || street", stored: true);
-    }
-    
-    private static void RestrictCascadeDelete(ModelBuilder modelBuilder)
-    {
-        foreach (var relationship in modelBuilder.Model.GetEntityTypes()
-                     .SelectMany(e => e.GetForeignKeys()))
-        {
-            relationship.DeleteBehavior = DeleteBehavior.Restrict;
-        }
     }
 
     private static void ForceHavingAllStringsAsVarchars(ModelBuilder modelBuilder)

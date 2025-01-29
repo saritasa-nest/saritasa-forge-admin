@@ -99,9 +99,9 @@ public class AdminOptions
     public Type? CustomHeadType { get; set; }
 
     /// <summary>
-    /// Custom message when an entity was saved successfully.
+    /// Contains global level custom messages.
     /// </summary>
-    public string? EntitySaveMessage { get; set; }
+    public MessageOptions MessageOptions { get; set; } = new();
 
     /// <summary>
     /// Interactive content to render in the end of the body but before <see cref="StaticBodyComponentType"/>.

@@ -95,6 +95,6 @@ public class EntityOptions
     /// </summary>
     public List<string> IncludedProperties { get; set; } = new();
 
-    /// <inheritdoc cref="EntityMetadata.EntitySaveMessage"/>
-    public string? EntitySaveMessage { get; set; }
+    /// <inheritdoc cref="EntityMetadata.MessageOptions"/>
+    public MessageOptions MessageOptions { get; set; } = new();
 }
