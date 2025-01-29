@@ -200,6 +200,11 @@ public static class EntityMetadataOptionsExtensions
         {
             property.IsAutoGrow = propertyOptions.IsAutoGrow;
         }
+
+        if (propertyOptions.IsHiddenFromCreate)
+        {
+            property.IsHiddenFromCreate = propertyOptions.IsHiddenFromCreate;
+        }
     }
 
     private static void ApplyCalculatedPropertyOptions(

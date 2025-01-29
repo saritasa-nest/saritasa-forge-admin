@@ -40,6 +40,12 @@ public class PropertyOptionsBuilder
         return this;
     }
 
+    public PropertyOptionsBuilder SetIsHiddenFromCreate(bool isHiddenFromCreate)
+    {
+        options.IsHiddenFromCreate = isHiddenFromCreate;
+        return this;
+    }
+
     /// <summary>
     /// Sets whether the property should be hidden from the list view.
     /// </summary>

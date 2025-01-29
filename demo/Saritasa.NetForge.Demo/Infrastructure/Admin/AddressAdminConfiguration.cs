@@ -50,7 +50,9 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
             propertyBuilder.SetSearchType(SearchType.ContainsCaseInsensitive);
         }).ConfigureProperty(address => address.CreatedByUserId, propertyBuilder =>
         {
-            propertyBuilder.SetIsReadOnly(true);
+            propertyBuilder
+                .SetIsHiddenFromCreate(true)
+                .SetIsReadOnly(true);
         });
 
         entityOptionsBuilder.SetAfterUpdateAction((serviceProvider, originalEntity, modifiedEntity) =>
