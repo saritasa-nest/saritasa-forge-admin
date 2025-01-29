@@ -48,6 +48,9 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
         }).ConfigureProperty(address => address.Country, propertyBuilder =>
         {
             propertyBuilder.SetSearchType(SearchType.ContainsCaseInsensitive);
+        }).ConfigureProperty(address => address.CreatedByUserId, propertyBuilder =>
+        {
+            propertyBuilder.SetIsReadOnly(true);
         });
 
         entityOptionsBuilder.SetAfterUpdateAction((serviceProvider, originalEntity, modifiedEntity) =>
