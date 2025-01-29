@@ -198,6 +198,39 @@ public class GetEntityByIdTests : IDisposable
     }
 
     /// <summary>
+    /// Test for case when property is hidden from create entity page via Fluent API.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithHiddenFromCreatePropertyViaFluentApi_PropertyShouldBeHidden()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.ConfigureProperty(
+                shop => shop.IsOpen, optionsBuilder => optionsBuilder.SetIsHiddenFromCreate(true));
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(entity.Properties, property => property.IsHiddenFromCreate);
+    }
+
+    /// <summary>
+    /// Test for case when property is hidden from list view via <see cref="NetForgePropertyAttribute"/>.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithHiddenFromCreatePropertyViaAttribute_PropertyShouldBeHidden()
+    {
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(entity.Properties, property => property.IsHiddenFromCreate);
+    }
+
+    /// <summary>
     /// Test for case when property is hidden from details via Fluent API.
     /// </summary>
     [Fact]
