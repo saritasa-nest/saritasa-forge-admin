@@ -75,6 +75,11 @@ public class Address
     [Required]
     public required string ContactPhone { get; set; }
 
+    /// <summary>
+    /// Id of user who created the address.
+    /// </summary>
+    public required int CreatedByUserId { get; set; }
+
     /// <inheritdoc />
     public override string ToString()
     {
