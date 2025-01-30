@@ -79,7 +79,7 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
             .SetEntityDeleteMessage("Address was deleted.")
             .SetEntityBulkDeleteMessage("Selected addresses were deleted.");
 
-        entityOptionsBuilder.SetCreateDatabaseAction((serviceProvider, address) =>
+        entityOptionsBuilder.SetCreateDatabaseAction((_, address) =>
         {
             address.CreatedByUserId = new Random().Next(1, 1000);
         });
