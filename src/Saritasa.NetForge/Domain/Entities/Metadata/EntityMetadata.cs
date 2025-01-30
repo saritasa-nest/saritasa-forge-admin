@@ -103,6 +103,11 @@ public class EntityMetadata
     public MessageOptions MessageOptions { get; set; } = new();
 
     /// <summary>
+    /// Gets string representation of the entity.
+    /// </summary>
+    public Func<object, string>? ToStringFunc { get; set; }
+
+    /// <summary>
     /// Database action to change entity data.
     /// </summary>
     public Action<IServiceProvider?, object>? CreateDatabaseAction { get; set; }

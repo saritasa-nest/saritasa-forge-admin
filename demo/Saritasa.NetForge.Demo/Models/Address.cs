@@ -81,8 +81,16 @@ public class Address
     public required int CreatedByUserId { get; set; }
 
     /// <inheritdoc />
-    public override string ToString()
+    public override bool Equals(object? obj)
     {
-        return DisplayName;
+        if (obj is not Address address)
+        {
+            return false;
+        }
+
+        return address.Street == Street && address.City == City;
     }
+
+    /// <inheritdoc />
+    public override int GetHashCode() => Street.GetHashCode() + City.GetHashCode();
 }

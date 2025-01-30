@@ -98,6 +98,9 @@ public class EntityOptions
     /// <inheritdoc cref="EntityMetadata.MessageOptions"/>
     public MessageOptions MessageOptions { get; set; } = new();
 
+    /// <inheritdoc cref="EntityMetadata.ToStringFunc"/>
+    public Func<object, string>? ToStringFunc { get; set; }
+
     /// <inheritdoc cref="EntityMetadata.CreateDatabaseAction"/>
     public Action<IServiceProvider?, object>? CreateDatabaseAction { get; set; }
 }
