@@ -90,25 +90,25 @@ public class CreateEntityTests : IDisposable
     }
 
     /// <summary>
-    /// Validates that custom base action after entity create is able to change the entity.
+    /// Validates that custom action after entity create is changing the entity.
     /// </summary>
     [Fact]
-    public async Task CreateEntity_CustomDatabaseAction_ShouldChangeEntity()
+    public async Task CreateEntity_CustomDatabaseAction_ShouldUpdate()
     {
         // Arrange
         var contactInfoType = typeof(ContactInfo);
-        var contactInfo = Fakers.ContactInfoFaker.Generate();
+        var newContactInfo = Fakers.ContactInfoFaker.Generate();
 
         const string customActionEmail = "test@test.com";
-        Action<IServiceProvider?, object> customAction = (_, entity) =>
+        Action<IServiceProvider?, object> customDatabaseAction = (_, contactInfo) =>
         {
-            ((ContactInfo)entity).Email = customActionEmail;
+            ((ContactInfo)contactInfo).Email = customActionEmail;
         };
 
         // Act
-        await efCoreDataService.AddAsync(contactInfo, contactInfoType, CancellationToken.None, customAction);
+        await efCoreDataService.AddAsync(newContactInfo, contactInfoType, CancellationToken.None, customDatabaseAction);
 
         // Assert
-        Assert.Contains(testDbContext.ContactInfos, item => item.Email == customActionEmail);
+        Assert.Contains(testDbContext.ContactInfos, contactInfo => contactInfo.Email == customActionEmail);
     }
 }
