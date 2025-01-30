@@ -196,6 +196,39 @@ public class GetEntityByIdTests : IDisposable
     }
 
     /// <summary>
+    /// Test for case when property is hidden from create entity page via Fluent API.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithHiddenFromCreatePropertyViaFluentApi_PropertyShouldBeHidden()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.ConfigureProperty(
+                shop => shop.IsOpen, optionsBuilder => optionsBuilder.SetIsHiddenFromCreate(true));
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(entity.Properties, property => property.IsHiddenFromCreate);
+    }
+
+    /// <summary>
+    /// Test for case when property is hidden from list view via <see cref="NetForgePropertyAttribute"/>.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithHiddenFromCreatePropertyViaAttribute_PropertyShouldBeHidden()
+    {
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(entity.Properties, property => property.IsHiddenFromCreate);
+    }
+
+    /// <summary>
     /// Test for case when property is hidden from details via Fluent API.
     /// </summary>
     [Fact]
@@ -523,5 +556,85 @@ public class GetEntityByIdTests : IDisposable
 
         // Assert
         Assert.False(entity.CanDelete);
+    }
+
+    /// <summary>
+    /// Test to check that custom per-model create message is configured correctly.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_EntityCreateMessage_ShouldBeConfigured()
+    {
+        // Arrange
+        const string entityCreateMessage = "Entity create test message.";
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.SetEntityCreateMessage(entityCreateMessage);
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.Equal(entityCreateMessage, entity.MessageOptions.EntityCreateMessage);
+    }
+
+    /// <summary>
+    /// Test to check that custom per-model save message is configured correctly.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_EntitySaveMessage_ShouldBeConfigured()
+    {
+        // Arrange
+        const string entitySaveMessage = "Entity save test message.";
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.SetEntitySaveMessage(entitySaveMessage);
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.Equal(entitySaveMessage, entity.MessageOptions.EntitySaveMessage);
+    }
+
+    /// <summary>
+    /// Test to check that custom per-model delete message is configured correctly.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_EntityDeleteMessage_ShouldBeConfigured()
+    {
+        // Arrange
+        const string entityDeleteMessage = "Entity delete test message.";
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.SetEntityDeleteMessage(entityDeleteMessage);
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.Equal(entityDeleteMessage, entity.MessageOptions.EntityDeleteMessage);
+    }
+
+    /// <summary>
+    /// Test to check that custom per-model bulk delete message is configured correctly.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_EntityBulkDeleteMessage_ShouldBeConfigured()
+    {
+        // Arrange
+        const string entityBulkDeleteMessage = "Entity bulk delete test message.";
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.SetEntityBulkDeleteMessage(entityBulkDeleteMessage);
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.Equal(entityBulkDeleteMessage, entity.MessageOptions.EntityBulkDeleteMessage);
     }
 }

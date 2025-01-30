@@ -72,6 +72,10 @@ public partial class EntityPropertyColumns : ComponentBase
     [Parameter]
     public bool CanDelete { get; set; }
 
+    /// <inheritdoc cref="MessageOptions.EntityDeleteMessage"/>
+    [Parameter]
+    public string? EntityDeleteMessage { get; set; }
+
     /// <summary>
     /// Gets property's display name.
     /// </summary>
@@ -208,26 +212,6 @@ public partial class EntityPropertyColumns : ComponentBase
         NavigationService.NavigateTo<EditEntityViewModel>(parameters: [entityMetadata.StringId, primaryKeyValues]);
     }
 
-    /// <summary>
-    /// Delete entity.
-    /// </summary>
-    private async Task DeleteEntityAsync(object entity, CancellationToken cancellationToken)
-    {
-        try
-        {
-            await DataService.DeleteAsync(entity, entity.GetType(), cancellationToken);
-
-            DataGrid?.ReloadServerData();
-        }
-        catch (Exception ex)
-        {
-            var message = ex.InnerException is not null ? ex.InnerException.Message : ex.Message;
-            Snackbar.Add($"Failed to delete record due to error: {message}", Severity.Error);
-
-            Logger.LogError(ex, "{Handler}: Failed to delete record {EntityType}", nameof(EntityDetails), entity.GetType());
-        }
-    }
-
     private async Task ShowDeleteEntityConfirmationAsync(object source)
     {
         var parameters = new DialogParameters
@@ -242,13 +226,35 @@ public partial class EntityPropertyColumns : ComponentBase
         {
             try
             {
-                await DeleteEntityAsync(source, CancellationToken.None);
+                await DataService.DeleteAsync(source, source.GetType(), CancellationToken.None);
+                DataGrid?.ReloadServerData();
+                ShowEntityDeleteMessage();
             }
             catch (Exception ex)
             {
-                Snackbar.Add($"Failed to delete record due to error: {ex.Message}", Severity.Error);
-                Logger.LogError("Failed to delete record due to error: {ErrorMessage}", ex.Message);
+                var message = ex.InnerException is not null ? ex.InnerException.Message : ex.Message;
+                Snackbar.Add($"Failed to delete record due to error: {message}", Severity.Error);
+                Logger.LogError(ex, "Failed to delete record due to error: {ErrorMessage}", message);
             }
         }
+    }
+
+    private void ShowEntityDeleteMessage()
+    {
+        string entityDeleteMessage;
+        if (!string.IsNullOrEmpty(EntityDeleteMessage))
+        {
+            entityDeleteMessage = EntityDeleteMessage;
+        }
+        else if (!string.IsNullOrEmpty(AdminOptions.MessageOptions.EntityDeleteMessage))
+        {
+            entityDeleteMessage = AdminOptions.MessageOptions.EntityDeleteMessage;
+        }
+        else
+        {
+            entityDeleteMessage = "Entity was deleted successfully.";
+        }
+
+        Snackbar.Add(entityDeleteMessage, Severity.Success);
     }
 }

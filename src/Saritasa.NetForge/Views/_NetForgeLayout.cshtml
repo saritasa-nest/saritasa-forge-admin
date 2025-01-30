@@ -1,6 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Saritasa.NetForge.Domain.Entities.Options
 @namespace Saritasa.NetForge.Blazor.Views
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject AdminOptions AdminOptions
 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,5 +20,9 @@
     @RenderBody()
     <script src="_framework/blazor.server.js"></script>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    @if (AdminOptions.StaticBodyComponentType is not null)
+    {
+      <component type="AdminOptions.StaticBodyComponentType" render-mode="Static"/>
+    }
 </body>
 </html>

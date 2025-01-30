@@ -67,10 +67,7 @@ public static class EntityMetadataOptionsExtensions
             entityMetadata.CanDelete = entityOptions.CanDelete.Value;
         }
 
-        if (!string.IsNullOrEmpty(entityOptions.EntitySaveMessage))
-        {
-            entityMetadata.EntitySaveMessage = entityOptions.EntitySaveMessage;
-        }
+        entityMetadata.MessageOptions = entityOptions.MessageOptions;
 
         entityMetadata.ToStringFunc = entityOptions.ToStringFunc;
 
@@ -204,6 +201,11 @@ public static class EntityMetadataOptionsExtensions
         if (propertyOptions.IsAutoGrow)
         {
             property.IsAutoGrow = propertyOptions.IsAutoGrow;
+        }
+
+        if (propertyOptions.IsHiddenFromCreate)
+        {
+            property.IsHiddenFromCreate = propertyOptions.IsHiddenFromCreate;
         }
     }
 

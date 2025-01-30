@@ -56,6 +56,7 @@ internal class AddressesSeeder
         Country = faker.Address.Country(),
         Latitude = faker.Address.Latitude(),
         Longitude = faker.Address.Longitude(),
-        ContactPhone = faker.Phone.PhoneNumber()
+        ContactPhone = faker.Phone.PhoneNumber(),
+        CreatedByUserId = faker.IndexGlobal
     };
 }

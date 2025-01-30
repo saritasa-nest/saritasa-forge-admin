@@ -1,4 +1,5 @@
 ﻿using MudBlazor;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Domain.Exceptions;
 using Saritasa.NetForge.Domain.UseCases.Common;
@@ -20,16 +21,25 @@ public class EntityDetailsViewModel : BaseViewModel
 
     private readonly IEntityService entityService;
     private readonly IOrmDataService dataService;
+    private readonly ISnackbar snackbar;
+    private readonly AdminOptions adminOptions;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public EntityDetailsViewModel(string stringId, IEntityService entityService, IOrmDataService dataService)
+    public EntityDetailsViewModel(
+        string stringId,
+        IEntityService entityService,
+        IOrmDataService dataService,
+        ISnackbar snackbar,
+        AdminOptions adminOptions)
     {
         Model = new EntityDetailsModel { StringId = stringId };
 
         this.entityService = entityService;
         this.dataService = dataService;
+        this.snackbar = snackbar;
+        this.adminOptions = adminOptions;
     }
 
     /// <summary>
@@ -122,7 +132,9 @@ public class EntityDetailsViewModel : BaseViewModel
             IsKeyless = entity.IsKeyless,
             CanAdd = entity.CanAdd,
             CanEdit = entity.CanEdit,
-            CanDelete = entity.CanDelete
+            CanDelete = entity.CanDelete,
+            EntityDeleteMessage = entity.MessageOptions.EntityDeleteMessage,
+            EntityBulkDeleteMessage = entity.MessageOptions.EntityBulkDeleteMessage,
         };
     }
 
@@ -197,6 +209,27 @@ public class EntityDetailsViewModel : BaseViewModel
         await dataService.BulkDeleteAsync(SelectedEntities, SelectedEntities.First().GetType(), cancellationToken);
 
         DataGrid?.ReloadServerData();
+
+        ShowEntityBulkDeleteMessage();
         SelectedEntities.Clear();
+    }
+
+    private void ShowEntityBulkDeleteMessage()
+    {
+        string entityBulkDeleteMessage;
+        if (!string.IsNullOrEmpty(Model.EntityBulkDeleteMessage))
+        {
+            entityBulkDeleteMessage = Model.EntityBulkDeleteMessage;
+        }
+        else if (!string.IsNullOrEmpty(adminOptions.MessageOptions.EntityBulkDeleteMessage))
+        {
+            entityBulkDeleteMessage = adminOptions.MessageOptions.EntityBulkDeleteMessage;
+        }
+        else
+        {
+            entityBulkDeleteMessage = $"Deleted {SelectedEntities.Count} entities.";
+        }
+
+        snackbar.Add(entityBulkDeleteMessage, Severity.Success);
     }
 }

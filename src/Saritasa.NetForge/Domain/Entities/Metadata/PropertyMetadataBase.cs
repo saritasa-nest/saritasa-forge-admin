@@ -49,6 +49,11 @@ public abstract class PropertyMetadataBase
     public bool IsHiddenFromListView { get; set; }
 
     /// <summary>
+    /// Whether the property is hidden from the create entity page.
+    /// </summary>
+    public bool IsHiddenFromCreate { get; set; }
+
+    /// <summary>
     /// Whether the property is hidden from the details.
     /// </summary>
     public bool IsHiddenFromDetails { get; set; }

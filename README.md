@@ -14,11 +14,15 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
   - [Customizing the UI](#customizing-the-ui)
     - [Main Layout Overriding](#main-layout-overriding)
     - [Head Tag Overriding](#head-tag-overriding)
+    - [Custom Body Content](#custom-body-content)
     - [Create Groups for Entities](#create-groups-for-entities)
     - [Configuration](#configuration)
     - [Headers Expansion](#headers-expansion)
     - [Success Messages](#success-messages)
+      - [Create](#create)
       - [Save](#save)
+      - [Delete](#delete)
+      - [Bulk Delete](#bulk-delete)
   - [Exclude All Entities and Include Specific Only](#exclude-all-entities-and-include-specific-only)
 - [Customizing Entities](#customizing-entities)
   - [Fluent API](#fluent-api)
@@ -258,6 +262,52 @@ Example:
 ...
 ```
 
+### Custom Body Content
+
+You can add some content to the end of the body section of admin site. 
+Static and interactive content can be added separately.
+
+#### Static Content
+
+Static content will be rendered by your custom component type.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetStaticBodyComponentType(typeof(AdminFooterStatic));
+});
+```
+
+#### Interactive Content
+
+Interactive content can be built using [RenderTreeBuilder](https://learn.microsoft.com/en-us/aspnet/core/blazor/advanced-scenarios?view=aspnetcore-9.0).
+Note that JavaScript script tags should not be here. If you need JavaScript then put it to the static content section.
+But you can import JavaScript file in your component to use it, in this case you will not need script tag.
+Like in `JsCollocation2` example [here](https://learn.microsoft.com/en-us/aspnet/core/blazor/javascript-interoperability/location-of-javascript?view=aspnetcore-9.0).
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetInteractiveBodyContent(builder =>
+        {
+            builder.OpenComponent<AdminFooter>(0);
+            builder.AddAttribute(1, nameof(AdminFooter.VisitorsCount), 1234);
+            builder.CloseComponent();
+        })
+});
+```
+
+#### Using CSS
+
+To use CSS in custom body sections you should add it to [Custom Head Section](#head-tag-overriding).
+Also, you can use scoped CSS, in this case you should add bundled styles according to [this](https://learn.microsoft.com/en-us/aspnet/core/blazor/components/css-isolation?view=aspnetcore-9.0).
+For example:
+
+```html
+<link href="Saritasa.NetForge.Demo.styles.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+```
+
 ### Create Groups for Entities
 
 Before assigning entities to specific groups, users need to define the groups to which the entities will belong.
@@ -331,6 +381,26 @@ services.AddNetForge(optionsBuilder =>
 You can customize success messages on operations with entities.
 It can be customized on Global and Per-Model levels. Per-Model takes precedence on Global level.
 
+#### Create
+
+##### Global Level
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetEntityCreateMessage("The entity was created.");
+});
+```
+
+##### Per-Model Level
+
+```csharp
+  public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+  {
+      entityOptionsBuilder.SetEntityCreateMessage("Address was created.");
+  }
+```
+
 #### Save
 
 ##### Global Level
@@ -347,7 +417,47 @@ services.AddNetForge(optionsBuilder =>
 ```csharp
   public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
   {
-      entityOptionsBuilder.SetEntitySaveMessage("Address was saved successfully.");
+      entityOptionsBuilder.SetEntitySaveMessage("Address was saved.");
+  }
+```
+
+#### Delete
+
+##### Global Level
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetEntityDeleteMessage("The entity was deleted.");
+});
+```
+
+##### Per-Model Level
+
+```csharp
+  public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+  {
+      entityOptionsBuilder.SetEntityDeleteMessage("Address was deleted.");
+  }
+```
+
+#### Bulk Delete
+
+##### Global Level
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetEntityBulkDeleteMessage("The entities were deleted.");
+});
+```
+
+##### Per-Model Level
+
+```csharp
+  public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+  {
+      entityOptionsBuilder.SetEntityBulkDeleteMessage("Selected addresses were deleted.");
   }
 ```
 
@@ -789,7 +899,7 @@ services.AddNetForge(optionsBuilder =>
 
 ## Read-only Properties
 
-You can mark a property as read only. Such property cannot be changed on create and edit pages.
+You can mark a property as read only. Such property cannot be changed on edit page.
 
 ### Configuration
 

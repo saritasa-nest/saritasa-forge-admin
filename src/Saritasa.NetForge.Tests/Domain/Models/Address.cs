@@ -52,7 +52,7 @@ internal class Address
     /// <summary>
     /// The longitude coordinate of the address location.
     /// </summary>
-    [NetForgeProperty(IsHidden = true, IsHiddenFromListView = true, IsHiddenFromDetails = true)]
+    [NetForgeProperty(IsHidden = true, IsHiddenFromListView = true, IsHiddenFromDetails = true, IsHiddenFromCreate = true)]
     public double Longitude { get; set; }
 
     /// <summary>

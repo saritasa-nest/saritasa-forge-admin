@@ -98,9 +98,9 @@ public class EntityMetadata
     public bool CanDelete { get; set; } = true;
 
     /// <summary>
-    /// Custom message when the entity was saved successfully.
+    /// Contains per-model level custom messages.
     /// </summary>
-    public string? EntitySaveMessage { get; set; }
+    public MessageOptions MessageOptions { get; set; } = new();
 
     /// <summary>
     /// Gets string representation of the entity.

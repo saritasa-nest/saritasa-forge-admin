@@ -123,6 +123,7 @@ public class EntityService : IEntityService
             EmptyValueDisplay = property.EmptyValueDisplay,
             IsHidden = property.IsHidden,
             IsHiddenFromListView = property.IsHiddenFromListView,
+            IsHiddenFromCreate = property.IsHiddenFromCreate,
             IsHiddenFromDetails = property.IsHiddenFromDetails,
             IsExcludedFromQuery = property.IsExcludedFromQuery,
             DisplayAsHtml = property.DisplayAsHtml,
@@ -161,6 +162,7 @@ public class EntityService : IEntityService
             EmptyValueDisplay = navigation.EmptyValueDisplay,
             IsHidden = navigation.IsHidden,
             IsHiddenFromListView = navigation.IsHiddenFromListView,
+            IsHiddenFromCreate = navigation.IsHiddenFromCreate,
             IsHiddenFromDetails = navigation.IsHiddenFromDetails,
             IsExcludedFromQuery = navigation.IsExcludedFromQuery,
             DisplayAsHtml = navigation.DisplayAsHtml,
@@ -192,7 +194,7 @@ public class EntityService : IEntityService
             CanAdd = entity.CanAdd,
             CanEdit = entity.CanEdit,
             CanDelete = entity.CanDelete,
-            EntitySaveMessage = entity.EntitySaveMessage,
+            MessageOptions = entity.MessageOptions,
             ToStringFunc = entity.ToStringFunc,
         };
     }
