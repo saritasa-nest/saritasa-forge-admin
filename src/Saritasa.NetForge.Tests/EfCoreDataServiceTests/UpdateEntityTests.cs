@@ -239,4 +239,28 @@ public class UpdateEntityTests : IDisposable
         // Assert
         Assert.Contains(testDbContext.Shops, shop => shop.Name.Equals(newName));
     }
+
+    /// <summary>
+    /// Validates that custom action after entity update is changing the entity.
+    /// </summary>
+    [Fact]
+    public async Task UpdateEntity_CustomDatabaseAction_ShouldUpdate()
+    {
+        // Arrange
+        var updatedShop = await testDbContext.Shops.AsNoTracking().FirstAsync();
+        var originalShop = updatedShop.CloneJson()!;
+
+        const string newName = "Test222";
+        Action<IServiceProvider?, object> customDatabaseAction = (_, shop) =>
+        {
+            ((Shop)shop).Name = newName;
+        };
+
+        // Act
+        await efCoreDataService
+            .UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, CancellationToken.None, customDatabaseAction);
+
+        // Assert
+        Assert.Contains(testDbContext.Shops, shop => shop.Name.Equals(newName));
+    }
 }
