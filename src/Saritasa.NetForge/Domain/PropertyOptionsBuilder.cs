@@ -41,6 +41,15 @@ public class PropertyOptionsBuilder
     }
 
     /// <summary>
+    /// Sets whether the property should be hidden from the entity create page.
+    /// </summary>
+    public PropertyOptionsBuilder SetIsHiddenFromCreate(bool isHiddenFromCreate)
+    {
+        options.IsHiddenFromCreate = isHiddenFromCreate;
+        return this;
+    }
+
+    /// <summary>
     /// Sets whether the property should be hidden from the list view.
     /// </summary>
     public PropertyOptionsBuilder SetIsHiddenFromDetails(bool isHiddenFromDetails)

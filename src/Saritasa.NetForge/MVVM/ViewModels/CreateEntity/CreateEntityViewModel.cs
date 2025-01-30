@@ -69,7 +69,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
                         IsCalculatedProperty: false,
                         IsValueGeneratedOnAdd: false,
                         IsValueGeneratedOnUpdate: false,
-                        IsReadOnly: false
+                        IsHiddenFromCreate: false
                     })
                     .ToList(),
             };

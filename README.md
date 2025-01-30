@@ -899,7 +899,7 @@ services.AddNetForge(optionsBuilder =>
 
 ## Read-only Properties
 
-You can mark a property as read only. Such property cannot be changed on create and edit pages.
+You can mark a property as read only. Such property cannot be changed on edit page.
 
 ### Configuration
 

@@ -17,6 +17,9 @@ public class PropertyOptions
     /// <inheritdoc cref="PropertyMetadataBase.IsHiddenFromListView"/>
     public bool IsHiddenFromListView { get; set; }
 
+    /// <inheritdoc cref="PropertyMetadataBase.IsHiddenFromCreate"/>
+    public bool IsHiddenFromCreate { get; set; }
+
     /// <inheritdoc cref="PropertyMetadataBase.IsHiddenFromDetails"/>
     public bool IsHiddenFromDetails { get; set; }
 
