@@ -148,7 +148,8 @@ public class CreateEntityViewModel : ValidationEntityViewModel
 
         try
         {
-            await dataService.AddAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
+            await dataService
+                .AddAsync(Model.EntityInstance, Model.ClrType!, CancellationToken, Model.CreateDatabaseAction);
             navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
             ShowEntityCreateMessage();
         }
