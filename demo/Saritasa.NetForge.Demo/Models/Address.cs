@@ -80,6 +80,11 @@ public class Address
     /// </summary>
     public required int CreatedByUserId { get; set; }
 
+    /// <summary>
+    /// Id of last user who updated the address. If null, then the address was not changed after creation.
+    /// </summary>
+    public int? UpdatedByUserId { get; set; }
+
     /// <inheritdoc />
     public override bool Equals(object? obj)
     {
