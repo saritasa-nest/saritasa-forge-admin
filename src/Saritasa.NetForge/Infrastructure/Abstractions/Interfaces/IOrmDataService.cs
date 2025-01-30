@@ -1,4 +1,6 @@
-﻿using Saritasa.NetForge.Domain.Dtos;
+using Saritasa.NetForge.Domain.UseCases.Common;
+using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
+using Saritasa.Tools.Common.Pagination;
 
 namespace Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
@@ -30,20 +32,6 @@ public interface IOrmDataService
         Type entityType,
         IEnumerable<string> includedNavigationNames,
         CancellationToken cancellationToken);
-
-    /// <summary>
-    /// Performs search.
-    /// </summary>
-    /// <param name="query">Query to search.</param>
-    /// <param name="searchString">Search string.</param>
-    /// <param name="entityType">Entity type.</param>
-    /// <param name="properties">Properties.</param>
-    /// <returns>Query with searched data.</returns>
-    IQueryable<object> Search(
-        IQueryable<object> query,
-        string searchString,
-        Type entityType,
-        IEnumerable<PropertySearchDto> properties);
 
     /// <summary>
     /// Adds entity to the database.
@@ -81,4 +69,20 @@ public interface IOrmDataService
         object originalEntity,
         Action<IServiceProvider?, object, object>? afterUpdateAction,
         CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Get the data for the specific entity type.
+    /// </summary>
+    /// <param name="entityType">Entity type to search data. For example, search all data for entity with type <c>Address</c>.</param>
+    /// <param name="properties">Entity properties metadata to be included in returned data.</param>
+    /// <param name="searchOptions">Search options.</param>
+    /// <param name="searchFunction">Custom search function.</param>
+    /// <param name="customQueryFunction">Custom query function.</param>
+    /// <returns>Entity instances with pages metadata.</returns>
+    Task<PagedListMetadataDto<object>> SearchDataForEntityAsync(
+        Type? entityType,
+        ICollection<PropertyMetadataDto> properties,
+        SearchOptions searchOptions,
+        Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? searchFunction = null,
+        Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? customQueryFunction = null);
 }

@@ -39,9 +39,7 @@ public class GetEntityByIdTests : IDisposable
             adminOptionsBuilder.Create(),
             MemoryCacheHelper.CreateMemoryCache());
 
-        entityService = new EntityService(adminMetadataService,
-            EfCoreHelper.CreateEfCoreDataService(testDbContext),
-            new Mock<IServiceProvider>().Object);
+        entityService = new EntityService(adminMetadataService, new Mock<IServiceProvider>().Object);
     }
 
     private bool disposedValue;

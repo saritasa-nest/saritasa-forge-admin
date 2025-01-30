@@ -3,14 +3,15 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Saritasa.NetForge.Domain.Extensions;
 using Saritasa.NetForge.Infrastructure.Helpers;
-using Saritasa.NetForge.Pages;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.UseCases.Constants;
 using Saritasa.NetForge.Domain.UseCases.Interfaces;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
+using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.MVVM.Navigation;
 using Saritasa.NetForge.MVVM.Utils;
 using Saritasa.NetForge.MVVM.ViewModels.EditEntity;
+using Saritasa.NetForge.Pages;
 
 namespace Saritasa.NetForge.Controls;
 
@@ -36,6 +37,9 @@ public partial class EntityPropertyColumns : ComponentBase
 
     [Inject]
     private INavigationService NavigationService { get; set; } = null!;
+
+    [Inject]
+    private IOrmDataService DataService { get; set; } = null!;
 
     /// <summary>
     /// Properties of the entity.
@@ -222,7 +226,7 @@ public partial class EntityPropertyColumns : ComponentBase
         {
             try
             {
-                await EntityService.DeleteEntityAsync(source, source.GetType(), CancellationToken.None);
+                await DataService.DeleteAsync(source, source.GetType(), CancellationToken.None);
                 DataGrid?.ReloadServerData();
                 ShowEntityDeleteMessage();
             }

@@ -69,6 +69,8 @@ public static class EntityMetadataOptionsExtensions
 
         entityMetadata.MessageOptions = entityOptions.MessageOptions;
 
+        entityMetadata.ToStringFunc = entityOptions.ToStringFunc;
+
         foreach (var option in entityOptions.PropertyOptions)
         {
             var property = entityMetadata.Properties

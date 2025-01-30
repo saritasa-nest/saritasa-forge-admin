@@ -21,17 +21,14 @@ namespace Saritasa.NetForge.Domain.UseCases.Services;
 public class EntityService : IEntityService
 {
     private readonly AdminMetadataService adminMetadataService;
-    private readonly IOrmDataService dataService;
     private readonly IServiceProvider serviceProvider;
 
     /// <summary>
     /// Constructor for <see cref="EntityService"/>.
     /// </summary>
-    public EntityService(
-        AdminMetadataService adminMetadataService, IOrmDataService dataService, IServiceProvider serviceProvider)
+    public EntityService(AdminMetadataService adminMetadataService, IServiceProvider serviceProvider)
     {
         this.adminMetadataService = adminMetadataService;
-        this.dataService = dataService;
         this.serviceProvider = serviceProvider;
     }
 
@@ -143,7 +140,7 @@ public class EntityService : IEntityService
             MaxLines = property.MaxLines,
             IsAutoGrow = property.IsAutoGrow,
             CanDisplayDetails = property.CanDisplayDetails,
-            CanBeNavigatedToDetails = property.CanBeNavigatedToDetails
+            CanBeNavigatedToDetails = property.CanBeNavigatedToDetails,
         };
     }
 
@@ -198,247 +195,8 @@ public class EntityService : IEntityService
             CanEdit = entity.CanEdit,
             CanDelete = entity.CanDelete,
             MessageOptions = entity.MessageOptions,
+            ToStringFunc = entity.ToStringFunc,
         };
-    }
-
-    /// <inheritdoc />
-    public Task<PagedListMetadataDto<object>> SearchDataForEntityAsync(
-        Type? entityType,
-        ICollection<PropertyMetadataDto> properties,
-        SearchOptions searchOptions,
-        Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? searchFunction,
-        Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? customQueryFunction)
-    {
-        if (entityType is null)
-        {
-            throw new NotFoundException("Entity with given type was not found.");
-        }
-
-        var query = dataService.GetQuery(entityType);
-
-        query = SelectProperties(query, entityType, properties.Where(property => property is { IsCalculatedProperty: false, IsExcludedFromQuery: false }));
-
-        query = ApplyCustomQuery(query, customQueryFunction);
-
-        query = Search(query, searchOptions.SearchString, entityType, properties, searchFunction);
-
-        if (searchOptions.OrderBy is not null)
-        {
-            query = Order(query, searchOptions.OrderBy.ToList(), entityType);
-        }
-
-        var pagedList = PagedListFactory.FromSource(query, searchOptions.Page, searchOptions.PageSize);
-
-        return Task.FromResult(pagedList.ToMetadataObject());
-    }
-
-    /// <summary>
-    /// Select only those properties from entity that exists in <paramref name="properties"/>.
-    /// </summary>
-    /// <param name="query">
-    /// Query that contain data for some entity. For example, all data of <c>Address</c> entity.
-    /// </param>
-    /// <param name="entityType">Entity type.</param>
-    /// <param name="properties">Entity properties to select.</param>
-    /// <returns>Query with selected data.</returns>
-    /// <remarks>
-    /// Reflection can't be translated to SQL, so we have to build expression dynamically.
-    /// </remarks>
-    private static IQueryable<object> SelectProperties(
-        IQueryable<object> query, Type entityType, IEnumerable<PropertyMetadataDto> properties)
-    {
-        // entity => entity
-        var entity = Expression.Parameter(typeof(object), "entity");
-
-        // entity => (entityType)entity
-        var convertedEntity = Expression.Convert(entity, entityType);
-
-        var bindings = properties
-            .Select(property => GetActualPropertyExpression(convertedEntity, property))
-            .Select(member => Expression.Bind(member.Member, member));
-
-        var ctor = entityType.GetConstructors()[0];
-
-        // entity => new entityType
-        // { PropertyName1 = ((entityType)entity).PropertyName1, PropertyName2 = ((entityType)entity).PropertyName2 ...  }
-        var memberInit = Expression.MemberInit(Expression.New(ctor), bindings);
-
-        var selectLambda = Expression.Lambda<Func<object, object>>(memberInit, entity);
-
-        return query.Select(selectLambda);
-    }
-
-    /// <summary>
-    /// Gets property expression.
-    /// When <paramref name="property"/> contains inside parent class,
-    /// then <paramref name="entityExpression"/> will be converted to that class.
-    /// </summary>
-    /// <remarks>
-    /// Use case: when a parent class property has <see langword="private set"/>,
-    /// then child class cannot access that <see langword="set"/>.
-    /// </remarks>
-    private static MemberExpression GetActualPropertyExpression(
-        Expression entityExpression, PropertyMetadataDto property)
-    {
-        var propertyExpression = Expression.Property(entityExpression, property.Name);
-        var propertyInfo = propertyExpression.Member;
-
-        if (propertyInfo.DeclaringType == propertyInfo.ReflectedType)
-        {
-            return propertyExpression;
-        }
-
-        var parentEntity = Expression.Convert(entityExpression, propertyInfo.DeclaringType!);
-        return Expression.Property(parentEntity, property.Name);
-    }
-
-    private IQueryable<object> Search(
-        IQueryable<object> query,
-        string? searchString,
-        Type entityType,
-        ICollection<PropertyMetadataDto> properties,
-        Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>>? searchFunction)
-    {
-        if (string.IsNullOrEmpty(searchString))
-        {
-            return query;
-        }
-
-        if (properties.Any(property => property.SearchType != SearchType.None))
-        {
-            var propertySearches = new List<PropertySearchDto>();
-
-            foreach (var property in properties)
-            {
-                if (property is NavigationMetadataDto navigation)
-                {
-                    foreach (var targetProperty in navigation.TargetEntityProperties)
-                    {
-                        propertySearches.Add(new PropertySearchDto
-                        {
-                            PropertyName = targetProperty.Name,
-                            SearchType = targetProperty.SearchType,
-                            NavigationName = navigation.Name
-                        });
-                    }
-                }
-                else
-                {
-                    propertySearches.Add(new PropertySearchDto
-                    {
-                        PropertyName = property.Name,
-                        SearchType = property.SearchType
-                    });
-                }
-            }
-
-            query = dataService.Search(query, searchString, entityType, propertySearches);
-        }
-
-        if (searchFunction is not null)
-        {
-            query = searchFunction(serviceProvider, query, searchString);
-        }
-
-        return query;
-    }
-
-    private static IOrderedQueryable<object> Order(
-        IQueryable<object> query, IList<OrderByDto> orderBy, Type entityType)
-    {
-        var orderByTuples = orderBy
-            .Select(order =>
-                (order.FieldName, order.IsDescending ? ListSortDirection.Descending : ListSortDirection.Ascending))
-            .ToArray();
-
-        var keySelectors = GetKeySelectors(orderBy, entityType);
-
-        return CollectionUtils.OrderMultiple(query, orderByTuples, keySelectors);
-    }
-
-    private static (string FieldName, Expression<Func<object, object>> Selector)[] GetKeySelectors(
-        IList<OrderByDto> orderByFields, Type entityType)
-    {
-        // entity
-        var entity = Expression.Parameter(typeof(object), "entity");
-
-        // (entityType)entity
-        var convertedEntity = Expression.Convert(entity, entityType);
-
-        // Collection of sorted properties. For example:
-        // ((entityType)entity).Name
-        // ((entityType)entity).Description
-        // ((entityType)entity).Count
-        // ((entityType)entity).Address.Street
-        // ...
-        // Note that there are converting property to object.
-        // We need it to sort types that are not string. For example, numbers.
-        var propertyExpressions = orderByFields
-            .Select(field =>
-            {
-                var propertyName = field.NavigationName is null
-                    ? field.FieldName
-                    : $"{field.NavigationName}.{field.FieldName}";
-
-                var propertyExpression = ExpressionExtensions.GetPropertyExpression(convertedEntity, propertyName);
-
-                return Expression.Convert(propertyExpression, typeof(object));
-            });
-
-        // Make lambdas with properties. For example:
-        // entity => ((entityType)entity).Name
-        // entity => ((entityType)entity).Description
-        // entity => ((entityType)entity).Count
-        // entity => ((entityType)entity).Address.Street
-        // ...
-        var lambdas = propertyExpressions
-            .Select(property => Expression.Lambda<Func<object, object>>(property, entity))
-            .ToList();
-
-        // Make tuple with selected property names and property lambdas. For example:
-        // ("name", entity => ((entityType)entity).Name)
-        // ("description", entity => ((entityType)entity).Description)
-        // ("count", entity => ((entityType)entity).Count)
-        // ("street", entity => ((entityType)entity).Address.Street)
-        // ...
-        var keySelectors = new (string, Expression<Func<object, object>>)[orderByFields.Count];
-        for (var i = 0; i < orderByFields.Count; i++)
-        {
-            keySelectors[i] = (orderByFields[i].FieldName, lambdas[i]);
-        }
-
-        return keySelectors;
-    }
-
-    private IQueryable<object> ApplyCustomQuery(
-        IQueryable<object> query,
-        Func<IServiceProvider?, IQueryable<object>, IQueryable<object>>? customQueryFunction)
-    {
-        if (customQueryFunction is not null)
-        {
-            query = customQueryFunction(serviceProvider, query);
-        }
-
-        return query;
-    }
-
-    /// <inheritdoc />
-    public async Task CreateEntityAsync(object entity, Type entityType, CancellationToken cancellationToken)
-    {
-        await dataService.AddAsync(entity, entityType, cancellationToken);
-    }
-
-    /// <inheritdoc />
-    public Task DeleteEntityAsync(object entity, Type entityType, CancellationToken cancellationToken)
-    {
-        return dataService.DeleteAsync(entity, entityType, cancellationToken);
-    }
-
-    /// <inheritdoc />
-    public Task DeleteEntitiesAsync(
-        IEnumerable<object> entities, Type entityType, CancellationToken cancellationToken)
-    {
-        return dataService.BulkDeleteAsync(entities, entityType, cancellationToken);
     }
 
     /// <inheritdoc />

@@ -13,6 +13,8 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
     /// <inheritdoc />
     public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
     {
+        entityOptionsBuilder.ConfigureToString(address => $"{address.Street}, {address.City}");
+
         entityOptionsBuilder.ConfigureProperty(address => address.Id, propertyBuilder =>
         {
             propertyBuilder

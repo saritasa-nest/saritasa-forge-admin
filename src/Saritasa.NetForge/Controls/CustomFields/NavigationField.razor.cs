@@ -1,10 +1,17 @@
-﻿namespace Saritasa.NetForge.Controls.CustomFields;
+using Microsoft.AspNetCore.Components;
+using Saritasa.NetForge.Domain.UseCases.Interfaces;
+using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
+
+namespace Saritasa.NetForge.Controls.CustomFields;
 
 /// <summary>
 /// Field for navigation property.
 /// </summary>
 public partial class NavigationField : CustomField
 {
+    [Inject]
+    private IEntityService EntityService { get; set; } = null!;
+
     /// <summary>
     /// Property value.
     /// </summary>
@@ -16,6 +23,8 @@ public partial class NavigationField : CustomField
 
     private IEnumerable<object> NavigationInstances { get; set; } = null!;
 
+    private GetEntityDto EntityMetadata { get; set; } = null!;
+
     /// <inheritdoc />
     protected override async Task OnInitializedAsync()
     {
@@ -24,5 +33,7 @@ public partial class NavigationField : CustomField
         NavigationInstances = Service
             .GetQuery(Property.ClrType!)
             .OrderBy(instance => instance);
+
+        EntityMetadata = await EntityService.GetEntityByTypeAsync(Property.ClrType!, CancellationToken.None);
     }
 }

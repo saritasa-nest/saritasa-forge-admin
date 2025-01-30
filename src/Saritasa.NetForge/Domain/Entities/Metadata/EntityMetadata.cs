@@ -101,4 +101,9 @@ public class EntityMetadata
     /// Contains per-model level custom messages.
     /// </summary>
     public MessageOptions MessageOptions { get; set; } = new();
+
+    /// <summary>
+    /// Gets string representation of the entity.
+    /// </summary>
+    public Func<object, string>? ToStringFunc { get; set; }
 }

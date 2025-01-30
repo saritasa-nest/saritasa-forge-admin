@@ -5,6 +5,7 @@ using Saritasa.NetForge.Domain.Exceptions;
 using Saritasa.NetForge.Domain.UseCases.Common;
 using Saritasa.NetForge.Domain.UseCases.Interfaces;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
+using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
 namespace Saritasa.NetForge.MVVM.ViewModels.EntityDetails;
 
@@ -19,6 +20,7 @@ public class EntityDetailsViewModel : BaseViewModel
     public EntityDetailsModel Model { get; private set; }
 
     private readonly IEntityService entityService;
+    private readonly IOrmDataService dataService;
     private readonly ISnackbar snackbar;
     private readonly AdminOptions adminOptions;
 
@@ -26,11 +28,16 @@ public class EntityDetailsViewModel : BaseViewModel
     /// Constructor.
     /// </summary>
     public EntityDetailsViewModel(
-        string stringId, IEntityService entityService, ISnackbar snackbar, AdminOptions adminOptions)
+        string stringId,
+        IEntityService entityService,
+        IOrmDataService dataService,
+        ISnackbar snackbar,
+        AdminOptions adminOptions)
     {
         Model = new EntityDetailsModel { StringId = stringId };
 
         this.entityService = entityService;
+        this.dataService = dataService;
         this.snackbar = snackbar;
         this.adminOptions = adminOptions;
     }
@@ -174,7 +181,7 @@ public class EntityDetailsViewModel : BaseViewModel
             OrderBy = orderBy
         };
 
-        var entityData = await entityService
+        var entityData = await dataService
             .SearchDataForEntityAsync(Model.ClrType, Model.Properties, searchOptions, Model.SearchFunction, Model.CustomQueryFunction);
 
         var data = new GridData<object>
@@ -199,8 +206,7 @@ public class EntityDetailsViewModel : BaseViewModel
     /// </summary>
     public async Task DeleteSelectedEntitiesAsync(CancellationToken cancellationToken)
     {
-        await entityService.DeleteEntitiesAsync(
-            SelectedEntities, SelectedEntities.First().GetType(), cancellationToken);
+        await dataService.BulkDeleteAsync(SelectedEntities, SelectedEntities.First().GetType(), cancellationToken);
 
         DataGrid?.ReloadServerData();
 

@@ -146,6 +146,6 @@ public class Product
     /// <inheritdoc />
     public override string ToString()
     {
-        return $"{Id} - {Name}";
+        return $"{Name} - {Price}$";
     }
 }

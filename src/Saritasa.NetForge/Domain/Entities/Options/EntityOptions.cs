@@ -97,4 +97,7 @@ public class EntityOptions
 
     /// <inheritdoc cref="EntityMetadata.MessageOptions"/>
     public MessageOptions MessageOptions { get; set; } = new();
+
+    /// <inheritdoc cref="EntityMetadata.ToStringFunc"/>
+    public Func<object, string>? ToStringFunc { get; set; }
 }
