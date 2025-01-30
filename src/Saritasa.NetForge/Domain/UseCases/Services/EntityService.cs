@@ -197,7 +197,7 @@ public class EntityService : IEntityService
             MessageOptions = entity.MessageOptions,
             ToStringFunc = entity.ToStringFunc,
             CreateAction = entity.CreateAction,
-            UpdateDatabaseAction = entity.UpdateDatabaseAction
+            UpdateAction = entity.UpdateAction
         };
     }
 

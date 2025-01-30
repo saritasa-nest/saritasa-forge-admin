@@ -664,12 +664,12 @@ public class GetEntityByIdTests : IDisposable
     /// Test to check that custom update entity database action is configured correctly.
     /// </summary>
     [Fact]
-    public async Task GetEntityByIdAsync_UpdateDatabaseAction_ShouldBeConfigured()
+    public async Task GetEntityByIdAsync_UpdateAction_ShouldBeConfigured()
     {
         // Arrange
         adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
         {
-            builder.SetUpdateDatabaseAction((_, entity) =>
+            builder.SetUpdateAction((_, entity) =>
             {
                 entity.IsOpen = true;
             });
@@ -679,6 +679,6 @@ public class GetEntityByIdTests : IDisposable
         var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
 
         // Assert
-        Assert.NotNull(entity.UpdateDatabaseAction);
+        Assert.NotNull(entity.UpdateAction);
     }
 }

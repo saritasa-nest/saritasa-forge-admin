@@ -115,5 +115,5 @@ public class EntityMetadata
     /// <summary>
     /// Database action to change entity data when entity was updated.
     /// </summary>
-    public Action<IServiceProvider?, object>? UpdateDatabaseAction { get; set; }
+    public Action<IServiceProvider?, object>? UpdateAction { get; set; }
 }

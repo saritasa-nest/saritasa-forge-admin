@@ -293,9 +293,9 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     /// </summary>
     /// <param name="action">Action to perform.</param>
     /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
-    public EntityOptionsBuilder<TEntity> SetUpdateDatabaseAction(Action<IServiceProvider?, TEntity> action)
+    public EntityOptionsBuilder<TEntity> SetUpdateAction(Action<IServiceProvider?, TEntity> action)
     {
-        options.UpdateDatabaseAction = (serviceProvider, entity) => action(serviceProvider, (TEntity)entity);
+        options.UpdateAction = (serviceProvider, entity) => action(serviceProvider, (TEntity)entity);
         return this;
     }
 }

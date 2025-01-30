@@ -132,7 +132,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
             Properties = entity.Properties,
             AfterUpdateAction = entity.AfterUpdateAction,
             EntitySaveMessage = entity.MessageOptions.EntitySaveMessage,
-            UpdateDatabaseAction = entity.UpdateDatabaseAction
+            UpdateAction = entity.UpdateAction
         };
     }
 
@@ -167,7 +167,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
                     Model.OriginalEntityInstance!,
                     Model.AfterUpdateAction,
                     CancellationToken,
-                    Model.UpdateDatabaseAction);
+                    Model.UpdateAction);
 
             // We do clone because UpdateAsync method returns Model.OriginalEntityInstance
             // so we don't want Model.EntityInstance and Model.OriginalEntityInstance to have the same reference.

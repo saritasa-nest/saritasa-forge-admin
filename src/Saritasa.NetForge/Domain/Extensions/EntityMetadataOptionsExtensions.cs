@@ -69,7 +69,7 @@ public static class EntityMetadataOptionsExtensions
 
         entityMetadata.MessageOptions = entityOptions.MessageOptions;
         entityMetadata.CreateAction = entityOptions.CreateAction;
-        entityMetadata.UpdateDatabaseAction = entityOptions.UpdateDatabaseAction;
+        entityMetadata.UpdateAction = entityOptions.UpdateAction;
 
         entityMetadata.ToStringFunc = entityOptions.ToStringFunc;
 
