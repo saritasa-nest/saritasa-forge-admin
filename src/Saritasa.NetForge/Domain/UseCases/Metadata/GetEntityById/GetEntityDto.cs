@@ -60,4 +60,7 @@ public record GetEntityDto
 
     /// <inheritdoc cref="EntityMetadata.CreateDatabaseAction"/>
     public Action<IServiceProvider?, object>? CreateDatabaseAction { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.UpdateDatabaseAction"/>
+    public Action<IServiceProvider?, object>? UpdateDatabaseAction { get; set; }
 }

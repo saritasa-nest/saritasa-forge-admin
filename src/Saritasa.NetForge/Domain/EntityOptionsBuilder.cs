@@ -287,4 +287,15 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         options.CreateDatabaseAction = (serviceProvider, entity) => action(serviceProvider, (TEntity)entity);
         return this;
     }
+
+    /// <summary>
+    /// Sets action to change updated entity before saving changes to a database.
+    /// </summary>
+    /// <param name="action">Action to perform.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public EntityOptionsBuilder<TEntity> SetUpdateDatabaseAction(Action<IServiceProvider?, TEntity> action)
+    {
+        options.UpdateDatabaseAction = (serviceProvider, entity) => action(serviceProvider, (TEntity)entity);
+        return this;
+    }
 }

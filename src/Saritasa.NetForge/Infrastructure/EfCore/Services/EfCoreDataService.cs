@@ -209,13 +209,16 @@ public class EfCoreDataService : IOrmDataService
         object entity,
         object originalEntity,
         Action<IServiceProvider?, object, object>? afterUpdateAction,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        Action<IServiceProvider?, object>? customAction = null)
     {
         var entityType = entity.GetType();
         var dbContext = GetDbContextThatContainsEntity(entityType);
 
         try
         {
+            customAction?.Invoke(serviceProvider, entity);
+
             if (afterUpdateAction is not null)
             {
                 var originalEntityClone = originalEntity.CloneJson();

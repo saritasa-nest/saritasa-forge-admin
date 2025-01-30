@@ -108,7 +108,12 @@ public class EntityMetadata
     public Func<object, string>? ToStringFunc { get; set; }
 
     /// <summary>
-    /// Database action to change entity data.
+    /// Database action to change entity data when entity was created.
     /// </summary>
     public Action<IServiceProvider?, object>? CreateDatabaseAction { get; set; }
+
+    /// <summary>
+    /// Database action to change entity data when entity was updated.
+    /// </summary>
+    public Action<IServiceProvider?, object>? UpdateDatabaseAction { get; set; }
 }

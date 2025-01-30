@@ -69,11 +69,13 @@ public interface IOrmDataService
     /// <param name="originalEntity">Entity that contains initial unchanged values.</param>
     /// <param name="afterUpdateAction">Action that will be called after update.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <param name="customAction">Custom action to change entity right after update.</param>
     Task<object> UpdateAsync(
         object entity,
         object originalEntity,
         Action<IServiceProvider?, object, object>? afterUpdateAction,
-        CancellationToken cancellationToken);
+        CancellationToken cancellationToken,
+        Action<IServiceProvider?, object>? customAction = null);
 
     /// <summary>
     /// Get the data for the specific entity type.
