@@ -110,7 +110,7 @@ public class EntityMetadata
     /// <summary>
     /// Database action to change entity data when entity was created.
     /// </summary>
-    public Action<IServiceProvider?, object>? CreateDatabaseAction { get; set; }
+    public Action<IServiceProvider?, object>? CreateAction { get; set; }
 
     /// <summary>
     /// Database action to change entity data when entity was updated.

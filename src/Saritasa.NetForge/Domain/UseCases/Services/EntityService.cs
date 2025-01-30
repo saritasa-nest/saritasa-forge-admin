@@ -196,7 +196,7 @@ public class EntityService : IEntityService
             CanDelete = entity.CanDelete,
             MessageOptions = entity.MessageOptions,
             ToStringFunc = entity.ToStringFunc,
-            CreateDatabaseAction = entity.CreateDatabaseAction,
+            CreateAction = entity.CreateAction,
             UpdateDatabaseAction = entity.UpdateDatabaseAction
         };
     }

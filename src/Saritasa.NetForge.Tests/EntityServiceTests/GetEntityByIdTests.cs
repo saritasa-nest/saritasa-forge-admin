@@ -639,15 +639,15 @@ public class GetEntityByIdTests : IDisposable
     }
 
     /// <summary>
-    /// Test to check that custom create entity database action is configured correctly.
+    /// Test to check that custom create entity action is configured correctly.
     /// </summary>
     [Fact]
-    public async Task GetEntityByIdAsync_CreateDatabaseAction_ShouldBeConfigured()
+    public async Task GetEntityByIdAsync_CreateAction_ShouldBeConfigured()
     {
         // Arrange
         adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
         {
-            builder.SetCreateDatabaseAction((_, entity) =>
+            builder.SetCreateAction((_, entity) =>
             {
                 entity.IsOpen = true;
             });
@@ -657,7 +657,7 @@ public class GetEntityByIdTests : IDisposable
         var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
 
         // Assert
-        Assert.NotNull(entity.CreateDatabaseAction);
+        Assert.NotNull(entity.CreateAction);
     }
 
     /// <summary>
