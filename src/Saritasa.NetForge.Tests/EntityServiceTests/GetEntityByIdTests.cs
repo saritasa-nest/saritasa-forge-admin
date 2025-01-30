@@ -639,4 +639,26 @@ public class GetEntityByIdTests : IDisposable
         // Assert
         Assert.Equal(entityBulkDeleteMessage, entity.MessageOptions.EntityBulkDeleteMessage);
     }
+
+    /// <summary>
+    /// Test to check that custom create entity database action is configured correctly.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_CreateDatabaseAction_ShouldBeConfigured()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.SetCreateDatabaseAction((_, entity) =>
+            {
+                entity.IsOpen = true;
+            });
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(entity.CreateDatabaseAction);
+    }
 }
