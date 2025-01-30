@@ -74,4 +74,50 @@ public static class ExpressionExtensions
 
         return (MemberExpression)body;
     }
+
+    /// <summary>
+    /// Combines all expressions to one with <see langword="AND"/> operator between.
+    /// </summary>
+    /// <returns>
+    /// If <paramref name="expressionToCombineWith"/> is <c>null</c>,
+    /// then <paramref name="expression"/> will be returned unchanged.
+    /// </returns>
+    public static Expression AddAndBetween(this Expression? expressionToCombineWith, Expression expression)
+    {
+        if (expressionToCombineWith is not null)
+        {
+            // Example:
+            // entity => ((entityType)entity).propertyName.Equals(searchEntry) ||
+            //           ((entityType)entity).propertyName2.StartsWith(searchEntry) ||
+            //           ...) &&
+            //           ((entityType)entity).propertyName.Equals(searchEntry2) ||
+            //           ((entityType)entity).propertyName2.StartsWith(searchEntry2) ||
+            //           ...) && ...
+            return Expression.And(expressionToCombineWith, expression);
+        }
+
+        return expression;
+    }
+
+    /// <summary>
+    /// Combines expressions to one with <see langword="OR"/> operator between.
+    /// </summary>
+    /// <returns>
+    /// If <paramref name="expressionToCombineWith"/> is <c>null</c>,
+    /// then <paramref name="expression"/> will be returned unchanged.
+    /// </returns>
+    public static Expression AddOrBetween(this Expression? expressionToCombineWith, Expression expression)
+    {
+        if (expressionToCombineWith is not null)
+        {
+            // Add OR operator between every searchable property using search entry
+            // Example:
+            // entity => ((entityType)entity).propertyName.Equals(searchEntry) ||
+            //           ((entityType)entity).propertyName2.StartsWith(searchEntry) ||
+            //           ...
+            return Expression.OrElse(expressionToCombineWith, expression);
+        }
+
+        return expression;
+    }
 }

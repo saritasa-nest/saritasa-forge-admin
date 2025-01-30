@@ -15,5 +15,10 @@ public class ContactInfoAdminConfiguration  : IEntityAdminConfiguration<ContactI
         entityOptionsBuilder.SetCanAdd(false);
         entityOptionsBuilder.SetCanEdit(false);
         entityOptionsBuilder.SetCanDelete(false);
+
+        entityOptionsBuilder.ConfigureSearch((_, query, searchTerm) =>
+        {
+            return query.Where(e => e.Email.Contains(searchTerm) && e.FullName.Contains(searchTerm));
+        });
     }
 }
