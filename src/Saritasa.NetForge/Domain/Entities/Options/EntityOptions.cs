@@ -97,4 +97,7 @@ public class EntityOptions
 
     /// <inheritdoc cref="EntityMetadata.MessageOptions"/>
     public MessageOptions MessageOptions { get; set; } = new();
+
+    /// <inheritdoc cref="EntityMetadata.CreateDatabaseAction"/>
+    public Action<IServiceProvider?, object>? CreateDatabaseAction { get; set; }
 }

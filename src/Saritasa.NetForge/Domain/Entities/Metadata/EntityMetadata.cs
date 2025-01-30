@@ -101,4 +101,9 @@ public class EntityMetadata
     /// Contains per-model level custom messages.
     /// </summary>
     public MessageOptions MessageOptions { get; set; } = new();
+
+    /// <summary>
+    /// Database action to change entity data.
+    /// </summary>
+    public Action<IServiceProvider?, object>? CreateDatabaseAction { get; set; }
 }

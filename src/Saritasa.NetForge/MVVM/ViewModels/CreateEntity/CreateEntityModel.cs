@@ -31,4 +31,7 @@ public record CreateEntityModel
 
     /// <inheritdoc cref="MessageOptions.EntityCreateMessage"/>
     public string? EntityCreateMessage { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.CreateDatabaseAction"/>
+    public Action<IServiceProvider?, object>? CreateDatabaseAction { get; set; }
 }

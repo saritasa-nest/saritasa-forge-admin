@@ -115,6 +115,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
             ClrType = entity.ClrType,
             Properties = entity.Properties,
             EntityCreateMessage = entity.MessageOptions.EntityCreateMessage,
+            CreateDatabaseAction = entity.CreateDatabaseAction,
         };
     }
 

@@ -198,6 +198,7 @@ public class EntityService : IEntityService
             CanEdit = entity.CanEdit,
             CanDelete = entity.CanDelete,
             MessageOptions = entity.MessageOptions,
+            CreateDatabaseAction = entity.CreateDatabaseAction
         };
     }
 

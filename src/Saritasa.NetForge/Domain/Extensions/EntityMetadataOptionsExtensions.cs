@@ -68,6 +68,7 @@ public static class EntityMetadataOptionsExtensions
         }
 
         entityMetadata.MessageOptions = entityOptions.MessageOptions;
+        entityMetadata.CreateDatabaseAction = entityOptions.CreateDatabaseAction;
 
         foreach (var option in entityOptions.PropertyOptions)
         {

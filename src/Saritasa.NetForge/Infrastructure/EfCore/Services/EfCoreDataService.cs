@@ -356,11 +356,17 @@ public class EfCoreDataService : IOrmDataService
     }
 
     /// <inheritdoc />
-    public async Task AddAsync(object entity, Type entityType, CancellationToken cancellationToken)
+    public async Task AddAsync(
+        object entity,
+        Type entityType,
+        CancellationToken cancellationToken,
+        Action<IServiceProvider?, object>? customAction = null)
     {
         var dbContext = GetDbContextThatContainsEntity(entityType);
         try
         {
+            customAction?.Invoke(serviceProvider, entity);
+
             // We use Attach instead of Add because
             // EF will try to create new entity and create all navigation (even when they are exist in database).
             // Attach resolves this problem by explicitly attaching navigation to EF change tracker.

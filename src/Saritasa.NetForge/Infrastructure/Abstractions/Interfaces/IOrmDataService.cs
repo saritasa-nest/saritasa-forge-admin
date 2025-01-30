@@ -51,7 +51,12 @@ public interface IOrmDataService
     /// <param name="entity">Entity to add.</param>
     /// <param name="entityType">Entity type.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    Task AddAsync(object entity, Type entityType, CancellationToken cancellationToken);
+    /// <param name="customAction">Custom action to change entity right after create.</param>
+    Task AddAsync(
+        object entity,
+        Type entityType,
+        CancellationToken cancellationToken,
+        Action<IServiceProvider?, object>? customAction = null);
 
     /// <summary>
     /// Deletes entity in the database.

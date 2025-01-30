@@ -260,4 +260,15 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         options.MessageOptions.EntityBulkDeleteMessage = entityBulkDeleteMessage;
         return this;
     }
+
+    /// <summary>
+    /// Sets action to change newly created entity before saving changes to a database.
+    /// </summary>
+    /// <param name="action">Action to perform.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public EntityOptionsBuilder<TEntity> SetCreateDatabaseAction(Action<IServiceProvider?, TEntity> action)
+    {
+        options.CreateDatabaseAction = (serviceProvider, entity) => action(serviceProvider, (TEntity)entity);
+        return this;
+    }
 }
