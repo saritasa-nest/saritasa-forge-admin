@@ -39,6 +39,11 @@ public abstract class PropertyMetadataBase
     public int? Order { get; set; }
 
     /// <summary>
+    /// The order of the property on create and edit pages.
+    /// </summary>
+    public int? FormOrder { get; set; }
+
+    /// <summary>
     /// Whether the property is hidden from the view.
     /// </summary>
     public bool IsHidden { get; set; }

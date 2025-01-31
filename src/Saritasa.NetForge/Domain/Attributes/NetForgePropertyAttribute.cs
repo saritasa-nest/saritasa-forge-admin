@@ -37,6 +37,13 @@ public class NetForgePropertyAttribute : Attribute
     /// </remarks>
     public int Order { get; set; } = -1;
 
+    /// <inheritdoc cref="PropertyMetadataBase.FormOrder"/>
+    /// <remarks>
+    /// We override default value with <c>-1</c>,
+    /// because we need to handle situation when user chose property order is <c>0</c>.
+    /// </remarks>
+    public int FormOrder { get; set; } = -1;
+
     /// <inheritdoc cref="PropertyMetadataBase.DisplayFormat"/>
     public string? DisplayFormat { get; set; }
 

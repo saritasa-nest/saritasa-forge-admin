@@ -29,6 +29,9 @@ public record PropertyMetadataDto
     /// <inheritdoc cref="PropertyMetadataBase.Order"/>
     public int? Order { get; set; }
 
+    /// <inheritdoc cref="PropertyMetadataBase.FormOrder"/>
+    public int? FormOrder { get; set; }
+
     /// <inheritdoc cref="PropertyMetadataBase.DisplayFormat"/>
     public string? DisplayFormat { get; set; }
 
