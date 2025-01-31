@@ -323,7 +323,7 @@ public class GetEntityByIdTests : IDisposable
     /// Test for case when property have configured form order via FluentAPI.
     /// </summary>
     [Fact]
-    public async Task GetEntityByIdAsync_FormOrderFluentAPI_ShouldBeConfigured()
+    public async Task GetEntityByIdAsync_FluentAPI_FormOrder_ShouldBeConfigured()
     {
         // Arrange
         adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
@@ -345,7 +345,7 @@ public class GetEntityByIdTests : IDisposable
     /// Test for case when property have <see cref="NetForgePropertyAttribute.FormOrder"/>.
     /// </summary>
     [Fact]
-    public async Task GetEntityByIdAsync_FormOrderAttribute_ShouldBeConfigured()
+    public async Task GetEntityByIdAsync_Attribute_FormOrder_ShouldBeConfigured()
     {
         // Arrange
         const string expectedPropertyName = nameof(Address.PostalCode);
