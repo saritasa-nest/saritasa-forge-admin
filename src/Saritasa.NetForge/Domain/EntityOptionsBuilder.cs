@@ -278,9 +278,9 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
-    /// Sets action to change newly created entity before saving changes to a database.
+    /// Sets action that executes after entity create and before saving changes to a database.
     /// </summary>
-    /// <param name="action">Action to perform.</param>
+    /// <param name="action">Action to execute.</param>
     /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
     public EntityOptionsBuilder<TEntity> SetCreateAction(Action<IServiceProvider?, TEntity> action)
     {
@@ -289,9 +289,9 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
-    /// Sets action to change updated entity before saving changes to a database.
+    /// Sets action that executes after entity update and before saving changes to a database.
     /// </summary>
-    /// <param name="action">Action to perform.</param>
+    /// <param name="action">Action to execute.</param>
     /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
     public EntityOptionsBuilder<TEntity> SetUpdateAction(Action<IServiceProvider?, TEntity> action)
     {

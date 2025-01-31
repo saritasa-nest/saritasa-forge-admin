@@ -574,8 +574,8 @@ You can configure your query for specific entity.
 
 ## Create Custom Action
 
-You can configure action that will be performed right after an entity was created and before saving changes to database.
-So can you use it to additionally change new entity. For example, set user who created the entity.
+You can configure action that will be executed right after an entity was created and before saving changes to database.
+So can you use it to make additional interactions with a database.
 Also, you can use `ServiceProvider` if you need to access your services.
 
 ```csharp
@@ -587,10 +587,10 @@ public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
             });
     }
 ```
-    
+
 ## Create Custom Action
 
-This one behaves just like [Create Custom Action](#create-custom-action) but will be performed after update instead of create.
+This one behaves just like [Create Custom Action](#create-custom-action) but will be executed after update instead of create.
 
 ```csharp
 public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)

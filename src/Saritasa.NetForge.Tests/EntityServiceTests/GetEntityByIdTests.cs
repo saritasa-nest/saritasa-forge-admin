@@ -661,7 +661,7 @@ public class GetEntityByIdTests : IDisposable
     }
 
     /// <summary>
-    /// Test to check that custom update entity database action is configured correctly.
+    /// Test to check that custom update entity action is configured correctly.
     /// </summary>
     [Fact]
     public async Task GetEntityByIdAsync_UpdateAction_ShouldBeConfigured()
