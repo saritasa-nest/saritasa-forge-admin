@@ -342,6 +342,28 @@ public class GetEntityByIdTests : IDisposable
     }
 
     /// <summary>
+    /// Test for case when property have configured form order via FluentAPI.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_FluentAPI_NavigationFormOrder_ShouldBeConfigured()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.IncludeNavigation<Address>(shop => shop.Address, optionsBuilder => optionsBuilder.SetFormOrder(1));
+        });
+        const string expectedPropertyName = nameof(Shop.Address);
+        const int expectedOrder = 1;
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+        var actualOrder = entity.Properties.First(property => property.Name == expectedPropertyName).FormOrder;
+
+        // Assert
+        Assert.Equal(expectedOrder, actualOrder);
+    }
+
+    /// <summary>
     /// Test for case when property have <see cref="NetForgePropertyAttribute.FormOrder"/>.
     /// </summary>
     [Fact]
