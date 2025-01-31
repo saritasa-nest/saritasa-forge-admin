@@ -24,6 +24,16 @@ public class NavigationOptionsBuilder<TEntity>
     }
 
     /// <summary>
+    /// Sets order to navigation property on create and edit pages.
+    /// </summary>
+    /// <param name="formOrder">Order number.</param>
+    public NavigationOptionsBuilder<TEntity> SetFormOrder(int formOrder)
+    {
+        options.FormOrder = formOrder;
+        return this;
+    }
+
+    /// <summary>
     /// Includes navigation's property.
     /// </summary>
     /// <param name="propertyExpression">Lambda expression representing property to include.</param>

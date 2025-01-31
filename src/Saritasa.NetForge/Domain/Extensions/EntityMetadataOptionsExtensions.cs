@@ -255,9 +255,9 @@ public static class EntityMetadataOptionsExtensions
     {
         navigation.IsIncluded = true;
 
-        if (navigationOptions.Order.HasValue)
+        if (navigationOptions.FormOrder.HasValue)
         {
-            navigation.Order = navigationOptions.Order.Value;
+            navigation.FormOrder = navigationOptions.FormOrder.Value;
         }
 
         foreach (var propertyOptions in navigationOptions.PropertyOptions)
