@@ -1,11 +1,12 @@
-﻿using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
+﻿using System.Collections;
+using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
 namespace Saritasa.NetForge.Infrastructure.EfCore.Services;
 
 /// <summary>
 /// Convert entities with lazy loading proxies to POCO entities.
 /// </summary>
-public class ProxyToPocoConverter
+public static class ProxyToPocoConverter
 {
     /// <summary>
     /// Converts a proxy entity to a POCO entity.
@@ -13,11 +14,29 @@ public class ProxyToPocoConverter
     /// <param name="source">The source proxy entity.</param>
     /// <param name="navigationPropertyNames">The list of navigation property names.</param>
     /// <returns>The POCO entity.</returns>
-    public object? ConvertProxyToPoco(object? source, IList<string> navigationPropertyNames)
+    public static object? ConvertProxyToPoco(object? source, IList<string>? navigationPropertyNames)
     {
-        if (source == null)
+        switch (source)
         {
-            return default;
+            case null:
+                return default;
+
+            // Sometimes the source is a collection of proxy entities.
+            case IEnumerable<object> sourceCollection:
+                {
+                    var sourceType = source.GetType();
+
+                    // Get the item type of the collection to avoid boxing issues.
+                    var itemType = sourceType.GetGenericArguments().FirstOrDefault() ?? typeof(object);
+                    var pocoCollectionType = typeof(List<>).MakeGenericType(itemType);
+                    var pocoCollection = (IList)Activator.CreateInstance(pocoCollectionType)!;
+
+                    foreach (var item in sourceCollection)
+                    {
+                        pocoCollection.Add(ConvertProxyToPoco(item, null));
+                    }
+                    return pocoCollection;
+                }
         }
 
         var entityType = source.GetPocoType();
@@ -29,9 +48,13 @@ public class ProxyToPocoConverter
         foreach (var property in entityType.GetProperties())
         {
             // Exclude the navigation properties because they are the proxies as well.
+            if (navigationPropertyNames != null && !navigationPropertyNames.Contains(property.Name))
+            {
+                continue;
+            }
+
             // Exclude indexers, read-only and write-only properties.
-            if (navigationPropertyNames.Contains(property.Name) || !property.CanWrite || !property.CanRead
-                || property.GetIndexParameters().Length > 0)
+            if (!property.CanWrite || !property.CanRead || property.GetIndexParameters().Length > 0)
             {
                 continue;
             }
@@ -39,12 +62,24 @@ public class ProxyToPocoConverter
             try
             {
                 var value = property.GetValue(source);
+
+                if (value != null && value.GetType().IsLazyLoadingProxy())
+                {
+                    continue;
+                }
+
                 property.SetValue(pocoInstance, value);
             }
             catch
             {
                 // Skip the property if it cannot be copied.
+                property.SetValue(pocoInstance, null);
             }
+        }
+
+        if (navigationPropertyNames == null)
+        {
+            return pocoInstance;
         }
 
         // Do the same for the navigation properties recursively because they can be proxies as well.
@@ -58,7 +93,7 @@ public class ProxyToPocoConverter
                 continue;
             }
 
-            var navigationPoco = ConvertProxyToPoco(propertyValue, []);
+            var navigationPoco = ConvertProxyToPoco(propertyValue, null);
             entityType.GetProperty(navigationName)?.SetValue(pocoInstance, navigationPoco);
         }
 
