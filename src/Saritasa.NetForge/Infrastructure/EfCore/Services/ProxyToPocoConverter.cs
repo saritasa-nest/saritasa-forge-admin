@@ -48,7 +48,7 @@ public static class ProxyToPocoConverter
         foreach (var property in entityType.GetProperties())
         {
             // Exclude the navigation properties because they are the proxies as well.
-            if (navigationPropertyNames != null && !navigationPropertyNames.Contains(property.Name))
+            if (navigationPropertyNames != null && navigationPropertyNames.Contains(property.Name))
             {
                 continue;
             }
@@ -63,9 +63,20 @@ public static class ProxyToPocoConverter
             {
                 var value = property.GetValue(source);
 
+                // Skip the property if it is a proxy.
                 if (value != null && value.GetType().IsLazyLoadingProxy())
                 {
                     continue;
+                }
+
+                // Check if the property is a collection of proxy entities.
+                if (value is IEnumerable<object> collection)
+                {
+                    var firstItem = collection.FirstOrDefault();
+                    if (firstItem != null && firstItem.GetType().IsLazyLoadingProxy())
+                    {
+                        continue;
+                    }
                 }
 
                 property.SetValue(pocoInstance, value);
@@ -73,7 +84,6 @@ public static class ProxyToPocoConverter
             catch
             {
                 // Skip the property if it cannot be copied.
-                property.SetValue(pocoInstance, null);
             }
         }
 
