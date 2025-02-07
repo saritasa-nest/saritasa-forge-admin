@@ -78,6 +78,8 @@ public class EditEntityViewModel : ValidationEntityViewModel
                         IsHidden: false,
                         IsHiddenFromDetails: false
                     })
+                    .OrderByDescending(property => property.FormOrder.HasValue)
+                    .ThenBy(property => property.FormOrder)
                     .ToList()
             };
 

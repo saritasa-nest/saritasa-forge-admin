@@ -75,6 +75,8 @@ public class CreateEntityViewModel : ValidationEntityViewModel
                         IsValueGeneratedOnUpdate: false,
                         IsHiddenFromCreate: false
                     })
+                    .OrderByDescending(property => property.FormOrder.HasValue)
+                    .ThenBy(property => property.FormOrder)
                     .ToList(),
             };
 

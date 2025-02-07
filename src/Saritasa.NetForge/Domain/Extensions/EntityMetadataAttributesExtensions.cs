@@ -140,6 +140,11 @@ public static class EntityMetadataAttributesExtensions
             property.Order = netForgePropertyAttribute.Order;
         }
 
+        if (netForgePropertyAttribute.FormOrder >= 0)
+        {
+            property.FormOrder = netForgePropertyAttribute.FormOrder;
+        }
+
         property.DisplayFormat = netForgePropertyAttribute.DisplayFormat ?? property.DisplayFormat;
 
         if (netForgePropertyAttribute.SearchType != SearchType.None)

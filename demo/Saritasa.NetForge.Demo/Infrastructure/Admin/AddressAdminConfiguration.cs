@@ -26,10 +26,13 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
                 .SetDisplayName("Phone")
                 .SetDescription("Address contact phone.")
                 .SetOrder(1)
-                .SetSearchType(SearchType.ContainsCaseInsensitive);
+                .SetSearchType(SearchType.ContainsCaseInsensitive)
+                .SetFormOrder(5);
         }).ConfigureProperty(address => address.PostalCode, propertyBuilder =>
         {
-            propertyBuilder.SetIsHidden(true);
+            propertyBuilder
+                .SetIsHidden(true)
+                .SetFormOrder(4);
         }).ConfigureProperty(address => address.City, propertyBuilder =>
         {
             propertyBuilder.SetDisplayName("Town");

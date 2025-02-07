@@ -140,6 +140,11 @@ public static class EntityMetadataOptionsExtensions
             property.Order = propertyOptions.Order.Value;
         }
 
+        if (propertyOptions.FormOrder.HasValue)
+        {
+            property.FormOrder = propertyOptions.FormOrder.Value;
+        }
+
         property.DisplayFormat = propertyOptions.DisplayFormat ?? property.DisplayFormat;
         property.FormatProvider = propertyOptions.FormatProvider ?? property.FormatProvider;
 
@@ -250,9 +255,9 @@ public static class EntityMetadataOptionsExtensions
     {
         navigation.IsIncluded = true;
 
-        if (navigationOptions.Order.HasValue)
+        if (navigationOptions.FormOrder.HasValue)
         {
-            navigation.Order = navigationOptions.Order.Value;
+            navigation.FormOrder = navigationOptions.FormOrder.Value;
         }
 
         foreach (var propertyOptions in navigationOptions.PropertyOptions)
