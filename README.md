@@ -655,6 +655,54 @@ public string Property { get; set; }
 public string Property { get; set; }
 ```
 
+## Order
+
+### List View Order
+
+You can set order of property columns on `List View` page.
+
+#### Using FluentAPI
+
+```csharp
+    public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+    {
+        entityOptionsBuilder.ConfigureProperty(address => address.Id, propertyBuilder =>
+        {
+            propertyBuilder.SetOrder(1);
+        });
+    }
+```
+
+#### Using Attribute
+
+```csharp
+    [NetForgeProperty(Order = 1)]
+    public string Street { get; set; }
+```
+
+### Order on Create and Edit Pages
+
+You can set order of inputs on `Create` and `Edit` pages.
+
+#### Using FluentAPI
+
+```csharp
+    public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+    {
+        entityOptionsBuilder.ConfigureProperty(address => address.Id, propertyBuilder =>
+        {
+            propertyBuilder.SetFormOrder(1);
+        });
+    }
+```
+
+#### Using Attribute
+
+```csharp
+    [NetForgeProperty(FormOrder = 1)]
+    public string Street { get; set; }
+```
+
 ## Display Formatting
 
 You can configure the display format for the properties values. See [string.Format](https://learn.microsoft.com/en-us/dotnet/standard/base-types/composite-formatting#format-string-component).
