@@ -106,4 +106,14 @@ public class EntityMetadata
     /// Gets string representation of the entity.
     /// </summary>
     public Func<object, string>? ToStringFunc { get; set; }
+
+    /// <summary>
+    /// Action that executes after entity create and before saving changes to a database.
+    /// </summary>
+    public Action<IServiceProvider?, object>? CreateAction { get; set; }
+
+    /// <summary>
+    /// Action that executes after entity update and before saving changes to a database.
+    /// </summary>
+    public Action<IServiceProvider?, object>? UpdateAction { get; set; }
 }

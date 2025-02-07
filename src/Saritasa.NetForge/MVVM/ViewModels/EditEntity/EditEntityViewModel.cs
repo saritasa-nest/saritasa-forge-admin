@@ -133,7 +133,8 @@ public class EditEntityViewModel : ValidationEntityViewModel
             ClrType = entity.ClrType,
             Properties = entity.Properties,
             AfterUpdateAction = entity.AfterUpdateAction,
-            EntitySaveMessage = entity.MessageOptions.EntitySaveMessage
+            EntitySaveMessage = entity.MessageOptions.EntitySaveMessage,
+            UpdateAction = entity.UpdateAction
         };
     }
 
@@ -163,8 +164,12 @@ public class EditEntityViewModel : ValidationEntityViewModel
 
         try
         {
-            var updatedEntity = await dataService
-                .UpdateAsync(Model.EntityInstance!, Model.OriginalEntityInstance!, Model.AfterUpdateAction, CancellationToken);
+            var updatedEntity = await dataService.UpdateAsync(
+                    Model.EntityInstance!,
+                    Model.OriginalEntityInstance!,
+                    Model.AfterUpdateAction,
+                    CancellationToken,
+                    Model.UpdateAction);
 
             // We do clone because UpdateAsync method returns Model.OriginalEntityInstance
             // so we don't want Model.EntityInstance and Model.OriginalEntityInstance to have the same reference.

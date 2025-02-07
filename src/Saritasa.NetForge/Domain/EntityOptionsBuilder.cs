@@ -276,4 +276,26 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
             return entity is not null ? toStringFunc.Invoke((TEntity)entity) : string.Empty;
         }
     }
+
+    /// <summary>
+    /// Sets action that executes after entity create and before saving changes to a database.
+    /// </summary>
+    /// <param name="action">Action to execute.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public EntityOptionsBuilder<TEntity> SetCreateAction(Action<IServiceProvider?, TEntity> action)
+    {
+        options.CreateAction = (serviceProvider, entity) => action(serviceProvider, (TEntity)entity);
+        return this;
+    }
+
+    /// <summary>
+    /// Sets action that executes after entity update and before saving changes to a database.
+    /// </summary>
+    /// <param name="action">Action to execute.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public EntityOptionsBuilder<TEntity> SetUpdateAction(Action<IServiceProvider?, TEntity> action)
+    {
+        options.UpdateAction = (serviceProvider, entity) => action(serviceProvider, (TEntity)entity);
+        return this;
+    }
 }

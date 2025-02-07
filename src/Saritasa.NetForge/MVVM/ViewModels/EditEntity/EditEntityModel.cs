@@ -41,4 +41,7 @@ public record EditEntityModel
 
     /// <inheritdoc cref="MessageOptions.EntitySaveMessage"/>
     public string? EntitySaveMessage { get; init; }
+
+    /// <inheritdoc cref="EntityMetadata.UpdateAction"/>
+    public Action<IServiceProvider?, object>? UpdateAction { get; set; }
 }

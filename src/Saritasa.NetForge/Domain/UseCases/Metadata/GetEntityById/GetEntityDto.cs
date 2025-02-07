@@ -57,4 +57,10 @@ public record GetEntityDto
 
     /// <inheritdoc cref="EntityMetadata.ToStringFunc"/>
     public Func<object, string>? ToStringFunc { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.CreateAction"/>
+    public Action<IServiceProvider?, object>? CreateAction { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.UpdateAction"/>
+    public Action<IServiceProvider?, object>? UpdateAction { get; set; }
 }

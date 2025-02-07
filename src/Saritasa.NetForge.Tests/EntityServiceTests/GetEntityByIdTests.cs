@@ -699,4 +699,48 @@ public class GetEntityByIdTests : IDisposable
         // Assert
         Assert.Equal(entityBulkDeleteMessage, entity.MessageOptions.EntityBulkDeleteMessage);
     }
+
+    /// <summary>
+    /// Test to check that custom create entity action is configured correctly.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_CreateAction_ShouldBeConfigured()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.SetCreateAction((_, entity) =>
+            {
+                entity.IsOpen = true;
+            });
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(entity.CreateAction);
+    }
+
+    /// <summary>
+    /// Test to check that custom update entity action is configured correctly.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_UpdateAction_ShouldBeConfigured()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.SetUpdateAction((_, entity) =>
+            {
+                entity.IsOpen = true;
+            });
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(entity.UpdateAction);
+    }
 }

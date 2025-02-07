@@ -572,6 +572,36 @@ You can configure your query for specific entity.
 })
 ```
 
+## Create Custom Action
+
+You can configure action that will be executed right after an entity was created and before saving changes to database.
+So you can use it to make additional interactions with a database.
+Also, you can use `ServiceProvider` if you need to access your services.
+
+```csharp
+public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+    {
+        entityOptionsBuilder.SetCreateAction((serviceProvider, address) => 
+            {
+                address.CreatedByUserId = new Random().Next(1, 1000);
+            });
+    }
+```
+
+## Update Custom Action
+
+This one behaves just like [Create Custom Action](#create-custom-action) but will be executed after update instead of create.
+
+```csharp
+public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+    {
+        entityOptionsBuilder.SetUpdateAction((serviceProvider, address) => 
+            {
+                address.UpdatedByUserId = new Random().Next(1, 1000);
+            });
+    }
+```
+
 ## After Update Action
 
 You can configure action that will be performed after entity update.
