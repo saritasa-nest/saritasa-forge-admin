@@ -240,14 +240,7 @@ public class EfCoreDataService : IOrmDataService
     private async Task UpdateAsync(
         DbContext dbContext, object entity, object originalEntity, CancellationToken cancellationToken)
     {
-        try
-        {
-            dbContext.Attach(originalEntity);
-        }
-        catch (InvalidOperationException)
-        {
-            // Do nothing. It means that entity is already tracked.
-        }
+        dbContext.Attach(originalEntity);
 
         await UpdateNavigations(dbContext, entity, originalEntity);
 
@@ -302,15 +295,13 @@ public class EfCoreDataService : IOrmDataService
         }
         else
         {
-            try
+            var isTracked = dbContext.IsTracked(navigationEntry.CurrentValue!, comparer);
+
+            if (!isTracked)
             {
                 dbContext.Attach(navigationEntry.CurrentValue!);
+                originalNavigationEntry.CurrentValue = navigationEntry.CurrentValue;
             }
-            catch (InvalidOperationException)
-            {
-                // Do nothing. It means that entity is already tracked.
-            }
-            originalNavigationEntry.CurrentValue = navigationEntry.CurrentValue;
         }
     }
 
@@ -325,13 +316,11 @@ public class EfCoreDataService : IOrmDataService
         // Track added elements
         foreach (var element in navigationCollectionInstance)
         {
-            try
+            var isTracked = dbContext.IsTracked(element, comparer);
+
+            if (!isTracked)
             {
                 dbContext.Attach(element);
-            }
-            catch (InvalidOperationException)
-            {
-                // Do nothing. It means that entity is already tracked.
             }
         }
 

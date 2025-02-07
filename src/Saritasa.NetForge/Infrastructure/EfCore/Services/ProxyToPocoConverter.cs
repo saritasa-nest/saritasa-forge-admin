@@ -14,7 +14,7 @@ public static class ProxyToPocoConverter
     /// <param name="source">The source proxy entity.</param>
     /// <param name="navigationPropertyNames">The list of navigation property names.</param>
     /// <returns>The POCO entity.</returns>
-    public static object? ConvertProxyToPoco(object? source, IList<string>? navigationPropertyNames)
+    public static object? ConvertProxyToPoco(object? source, IList<string>? navigationPropertyNames = null)
     {
         switch (source)
         {
@@ -33,7 +33,7 @@ public static class ProxyToPocoConverter
 
                     foreach (var item in sourceCollection)
                     {
-                        pocoCollection.Add(ConvertProxyToPoco(item, null));
+                        pocoCollection.Add(ConvertProxyToPoco(item));
                     }
                     return pocoCollection;
                 }
@@ -103,7 +103,7 @@ public static class ProxyToPocoConverter
                 continue;
             }
 
-            var navigationPoco = ConvertProxyToPoco(propertyValue, null);
+            var navigationPoco = ConvertProxyToPoco(propertyValue);
             entityType.GetProperty(navigationName)?.SetValue(pocoInstance, navigationPoco);
         }
 
