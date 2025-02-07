@@ -13,6 +13,7 @@ using Saritasa.NetForge.Domain.Comparers;
 using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Domain.Exceptions;
+using Saritasa.NetForge.Domain.Helpers;
 using Saritasa.NetForge.Domain.UseCases.Common;
 using Saritasa.NetForge.Domain.UseCases.Interfaces;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
@@ -87,7 +88,7 @@ public class EfCoreDataService : IOrmDataService
 
             primaryKeyExpression = primaryKeyExpression is null
                 ? equalsCall
-                : AddAndBetweenExpressions(equalsCall, primaryKeyExpression);
+                : equalsCall.AddAndBetween(primaryKeyExpression);
         }
 
         // Example with composite primary key:
@@ -501,24 +502,32 @@ public class EfCoreDataService : IOrmDataService
             }
         }
 
-        query = SearchByExpressions(query, searchString, entityType, propertySearches);
+        var searchExpression = SearchByExpressions(searchString, entityType, propertySearches, out var entityExpression);
 
         if (searchFunction is not null)
         {
-            query = searchFunction(serviceProvider, query, searchString);
+            var customSearchExpression
+                = GetCustomSearchExpression(query, searchString, entityType, entityExpression, searchFunction);
+            searchExpression = searchExpression.AddOrBetween(customSearchExpression);
+        }
+
+        if (searchExpression is not null)
+        {
+            var predicate = Expression.Lambda<Func<object, bool>>(searchExpression, entityExpression);
+            return query.Where(predicate);
         }
 
         return query;
     }
 
-    private static IQueryable<object> SearchByExpressions(
-        IQueryable<object> query,
+    private static Expression? SearchByExpressions(
         string searchString,
         Type entityType,
-        IEnumerable<PropertySearchDto> properties)
+        IEnumerable<PropertySearchDto> properties,
+        out ParameterExpression entity)
     {
         // entity => entity
-        var entity = Expression.Parameter(typeof(object), Entity);
+        entity = Expression.Parameter(typeof(object), Entity);
 
         // entity => (entityType)entity
         var convertedEntity = Expression.Convert(entity, entityType);
@@ -529,18 +538,10 @@ public class EfCoreDataService : IOrmDataService
         foreach (var searchEntry in searchEntries)
         {
             var singleEntrySearchExpression = GetEntrySearchExpression(properties, convertedEntity, searchEntry);
-
-            combinedSearchExpressions =
-                AddAndBetweenExpressions(combinedSearchExpressions, singleEntrySearchExpression);
+            combinedSearchExpressions = combinedSearchExpressions.AddAndBetween(singleEntrySearchExpression);
         }
 
-        if (combinedSearchExpressions is null)
-        {
-            return query;
-        }
-
-        var predicate = Expression.Lambda<Func<object, bool>>(combinedSearchExpressions, entity);
-        return query.Where(predicate);
+        return combinedSearchExpressions;
     }
 
     /// <summary>
@@ -597,8 +598,7 @@ public class EfCoreDataService : IOrmDataService
                 _ => throw new InvalidOperationException("Incorrect search type was used.")
             };
 
-            singleEntrySearchExpression =
-                AddOrBetweenSearchExpressions(singleEntrySearchExpression, searchMethodCallExpression);
+            singleEntrySearchExpression = singleEntrySearchExpression.AddOrBetween(searchMethodCallExpression);
         }
 
         return singleEntrySearchExpression!;
@@ -700,44 +700,26 @@ public class EfCoreDataService : IOrmDataService
         return propertyExpression;
     }
 
-    /// <summary>
-    /// Combines all expressions to one expression with <see langword="OR"/> operator between.
-    /// </summary>
-    private static Expression AddOrBetweenSearchExpressions(
-        Expression? combinedExpressions, Expression expression)
+    private Expression GetCustomSearchExpression(
+        IQueryable<object> query,
+        string searchString,
+        Type entityType,
+        ParameterExpression entityExpression,
+        Func<IServiceProvider?, IQueryable<object>, string, IQueryable<object>> searchFunction)
     {
-        if (combinedExpressions is not null)
-        {
-            // Add OR operator between every searchable property using search entry
-            // Example:
-            // entity => ((entityType)entity).propertyName.Equals(searchEntry) ||
-            //           ((entityType)entity).propertyName2.StartsWith(searchEntry) ||
-            //           ...
-            return Expression.OrElse(combinedExpressions, expression);
-        }
+        // searchFunction looks like query.Where(e => e.Name.Contains(searchTerm))
+        // Here we are getting e.Name.Contains(searchTerm) part
+        var expression = (MethodCallExpression)searchFunction(serviceProvider, query, searchString).Expression;
+        var lambda = (LambdaExpression)((UnaryExpression)expression.Arguments[1]).Operand;
+        var lamdaBody = lambda.Body;
 
-        return expression;
-    }
-
-    /// <summary>
-    /// Combines all expressions to one expression with <see langword="AND"/> operator between.
-    /// </summary>
-    private static Expression AddAndBetweenExpressions(
-        Expression? combinedExpressions, Expression expression)
-    {
-        if (combinedExpressions is not null)
-        {
-            // Example:
-            // entity => ((entityType)entity).propertyName.Equals(searchEntry) ||
-            //           ((entityType)entity).propertyName2.StartsWith(searchEntry) ||
-            //           ...) &&
-            //           ((entityType)entity).propertyName.Equals(searchEntry2) ||
-            //           ((entityType)entity).propertyName2.StartsWith(searchEntry2) ||
-            //           ...) && ...
-            return Expression.And(combinedExpressions, expression);
-        }
-
-        return expression;
+        // Converting "e" parameter to "entityExpression"
+        // So now we have: entityExpression.Name.Contains(searchTerm)
+        // We need it because we constructed expression before with different parameter
+        // but all expressions should have the same parameter expression.
+        var parameterReplacer = new ParameterReplacerWithConversion(entityExpression, entityType);
+        var lambdaBodyWithNewParameter = parameterReplacer.Visit(lamdaBody);
+        return lambdaBodyWithNewParameter;
     }
 
     private static IOrderedQueryable<object> Order(
