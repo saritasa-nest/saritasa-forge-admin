@@ -54,55 +54,78 @@ public class EfCoreMetadataService : IOrmMetadataService
     /// <returns>An <see cref="EntityMetadata"/> object containing metadata information for the entity type.</returns>
     private static EntityMetadata GetEntityMetadata(IReadOnlyEntityType entityType)
     {
-        // GetNavigations retrieves all navigations except many-to-many navigations.
-        // GetSkipNavigations retrieves many-to-many navigations
-        var navigationsMetadata = entityType
-            .GetNavigations()
-            .Concat<IReadOnlyNavigationBase>(entityType.GetSkipNavigations())
-            .Select(GetNavigationMetadata);
-
-        var entityMetadata = new EntityMetadata
+        return new EntityMetadata
         {
             DisplayName = entityType.ShortName(),
             ClrType = entityType.ClrType,
             Description = entityType.GetComment() ?? string.Empty,
             IsHidden = entityType.IsPropertyBag,
             Properties = GetPropertiesMetadata(entityType),
-            Navigations = navigationsMetadata.ToList(),
+            Navigations = GetNavigationsMetadata(entityType),
             IsKeyless = entityType.FindPrimaryKey() is null
         };
-
-        return entityMetadata;
     }
+
+    private static List<NavigationMetadata> GetNavigationsMetadata(IReadOnlyEntityType entityType)
+    {
+        // GetNavigations retrieves all navigations except many-to-many navigations.
+        // GetSkipNavigations retrieves many-to-many navigations
+        return entityType
+            .GetNavigations()
+            .Concat<IReadOnlyNavigationBase>(entityType.GetSkipNavigations())
+            .Select(GetNavigationMetadata)
+            .Where(navigation => navigation is not null)
+            .ToList()!;
+    }
+
+    /// <summary>
+    /// Contains navigations' foreign keys. Foreign key represents relationship between two entities.
+    /// It helps with handling loops between navigations because the same relationship will not be added if it presents.
+    /// For example, <c>Product has Shop</c> and <c>Shop has Products</c>.
+    /// </summary>
+    private static readonly HashSet<IReadOnlyForeignKey> foreignKeys = [];
 
     /// <summary>
     /// Retrieve metadata for a navigation of an entity type.
     /// </summary>
     /// <param name="navigation">The EF Core navigation to retrieve metadata for.</param>
     /// <returns>A <see cref="PropertyMetadata"/> object containing metadata information for the navigation.</returns>
-    private static NavigationMetadata GetNavigationMetadata(IReadOnlyNavigationBase navigation)
+    private static NavigationMetadata? GetNavigationMetadata(IReadOnlyNavigationBase navigation)
     {
         var isNullable = false;
         if (navigation is IReadOnlySkipNavigation { ForeignKey: not null } skipNavigation)
         {
+            var foreignKey = skipNavigation.ForeignKey;
+            if (foreignKey is not null && !foreignKeys.Add(foreignKey))
+            {
+                return null;
+            }
+
             isNullable = !(skipNavigation.ForeignKey.IsRequired || skipNavigation.ForeignKey.IsRequiredDependent);
         }
         else if (navigation is IReadOnlyNavigation readOnlyNavigation)
         {
-            isNullable = !readOnlyNavigation.ForeignKey.IsRequiredDependent;
+            var foreignKey = readOnlyNavigation.ForeignKey;
+            if (!foreignKeys.Add(foreignKey))
+            {
+                return null;
+            }
+
+            isNullable = !foreignKey.IsRequiredDependent;
         }
 
-        var navigationMetadata = new NavigationMetadata
+        // TODO: What if we won't enter previous conditions?
+
+        return new NavigationMetadata
         {
             Name = navigation.Name,
             IsCollection = navigation.IsCollection,
             TargetEntityProperties = GetPropertiesMetadata(navigation.TargetEntityType),
+            TargetEntityNavigations = GetNavigationsMetadata(navigation.TargetEntityType),
             PropertyInformation = navigation.PropertyInfo,
             ClrType = navigation.ClrType,
             IsNullable = isNullable
         };
-
-        return navigationMetadata;
     }
 
     private static List<PropertyMetadata> GetPropertiesMetadata(IReadOnlyEntityType entityType)

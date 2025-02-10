@@ -145,12 +145,7 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         Expression<Func<TEntity, object?>> navigationExpression,
         Action<NavigationOptionsBuilder<TNavigation>> navigationOptionsBuilderAction)
     {
-        var navigationOptionsBuilder = new NavigationOptionsBuilder<TNavigation>();
-        navigationOptionsBuilderAction.Invoke(navigationOptionsBuilder);
-
-        var includedPropertyName = navigationExpression.GetMemberName();
-        var navigationOptions = navigationOptionsBuilder.Create(includedPropertyName);
-
+        var navigationOptions = NavigationOptionsHelper.CreateNavigationOptions(navigationExpression, navigationOptionsBuilderAction);
         options.NavigationOptions.Add(navigationOptions);
         return this;
     }

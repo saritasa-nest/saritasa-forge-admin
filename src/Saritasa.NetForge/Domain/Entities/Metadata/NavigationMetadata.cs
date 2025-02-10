@@ -13,7 +13,12 @@ public class NavigationMetadata : PropertyMetadataBase
     /// <summary>
     /// Target navigation entity's properties.
     /// </summary>
-    public List<PropertyMetadata> TargetEntityProperties { get; set; } = new();
+    public List<PropertyMetadata> TargetEntityProperties { get; set; } = [];
+
+    /// <summary>
+    /// Target navigation entity's navigations.
+    /// </summary>
+    public List<NavigationMetadata> TargetEntityNavigations { get; set; } = [];
 
     /// <summary>
     /// Whether this navigation included to an entity.

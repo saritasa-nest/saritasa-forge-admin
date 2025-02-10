@@ -108,9 +108,9 @@ public static class EntityMetadataOptionsExtensions
         foreach (var navigationOptions in entityOptions.NavigationOptions)
         {
             var navigation = entityMetadata.Navigations
-                .First(navigation => navigation.Name.Equals(navigationOptions.PropertyName));
+                .FirstOrDefault(navigation => navigation.Name.Equals(navigationOptions.PropertyName));
 
-            navigation.ApplyNavigationOptions(navigationOptions);
+            navigation?.ApplyNavigationOptions(navigationOptions);
         }
 
         entityMetadata.AssignGroupToEntity(entityOptions.GroupName, adminOptions);
@@ -271,12 +271,28 @@ public static class EntityMetadataOptionsExtensions
             property?.ApplyCalculatedPropertyOptions(propertyOptions);
         }
 
+        foreach (var navigationOption in navigationOptions.NavigationsOptions)
+        {
+            var targetNavigation = navigation.TargetEntityNavigations
+                .FirstOrDefault(property => property.Name == navigationOption.PropertyName);
+
+            targetNavigation?.ApplyNavigationOptions(navigationOption);
+        }
+
         var notIncludedProperties = navigation.TargetEntityProperties
             .Where(p => !navigationOptions.PropertyOptions.Any(option => option.PropertyName == p.Name)
                         && !navigationOptions.CalculatedPropertyOptions.Any(option => option.PropertyName == p.Name));
         foreach (var notIncludedProperty in notIncludedProperties)
         {
             notIncludedProperty.IsHidden = true;
+        }
+
+        var notIncludedNavigations = navigation.TargetEntityNavigations
+            .Where(targetNavigation
+                => !navigationOptions.NavigationsOptions.Any(option => option.PropertyName == targetNavigation.Name));
+        foreach (var notIncludedNavigation in notIncludedNavigations)
+        {
+            notIncludedNavigation.IsHidden = true;
         }
     }
 }

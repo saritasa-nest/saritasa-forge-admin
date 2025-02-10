@@ -113,6 +113,7 @@ public class EntityService : IEntityService
             DisplayName = property.DisplayName,
             Description = property.Description,
             IsPrimaryKey = property.IsPrimaryKey,
+            IsForeignKey = property.IsForeignKey,
             ClrType = property.ClrType,
             SearchType = property.SearchType,
             Order = property.Order,
@@ -150,6 +151,7 @@ public class EntityService : IEntityService
         {
             IsCollection = navigation.IsCollection,
             TargetEntityProperties = navigation.TargetEntityProperties.ConvertAll(MapProperty),
+            TargetEntityNavigations = navigation.TargetEntityNavigations.ConvertAll(MapNavigation),
             Name = navigation.Name,
             DisplayName = navigation.DisplayName,
             Description = navigation.Description,

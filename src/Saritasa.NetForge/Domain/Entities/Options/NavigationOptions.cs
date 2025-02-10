@@ -22,4 +22,9 @@ public class NavigationOptions
     /// Property options for the navigation calculated properties.
     /// </summary>
     public ICollection<CalculatedPropertyOptions> CalculatedPropertyOptions { get; set; } = [];
+
+    /// <summary>
+    /// Navigation options for inner navigations.
+    /// </summary>
+    public ICollection<NavigationOptions> NavigationsOptions { get; set; } = [];
 }

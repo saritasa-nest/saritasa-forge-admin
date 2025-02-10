@@ -10,50 +10,61 @@
 }
 
 @{
-    var allProperties = new List<(PropertyMetadataDto Property, NavigationMetadataDto? Navigation)>();
+    List<(PropertyMetadataDto Property, string PropertyPath)> propertyPaths = [];
     foreach (var property in Properties.Where(property => property is { IsHidden: false, IsHiddenFromListView: false }))
     {
         if (property is NavigationMetadataDto navigation)
         {
-            if (IsNavigationEntity)
-            {
-                continue;
-            }
+            var propertyPath = navigation.Name;
 
             if (!navigation.IsCollection)
             {
-                var targetNavigationProperties = navigation.TargetEntityProperties
-                    .Where(targetProperty => targetProperty is { IsHidden: false, IsHiddenFromListView: false });
-                foreach (var targetProperty in targetNavigationProperties)
+                HandleNavigation(navigation);
+
+                void HandleNavigation(NavigationMetadataDto navigation)
                 {
-                    allProperties.Add((targetProperty, navigation));
+                    var targetNavigationProperties = navigation.TargetEntityProperties
+                        .Where(targetProperty => targetProperty is { IsHidden: false, IsHiddenFromListView: false });
+                    foreach (var targetProperty in targetNavigationProperties)
+                    {
+                        propertyPaths.Add((targetProperty, $"{propertyPath}.{targetProperty.Name}"));
+                    }
+
+                    foreach (var targetNavigation in navigation.TargetEntityNavigations
+                                 .Where(targetNavigation => targetNavigation is { IsHidden: false, IsHiddenFromListView: false }))
+                    {
+                        propertyPath += $".{targetNavigation.Name}";
+                        HandleNavigation(targetNavigation);
+                        propertyPath = propertyPath.Replace($".{targetNavigation.Name}", string.Empty);
+                    }
                 }
             }
             else
             {
-                allProperties.Add((property, navigation));
+                propertyPaths.Add((property, $"{propertyPath}.{property.Name}"));
             }
-
         }
         else
         {
-            allProperties.Add((property, null));
+            propertyPaths.Add((property, property.Name));
         }
     }
 
     // Display principal entity primary key at the start of columns if the order is not set.
-    var orderedProperties = allProperties
-        .OrderByDescending(property => property is { Property: { IsPrimaryKey: true, Order: null }, Navigation: null })
+    var orderedProperties = propertyPaths
+        .OrderByDescending(property => property is { Property: { IsPrimaryKey: true, Order: null } }
+                                       && !property.PropertyPath.Contains(".")) // Means property is not part of a navigation
         .ThenByDescending(property => property.Property.Order.HasValue)
         .ThenBy(property => property.Property.Order);
-    foreach (var (property, navigation) in orderedProperties)
+    foreach (var (property, propertyPath) in orderedProperties)
     {
-        RenderPropertyColumn(property, navigation);
+        RenderPropertyColumn(property, propertyPath, navigation: null);
     }
 
-    void RenderPropertyColumn(PropertyMetadataDto property, NavigationMetadataDto? navigation = null)
+    void RenderPropertyColumn(PropertyMetadataDto property, string propertyPath, NavigationMetadataDto? navigation = null)
     {
-        <TemplateColumn T="object" Title="@property.Name" Sortable="property.IsSortable" NavigationName="@navigation?.Name">
+        <TemplateColumn T="object" Title="@property.Name" Sortable="property.IsSortable"
+                        NavigationName="@navigation?.Name">
             <HeaderTemplate>
                 @{
                     var displayName = GetPropertyDisplayName(property);
@@ -85,26 +96,49 @@
                                 <MudTooltip Text="@property.SearchType.ToString().ToMeaningfulName()"
                                             Arrow="true"
                                             Placement="Placement.Bottom">
-                                    <MudIcon Icon="@Icons.Material.Filled.Search" Size="Size.Small" />
+                                    <MudIcon Icon="@Icons.Material.Filled.Search" Size="Size.Small"/>
                                 </MudTooltip>
                             </div>
                         }
-                    </div>
-                }
+                    </div>}
             </HeaderTemplate>
 
             <CellTemplate Context="cell">
                 @{
-                    var propertyValue = GetPropertyValue(cell.Item, property).ToString();
+                    var instance = cell.Item;
+                    var propertyValue = instance.GetNestedPropertyValue(propertyPath)?.ToString();
 
-                    if (navigation is not null && !navigation.IsCollection)
+                    if (propertyValue is null || propertyValue.ToString() == string.Empty)
                     {
-                        var navigationInstance = cell.Item.GetPropertyValue(navigation.Name);
-                        propertyValue = GetPropertyValue(navigationInstance, property).ToString();
+                        propertyValue = !string.IsNullOrEmpty(property.EmptyValueDisplay)
+                            ? property.EmptyValueDisplay
+                            : DefaultValueConstants.DefaultEmptyPropertyValueDisplay;
                     }
 
+                    propertyValue = FormatValue(propertyValue, property.Name);
+
+                    if (property.ClrType == typeof(string) && !property.IsImage)
+                    {
+                        var stringValue = propertyValue.ToString();
+
+                        var maxCharacters = property.TruncationMaxCharacters ?? AdminOptions.TruncationMaxCharacters;
+
+                        if (maxCharacters != default)
+                        {
+                            propertyValue = stringValue!.Truncate(maxCharacters);
+                        }
+                    }
+
+                    // var propertyValue = GetPropertyValue(cell.Item, property).ToString();
+
+                    // if (navigation is not null && !navigation.IsCollection)
+                    // {
+                    //     var navigationInstance = cell.Item.GetPropertyValue(navigation.Name);
+                    //     propertyValue = GetPropertyValue(navigationInstance, property).ToString();
+                    // }
+
                     if (propertyValue!.Equals(property.EmptyValueDisplay)
-                    || propertyValue.Equals(DefaultValueConstants.DefaultEmptyPropertyValueDisplay))
+                        || propertyValue.Equals(DefaultValueConstants.DefaultEmptyPropertyValueDisplay))
                     {
                         @propertyValue
                     }
@@ -113,7 +147,7 @@
                         <div>
                             <MudImage Src="@property.UploadFileStrategy!.GetFileSource(propertyValue)"
                                       Elevation="25"
-                                      Class="rounded-lg property-image" />
+                                      Class="rounded-lg property-image"/>
                         </div>
                     }
                     else if (property.DisplayAsHtml)

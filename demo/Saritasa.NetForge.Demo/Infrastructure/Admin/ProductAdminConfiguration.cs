@@ -57,6 +57,24 @@ public class ProductAdminConfiguration : IEntityAdminConfiguration<Product>
                     propertyOptionsBuilder
                         .SetIsImage(true)
                         .SetUploadFileStrategy(new UploadBase64FileStrategy());
+                })
+                .IncludeNavigation<ContactInfo>(shop => shop.OwnerContact, builder =>
+                {
+                    builder.IncludeProperty(contactInfo => contactInfo.Email, propertyBuilder =>
+                    {
+                        propertyBuilder
+                            .SetOrder(1)
+                            .SetDisplayName("Contact Email");
+                    });
+                })
+                .IncludeNavigation<Address>(shop => shop.Address, builder =>
+                {
+                    builder.IncludeProperty(address => address.Country, propertyBuilder =>
+                    {
+                        propertyBuilder
+                            .SetOrder(2)
+                            .SetDisplayName("Shop Country");
+                    });
                 });
         });
 
