@@ -206,6 +206,12 @@ public class EntityDetailsViewModel : BaseViewModel
     /// </summary>
     public async Task DeleteSelectedEntitiesAsync(CancellationToken cancellationToken)
     {
+        var entityMetadata = await entityService.GetEntityByTypeAsync(SelectedEntities.First().GetType(), cancellationToken);
+        if (entityMetadata.CallbackOptions.PreDelete is not null)
+        {
+            await entityMetadata.CallbackOptions.PreDelete.Invoke(cancellationToken);
+        }
+
         await dataService.BulkDeleteAsync(SelectedEntities, SelectedEntities.First().GetType(), cancellationToken);
 
         DataGrid?.ReloadServerData();

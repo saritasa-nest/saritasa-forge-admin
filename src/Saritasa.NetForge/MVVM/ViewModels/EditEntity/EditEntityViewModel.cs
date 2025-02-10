@@ -133,6 +133,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
             ClrType = entity.ClrType,
             Properties = entity.Properties,
             AfterUpdateAction = entity.AfterUpdateAction,
+            PreEditFunction = entity.CallbackOptions.PreEdit,
             EntitySaveMessage = entity.MessageOptions.EntitySaveMessage,
             UpdateAction = entity.UpdateAction
         };
@@ -164,6 +165,11 @@ public class EditEntityViewModel : ValidationEntityViewModel
 
         try
         {
+            if (Model.PreEditFunction is not null)
+            {
+                await Model.PreEditFunction.Invoke(CancellationToken);
+            }
+
             var updatedEntity = await dataService.UpdateAsync(
                     Model.EntityInstance!,
                     Model.OriginalEntityInstance!,

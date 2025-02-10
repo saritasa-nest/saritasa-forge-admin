@@ -24,6 +24,7 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
       - [Delete](#delete)
       - [Bulk Delete](#bulk-delete)
   - [Exclude All Entities and Include Specific Only](#exclude-all-entities-and-include-specific-only)
+  - [Callback Before Create, Edit, Delete Entity](#callback-before-create-edit-delete-entity)
 - [Customizing Entities](#customizing-entities)
   - [Fluent API](#fluent-api)
   - [Creating an Entity Configuration Class](#creating-an-entity-configuration-class)
@@ -477,6 +478,32 @@ Or you can include specific entities using the data attribute:
 ```csharp
 [NetForgeEntity]
 public class Shop
+```
+
+## Callback Before Create, Edit, Delete Entity
+
+You can configure the callback action before entity creation, editing, or deletion.
+
+```csharp
+services.AddNetForge(optionsBuilder => {
+    optionsBuilder.ConfigureCallback(options => {
+        options.PreCreate = cancellationToken =>
+        {
+            Debug.WriteLine("PreCreate Callback");
+            return Task.CompletedTask;
+        };
+        options.PreEdit = cancellationToken =>
+        {
+            Debug.WriteLine("PreEdit Callback");
+            return Task.CompletedTask;
+        };
+        options.PreDelete = cancellationToken =>
+        {
+            Debug.WriteLine("PreDelete Callback");
+            return Task.CompletedTask;
+        };
+    });
+});
 ```
 
 # Customizing Entities

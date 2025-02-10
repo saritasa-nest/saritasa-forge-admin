@@ -52,6 +52,9 @@ public record GetEntityDto
     /// <inheritdoc cref="EntityMetadata.CanDelete"/>
     public bool CanDelete { get; set; }
 
+    /// <inheritdoc cref="EntityMetadata.CallbackOptions"/>
+    public EntityCallbackOptions CallbackOptions { get; set; } = new();
+
     /// <inheritdoc cref="EntityMetadata.MessageOptions"/>
     public MessageOptions MessageOptions { get; set; } = new();
 

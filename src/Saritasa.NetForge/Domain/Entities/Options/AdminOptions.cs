@@ -99,6 +99,11 @@ public class AdminOptions
     public Type? CustomHeadType { get; set; }
 
     /// <summary>
+    /// Options for entity callbacks that can be executed during various entity lifecycle events.
+    /// </summary>
+    public EntityCallbackOptions CallbackOptions { get; set; } = new();
+
+    /// <summary>
     /// Contains global level custom messages.
     /// </summary>
     public MessageOptions MessageOptions { get; set; } = new();

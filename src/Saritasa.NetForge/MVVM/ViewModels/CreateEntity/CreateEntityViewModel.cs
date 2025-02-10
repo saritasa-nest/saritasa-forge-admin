@@ -2,13 +2,13 @@
 using MudBlazor;
 using Microsoft.AspNetCore.Components.Forms;
 using Saritasa.NetForge.Domain.Entities.Options;
-using Saritasa.NetForge.Domain.Extensions;
-using Saritasa.NetForge.MVVM.Utils;
 using Saritasa.NetForge.Domain.Exceptions;
+using Saritasa.NetForge.Domain.Extensions;
 using Saritasa.NetForge.Domain.UseCases.Interfaces;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.MVVM.Navigation;
+using Saritasa.NetForge.MVVM.Utils;
 using Saritasa.NetForge.MVVM.ViewModels.EntityDetails;
 
 namespace Saritasa.NetForge.MVVM.ViewModels.CreateEntity;
@@ -120,6 +120,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
             PluralName = entity.PluralName,
             ClrType = entity.ClrType,
             Properties = entity.Properties,
+            PreCreateFunc = entity.CallbackOptions.PreCreate,
             EntityCreateMessage = entity.MessageOptions.EntityCreateMessage,
             CreateAction = entity.CreateAction,
         };
@@ -150,6 +151,11 @@ public class CreateEntityViewModel : ValidationEntityViewModel
 
         try
         {
+            if (Model.PreCreateFunc is not null)
+            {
+                await Model.PreCreateFunc.Invoke(CancellationToken);
+            }
+
             await dataService
                 .AddAsync(Model.EntityInstance, Model.ClrType!, CancellationToken, Model.CreateAction);
             navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);

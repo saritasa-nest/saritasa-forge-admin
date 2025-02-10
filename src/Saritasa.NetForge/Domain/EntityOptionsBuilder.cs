@@ -218,6 +218,17 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
+    /// Configures callback options for entity lifecycle events.
+    /// </summary>
+    /// <param name="action">An action to configure the entity callback options.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public EntityOptionsBuilder<TEntity> ConfigureCallback(Action<EntityCallbackOptions> action)
+    {
+        action.Invoke(options.CallbackOptions);
+        return this;
+    }
+
+    /// <summary>
     /// Sets entity created message.
     /// </summary>
     /// <param name="entityCreateMessage">Message.</param>
