@@ -15,10 +15,10 @@
     {
         if (property is NavigationMetadataDto navigation)
         {
-            var propertyPath = navigation.Name;
-
             if (!navigation.IsCollection)
             {
+                var propertyPath = navigation.Name;
+
                 HandleNavigation(navigation);
 
                 void HandleNavigation(NavigationMetadataDto navigation)
@@ -41,7 +41,7 @@
             }
             else
             {
-                propertyPaths.Add((property, $"{propertyPath}.{property.Name}"));
+                propertyPaths.Add((property, $"{property.Name}"));
             }
         }
         else
@@ -106,36 +106,35 @@
             <CellTemplate Context="cell">
                 @{
                     var instance = cell.Item;
-                    var propertyValue = instance.GetNestedPropertyValue(propertyPath)?.ToString();
+                    var propertyValue = instance.GetNestedPropertyValue(propertyPath);
 
-                    if (propertyValue is null || propertyValue.ToString() == string.Empty)
+                    if (property is NavigationMetadataDto navigationMetadata)
                     {
-                        propertyValue = !string.IsNullOrEmpty(property.EmptyValueDisplay)
-                            ? property.EmptyValueDisplay
-                            : DefaultValueConstants.DefaultEmptyPropertyValueDisplay;
+                        propertyValue = GetNavigationValue(propertyValue, navigationMetadata);
                     }
-
-                    propertyValue = FormatValue(propertyValue, property.Name);
-
-                    if (property.ClrType == typeof(string) && !property.IsImage)
+                    else
                     {
-                        var stringValue = propertyValue.ToString();
-
-                        var maxCharacters = property.TruncationMaxCharacters ?? AdminOptions.TruncationMaxCharacters;
-
-                        if (maxCharacters != default)
+                        if (propertyValue is null || propertyValue.ToString() == string.Empty)
                         {
-                            propertyValue = stringValue!.Truncate(maxCharacters);
+                            propertyValue = !string.IsNullOrEmpty(property.EmptyValueDisplay)
+                                ? property.EmptyValueDisplay
+                                : DefaultValueConstants.DefaultEmptyPropertyValueDisplay;
+                        }
+
+                        propertyValue = FormatValue(propertyValue, property.Name);
+
+                        if (property.ClrType == typeof(string) && !property.IsImage)
+                        {
+                            var stringValue = propertyValue.ToString();
+
+                            var maxCharacters = property.TruncationMaxCharacters ?? AdminOptions.TruncationMaxCharacters;
+
+                            if (maxCharacters != default)
+                            {
+                                propertyValue = stringValue!.Truncate(maxCharacters);
+                            }
                         }
                     }
-
-                    // var propertyValue = GetPropertyValue(cell.Item, property).ToString();
-
-                    // if (navigation is not null && !navigation.IsCollection)
-                    // {
-                    //     var navigationInstance = cell.Item.GetPropertyValue(navigation.Name);
-                    //     propertyValue = GetPropertyValue(navigationInstance, property).ToString();
-                    // }
 
                     if (propertyValue!.Equals(property.EmptyValueDisplay)
                         || propertyValue.Equals(DefaultValueConstants.DefaultEmptyPropertyValueDisplay))
@@ -145,7 +144,7 @@
                     else if (property.IsImage)
                     {
                         <div>
-                            <MudImage Src="@property.UploadFileStrategy!.GetFileSource(propertyValue)"
+                            <MudImage Src="@property.UploadFileStrategy!.GetFileSource(propertyValue.ToString())"
                                       Elevation="25"
                                       Class="rounded-lg property-image"/>
                         </div>
