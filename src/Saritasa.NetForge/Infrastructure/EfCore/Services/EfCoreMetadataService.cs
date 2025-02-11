@@ -47,6 +47,15 @@ public class EfCoreMetadataService : IOrmMetadataService
         return metadata;
     }
 
+    private static IReadOnlyEntityType rootEntityType = null!;
+
+    /// <summary>
+    /// Contains navigations' foreign keys. Foreign key represents relationship between two entities.
+    /// It helps with handling loops between navigations because the same relationship will not be added if it presents.
+    /// For example, <c>Product has Shop</c> and <c>Shop has Products</c>.
+    /// </summary>
+    private static readonly HashSet<IReadOnlyForeignKey> foreignKeys = [];
+
     /// <summary>
     /// Retrieve metadata for certain entity type.
     /// </summary>
@@ -54,6 +63,9 @@ public class EfCoreMetadataService : IOrmMetadataService
     /// <returns>An <see cref="EntityMetadata"/> object containing metadata information for the entity type.</returns>
     private static EntityMetadata GetEntityMetadata(IReadOnlyEntityType entityType)
     {
+        rootEntityType = entityType;
+        foreignKeys.Clear();
+
         return new EntityMetadata
         {
             DisplayName = entityType.ShortName(),
@@ -79,19 +91,18 @@ public class EfCoreMetadataService : IOrmMetadataService
     }
 
     /// <summary>
-    /// Contains navigations' foreign keys. Foreign key represents relationship between two entities.
-    /// It helps with handling loops between navigations because the same relationship will not be added if it presents.
-    /// For example, <c>Product has Shop</c> and <c>Shop has Products</c>.
-    /// </summary>
-    private static readonly HashSet<IReadOnlyForeignKey> foreignKeys = [];
-
-    /// <summary>
     /// Retrieve metadata for a navigation of an entity type.
     /// </summary>
     /// <param name="navigation">The EF Core navigation to retrieve metadata for.</param>
     /// <returns>A <see cref="PropertyMetadata"/> object containing metadata information for the navigation.</returns>
     private static NavigationMetadata? GetNavigationMetadata(IReadOnlyNavigationBase navigation)
     {
+        // When navigation type is equal to root entity, then we skip such navigation to prevent infinite loop.
+        if (rootEntityType == navigation.TargetEntityType)
+        {
+            return null;
+        }
+
         var isNullable = false;
         if (navigation is IReadOnlySkipNavigation { ForeignKey: not null } skipNavigation)
         {
