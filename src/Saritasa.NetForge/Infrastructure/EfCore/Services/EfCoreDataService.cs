@@ -386,7 +386,7 @@ public class EfCoreDataService : IOrmDataService
     /// </remarks>
     private static Expression<Func<object, object>> SelectProperties(
         Type entityType, List<PropertyMetadataDto> properties)
-    {
+     {
         // entity
         var entity = Expression.Parameter(typeof(object), "entity");
 
@@ -396,7 +396,8 @@ public class EfCoreDataService : IOrmDataService
         // ((entityType)entity).PropertyName1, ((entityType)entity).PropertyName2 ...
         var propertyExpressions = properties
             .Where(property
-                => property is { IsForeignKey: false, IsCalculatedProperty: false, IsExcludedFromQuery: false })
+                => property is { IsForeignKey: false, IsCalculatedProperty: false, IsExcludedFromQuery: false }
+                    and not NavigationMetadataDto)
             .Select(property => GetActualPropertyExpression(convertedEntity, property));
 
         // PropertyName1 = ((entityType)entity).PropertyName1, PropertyName2 = ((entityType)entity).PropertyName2 ...
