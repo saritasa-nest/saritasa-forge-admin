@@ -70,12 +70,24 @@ public class EfCoreMetadataService : IOrmMetadataService
     {
         // GetNavigations retrieves all navigations except many-to-many navigations.
         // GetSkipNavigations retrieves many-to-many navigations
-        return entityType
+        var efNavigations = entityType
             .GetNavigations()
-            .Concat<IReadOnlyNavigationBase>(entityType.GetSkipNavigations())
-            .Select(navigation => GetNavigationMetadata(navigation, depth))
-            .Where(navigation => navigation is not null)
-            .ToList()!;
+            .Concat<IReadOnlyNavigationBase>(entityType.GetSkipNavigations());
+
+        List<NavigationMetadata> navigations = [];
+        foreach (var efNavigation in efNavigations)
+        {
+            var navigation = GetNavigationMetadata(efNavigation, depth);
+
+            if (navigation is null)
+            {
+                continue;
+            }
+
+            navigations.Add(navigation);
+        }
+
+        return navigations;
     }
 
     /// <summary>
