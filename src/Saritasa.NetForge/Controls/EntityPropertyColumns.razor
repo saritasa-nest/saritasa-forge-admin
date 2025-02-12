@@ -15,33 +15,33 @@
     {
         if (property is NavigationMetadataDto navigation)
         {
-            if (!navigation.IsCollection)
+            var propertyPath = navigation.Name;
+
+            HandleNavigation(navigation);
+
+            void HandleNavigation(NavigationMetadataDto navigation)
             {
-                var propertyPath = navigation.Name;
-
-                HandleNavigation(navigation);
-
-                void HandleNavigation(NavigationMetadataDto navigation)
+                var targetProperties = navigation.TargetEntityProperties
+                    .Where(targetProperty => targetProperty is { IsHidden: false, IsHiddenFromListView: false });
+                foreach (var targetProperty in targetProperties)
                 {
-                    var targetNavigationProperties = navigation.TargetEntityProperties
-                        .Where(targetProperty => targetProperty is { IsHidden: false, IsHiddenFromListView: false });
-                    foreach (var targetProperty in targetNavigationProperties)
+                    propertyPaths.Add((targetProperty, $"{propertyPath}.{targetProperty.Name}"));
+                }
+
+                var targetNavigations = navigation.TargetEntityNavigations
+                    .Where(targetNavigation => targetNavigation is { IsHidden: false, IsHiddenFromListView: false });
+                foreach (var targetNavigation in targetNavigations)
+                {
+                    propertyPath += $".{targetNavigation.Name}";
+                    if (targetNavigation.IsCollection)
                     {
-                        propertyPaths.Add((targetProperty, $"{propertyPath}.{targetProperty.Name}"));
+                        propertyPaths.Add((targetNavigation, propertyPath));
+                        continue;
                     }
 
-                    foreach (var targetNavigation in navigation.TargetEntityNavigations
-                                 .Where(targetNavigation => targetNavigation is { IsHidden: false, IsHiddenFromListView: false }))
-                    {
-                        propertyPath += $".{targetNavigation.Name}";
-                        HandleNavigation(targetNavigation);
-                        propertyPath = propertyPath.Replace($".{targetNavigation.Name}", string.Empty);
-                    }
+                    HandleNavigation(targetNavigation);
+                    propertyPath = propertyPath.Replace($".{targetNavigation.Name}", string.Empty);
                 }
-            }
-            else
-            {
-                propertyPaths.Add((property, $"{property.Name}"));
             }
         }
         else
@@ -108,71 +108,69 @@
                     var instance = cell.Item;
                     var propertyValue = instance.GetNestedPropertyValue(propertyPath);
 
+                    if (propertyValue is null || propertyValue.ToString() == string.Empty)
+                    {
+                        var emptyValue = !string.IsNullOrEmpty(property.EmptyValueDisplay)
+                            ? property.EmptyValueDisplay
+                            : DefaultValueConstants.DefaultEmptyPropertyValueDisplay;
+                        @emptyValue
+                        return;
+                    }
+
                     if (property is NavigationMetadataDto navigationMetadata)
                     {
-                        propertyValue = GetNavigationValue(propertyValue, navigationMetadata);
-                    }
-                    else
-                    {
-                        if (propertyValue is null || propertyValue.ToString() == string.Empty)
+                        var navigationValue = GetNavigationValue(propertyValue, navigationMetadata);
+
+                        if (navigationMetadata.CanBeNavigatedToDetails)
                         {
-                            propertyValue = !string.IsNullOrEmpty(property.EmptyValueDisplay)
-                                ? property.EmptyValueDisplay
-                                : DefaultValueConstants.DefaultEmptyPropertyValueDisplay;
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" Class="text-transform-none"
+                                       OnClick="() => NavigateToEditing(propertyValue, navigationMetadata)">
+                                @navigationValue
+                            </MudButton>
                         }
-
-                        propertyValue = FormatValue(propertyValue, property.Name);
-
-                        if (property.ClrType == typeof(string) && !property.IsImage)
+                        else if (navigationMetadata.CanDisplayDetails || navigationMetadata.IsCollection)
                         {
-                            var stringValue = propertyValue.ToString();
-
-                            var maxCharacters = property.TruncationMaxCharacters ?? AdminOptions.TruncationMaxCharacters;
-
-                            if (maxCharacters != default)
-                            {
-                                propertyValue = stringValue!.Truncate(maxCharacters);
-                            }
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" Class="text-transform-none"
+                                       @onclick="() => OpenDialogAsync(propertyValue, navigationMetadata)">
+                                @navigationValue
+                            </MudButton>
                         }
+                        else
+                        {
+                            @navigationValue
+                        }
+                        return;
                     }
 
-                    if (propertyValue!.Equals(property.EmptyValueDisplay)
-                        || propertyValue.Equals(DefaultValueConstants.DefaultEmptyPropertyValueDisplay))
-                    {
-                        @propertyValue
-                    }
-                    else if (property.IsImage)
+                    if (property.IsImage)
                     {
                         <div>
-                            <MudImage Src="@property.UploadFileStrategy!.GetFileSource(propertyValue.ToString())"
+                            <MudImage Src="@property.UploadFileStrategy!.GetFileSource(propertyValue.ToString()!)"
                                       Elevation="25"
                                       Class="rounded-lg property-image"/>
                         </div>
+                        return;
                     }
-                    else if (property.DisplayAsHtml)
+
+                    var formattedValue = FormatValue(propertyValue, property);
+
+                    if (property.DisplayAsHtml)
                     {
-                        @((MarkupString)propertyValue!)
+                        @((MarkupString)formattedValue)
+                        return;
                     }
-                    else if (navigation is not null && property.CanBeNavigatedToDetails)
+
+                    if (property.ClrType == typeof(string))
                     {
-                        var navigationInstance = cell.Item.GetPropertyValue(navigation.Name)!;
-                        <MudButton Variant="Variant.Text" Color="Color.Primary" Class="text-tranform-none"
-                                   OnClick="() => NavigateToEditing(navigationInstance, navigation)">
-                            @propertyValue
-                        </MudButton>
+                        var maxCharacters = property.TruncationMaxCharacters ?? AdminOptions.TruncationMaxCharacters;
+
+                        if (maxCharacters != default)
+                        {
+                            formattedValue = formattedValue!.Truncate(maxCharacters);
+                        }
                     }
-                    else if (navigation is not null && (property.CanDisplayDetails || navigation.IsCollection))
-                    {
-                        var navigationInstance = cell.Item.GetPropertyValue(navigation.Name)!;
-                        <MudButton Variant="Variant.Text" Color="Color.Primary" Class="text-tranform-none"
-                                   @onclick="() => OpenDialogAsync(navigationInstance, navigation)">
-                            @propertyValue
-                        </MudButton>
-                    }
-                    else
-                    {
-                        @propertyValue
-                    }
+
+                    @formattedValue
                 }
             </CellTemplate>
         </TemplateColumn>

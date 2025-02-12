@@ -75,6 +75,18 @@ public class ProductAdminConfiguration : IEntityAdminConfiguration<Product>
                             .SetOrder(2)
                             .SetDisplayName("Shop Country");
                     });
+                })
+                .IncludeNavigation<Supplier>(shop => shop.Suppliers, builder =>
+                {
+                    builder
+                        .IncludeProperty(supplier => supplier.Name, propertyOptionsBuilder =>
+                        {
+                            propertyOptionsBuilder.SetDisplayName("Supplier Name");
+                        })
+                        .IncludeProperty(supplier => supplier.City, propertyOptionsBuilder =>
+                        {
+                            propertyOptionsBuilder.SetDisplayName("Supplier City");
+                        });
                 });
         });
 

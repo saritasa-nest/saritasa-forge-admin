@@ -88,47 +88,7 @@ public partial class EntityPropertyColumns : ComponentBase
             : property.Name;
     }
 
-    /// <summary>
-    /// Gets property value via <c>Reflection</c>.
-    /// </summary>
-    /// <param name="source">Source object.</param>
-    /// <param name="property">Property metadata.</param>
-    /// <returns>Property value.</returns>
-    private object GetPropertyValue(object? source, PropertyMetadataDto property)
-    {
-        var propertyInfo = source?.GetType().GetProperty(property.Name);
-        var value = propertyInfo?.GetValue(source);
-
-        if (value is null || value.ToString() == string.Empty)
-        {
-            return !string.IsNullOrEmpty(property.EmptyValueDisplay)
-                ? property.EmptyValueDisplay
-                : DefaultValueConstants.DefaultEmptyPropertyValueDisplay;
-        }
-
-        if (property is NavigationMetadataDto navigation)
-        {
-            value = GetNavigationValue(value, navigation);
-        }
-
-        value = FormatValue(value, property.Name);
-
-        if (property.ClrType == typeof(string) && !property.IsImage)
-        {
-            var stringValue = value.ToString();
-
-            var maxCharacters = property.TruncationMaxCharacters ?? AdminOptions.TruncationMaxCharacters;
-
-            if (maxCharacters != default)
-            {
-                value = stringValue!.Truncate(maxCharacters);
-            }
-        }
-
-        return value;
-    }
-
-    private static object GetNavigationValue(object navigation, NavigationMetadataDto navigationMetadata)
+    private static object GetNavigationValue(object navigationInstance, NavigationMetadataDto navigationMetadata)
     {
         var primaryKeys = navigationMetadata.TargetEntityProperties
             .Where(targetProperty => targetProperty.IsPrimaryKey)
@@ -136,22 +96,22 @@ public partial class EntityPropertyColumns : ComponentBase
 
         if (!primaryKeys.Any())
         {
-            return navigation;
+            return navigationInstance;
         }
 
         if (!navigationMetadata.IsCollection)
         {
             if (primaryKeys.Count == 1)
             {
-                return navigation.GetType().GetProperty(primaryKeys[0].Name)!.GetValue(navigation)!;
+                return navigationInstance.GetType().GetProperty(primaryKeys[0].Name)!.GetValue(navigationInstance)!;
             }
 
-            return JoinPrimaryKeys(primaryKeys, navigation);
+            return JoinPrimaryKeys(primaryKeys, navigationInstance);
         }
 
         var primaryKeyValues = new List<object?>();
 
-        foreach (var item in (navigation as IEnumerable)!)
+        foreach (var item in (navigationInstance as IEnumerable)!)
         {
             if (primaryKeys.Count == 1)
             {
@@ -175,11 +135,10 @@ public partial class EntityPropertyColumns : ComponentBase
         return string.Join("; ", primaryKeyValues);
     }
 
-    private string FormatValue(object value, string propertyName)
+    private string FormatValue(object value, PropertyMetadataDto propertyMetadata)
     {
-        var propertyMetadata = Properties.FirstOrDefault(property => property.Name == propertyName);
-        return DataFormatUtils.GetFormattedValue(value, propertyMetadata?.DisplayFormat,
-            propertyMetadata?.FormatProvider);
+        return DataFormatUtils
+            .GetFormattedValue(value, propertyMetadata?.DisplayFormat, propertyMetadata?.FormatProvider);
     }
 
     private async Task OpenDialogAsync(object navigationInstance, NavigationMetadataDto navigationMetadata)

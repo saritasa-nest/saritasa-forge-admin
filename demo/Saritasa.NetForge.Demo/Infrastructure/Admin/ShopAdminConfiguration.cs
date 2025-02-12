@@ -130,11 +130,6 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             dbContext.SaveChanges();
         });
 
-        entityOptionsBuilder.ConfigureProperty(shop => shop.Suppliers, builder =>
-        {
-            builder.SetIsHidden(true);
-        });
-
         entityOptionsBuilder.ConfigureProperty(shop => shop.Id, builder => builder.SetIsHidden(true));
     }
 }
