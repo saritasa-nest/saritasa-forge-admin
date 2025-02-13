@@ -1,4 +1,5 @@
-﻿@using Saritasa.NetForge.Domain.Enums
+﻿@using Saritasa.NetForge.Domain.Dtos
+@using Saritasa.NetForge.Domain.Enums
 @using Saritasa.NetForge.Domain.Extensions
 @using Saritasa.NetForge.Domain.UseCases.Constants
 @using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById
@@ -10,59 +11,16 @@
 }
 
 @{
-    List<(PropertyMetadataDto Property, string PropertyPath)> propertyPaths = [];
-    foreach (var property in Properties.Where(property => property is { IsHidden: false, IsHiddenFromListView: false }))
+    var listViewProperties = GetListViewProperties();
+    foreach (var listViewProperty in listViewProperties)
     {
-        if (property is NavigationMetadataDto navigation)
-        {
-            var propertyPath = navigation.Name;
-
-            HandleNavigation(navigation);
-
-            void HandleNavigation(NavigationMetadataDto navigation)
-            {
-                if (navigation.IsCollection)
-                {
-                    propertyPaths.Add((navigation, propertyPath));
-                    return;
-                }
-
-                var targetProperties = navigation.TargetEntityProperties
-                    .Where(targetProperty => targetProperty is { IsHidden: false, IsHiddenFromListView: false });
-                foreach (var targetProperty in targetProperties)
-                {
-                    propertyPaths.Add((targetProperty, $"{propertyPath}.{targetProperty.Name}"));
-                }
-
-                var targetNavigations = navigation.TargetEntityNavigations
-                    .Where(targetNavigation => targetNavigation is { IsHidden: false, IsHiddenFromListView: false });
-                foreach (var targetNavigation in targetNavigations)
-                {
-                    propertyPath += $".{targetNavigation.Name}";
-                    HandleNavigation(targetNavigation);
-                    propertyPath = propertyPath.Replace($".{targetNavigation.Name}", string.Empty);
-                }
-            }
-        }
-        else
-        {
-            propertyPaths.Add((property, property.Name));
-        }
+        RenderPropertyColumn(listViewProperty);
     }
 
-    // Display principal entity primary key at the start of columns if the order is not set.
-    var orderedProperties = propertyPaths
-        .OrderByDescending(property => property is { Property: { IsPrimaryKey: true, Order: null } }
-                                       && !property.PropertyPath.Contains(".")) // Means property is not part of a navigation
-        .ThenByDescending(property => property.Property.Order.HasValue)
-        .ThenBy(property => property.Property.Order);
-    foreach (var (property, propertyPath) in orderedProperties)
+    void RenderPropertyColumn(ListViewPropertyDto listViewProperty)
     {
-        RenderPropertyColumn(property, propertyPath, navigation: null);
-    }
-
-    void RenderPropertyColumn(PropertyMetadataDto property, string propertyPath, NavigationMetadataDto? navigation = null)
-    {
+        var property = listViewProperty.Property;
+        var navigation = listViewProperty.Navigation;
         <TemplateColumn T="object" Title="@property.Name" Sortable="property.IsSortable"
                         NavigationName="@navigation?.Name">
             <HeaderTemplate>
@@ -106,7 +64,7 @@
             <CellTemplate Context="cell">
                 @{
                     var instance = cell.Item;
-                    var propertyValue = instance.GetNestedPropertyValue(propertyPath);
+                    var propertyValue = instance.GetNestedPropertyValue(listViewProperty.PropertyPath);
 
                     if (propertyValue is null || propertyValue.ToString() == string.Empty)
                     {
@@ -121,14 +79,7 @@
                     {
                         var navigationValue = GetNavigationValue(propertyValue, navigationMetadata);
 
-                        if (navigationMetadata.CanBeNavigatedToDetails)
-                        {
-                            <MudButton Variant="Variant.Text" Color="Color.Primary" Class="text-transform-none"
-                                       OnClick="() => NavigateToEditing(propertyValue, navigationMetadata)">
-                                @navigationValue
-                            </MudButton>
-                        }
-                        else if (navigationMetadata.CanDisplayDetails || navigationMetadata.IsCollection)
+                        if (navigationMetadata.IsCollection)
                         {
                             <MudButton Variant="Variant.Text" Color="Color.Primary" Class="text-transform-none"
                                        @onclick="() => OpenDialogAsync(propertyValue, navigationMetadata)">
@@ -168,6 +119,29 @@
                         {
                             formattedValue = formattedValue!.Truncate(maxCharacters);
                         }
+                    }
+
+                    if (navigation is not null)
+                    {
+                        var navigationPath = RemoveLastPropertyFromPath(listViewProperty.PropertyPath);
+                        var navigationValue = instance.GetNestedPropertyValue(navigationPath)!;
+
+                        if (property.CanBeNavigatedToDetails)
+                        {
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" Class="text-transform-none"
+                                       OnClick="() => NavigateToEditing(navigationValue, navigation)">
+                                @formattedValue
+                            </MudButton>
+                        }
+                        else if (property.CanDisplayDetails)
+                        {
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" Class="text-transform-none"
+                                       @onclick="() => OpenDialogAsync(navigationValue, navigation)">
+                                @formattedValue
+                            </MudButton>
+                        }
+
+                        return;
                     }
 
                     @formattedValue

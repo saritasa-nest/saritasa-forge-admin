@@ -1,17 +1,16 @@
 ﻿using System.Collections;
+using System.Text;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Saritasa.NetForge.Domain.Extensions;
+using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Infrastructure.Helpers;
 using Saritasa.NetForge.Domain.Entities.Options;
-using Saritasa.NetForge.Domain.UseCases.Constants;
 using Saritasa.NetForge.Domain.UseCases.Interfaces;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.MVVM.Navigation;
 using Saritasa.NetForge.MVVM.Utils;
 using Saritasa.NetForge.MVVM.ViewModels.EditEntity;
-using Saritasa.NetForge.Pages;
 
 namespace Saritasa.NetForge.Controls;
 
@@ -215,5 +214,95 @@ public partial class EntityPropertyColumns : ComponentBase
         }
 
         Snackbar.Add(entityDeleteMessage, Severity.Success);
+    }
+
+    private IEnumerable<ListViewPropertyDto> GetListViewProperties()
+    {
+        List<ListViewPropertyDto> listViewProperties = [];
+
+        var includedProperties = Properties
+            .Where(property => property is { IsHidden: false, IsHiddenFromListView: false });
+        foreach (var property in includedProperties)
+        {
+            if (property is NavigationMetadataDto navigationMetadata)
+            {
+                var propertyPath = new StringBuilder(navigationMetadata.Name);
+
+                HandleNavigation(navigationMetadata);
+
+                void HandleNavigation(NavigationMetadataDto navigation)
+                {
+                    if (navigation.IsCollection)
+                    {
+                        var listViewProperty = new ListViewPropertyDto
+                        {
+                            Property = navigation,
+                            PropertyPath = propertyPath.ToString(),
+                            Navigation = navigation
+                        };
+
+                        listViewProperties.Add(listViewProperty);
+                        return;
+                    }
+
+                    var targetProperties = navigation.TargetEntityProperties
+                        .Where(targetProperty => targetProperty is { IsHidden: false, IsHiddenFromListView: false });
+                    foreach (var targetProperty in targetProperties)
+                    {
+                        var listViewProperty = new ListViewPropertyDto
+                        {
+                            Property = targetProperty,
+                            PropertyPath = $"{propertyPath}.{targetProperty.Name}",
+                            Navigation = navigation
+                        };
+
+                        listViewProperties.Add(listViewProperty);
+                    }
+
+                    var targetNavigations = navigation.TargetEntityNavigations
+                        .Where(targetNavigation => targetNavigation is { IsHidden: false, IsHiddenFromListView: false });
+                    foreach (var targetNavigation in targetNavigations)
+                    {
+                        var navigationString = $".{targetNavigation.Name}";
+                        propertyPath = propertyPath.Append(navigationString);
+                        HandleNavigation(targetNavigation);
+                        propertyPath = propertyPath.Replace(navigationString, string.Empty);
+                    }
+                }
+            }
+            else
+            {
+                var listViewProperty = new ListViewPropertyDto
+                {
+                    Property = property,
+                    PropertyPath = property.Name
+                };
+
+                listViewProperties.Add(listViewProperty);
+            }
+        }
+
+        // Display principal entity primary key at the start of columns if the order is not set.
+        return listViewProperties
+            .OrderByDescending(property => property is { Property: { IsPrimaryKey: true, Order: null } }
+                                           && !property.PropertyPath.Contains('.')) // Means property is not part of a navigation
+            .ThenByDescending(property => property.Property.Order.HasValue)
+            .ThenBy(property => property.Property.Order);
+    }
+
+    /// <summary>
+    /// Removes the last property part from the given path.
+    /// </summary>
+    /// <param name="propertyPath">Path to access the property. For example: <c>Shop.Address.Street</c>.</param>
+    /// <returns>Path without the property part. For example: <c>Shop.Address.Street</c> -> <c>Shop.Address</c>.</returns>
+    private static string RemoveLastPropertyFromPath(string propertyPath)
+    {
+        if (string.IsNullOrEmpty(propertyPath))
+        {
+            return propertyPath;
+        }
+
+        var lastPropertySeparator = propertyPath.LastIndexOf('.');
+        return lastPropertySeparator >= 0 ? propertyPath[..lastPropertySeparator] : propertyPath;
     }
 }
