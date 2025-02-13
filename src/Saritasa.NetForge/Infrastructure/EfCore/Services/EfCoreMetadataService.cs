@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Saritasa.NetForge.Domain.Entities.Metadata;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 
 namespace Saritasa.NetForge.Infrastructure.EfCore.Services;
@@ -11,14 +12,17 @@ public class EfCoreMetadataService : IOrmMetadataService
 {
     private readonly EfCoreOptions efCoreOptions;
     private readonly IServiceProvider serviceProvider;
+    private readonly AdminOptions adminOptions;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public EfCoreMetadataService(EfCoreOptions efCoreOptions, IServiceProvider serviceProvider)
+    public EfCoreMetadataService(
+        EfCoreOptions efCoreOptions, IServiceProvider serviceProvider, AdminOptions adminOptions)
     {
         this.efCoreOptions = efCoreOptions;
         this.serviceProvider = serviceProvider;
+        this.adminOptions = adminOptions;
     }
 
     /// <inheritdoc/>
@@ -52,7 +56,7 @@ public class EfCoreMetadataService : IOrmMetadataService
     /// </summary>
     /// <param name="entityType">The EF Core entity type to retrieve metadata for.</param>
     /// <returns>An <see cref="EntityMetadata"/> object containing metadata information for the entity type.</returns>
-    private static EntityMetadata GetEntityMetadata(IReadOnlyEntityType entityType)
+    private EntityMetadata GetEntityMetadata(IReadOnlyEntityType entityType)
     {
         return new EntityMetadata
         {
@@ -66,7 +70,7 @@ public class EfCoreMetadataService : IOrmMetadataService
         };
     }
 
-    private static List<NavigationMetadata> GetNavigationsMetadata(IReadOnlyEntityType entityType, int depth = 1)
+    private List<NavigationMetadata> GetNavigationsMetadata(IReadOnlyEntityType entityType, int depth = 1)
     {
         // GetNavigations retrieves all navigations except many-to-many navigations.
         // GetSkipNavigations retrieves many-to-many navigations
@@ -98,9 +102,9 @@ public class EfCoreMetadataService : IOrmMetadataService
     /// Represents current depth. If greater than max depth, then the navigation will not be visited.
     /// </param>
     /// <returns>A <see cref="PropertyMetadata"/> object containing metadata information for the navigation.</returns>
-    private static NavigationMetadata? GetNavigationMetadata(IReadOnlyNavigationBase navigation, int depth)
+    private NavigationMetadata? GetNavigationMetadata(IReadOnlyNavigationBase navigation, int depth)
     {
-        if (depth > 2)
+        if (depth > adminOptions.MaxNavigationDepth)
         {
             return null;
         }

@@ -357,4 +357,25 @@ public class AdminOptionsBuilder
         options.StaticBodyComponentType = staticBodyComponentType;
         return this;
     }
+
+    /// <summary>
+    /// Sets value that represents maximum navigation depth.
+    /// If depth of a navigation is more than this value then such navigation's data will not be loaded.
+    /// </summary>
+    /// <param name="maxNavigationDepth">
+    /// Maximum navigation depth. Examples of navigation depth:
+    /// <list type="bullet">
+    /// <item><c>Product.Shop</c> has depth = 1</item>
+    /// <item><c>Product.Shop.OwnerContact</c> has depth = 2</item>
+    /// <item><c>Product.Shop.Suppliers.Shops</c> has depth = 3</item>
+    /// </list>
+    /// So, if <c>maxNavigationDepth = 2</c>, then <c>Product.Shop.Suppliers.Shops</c> will not be loaded.
+    /// </param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    /// <remarks>Default value is <c>2</c>.</remarks>
+    public AdminOptionsBuilder SetMaxNavigationDepth(byte maxNavigationDepth)
+    {
+        options.MaxNavigationDepth = maxNavigationDepth;
+        return this;
+    }
 }
