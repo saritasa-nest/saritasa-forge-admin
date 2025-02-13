@@ -118,9 +118,8 @@ public class NavigationMetadataTests : IDisposable
     {
         // Act
         var metadata = ormMetadataService.GetMetadata();
-        var employeeMetadata = metadata.First(entityMetadata => entityMetadata.ClrType!.Name == nameof(Employee));
-        var departmentMetadata = employeeMetadata.Navigations.First(navigation => navigation.Name == nameof(Department));
-        var projectMetadata = departmentMetadata.TargetEntityNavigations
+        var departmentMetadata = metadata.First(entityMetadata => entityMetadata.ClrType!.Name == nameof(Department));
+        var projectMetadata = departmentMetadata.Navigations
             .First(navigation => navigation.Name == nameof(Department.Projects));
 
         // Assert
