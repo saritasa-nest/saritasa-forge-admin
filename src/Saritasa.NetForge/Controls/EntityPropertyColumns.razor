@@ -21,6 +21,12 @@
 
             void HandleNavigation(NavigationMetadataDto navigation)
             {
+                if (navigation.IsCollection)
+                {
+                    propertyPaths.Add((navigation, propertyPath));
+                    return;
+                }
+
                 var targetProperties = navigation.TargetEntityProperties
                     .Where(targetProperty => targetProperty is { IsHidden: false, IsHiddenFromListView: false });
                 foreach (var targetProperty in targetProperties)
@@ -33,12 +39,6 @@
                 foreach (var targetNavigation in targetNavigations)
                 {
                     propertyPath += $".{targetNavigation.Name}";
-                    if (targetNavigation.IsCollection)
-                    {
-                        propertyPaths.Add((targetNavigation, propertyPath));
-                        continue;
-                    }
-
                     HandleNavigation(targetNavigation);
                     propertyPath = propertyPath.Replace($".{targetNavigation.Name}", string.Empty);
                 }
