@@ -100,4 +100,7 @@ public class EntityOptions
 
     /// <inheritdoc cref="EntityMetadata.ToStringFunc"/>
     public Func<object, string>? ToStringFunc { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.MaxNavigationDepth"/>
+    public byte? MaxNavigationDepth { get; set; }
 }

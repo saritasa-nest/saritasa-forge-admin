@@ -271,4 +271,29 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
             return entity is not null ? toStringFunc.Invoke((TEntity)entity) : string.Empty;
         }
     }
+
+    /// <summary>
+    /// Sets value that represents maximum navigation depth on the entity level.
+    /// Use <see cref="AdminOptionsBuilder.SetMaxNavigationDepth"/> for the global level.
+    /// If depth of a navigation is more than this value then such navigation's data will not be loaded.
+    /// Default value is 2.
+    /// </summary>
+    /// <param name="maxNavigationDepth">
+    /// Maximum navigation depth. Examples of navigation depth:
+    /// <list type="bullet">
+    /// <item><c>Product.Shop</c> has depth = 1</item>
+    /// <item><c>Product.Shop.OwnerContact</c> has depth = 2</item>
+    /// <item><c>Product.Shop.Suppliers.Shops</c> has depth = 3</item>
+    /// </list>
+    /// So, if <c>maxNavigationDepth = 2</c>, then <c>Product.Shop.Suppliers.Shops</c> will not be loaded.
+    /// </param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    /// <remarks>
+    /// Beware that high value will increase the amount of data loaded, so performance will be affected dramatically.
+    /// </remarks>
+    public EntityOptionsBuilder<TEntity> SetMaxNavigationDepth(byte maxNavigationDepth)
+    {
+        options.MaxNavigationDepth = maxNavigationDepth;
+        return this;
+    }
 }

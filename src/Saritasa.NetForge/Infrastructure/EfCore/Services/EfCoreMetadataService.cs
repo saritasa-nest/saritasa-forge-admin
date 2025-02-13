@@ -51,6 +51,8 @@ public class EfCoreMetadataService : IOrmMetadataService
         return metadata;
     }
 
+    private byte? currentEntityMaxNavigationDepth;
+
     /// <summary>
     /// Retrieve metadata for certain entity type.
     /// </summary>
@@ -58,6 +60,9 @@ public class EfCoreMetadataService : IOrmMetadataService
     /// <returns>An <see cref="EntityMetadata"/> object containing metadata information for the entity type.</returns>
     private EntityMetadata GetEntityMetadata(IReadOnlyEntityType entityType)
     {
+        var entityOptions = adminOptions.EntityOptionsList
+            .FirstOrDefault(entityOptions => entityOptions.EntityType == entityType.ClrType);
+        currentEntityMaxNavigationDepth = entityOptions?.MaxNavigationDepth;
         return new EntityMetadata
         {
             DisplayName = entityType.ShortName(),
@@ -104,7 +109,8 @@ public class EfCoreMetadataService : IOrmMetadataService
     /// <returns>A <see cref="PropertyMetadata"/> object containing metadata information for the navigation.</returns>
     private NavigationMetadata? GetNavigationMetadata(IReadOnlyNavigationBase navigation, int depth)
     {
-        if (depth > adminOptions.MaxNavigationDepth)
+        var maxNavigationDepth = currentEntityMaxNavigationDepth ?? adminOptions.MaxNavigationDepth;
+        if (depth > maxNavigationDepth)
         {
             return null;
         }

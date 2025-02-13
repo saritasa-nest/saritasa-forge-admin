@@ -106,4 +106,10 @@ public class EntityMetadata
     /// Gets string representation of the entity.
     /// </summary>
     public Func<object, string>? ToStringFunc { get; set; }
+
+    /// <summary>
+    /// Represents maximum navigation depth.
+    /// If depth of a navigation is more than this value then such navigation's data will not be loaded.
+    /// </summary>
+    public byte? MaxNavigationDepth { get; set; }
 }
