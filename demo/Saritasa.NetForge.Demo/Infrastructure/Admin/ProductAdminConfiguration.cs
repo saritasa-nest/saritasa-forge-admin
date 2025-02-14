@@ -3,6 +3,7 @@ using Saritasa.NetForge.Domain.Interfaces;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Demo.Infrastructure.UploadFiles.Strategies;
 using Saritasa.NetForge.Demo.Models;
+using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.Admin;
 
@@ -64,7 +65,8 @@ public class ProductAdminConfiguration : IEntityAdminConfiguration<Product>
                     {
                         propertyBuilder
                             .SetOrder(1)
-                            .SetDisplayName("Contact Email");
+                            .SetDisplayName("Contact Email")
+                            .SetSearchType(SearchType.StartsWithCaseSensitive);
                     });
                 })
                 .IncludeNavigation<Address>(shop => shop.Address, builder =>

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -581,25 +582,59 @@ public class EfCoreDataService : IOrmDataService
             return query;
         }
 
+        var propertySearches = GetPropertySearches(properties);
+        query = SearchByExpressions(query, searchString, entityType, propertySearches);
+
+        if (searchFunction is not null)
+        {
+            query = searchFunction(serviceProvider, query, searchString);
+        }
+
+        return query;
+    }
+
+    private static List<PropertySearchDto> GetPropertySearches(ICollection<PropertyMetadataDto> properties)
+    {
         var propertySearches = new List<PropertySearchDto>();
 
         foreach (var property in properties)
         {
-            if (property is NavigationMetadataDto navigation)
+            if (property is NavigationMetadataDto navigationMetadata)
             {
-                foreach (var targetProperty in navigation.TargetEntityProperties)
+                var propertyPath = new StringBuilder(navigationMetadata.Name);
+                GetSearchesFromNavigation(navigationMetadata);
+
+                void GetSearchesFromNavigation(NavigationMetadataDto navigation)
                 {
-                    if (targetProperty.SearchType == SearchType.None)
+                    if (navigation.IsCollection)
                     {
-                        continue;
+                        // We do not have collections search.
+                        return;
                     }
 
-                    propertySearches.Add(new PropertySearchDto
+                    var targetProperties = navigation.TargetEntityProperties
+                        .Where(targetProperty => targetProperty is
+                            {
+                                IsCalculatedProperty: false,
+                                IsExcludedFromQuery: false,
+                                SearchType: not SearchType.None
+                            });
+                    foreach (var targetProperty in targetProperties)
                     {
-                        PropertyName = targetProperty.Name,
-                        SearchType = targetProperty.SearchType,
-                        NavigationName = navigation.Name
-                    });
+                        propertySearches.Add(new PropertySearchDto
+                        {
+                            PropertyPath = $"{propertyPath}.{targetProperty.Name}",
+                            SearchType = targetProperty.SearchType
+                        });
+                    }
+
+                    foreach (var targetNavigation in navigation.TargetEntityNavigations)
+                    {
+                        var navigationString = $".{targetNavigation.Name}";
+                        propertyPath = propertyPath.Append(navigationString);
+                        GetSearchesFromNavigation(targetNavigation);
+                        propertyPath = propertyPath.Replace(navigationString, string.Empty);
+                    }
                 }
             }
             else
@@ -611,20 +646,13 @@ public class EfCoreDataService : IOrmDataService
 
                 propertySearches.Add(new PropertySearchDto
                 {
-                    PropertyName = property.Name,
+                    PropertyPath = property.Name,
                     SearchType = property.SearchType
                 });
             }
         }
 
-        query = SearchByExpressions(query, searchString, entityType, propertySearches);
-
-        if (searchFunction is not null)
-        {
-            query = searchFunction(serviceProvider, query, searchString);
-        }
-
-        return query;
+        return propertySearches;
     }
 
     private static IQueryable<object> SearchByExpressions(
@@ -693,11 +721,7 @@ public class EfCoreDataService : IOrmDataService
         Expression? singleEntrySearchExpression = null;
         foreach (var property in properties)
         {
-            var propertyName = property.NavigationName is null
-                ? property.PropertyName
-                : $"{property.NavigationName}.{property.PropertyName}";
-
-            var propertyExpression = ExpressionExtensions.GetPropertyExpression(entity, propertyName);
+            var propertyExpression = ExpressionExtensions.GetPropertyExpression(entity, property.PropertyPath);
 
             var searchMethodCallExpression = property.SearchType switch
             {
