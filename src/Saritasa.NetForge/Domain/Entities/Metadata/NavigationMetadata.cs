@@ -19,9 +19,4 @@ public class NavigationMetadata : PropertyMetadataBase
     /// Target navigation entity's navigations.
     /// </summary>
     public List<NavigationMetadata> TargetEntityNavigations { get; set; } = [];
-
-    /// <summary>
-    /// Whether this navigation included to an entity.
-    /// </summary>
-    public bool IsIncluded { get; set; }
 }

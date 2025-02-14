@@ -95,10 +95,7 @@ public class EntityService : IEntityService
 
         var propertyDtos = displayableProperties.Select(MapProperty);
 
-        var displayableNavigations = metadata.Navigations
-            .Where(navigation => navigation is { IsIncluded: true });
-
-        var navigationDtos = displayableNavigations.Select(MapNavigation);
+        var navigationDtos = metadata.Navigations.Select(MapNavigation);
 
         propertyDtos = propertyDtos.Union(navigationDtos);
 

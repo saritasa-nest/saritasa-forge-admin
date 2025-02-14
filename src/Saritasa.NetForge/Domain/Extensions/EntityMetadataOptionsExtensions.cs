@@ -105,12 +105,14 @@ public static class EntityMetadataOptionsExtensions
             navigation?.ApplyCalculatedPropertyOptions(option);
         }
 
+        entityMetadata.Navigations = GetIncludedNavigations(entityMetadata.Navigations, entityOptions.NavigationOptions);
+
         foreach (var navigationOptions in entityOptions.NavigationOptions)
         {
             var navigation = entityMetadata.Navigations
-                .FirstOrDefault(navigation => navigation.Name.Equals(navigationOptions.PropertyName));
+                .First(navigation => navigation.Name.Equals(navigationOptions.PropertyName));
 
-            navigation?.ApplyNavigationOptions(navigationOptions);
+            navigation.ApplyNavigationOptions(navigationOptions);
         }
 
         entityMetadata.AssignGroupToEntity(entityOptions.GroupName, adminOptions);
@@ -248,8 +250,6 @@ public static class EntityMetadataOptionsExtensions
     private static void ApplyNavigationOptions(
         this NavigationMetadata navigation, NavigationOptions navigationOptions)
     {
-        navigation.IsIncluded = true;
-
         if (navigationOptions.Order.HasValue)
         {
             navigation.Order = navigationOptions.Order.Value;
@@ -271,12 +271,15 @@ public static class EntityMetadataOptionsExtensions
             property?.ApplyCalculatedPropertyOptions(propertyOptions);
         }
 
+        navigation.TargetEntityNavigations
+            = GetIncludedNavigations(navigation.TargetEntityNavigations, navigationOptions.NavigationsOptions);
+
         foreach (var navigationOption in navigationOptions.NavigationsOptions)
         {
             var targetNavigation = navigation.TargetEntityNavigations
-                .FirstOrDefault(property => property.Name == navigationOption.PropertyName);
+                .First(property => property.Name == navigationOption.PropertyName);
 
-            targetNavigation?.ApplyNavigationOptions(navigationOption);
+            targetNavigation.ApplyNavigationOptions(navigationOption);
         }
 
         var notIncludedProperties = navigation.TargetEntityProperties
@@ -286,13 +289,17 @@ public static class EntityMetadataOptionsExtensions
         {
             notIncludedProperty.IsHidden = true;
         }
+    }
 
-        var notIncludedNavigations = navigation.TargetEntityNavigations
-            .Where(targetNavigation
-                => !navigationOptions.NavigationsOptions.Any(option => option.PropertyName == targetNavigation.Name));
-        foreach (var notIncludedNavigation in notIncludedNavigations)
-        {
-            notIncludedNavigation.IsHidden = true;
-        }
+    /// <summary>
+    /// Gets only included navigations in configuration
+    /// so data of such navigations will not be loaded to improve performance.
+    /// </summary>
+    private static List<NavigationMetadata> GetIncludedNavigations(
+        List<NavigationMetadata> navigations, ICollection<NavigationOptions> navigationOptions)
+    {
+        return navigations
+            .Where(targetNavigation => navigationOptions.Any(option => option.PropertyName == targetNavigation.Name))
+            .ToList();
     }
 }
