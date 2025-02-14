@@ -95,17 +95,7 @@ public class EntityDetailsViewModel : BaseViewModel
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
             Model = MapModel(entity);
 
-            IsDisplaySearchInput = Model.Properties.Any(property =>
-                                   {
-                                       if (property is NavigationMetadataDto navigation)
-                                       {
-                                           return navigation.TargetEntityProperties
-                                               .Any(targetProperty => targetProperty.SearchType != SearchType.None);
-                                       }
-
-                                       return property.SearchType != SearchType.None;
-                                   })
-                                   || Model.SearchFunction is not null;
+            IsDisplaySearchInput = Model.Properties.Any(SearchAvailable) || Model.SearchFunction is not null;
 
             CanAdd = Model is { CanAdd: true, IsKeyless: false } && HasProperties;
             CanEdit = Model is { CanEdit: true, IsKeyless: false } && HasProperties;
@@ -136,6 +126,22 @@ public class EntityDetailsViewModel : BaseViewModel
             EntityDeleteMessage = entity.MessageOptions.EntityDeleteMessage,
             EntityBulkDeleteMessage = entity.MessageOptions.EntityBulkDeleteMessage,
         };
+    }
+
+    private static bool SearchAvailable(PropertyMetadataDto property)
+    {
+        if (property.SearchType != SearchType.None)
+        {
+            return true;
+        }
+
+        if (property is NavigationMetadataDto navigation)
+        {
+            return navigation.TargetEntityProperties.Any(targetProperty => targetProperty.SearchType != SearchType.None)
+                   || navigation.TargetEntityNavigations.Any(SearchAvailable);
+        }
+
+        return false;
     }
 
     /// <summary>
