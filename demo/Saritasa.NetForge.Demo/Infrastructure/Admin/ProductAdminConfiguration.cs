@@ -66,7 +66,8 @@ public class ProductAdminConfiguration : IEntityAdminConfiguration<Product>
                         propertyBuilder
                             .SetOrder(1)
                             .SetDisplayName("Contact Email")
-                            .SetSearchType(SearchType.StartsWithCaseSensitive);
+                            .SetSearchType(SearchType.StartsWithCaseSensitive)
+                            .SetIsSortable(true);
                     });
                 })
                 .IncludeNavigation<Address>(shop => shop.Address, builder =>

@@ -366,10 +366,7 @@ public class EfCoreDataService : IOrmDataService
 
         query = Search(query, searchOptions.SearchString, entityType, properties, searchFunction);
 
-        if (searchOptions.OrderBy is not null)
-        {
-            query = Order(query, searchOptions.OrderBy.ToList(), entityType);
-        }
+        query = Order(query, searchOptions.OrderBy, entityType);
 
         var pagedList = PagedListFactory.FromSource(query, searchOptions.Page, searchOptions.PageSize);
 
@@ -885,7 +882,7 @@ public class EfCoreDataService : IOrmDataService
         {
         var orderByTuples = orderBy
             .Select(order =>
-                (order.FieldName, order.IsDescending ? ListSortDirection.Descending : ListSortDirection.Ascending))
+                (order.PropertyPath, order.IsDescending ? ListSortDirection.Descending : ListSortDirection.Ascending))
             .ToArray();
 
         var keySelectors = GetKeySelectors(orderBy, entityType);
@@ -893,7 +890,7 @@ public class EfCoreDataService : IOrmDataService
         return CollectionUtils.OrderMultiple(query, orderByTuples, keySelectors);
     }
 
-    private static (string FieldName, Expression<Func<object, object>> Selector)[] GetKeySelectors(
+    private static (string PropertyPath, Expression<Func<object, object>> Selector)[] GetKeySelectors(
         IList<OrderByDto> orderByFields, Type entityType)
     {
         // entity
@@ -911,13 +908,10 @@ public class EfCoreDataService : IOrmDataService
         // Note that there are converting property to object.
         // We need it to sort types that are not string. For example, numbers.
         var propertyExpressions = orderByFields
-            .Select(field =>
+            .Select(orderByDto =>
             {
-                var propertyName = field.NavigationName is null
-                    ? field.FieldName
-                    : $"{field.NavigationName}.{field.FieldName}";
-
-                var propertyExpression = ExpressionExtensions.GetPropertyExpression(convertedEntity, propertyName);
+                var propertyExpression = ExpressionExtensions
+                    .GetPropertyExpression(convertedEntity, orderByDto.PropertyPath);
 
                 return Expression.Convert(propertyExpression, typeof(object));
             });
@@ -941,7 +935,7 @@ public class EfCoreDataService : IOrmDataService
         var keySelectors = new (string, Expression<Func<object, object>>)[orderByFields.Count];
         for (var i = 0; i < orderByFields.Count; i++)
         {
-            keySelectors[i] = (orderByFields[i].FieldName, lambdas[i]);
+            keySelectors[i] = (orderByFields[i].PropertyPath, lambdas[i]);
         }
 
         return keySelectors;

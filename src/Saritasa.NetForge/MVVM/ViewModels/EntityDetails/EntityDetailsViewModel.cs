@@ -1,4 +1,5 @@
 ﻿using MudBlazor;
+using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Domain.Exceptions;
@@ -155,13 +156,12 @@ public class EntityDetailsViewModel : BaseViewModel
             .Select(sort =>
             {
                 var column = DataGrid!.RenderedColumns.First(column => column.PropertyName.Equals(sort.SortBy));
-                var navigationName = column.UserAttributes["NavigationName"]?.ToString();
+                var propertyPath = column.UserAttributes["PropertyPath"].ToString();
 
                 return new OrderByDto
                 {
-                    FieldName = column.Title,
-                    IsDescending = sort.Descending,
-                    NavigationName = navigationName
+                    PropertyPath = propertyPath!,
+                    IsDescending = sort.Descending
                 };
             })
             .ToList();
@@ -174,7 +174,7 @@ public class EntityDetailsViewModel : BaseViewModel
             {
                 orderBy.Add(new OrderByDto
                 {
-                    FieldName = primaryKeyName
+                    PropertyPath = primaryKeyName
                 });
             }
         }

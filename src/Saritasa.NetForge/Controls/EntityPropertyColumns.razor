@@ -22,7 +22,7 @@
         var property = listViewProperty.Property;
         var navigation = listViewProperty.Navigation;
         <TemplateColumn T="object" Title="@property.Name" Sortable="property.IsSortable"
-                        NavigationName="@navigation?.Name">
+                        PropertyPath="@listViewProperty.PropertyPath">
             <HeaderTemplate>
                 @{
                     var displayName = GetPropertyDisplayName(property);
