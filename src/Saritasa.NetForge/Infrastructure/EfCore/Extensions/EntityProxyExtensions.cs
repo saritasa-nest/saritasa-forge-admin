@@ -20,7 +20,6 @@ public static class EntityProxyExtensions
         return baseType != null && type.Namespace == CastleProxiesNamespace;
     }
 
-
     /// <summary>
     /// Gets the POCO type of the entity.
     /// </summary>
@@ -33,7 +32,7 @@ public static class EntityProxyExtensions
 
         if (!entityType.IsLazyLoadingProxy())
         {
-            throw new InvalidOperationException("The provided entity is not a lazy loading proxy.");
+            throw new InvalidOperationException($"The provided entity of type {entityType.Name} is not a lazy loading proxy.");
         }
 
         return entityType.BaseType!;
