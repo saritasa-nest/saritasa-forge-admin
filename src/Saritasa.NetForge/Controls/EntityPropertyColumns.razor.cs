@@ -11,6 +11,7 @@ using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.MVVM.Navigation;
 using Saritasa.NetForge.MVVM.Utils;
 using Saritasa.NetForge.MVVM.ViewModels.EditEntity;
+using ExpressionExtensions = Saritasa.NetForge.Domain.Extensions.ExpressionExtensions;
 
 namespace Saritasa.NetForge.Controls;
 
@@ -285,7 +286,8 @@ public partial class EntityPropertyColumns : ComponentBase
         // Display principal entity primary key at the start of columns if the order is not set.
         return listViewProperties
             .OrderByDescending(property => property is { Property: { IsPrimaryKey: true, Order: null } }
-                                           && !property.PropertyPath.Contains('.')) // Means property is not part of a navigation
+                                           // If property has separator then it is part of a navigation
+                                           && !property.PropertyPath.Contains(ExpressionExtensions.PropertySeparator))
             .ThenByDescending(property => property.Property.Order.HasValue)
             .ThenBy(property => property.Property.Order);
     }
@@ -302,7 +304,7 @@ public partial class EntityPropertyColumns : ComponentBase
             return propertyPath;
         }
 
-        var lastPropertySeparator = propertyPath.LastIndexOf('.');
+        var lastPropertySeparator = propertyPath.LastIndexOf(ExpressionExtensions.PropertySeparator);
         return lastPropertySeparator >= 0 ? propertyPath[..lastPropertySeparator] : propertyPath;
     }
 }
