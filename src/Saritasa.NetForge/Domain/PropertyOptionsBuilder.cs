@@ -98,6 +98,16 @@ public class PropertyOptionsBuilder
     }
 
     /// <summary>
+    /// Sets order to property on create and edit pages.
+    /// </summary>
+    /// <param name="formOrder">Order number.</param>
+    public PropertyOptionsBuilder SetFormOrder(int formOrder)
+    {
+        options.FormOrder = formOrder;
+        return this;
+    }
+
+    /// <summary>
     /// Set display format to property value.
     /// </summary>
     /// <param name="displayFormat">Display format.</param>

@@ -75,6 +75,8 @@ public class CreateEntityViewModel : ValidationEntityViewModel
                         IsValueGeneratedOnUpdate: false,
                         IsHiddenFromCreate: false
                     })
+                    .OrderByDescending(property => property.FormOrder.HasValue)
+                    .ThenBy(property => property.FormOrder)
                     .ToList(),
             };
 
@@ -119,6 +121,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
             ClrType = entity.ClrType,
             Properties = entity.Properties,
             EntityCreateMessage = entity.MessageOptions.EntityCreateMessage,
+            CreateAction = entity.CreateAction,
         };
     }
 
@@ -147,7 +150,8 @@ public class CreateEntityViewModel : ValidationEntityViewModel
 
         try
         {
-            await dataService.AddAsync(Model.EntityInstance, Model.ClrType!, CancellationToken);
+            await dataService
+                .AddAsync(Model.EntityInstance, Model.ClrType!, CancellationToken, Model.CreateAction);
             navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
             ShowEntityCreateMessage();
         }

@@ -68,6 +68,8 @@ public static class EntityMetadataOptionsExtensions
         }
 
         entityMetadata.MessageOptions = entityOptions.MessageOptions;
+        entityMetadata.CreateAction = entityOptions.CreateAction;
+        entityMetadata.UpdateAction = entityOptions.UpdateAction;
 
         entityMetadata.ToStringFunc = entityOptions.ToStringFunc;
 
@@ -140,6 +142,11 @@ public static class EntityMetadataOptionsExtensions
         if (propertyOptions.Order.HasValue)
         {
             property.Order = propertyOptions.Order.Value;
+        }
+
+        if (propertyOptions.FormOrder.HasValue)
+        {
+            property.FormOrder = propertyOptions.FormOrder.Value;
         }
 
         property.DisplayFormat = propertyOptions.DisplayFormat ?? property.DisplayFormat;
@@ -250,9 +257,9 @@ public static class EntityMetadataOptionsExtensions
     private static void ApplyNavigationOptions(
         this NavigationMetadata navigation, NavigationOptions navigationOptions)
     {
-        if (navigationOptions.Order.HasValue)
+        if (navigationOptions.FormOrder.HasValue)
         {
-            navigation.Order = navigationOptions.Order.Value;
+            navigation.FormOrder = navigationOptions.FormOrder.Value;
         }
 
         foreach (var propertyOptions in navigationOptions.PropertyOptions)

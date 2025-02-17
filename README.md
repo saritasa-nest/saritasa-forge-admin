@@ -572,6 +572,36 @@ You can configure your query for specific entity.
 })
 ```
 
+## Create Custom Action
+
+You can configure action that will be executed right after an entity was created and before saving changes to database.
+So you can use it to make additional interactions with a database.
+Also, you can use `ServiceProvider` if you need to access your services.
+
+```csharp
+public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+    {
+        entityOptionsBuilder.SetCreateAction((serviceProvider, address) => 
+            {
+                address.CreatedByUserId = new Random().Next(1, 1000);
+            });
+    }
+```
+
+## Update Custom Action
+
+This one behaves just like [Create Custom Action](#create-custom-action) but will be executed after update instead of create.
+
+```csharp
+public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+    {
+        entityOptionsBuilder.SetUpdateAction((serviceProvider, address) => 
+            {
+                address.UpdatedByUserId = new Random().Next(1, 1000);
+            });
+    }
+```
+
 ## After Update Action
 
 You can configure action that will be performed after entity update.
@@ -653,6 +683,54 @@ public string Property { get; set; }
 [Description("Custom property description.")]
 [DisplayName("Custom property display name")]
 public string Property { get; set; }
+```
+
+## Order
+
+### List View Order
+
+You can set order of property columns on `List View` page.
+
+#### Using FluentAPI
+
+```csharp
+    public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+    {
+        entityOptionsBuilder.ConfigureProperty(address => address.Id, propertyBuilder =>
+        {
+            propertyBuilder.SetOrder(1);
+        });
+    }
+```
+
+#### Using Attribute
+
+```csharp
+    [NetForgeProperty(Order = 1)]
+    public string Street { get; set; }
+```
+
+### Order on Create and Edit Pages
+
+You can set order of inputs on `Create` and `Edit` pages.
+
+#### Using FluentAPI
+
+```csharp
+    public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+    {
+        entityOptionsBuilder.ConfigureProperty(address => address.Id, propertyBuilder =>
+        {
+            propertyBuilder.SetFormOrder(1);
+        });
+    }
+```
+
+#### Using Attribute
+
+```csharp
+    [NetForgeProperty(FormOrder = 1)]
+    public string Street { get; set; }
 ```
 
 ## Display Formatting

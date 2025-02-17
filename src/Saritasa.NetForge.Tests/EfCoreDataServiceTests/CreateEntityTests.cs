@@ -88,4 +88,27 @@ public class CreateEntityTests : IDisposable
         // Assert
         await Assert.ThrowsAnyAsync<Exception>(Act);
     }
+
+    /// <summary>
+    /// Validates that custom action after entity create is changing the entity.
+    /// </summary>
+    [Fact]
+    public async Task CreateEntity_CustomAction_ShouldUpdate()
+    {
+        // Arrange
+        var contactInfoType = typeof(ContactInfo);
+        var newContactInfo = Fakers.ContactInfoFaker.Generate();
+
+        const string customActionEmail = "test@test.com";
+        Action<IServiceProvider?, object> customAction = (_, contactInfo) =>
+        {
+            ((ContactInfo)contactInfo).Email = customActionEmail;
+        };
+
+        // Act
+        await efCoreDataService.AddAsync(newContactInfo, contactInfoType, CancellationToken.None, customAction);
+
+        // Assert
+        Assert.Contains(testDbContext.ContactInfos, contactInfo => contactInfo.Email == customActionEmail);
+    }
 }

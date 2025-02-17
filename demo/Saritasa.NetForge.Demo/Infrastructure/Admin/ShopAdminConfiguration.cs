@@ -48,6 +48,7 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             .IncludeNavigation<Address>(shop => shop.Address, navigationOptionsBuilder =>
             {
                 navigationOptionsBuilder
+                    .SetFormOrder(2)
                     .IncludeProperty(address => address.Street, builder =>
                     {
                         builder
@@ -108,7 +109,9 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
 
         entityOptionsBuilder.ConfigureProperty(shop => shop.Name, builder =>
         {
-            builder.SetTruncationMaxCharacters(25);
+            builder
+                .SetTruncationMaxCharacters(25)
+                .SetFormOrder(1);
         });
 
         entityOptionsBuilder.SetAfterUpdateAction((serviceProvider, _, modifiedEntity) =>

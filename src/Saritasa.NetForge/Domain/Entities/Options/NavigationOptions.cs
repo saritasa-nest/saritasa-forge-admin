@@ -10,8 +10,8 @@ public class NavigationOptions
     /// <inheritdoc cref="PropertyMetadataBase.Name"/>
     public string PropertyName { get; set; } = string.Empty;
 
-    /// <inheritdoc cref="PropertyMetadataBase.Order"/>
-    public int? Order { get; set; }
+    /// <inheritdoc cref="PropertyMetadataBase.FormOrder"/>
+    public int? FormOrder { get; set; }
 
     /// <summary>
     /// Property options for the navigation properties.

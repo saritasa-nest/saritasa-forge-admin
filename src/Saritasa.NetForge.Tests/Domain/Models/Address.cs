@@ -32,7 +32,7 @@ internal class Address
     /// <summary>
     /// The postal code of the address.
     /// </summary>
-    [NetForgeProperty(IsExcludedFromQuery = true)]
+    [NetForgeProperty(IsExcludedFromQuery = true, FormOrder = 1)]
     public string PostalCode { get; set; } = string.Empty;
 
     /// <summary>

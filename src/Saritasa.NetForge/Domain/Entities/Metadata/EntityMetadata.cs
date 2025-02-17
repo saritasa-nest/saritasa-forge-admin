@@ -108,6 +108,16 @@ public class EntityMetadata
     public Func<object, string>? ToStringFunc { get; set; }
 
     /// <summary>
+    /// Action that executes after entity create and before saving changes to a database.
+    /// </summary>
+    public Action<IServiceProvider?, object>? CreateAction { get; set; }
+
+    /// <summary>
+    /// Action that executes after entity update and before saving changes to a database.
+    /// </summary>
+    public Action<IServiceProvider?, object>? UpdateAction { get; set; }
+
+    /// <summary>
     /// Represents maximum navigation depth.
     /// If depth of a navigation is more than this value then such navigation's data will not be loaded.
     /// </summary>

@@ -114,6 +114,7 @@ public class EntityService : IEntityService
             ClrType = property.ClrType,
             SearchType = property.SearchType,
             Order = property.Order,
+            FormOrder = property.FormOrder,
             DisplayFormat = property.DisplayFormat,
             FormatProvider = property.FormatProvider,
             IsCalculatedProperty = property.IsCalculatedProperty,
@@ -155,6 +156,7 @@ public class EntityService : IEntityService
             ClrType = navigation.ClrType,
             SearchType = navigation.SearchType,
             Order = navigation.Order,
+            FormOrder = navigation.FormOrder,
             DisplayFormat = navigation.DisplayFormat,
             FormatProvider = navigation.FormatProvider,
             IsSortable = navigation.IsSortable,
@@ -195,6 +197,8 @@ public class EntityService : IEntityService
             CanDelete = entity.CanDelete,
             MessageOptions = entity.MessageOptions,
             ToStringFunc = entity.ToStringFunc,
+            CreateAction = entity.CreateAction,
+            UpdateAction = entity.UpdateAction
         };
     }
 

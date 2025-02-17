@@ -26,10 +26,13 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
                 .SetDisplayName("Phone")
                 .SetDescription("Address contact phone.")
                 .SetOrder(1)
-                .SetSearchType(SearchType.ContainsCaseInsensitive);
+                .SetSearchType(SearchType.ContainsCaseInsensitive)
+                .SetFormOrder(5);
         }).ConfigureProperty(address => address.PostalCode, propertyBuilder =>
         {
-            propertyBuilder.SetIsHidden(true);
+            propertyBuilder
+                .SetIsHidden(true)
+                .SetFormOrder(4);
         }).ConfigureProperty(address => address.City, propertyBuilder =>
         {
             propertyBuilder.SetDisplayName("Town");
@@ -80,5 +83,9 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
             .SetEntitySaveMessage("Address was saved.")
             .SetEntityDeleteMessage("Address was deleted.")
             .SetEntityBulkDeleteMessage("Selected addresses were deleted.");
+
+        entityOptionsBuilder
+            .SetCreateAction((_, address) => { address.CreatedByUserId = new Random().Next(1, 1000); })
+            .SetUpdateAction((_, address) => { address.UpdatedByUserId = new Random().Next(1, 1000); });
     }
 }

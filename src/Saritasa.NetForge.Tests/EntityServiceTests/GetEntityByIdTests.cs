@@ -320,6 +320,68 @@ public class GetEntityByIdTests : IDisposable
     }
 
     /// <summary>
+    /// Test for case when property have configured form order via FluentAPI.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_FluentAPI_FormOrder_ShouldBeConfigured()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.ConfigureProperty(shop => shop.TotalSales, optionsBuilder => optionsBuilder.SetFormOrder(1));
+        });
+        const string expectedPropertyName = nameof(Shop.TotalSales);
+        const int expectedOrder = 1;
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+        var actualOrder = entity.Properties.First(property => property.Name == expectedPropertyName).FormOrder;
+
+        // Assert
+        Assert.Equal(expectedOrder, actualOrder);
+    }
+
+    /// <summary>
+    /// Test for case when property have configured form order via FluentAPI.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_FluentAPI_NavigationFormOrder_ShouldBeConfigured()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.IncludeNavigation<Address>(shop => shop.Address, optionsBuilder => optionsBuilder.SetFormOrder(1));
+        });
+        const string expectedPropertyName = nameof(Shop.Address);
+        const int expectedOrder = 1;
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+        var actualOrder = entity.Properties.First(property => property.Name == expectedPropertyName).FormOrder;
+
+        // Assert
+        Assert.Equal(expectedOrder, actualOrder);
+    }
+
+    /// <summary>
+    /// Test for case when property have <see cref="NetForgePropertyAttribute.FormOrder"/>.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_Attribute_FormOrder_ShouldBeConfigured()
+    {
+        // Arrange
+        const string expectedPropertyName = nameof(Address.PostalCode);
+        const int expectedOrder = 1;
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(AttributeTestEntityId, CancellationToken.None);
+        var actualOrder = entity.Properties.First(property => property.Name == expectedPropertyName).FormOrder;
+
+        // Assert
+        Assert.Equal(expectedOrder, actualOrder);
+    }
+
+    /// <summary>
     /// Test for case when property has set display name via Fluent API.
     /// </summary>
     [Fact]
@@ -636,5 +698,49 @@ public class GetEntityByIdTests : IDisposable
 
         // Assert
         Assert.Equal(entityBulkDeleteMessage, entity.MessageOptions.EntityBulkDeleteMessage);
+    }
+
+    /// <summary>
+    /// Test to check that custom create entity action is configured correctly.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_CreateAction_ShouldBeConfigured()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.SetCreateAction((_, entity) =>
+            {
+                entity.IsOpen = true;
+            });
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(entity.CreateAction);
+    }
+
+    /// <summary>
+    /// Test to check that custom update entity action is configured correctly.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_UpdateAction_ShouldBeConfigured()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.SetUpdateAction((_, entity) =>
+            {
+                entity.IsOpen = true;
+            });
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(entity.UpdateAction);
     }
 }
