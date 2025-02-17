@@ -1,9 +1,10 @@
-﻿using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
+﻿using Saritasa.NetForge.Controls;
+using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.Domain.Dtos;
 
 /// <summary>
-/// DTO for property that will be displayed on <c>List View</c> page.
+/// DTO that represents column on <see cref="EntityPropertyColumns"/> control.
 /// </summary>
 public record ListViewPropertyDto
 {
