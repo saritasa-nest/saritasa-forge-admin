@@ -1,8 +1,10 @@
 # Migration Guides by Version
 
-## 0.5.0-alpha
+This file contains the way to handle breaking changes and how to migrate to the new version.
 
-Pay attention that namespaces of methods `AddNetForge` and `UseNetForge` were changed. 
+## 1.0.0
+
+- Pay attention that namespaces of methods `AddNetForge` and `UseNetForge` were changed. 
 So you need to update usings.
 
 ### Before
@@ -16,3 +18,5 @@ using Saritasa.NetForge.Blazor.Extensions;
 ```csharp
 using Saritasa.NetForge.Extensions;
 ```
+
+- Use `IncludeAllEntities` instead of `ExcludeAllEntities`.

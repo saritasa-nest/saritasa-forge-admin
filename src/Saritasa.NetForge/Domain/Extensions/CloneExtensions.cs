@@ -33,7 +33,13 @@ public static class CloneExtensions
 
         var serializeSettings = new JsonSerializerSettings
         {
-            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+
+            // Ignore errors during serialization (in case of shadow properties in LazyLoadingProxies).
+            Error = (serializer, err) =>
+            {
+                err.ErrorContext.Handled = true;
+            }
         };
 
         serializeSettings.Converters.Add(new DecimalJsonConverter());
