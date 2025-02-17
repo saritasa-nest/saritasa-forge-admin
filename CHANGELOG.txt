@@ -25,3 +25,20 @@
 
 0.4.4-alpha [2024-11-02]
 [*] Fix importing static files.
+
+1.0.0 [2024-02-17]
+[BREAKING] Replace ExcludeAllEntities with IncludeAllEntities.
+[BREAKING] Update namespaces for the methods `AddNetForge` and `UseNetForge`.
+[+] Allow adding extra content into the header.
+[+] Make calculated properties available inside the navigation.
+[+] Add custom success message on save.
+[+] Add customizable create and delete messages.
+[+] Allow to inject extra body content.
+[+] Add ability to configure navigations displaying without using ToString.
+[+] Add ability to order properties on create and edit pages.
+[+] Allow custom actions that will be executed before saving changes to the database.
+[+] Support EF Lazy Loading.
+[*] Fix validating rich text fields.
+[*] Fix navigations displaying.
+[*] Fix removing related entities.
+[*] Fix the case when ordinary search doesn't work with the custom one.
