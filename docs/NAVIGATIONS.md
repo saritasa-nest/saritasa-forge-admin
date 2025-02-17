@@ -85,6 +85,9 @@ So, if `MaxNavigationDepth` is 2, then `Product.Shop.Suppliers.Shops` will not b
 Note: High value will increase the amount of data loaded, so performance will be slower.
 
 ##### Global Level
+
+When you use global level `MaxNavigationDepth` then it will be applied to all entities.
+
 ```csharp
 services.AddNetForge(optionsBuilder =>
 {
@@ -93,6 +96,10 @@ services.AddNetForge(optionsBuilder =>
 ```
 
 ##### Per-Model Level
+
+When you use per-model level `MaxNavigationDepth` then it will be applied only to the one entity.
+It takes precedence on the global level.
+
 ```csharp
 public void Configure(EntityOptionsBuilder<Product> entityOptionsBuilder)
 {
