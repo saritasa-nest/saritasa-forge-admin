@@ -300,7 +300,7 @@ public static class EntityMetadataOptionsExtensions
 
     /// <summary>
     /// Gets only included navigations in configuration
-    /// so data of such navigations will not be loaded to improve performance.
+    /// so data of excluded navigations will not be loaded to improve performance.
     /// </summary>
     private static List<NavigationMetadata> GetIncludedNavigations(
         List<NavigationMetadata> navigations, ICollection<NavigationOptions> navigationOptions)

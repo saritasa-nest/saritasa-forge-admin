@@ -20,11 +20,11 @@ public static class ReflectionExtensions
     /// Gets value of <paramref name="obj"/> property with given name.
     /// </summary>
     /// <param name="obj">Object instance to get property value from.</param>
-    /// <param name="propertyName">
-    /// Property name. Can be a property of a navigation. For example: Product.Shop.OwnerContact.Email
+    /// <param name="propertyPath">
+    /// Property name. Can be a property of a navigation. For example: <c>Product.Shop.OwnerContact.Email</c>
     /// </param>
     /// <returns>Property value.</returns>
-    public static object? GetNestedPropertyValue(this object? obj, string propertyName)
+    public static object? GetNestedPropertyValue(this object? obj, string propertyPath)
     {
         if (obj is null)
         {
@@ -40,7 +40,7 @@ public static class ReflectionExtensions
         var convertedEntity = Expression.Convert(entity, entityType);
 
         // ((entityType)entity).propertyName
-        var propertyExpression = ExpressionExtensions.GetPropertyExpression(convertedEntity, propertyName);
+        var propertyExpression = ExpressionExtensions.GetPropertyExpression(convertedEntity, propertyPath);
 
         // entity => ((entityType)entity).propertyName
         var lamda = Expression.Lambda(propertyExpression, entity);
@@ -51,7 +51,7 @@ public static class ReflectionExtensions
         }
         catch (Exception exception) when (exception.InnerException is NullReferenceException)
         {
-            // If any navigation in propertyName is null or just property has null value
+            // If any navigation in propertyPath is null or just property has null value
             // then NullReferenceException will be thrown.
             // So we handle to have behavior similar to conditional access
             // For example: Product.Shop?.OwnerContact?.Email
