@@ -116,7 +116,4 @@ public class EntityMetadata
     /// Action that executes after entity update and before saving changes to a database.
     /// </summary>
     public Action<IServiceProvider?, object>? UpdateAction { get; set; }
-
-    /// <inheritdoc cref="AdminOptions.MaxNavigationDepth"/>
-    public byte? MaxNavigationDepth { get; set; }
 }
