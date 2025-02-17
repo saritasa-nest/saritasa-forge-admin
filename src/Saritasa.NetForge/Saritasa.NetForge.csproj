@@ -11,7 +11,7 @@
     <Version>0.1.0</Version>
     <Authors>Saritasa</Authors>
     <Description>The NetForge is a library that provides a user-friendly and intuitive user interface for performing CRUD operations on your database entities within your .NET applications.</Description>
-    <Copyright>(c) Saritasa, 2023-2024</Copyright>
+    <Copyright>(c) Saritasa, 2023-2025</Copyright>
     <PackageProjectUrl>https://github.com/saritasa-nest/saritasa-forge-admin</PackageProjectUrl>
     <PackageIcon>icon-saritasa-logo.svg</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
