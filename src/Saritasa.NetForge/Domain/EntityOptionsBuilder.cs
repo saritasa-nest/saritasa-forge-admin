@@ -289,7 +289,7 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     /// </param>
     /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
     /// <remarks>
-    /// Beware that high value will increase the amount of data loaded, so performance will be affected dramatically.
+    /// Beware that high value will increase the amount of data loaded, so performance will be slower.
     /// </remarks>
     public EntityOptionsBuilder<TEntity> SetMaxNavigationDepth(byte maxNavigationDepth)
     {
