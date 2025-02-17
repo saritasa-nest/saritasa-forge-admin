@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Saritasa.NetForge.Tests.EfCoreMetadataServiceTests.NavigationMetadata.Entities;
+namespace Saritasa.NetForge.Tests.EfCoreMetadataServiceTests.NavigationMetadata.Models;
 
 /// <summary>
 /// Employee.

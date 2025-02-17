@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Saritasa.NetForge.Tests.Domain.Models;
-using Saritasa.NetForge.Tests.EfCoreMetadataServiceTests.NavigationMetadata.Entities;
+using Saritasa.NetForge.Tests.EfCoreMetadataServiceTests.NavigationMetadata.Models;
 
 namespace Saritasa.NetForge.Tests.Domain;
 

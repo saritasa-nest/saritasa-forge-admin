@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Saritasa.NetForge.Tests.EfCoreMetadataServiceTests.NavigationMetadata.Entities;
+namespace Saritasa.NetForge.Tests.EfCoreMetadataServiceTests.NavigationMetadata.Models;
 
 /// <summary>
-/// Client.
+/// Project.
 /// </summary>
-public class Client
+public class Project
 {
     /// <summary>
     /// Identifier.
@@ -17,4 +17,9 @@ public class Client
     /// </summary>
     [MaxLength(100)]
     public string Name { get; set; } = null!;
+
+    /// <summary>
+    /// The client who is owner of the project.
+    /// </summary>
+    public Client Client { get; set; } = null!;
 }

@@ -1,6 +1,6 @@
 ﻿using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Tests.Domain;
-using Saritasa.NetForge.Tests.EfCoreMetadataServiceTests.NavigationMetadata.Entities;
+using Saritasa.NetForge.Tests.EfCoreMetadataServiceTests.NavigationMetadata.Models;
 using Saritasa.NetForge.Tests.Helpers;
 using Xunit;
 
