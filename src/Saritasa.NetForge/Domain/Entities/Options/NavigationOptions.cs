@@ -24,7 +24,7 @@ public class NavigationOptions
     public ICollection<CalculatedPropertyOptions> CalculatedPropertyOptions { get; set; } = [];
 
     /// <summary>
-    /// Navigation options for inner navigations.
+    /// Navigation options for nested navigations.
     /// </summary>
     public ICollection<NavigationOptions> NavigationsOptions { get; set; } = [];
 }
