@@ -16,7 +16,8 @@ In case of the collection navigation we support displaying only primary keys. Fo
 
 ## Include Navigation
 
-You can include navigation and its properties via `Fluent API`.
+You can include navigation and its properties via `Fluent API`. 
+Navigation data are not loaded by default, so you need to add explicit include if you want to use such data.
 
 ### Using Fluent API
 
@@ -44,6 +45,58 @@ public void Configure(EntityOptionsBuilder<Shop> entityOptionsBuilder)
                         .SetSearchType(SearchType.ContainsCaseInsensitive);
                 });
         });
+}
+```
+
+### Nested Navigations
+
+Also, you can include nested navigations.
+
+```csharp
+public void Configure(EntityOptionsBuilder<Product> entityOptionsBuilder)
+{
+    entityOptionsBuilder.IncludeNavigation<Shop>(product => product.Shop, navigationOptionsBuilder =>
+    {
+        navigationOptionsBuilder.IncludeNavigation<Address>(shop => shop.Address, builder =>
+        {
+            builder.IncludeProperty(address => address.Country, propertyBuilder =>
+            {
+                propertyBuilder
+                    .SetOrder(2)
+                    .SetDisplayName("Shop Country");
+            });
+        });
+    });
+}
+```
+
+#### Navigation Depth
+
+To handle situation when navigations reference each other, e.g. self-reference entity.
+We have `navigation depth` configuration to control which level of nested navigations will be loaded. 
+Default value is 2.
+Examples of navigation depth:
+- `Product.Shop` has depth = 1
+- `Product.Shop.OwnerContact` has depth = 2
+- `Product.Shop.Suppliers.Shops` has depth = 3
+
+So, if `MaxNavigationDepth` is 2, then `Product.Shop.Suppliers.Shops` will not be loaded.
+
+Beware that high value will increase the amount of data loaded, so performance will be slower.
+
+##### Global Level
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetMaxNavigationDepth(3);
+});
+```
+
+##### Per-Model Level
+```csharp
+public void Configure(EntityOptionsBuilder<Product> entityOptionsBuilder)
+{
+    entityOptionsBuilder.SetMaxNavigationDepth(3);
 }
 ```
 
