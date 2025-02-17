@@ -1,7 +1,6 @@
-﻿using Saritasa.NetForge.Demo.Models;
-using Saritasa.NetForge.Domain.Enums;
-using Saritasa.NetForge.DomainServices;
-using Saritasa.NetForge.DomainServices.Interfaces;
+﻿using Saritasa.NetForge.Domain;
+using Saritasa.NetForge.Domain.Interfaces;
+using Saritasa.NetForge.Demo.Models;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.Admin;
 
@@ -16,5 +15,10 @@ public class ContactInfoAdminConfiguration  : IEntityAdminConfiguration<ContactI
         entityOptionsBuilder.SetCanAdd(false);
         entityOptionsBuilder.SetCanEdit(false);
         entityOptionsBuilder.SetCanDelete(false);
+
+        entityOptionsBuilder.ConfigureSearch((_, query, searchTerm) =>
+        {
+            return query.Where(e => e.Email.Contains(searchTerm) && e.FullName.Contains(searchTerm));
+        });
     }
 }

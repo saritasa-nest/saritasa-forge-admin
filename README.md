@@ -11,12 +11,19 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
   - [Search](#search)
   - [View Site URL](#view-site-url)
   - [Grouping](#grouping)
+  - [Customizing the UI](#customizing-the-ui)
+    - [Main Layout Overriding](#main-layout-overriding)
+    - [Head Tag Overriding](#head-tag-overriding)
+    - [Custom Body Content](#custom-body-content)
     - [Create Groups for Entities](#create-groups-for-entities)
     - [Configuration](#configuration)
     - [Headers Expansion](#headers-expansion)
+    - [Success Messages](#success-messages)
+      - [Create](#create)
+      - [Save](#save)
+      - [Delete](#delete)
+      - [Bulk Delete](#bulk-delete)
   - [Exclude All Entities and Include Specific Only](#exclude-all-entities-and-include-specific-only)
-  - [Customizing the UI](#customizing-the-ui)
-    - [Main Layout Overriding](#main-layout-overriding)
 - [Customizing Entities](#customizing-entities)
   - [Fluent API](#fluent-api)
   - [Creating an Entity Configuration Class](#creating-an-entity-configuration-class)
@@ -39,12 +46,15 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
   - [Rich Text Field](#rich-text-field)
   - [Image Properties](#image-properties)
     - [Configuration](#configuration-1)
+    - [Max image size](#max-image-size)
   - [Read-only Properties](#read-only-properties)
     - [Configuration](#configuration-2)
   - [String Truncate](#string-truncate)
     - [Configuration](#configuration-3)
   - [Multiline Text Field Property](#multiline-text-field-property)
     - [Configuration](#configuration-4)
+  - [Migration](#migration)
+  - [License](#license)
 
 # How to Use
 
@@ -197,6 +207,107 @@ The example of the custom component with navigation bar and footer:
 </footer>
 ```
 
+### Head Tag Overriding
+
+You can inject custom meta tags or page title into the head tag of the admin panel.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetCustomHeadType(typeof(CustomHead));
+});
+```
+
+Example of injecting custom meta tags or a page title into the head tag of the admin panel.
+```csharp
+﻿@using Microsoft.AspNetCore.Components.Web
+
+<PageTitle>This is the custom page title.</PageTitle>
+<meta name="custom-meta" content="content-meta">
+```
+
+**Note:** If you are using a `Custom Layout`, you must add the dynamic component into the custom layout:
+
+```csharp
+@using Saritasa.NetForge.Domain.Entities.Options
+@inject AdminOptions AdminOptions;
+
+<HeadContent>
+    @if (AdminOptions.CustomHeadType is not null)
+    {
+        <DynamicComponent Type="AdminOptions.CustomHeadType" />
+    }
+</HeadContent>
+```
+
+Example:
+
+```csharp
+@using MudBlazor
+@using Saritasa.NetForge.Domain.Entities.Options
+@using Microsoft.AspNetCore.Components.Web
+@inherits Saritasa.NetForge.Blazor.Shared.AdminBaseLayout
+@inject AdminOptions AdminOptions;
+
+<HeadContent>
+    @if (AdminOptions.CustomHeadType is not null)
+    {
+        <DynamicComponent Type="AdminOptions.CustomHeadType" />
+    }
+</HeadContent>
+
+<MudThemeProvider />
+<MudDialogProvider />
+...
+...
+```
+
+### Custom Body Content
+
+You can add some content to the end of the body section of admin site. 
+Static and interactive content can be added separately.
+
+#### Static Content
+
+Static content will be rendered by your custom component type.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetStaticBodyComponentType(typeof(AdminFooterStatic));
+});
+```
+
+#### Interactive Content
+
+Interactive content can be built using [RenderTreeBuilder](https://learn.microsoft.com/en-us/aspnet/core/blazor/advanced-scenarios?view=aspnetcore-9.0).
+Note that JavaScript script tags should not be here. If you need JavaScript then put it to the static content section.
+But you can import JavaScript file in your component to use it, in this case you will not need script tag.
+Like in `JsCollocation2` example [here](https://learn.microsoft.com/en-us/aspnet/core/blazor/javascript-interoperability/location-of-javascript?view=aspnetcore-9.0).
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetInteractiveBodyContent(builder =>
+        {
+            builder.OpenComponent<AdminFooter>(0);
+            builder.AddAttribute(1, nameof(AdminFooter.VisitorsCount), 1234);
+            builder.CloseComponent();
+        })
+});
+```
+
+#### Using CSS
+
+To use CSS in custom body sections you should add it to [Custom Head Section](#head-tag-overriding).
+Also, you can use scoped CSS, in this case you should add bundled styles according to [this](https://learn.microsoft.com/en-us/aspnet/core/blazor/components/css-isolation?view=aspnetcore-9.0).
+For example:
+
+```html
+<link href="Saritasa.NetForge.Demo.styles.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+```
+
 ### Create Groups for Entities
 
 Before assigning entities to specific groups, users need to define the groups to which the entities will belong.
@@ -265,6 +376,91 @@ services.AddNetForge(optionsBuilder =>
 });
 ```
 
+### Success Messages
+
+You can customize success messages on operations with entities.
+It can be customized on Global and Per-Model levels. Per-Model takes precedence on Global level.
+
+#### Create
+
+##### Global Level
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetEntityCreateMessage("The entity was created.");
+});
+```
+
+##### Per-Model Level
+
+```csharp
+  public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+  {
+      entityOptionsBuilder.SetEntityCreateMessage("Address was created.");
+  }
+```
+
+#### Save
+
+##### Global Level
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetEntitySaveMessage("Entity was saved.");
+});
+```
+
+##### Per-Model Level
+
+```csharp
+  public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+  {
+      entityOptionsBuilder.SetEntitySaveMessage("Address was saved.");
+  }
+```
+
+#### Delete
+
+##### Global Level
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetEntityDeleteMessage("The entity was deleted.");
+});
+```
+
+##### Per-Model Level
+
+```csharp
+  public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+  {
+      entityOptionsBuilder.SetEntityDeleteMessage("Address was deleted.");
+  }
+```
+
+#### Bulk Delete
+
+##### Global Level
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetEntityBulkDeleteMessage("The entities were deleted.");
+});
+```
+
+##### Per-Model Level
+
+```csharp
+  public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+  {
+      entityOptionsBuilder.SetEntityBulkDeleteMessage("Selected addresses were deleted.");
+  }
+```
+
 ## Exclude All Entities and Include Specific Only
 
 You can exclude all entities and include only specific ones.
@@ -272,7 +468,7 @@ You can exclude all entities and include only specific ones.
 ```csharp
 services.AddNetForge(optionsBuilder =>
 {
-    optionsBuilder.ExcludeAllEntities();
+    optionsBuilder.SetIncludeAllEntities(false);
     optionsBuilder.IncludeEntities(typeof(Shop), typeof(Product));
 });
 ```
@@ -285,7 +481,7 @@ public class Shop
 
 # Customizing Entities
 
-In the admin panel, you can customize the way entities are displayed using the Fluent API or special attribites. This enables you to set various properties for your entities, such as their name, description, plural name, etc.
+In the admin panel, you can customize the way entities are displayed using the Fluent API or special attributes. This enables you to set various properties for your entities, such as their name, description, plural name, etc.
 
 ## Fluent API
 
@@ -376,6 +572,36 @@ You can configure your query for specific entity.
 })
 ```
 
+## Create Custom Action
+
+You can configure action that will be executed right after an entity was created and before saving changes to database.
+So you can use it to make additional interactions with a database.
+Also, you can use `ServiceProvider` if you need to access your services.
+
+```csharp
+public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+    {
+        entityOptionsBuilder.SetCreateAction((serviceProvider, address) => 
+            {
+                address.CreatedByUserId = new Random().Next(1, 1000);
+            });
+    }
+```
+
+## Update Custom Action
+
+This one behaves just like [Create Custom Action](#create-custom-action) but will be executed after update instead of create.
+
+```csharp
+public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+    {
+        entityOptionsBuilder.SetUpdateAction((serviceProvider, address) => 
+            {
+                address.UpdatedByUserId = new Random().Next(1, 1000);
+            });
+    }
+```
+
 ## After Update Action
 
 You can configure action that will be performed after entity update.
@@ -459,6 +685,54 @@ public string Property { get; set; }
 public string Property { get; set; }
 ```
 
+## Order
+
+### List View Order
+
+You can set order of property columns on `List View` page.
+
+#### Using FluentAPI
+
+```csharp
+    public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+    {
+        entityOptionsBuilder.ConfigureProperty(address => address.Id, propertyBuilder =>
+        {
+            propertyBuilder.SetOrder(1);
+        });
+    }
+```
+
+#### Using Attribute
+
+```csharp
+    [NetForgeProperty(Order = 1)]
+    public string Street { get; set; }
+```
+
+### Order on Create and Edit Pages
+
+You can set order of inputs on `Create` and `Edit` pages.
+
+#### Using FluentAPI
+
+```csharp
+    public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+    {
+        entityOptionsBuilder.ConfigureProperty(address => address.Id, propertyBuilder =>
+        {
+            propertyBuilder.SetFormOrder(1);
+        });
+    }
+```
+
+#### Using Attribute
+
+```csharp
+    [NetForgeProperty(FormOrder = 1)]
+    public string Street { get; set; }
+```
+
 ## Display Formatting
 
 You can configure the display format for the properties values. See [string.Format](https://learn.microsoft.com/en-us/dotnet/standard/base-types/composite-formatting#format-string-component).
@@ -522,19 +796,15 @@ You can sort multiple properties at once. It can be achieved by pressing sort bu
 Sorting can be cancelled by pressing on it with `ALT`.
 
 ## Calculated Properties
+
 Calculated properties are properties that don't have a direct representation in your database but are computed based on other existing properties. These properties can be useful for displaying calculated values in the admin panel.
 
-You can add calculated properties to your entities using the Fluent API:
+They behave like an ordinary property, but have less functionality.
 
 ```csharp
-services.AddNetForge(optionsBuilder =>
+entityOptionsBuilder.ConfigureCalculatedProperty(address => address.FullAddress, propertyBuilder =>
 {
-    optionsBuilder.ConfigureEntity<User>(entityOptionsBuilder =>
-    {
-        entityOptionsBuilder.AddCalculatedProperties(user => user.FullName, user => user.Age);
-    });
-
-    // Other settings...
+    propertyBuilder.SetDisplayName("Full Address");
 });
 ```
 
@@ -679,7 +949,7 @@ You can add properties that will be displayed as images.
 
 **Using Fluent API**
 
-You can create your own implementaion of `IUploadFileStrategy` interface and pass it to `SetUploadFileStrategy` configuration method.
+You can create your own implementation of `IUploadFileStrategy` interface and pass it to `SetUploadFileStrategy` configuration method.
 
 This interface has methods `UploadFileAsync` that is calling when file is uploaded and `GetFileSource` that is calling when file should be displayed.
 
@@ -707,7 +977,7 @@ services.AddNetForge(optionsBuilder =>
 
 ## Read-only Properties
 
-You can mark a property as read only. Such property cannot be changed on create and edit pages.
+You can mark a property as read only. Such property cannot be changed on edit page.
 
 ### Configuration
 
@@ -822,7 +1092,7 @@ public required string Street { get; set; }
 ```csharp
 entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
 {
-	builder.SetIsMultiline(maxLines: 15); // sets the max lines value as 15
+    builder.SetIsMultiline(maxLines: 15); // sets the max lines value as 15
 });
 ```
 
@@ -852,6 +1122,10 @@ entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
 [MultilineText(IsAutoGrow = true)]
 public required string Street { get; set; }
 ```
+
+## Migration
+
+See how to update the library [here](MIGRATION.md).
 
 Contributors
 ------------

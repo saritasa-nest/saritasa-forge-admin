@@ -36,7 +36,7 @@
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Saritasa.NetForge.Blazor\Saritasa.NetForge.Blazor.csproj" />
+      <ProjectReference Include="..\..\src\Saritasa.NetForge\Saritasa.NetForge.csproj" />
     </ItemGroup>
 
 </Project>

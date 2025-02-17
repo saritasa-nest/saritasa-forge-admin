@@ -1,4 +1,4 @@
-﻿using Saritasa.NetForge.DomainServices;
+﻿using Saritasa.NetForge.Domain;
 using Saritasa.NetForge.Tests.Domain.Models;
 using Xunit;
 

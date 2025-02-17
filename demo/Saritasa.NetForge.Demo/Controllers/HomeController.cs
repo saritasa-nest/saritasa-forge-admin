@@ -1,7 +1,6 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Saritasa.NetForge.Demo.ViewModels;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Demo.ViewModels;
 
 namespace Saritasa.NetForge.Demo.Controllers;
 

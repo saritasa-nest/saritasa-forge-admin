@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Saritasa.NetForge.Blazor.Extensions;
+using Saritasa.NetForge.Extensions;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 using Saritasa.NetForge.Tests.Domain;
 using Xunit.Microsoft.DependencyInjection;

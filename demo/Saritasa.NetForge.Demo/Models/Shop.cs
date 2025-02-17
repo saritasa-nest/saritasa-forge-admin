@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
-using Saritasa.NetForge.Demo.Constants;
 using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.Domain.Enums;
+using Saritasa.NetForge.Demo.Constants;
 
 namespace Saritasa.NetForge.Demo.Models;
 
@@ -35,12 +35,12 @@ public class Shop
     /// The date when the shop was opened.
     /// </summary>
     public DateTime OpenedDate { get; set; }
-    
+
     /// <summary>
     /// The open time of the shop.
     /// </summary>
     public TimeOnly? OpenTime { get; set; }
-    
+
     /// <summary>
     /// The close time of the shop.
     /// </summary>

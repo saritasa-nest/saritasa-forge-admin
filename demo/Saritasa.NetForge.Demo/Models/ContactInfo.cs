@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Saritasa.NetForge.Demo.Constants;
 using Saritasa.NetForge.Domain.Attributes;
+using Saritasa.NetForge.Demo.Constants;
+using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.Demo.Models;
 
@@ -13,6 +14,7 @@ public class ContactInfo
     /// <summary>
     /// The unique identifier for the contact information.
     /// </summary>
+    [NetForgeProperty(SearchType = SearchType.ContainsCaseInsensitive)]
     public int Id { get; set; }
 
     /// <summary>
@@ -28,6 +30,7 @@ public class ContactInfo
     /// <summary>
     /// The phone number of the contact person.
     /// </summary>
+    [NetForgeProperty(SearchType = SearchType.ContainsCaseInsensitive)]
     public required string PhoneNumber { get; set; }
     
     /// <summary>

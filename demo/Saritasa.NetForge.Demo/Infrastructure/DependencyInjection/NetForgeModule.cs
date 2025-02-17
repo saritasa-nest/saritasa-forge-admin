@@ -1,9 +1,10 @@
-﻿using Saritasa.NetForge.Blazor.Extensions;
-using Saritasa.NetForge.Demo.Constants;
+﻿using Saritasa.NetForge.Demo.Constants;
 using Saritasa.NetForge.Demo.Infrastructure.Admin;
 using Saritasa.NetForge.Demo.Infrastructure.Extensions;
 using Saritasa.NetForge.Demo.Models;
+using Saritasa.NetForge.Demo.Views.Admin;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Extensions;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.DependencyInjection;
@@ -27,11 +28,23 @@ internal static class NetForgeModule
                     new() { Name = GroupConstants.Shops }
                 })
                 .SetGroupHeadersExpanded(true)
+                .SetEntityCreateMessage("The entity was created.")
+                .SetEntitySaveMessage("The entity was saved.")
+                .SetEntityDeleteMessage("The entity was deleted.")
+                .SetEntityBulkDeleteMessage("The entities were deleted.")
+                .SetCustomHeadType(typeof(AdminHead))
+                .SetInteractiveBodyContent(builder =>
+                {
+                    builder.OpenComponent<AdminFooter>(0);
+                    builder.AddAttribute(1, nameof(AdminFooter.VisitorsCount), 1234);
+                    builder.CloseComponent();
+                })
                 .ConfigureEntity(new ShopAdminConfiguration(services))
                 .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
                 {
                     entityOptionsBuilder.SetIsHidden(true);
-                }).AddIdentityGroup()
+                })
+                .AddIdentityGroup()
                 .ConfigureEntity(new UserAdminConfiguration())
                 .ConfigureEntity(new AddressAdminConfiguration())
                 .ConfigureEntity(new ProductAdminConfiguration(services))
@@ -43,9 +56,9 @@ internal static class NetForgeModule
                         {
                             navigationOptionsBuilder
                                 .IncludeProperty(shop => shop.Name, propertyOptionsBuilder =>
-                                {
-                                    propertyOptionsBuilder.SetDisplayName("Shop name");
-                                });
+                                    {
+                                        propertyOptionsBuilder.SetDisplayName("Shop name");
+                                    });
                         });
                 })
                 .ConfigureEntity(new ContactInfoAdminConfiguration());

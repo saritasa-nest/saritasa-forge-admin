@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
-using Saritasa.NetForge.Demo.Constants;
 using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.Domain.Enums;
+using Saritasa.NetForge.Demo.Constants;
 
 namespace Saritasa.NetForge.Demo.Models;
 
@@ -22,14 +22,14 @@ public class Address
     /// The street name and number.
     /// </summary>
     [NetForgeProperty(DisplayName = "Street name", Description = "Street name without street number.",
-        Order = 3, SearchType = SearchType.StartsWithCaseSensitive)]
+        Order = 3, FormOrder = 1, SearchType = SearchType.StartsWithCaseSensitive)]
     [Required]
     public required string Street { get; set; }
 
     /// <summary>
     /// The city where the address is located.
     /// </summary>
-    [NetForgeProperty(Order = 4, SearchType = SearchType.StartsWithCaseSensitive)]
+    [NetForgeProperty(Order = 4, FormOrder = 2, SearchType = SearchType.StartsWithCaseSensitive)]
     [Required]
     public required string City { get; set; }
 
@@ -48,9 +48,14 @@ public class Address
     /// <summary>
     /// The name of the country.
     /// </summary>
-    [NetForgeProperty(Description = "Country name.", Order = 5)]
+    [NetForgeProperty(Description = "Country name.", Order = 5, FormOrder = 3)]
     [Required]
     public required string Country { get; set; }
+
+    /// <summary>
+    /// Full address.
+    /// </summary>
+    public string FullAddress => $"{Country}, {Street}, {City}";
 
     /// <summary>
     /// The latitude coordinate of the address location.
@@ -70,9 +75,27 @@ public class Address
     [Required]
     public required string ContactPhone { get; set; }
 
+    /// <summary>
+    /// Id of user who created the address.
+    /// </summary>
+    public required int CreatedByUserId { get; set; }
+
+    /// <summary>
+    /// Id of last user who updated the address. If null, then the address was not changed after creation.
+    /// </summary>
+    public int? UpdatedByUserId { get; set; }
+
     /// <inheritdoc />
-    public override string ToString()
+    public override bool Equals(object? obj)
     {
-        return DisplayName;
+        if (obj is not Address address)
+        {
+            return false;
+        }
+
+        return address.Street == Street && address.City == City;
     }
+
+    /// <inheritdoc />
+    public override int GetHashCode() => Street.GetHashCode() + City.GetHashCode();
 }

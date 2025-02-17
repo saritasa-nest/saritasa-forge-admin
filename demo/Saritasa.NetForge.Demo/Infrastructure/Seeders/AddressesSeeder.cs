@@ -37,14 +37,14 @@ internal class AddressesSeeder
         foreach (var chunk in Tools.Common.Utils.CollectionUtils
                      .ChunkSelectRange(Enumerable.Range(0, numberOfItems), chunkSize: 50))
         {
-            foreach (var chunkRange in chunk)
+            foreach (var _ in chunk)
             {
                 shopDbContext.Addresses.Add(GenerateAddress());
             }
             count += await shopDbContext.SaveChangesAsync(cancellationToken);
         }
         
-        logger.LogInformation("Created {count} addresses.", count);
+        logger.LogInformation("Created {Count} addresses.", count);
         return count;
     }
 
@@ -56,6 +56,7 @@ internal class AddressesSeeder
         Country = faker.Address.Country(),
         Latitude = faker.Address.Latitude(),
         Longitude = faker.Address.Longitude(),
-        ContactPhone = faker.Phone.PhoneNumber()
+        ContactPhone = faker.Phone.PhoneNumber(),
+        CreatedByUserId = faker.IndexGlobal
     };
 }

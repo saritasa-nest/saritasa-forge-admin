@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Moq;
-using Saritasa.NetForge.DomainServices;
+using Saritasa.NetForge.Domain;
+using Saritasa.NetForge.Domain.UseCases.Interfaces;
+using Saritasa.NetForge.Domain.UseCases.Metadata.Services;
+using Saritasa.NetForge.Domain.UseCases.Services;
 using Saritasa.NetForge.Tests.Domain.Models;
 using Saritasa.NetForge.Tests.Helpers;
-using Saritasa.NetForge.UseCases.Interfaces;
-using Saritasa.NetForge.UseCases.Metadata.Services;
-using Saritasa.NetForge.UseCases.Services;
 using Xunit;
 
 namespace Saritasa.NetForge.Tests.EntityServiceTests;
@@ -29,9 +29,7 @@ public class ValidateEntityTests
             adminOptionsBuilder.Create(),
             MemoryCacheHelper.CreateMemoryCache());
 
-        entityService = new EntityService(adminMetadataService,
-            EfCoreHelper.CreateEfCoreDataService(testDbContext),
-            new Mock<IServiceProvider>().Object);
+        entityService = new EntityService(adminMetadataService, new Mock<IServiceProvider>().Object);
     }
 
     /// <summary>

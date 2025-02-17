@@ -1,9 +1,0 @@
-﻿@inherits Saritasa.NetForge.Blazor.Controls.CustomFields.CustomField;
-
-<div class="@(IsReadOnly ? "editor--disabled" : "")">
-    <MudText Typo="Typo.subtitle2" Class="px-2">@Property.Name</MudText>
-    <textarea @ref="editor">
-        @PropertyValue
-    </textarea>
-    <p class="mud-input-helper-text px-2">@Property.Description</p>
-</div>

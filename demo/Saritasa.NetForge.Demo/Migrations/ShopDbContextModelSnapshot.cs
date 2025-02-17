@@ -252,6 +252,10 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                         .HasColumnType("text")
                         .HasColumnName("country");
 
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_user_id");
+
                     b.Property<string>("DisplayName")
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
@@ -279,6 +283,10 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                         .IsUnicode(false)
                         .HasColumnType("text")
                         .HasColumnName("street");
+
+                    b.Property<int?>("UpdatedByUserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_user_id");
 
                     b.HasKey("Id")
                         .HasName("pk_addresses");
@@ -722,7 +730,7 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_asp_net_role_claims_asp_net_roles_role_id");
                 });
@@ -732,7 +740,7 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.HasOne("Saritasa.NetForge.Demo.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_asp_net_user_claims_asp_net_users_user_id");
                 });
@@ -742,7 +750,7 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.HasOne("Saritasa.NetForge.Demo.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_asp_net_user_logins_asp_net_users_user_id");
                 });
@@ -752,14 +760,14 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_asp_net_user_roles_asp_net_roles_role_id");
 
                     b.HasOne("Saritasa.NetForge.Demo.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_asp_net_user_roles_asp_net_users_user_id");
                 });
@@ -769,7 +777,7 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.HasOne("Saritasa.NetForge.Demo.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_asp_net_user_tokens_asp_net_users_user_id");
                 });
@@ -779,14 +787,14 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.HasOne("Saritasa.NetForge.Demo.Models.Product", null)
                         .WithMany()
                         .HasForeignKey("ProductsId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_product_product_tag_products_products_id");
 
                     b.HasOne("Saritasa.NetForge.Demo.Models.ProductTag", null)
                         .WithMany()
                         .HasForeignKey("TagsId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_product_product_tag_product_tags_tags_id");
                 });
@@ -796,13 +804,11 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.HasOne("Saritasa.NetForge.Demo.Models.Shop", "Shop")
                         .WithMany("Products")
                         .HasForeignKey("ShopId")
-                        .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_products_shops_shop_id");
 
                     b.HasOne("Saritasa.NetForge.Demo.Models.Supplier", "Supplier")
                         .WithMany()
                         .HasForeignKey("SupplierName", "SupplierCity")
-                        .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_products_suppliers_supplier_name_supplier_city");
 
                     b.Navigation("Shop");
@@ -815,13 +821,11 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.HasOne("Saritasa.NetForge.Demo.Models.Address", "Address")
                         .WithMany()
                         .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_shops_addresses_address_id");
 
                     b.HasOne("Saritasa.NetForge.Demo.Models.ContactInfo", "OwnerContact")
                         .WithMany()
                         .HasForeignKey("OwnerContactId")
-                        .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_shops_contact_infos_owner_contact_id");
 
                     b.Navigation("Address");
@@ -834,7 +838,7 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.HasOne("Saritasa.NetForge.Demo.Models.Shop", "Shop")
                         .WithMany()
                         .HasForeignKey("ShopId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_shop_products_counts_shops_shop_id");
 
@@ -846,14 +850,14 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.HasOne("Saritasa.NetForge.Demo.Models.Shop", null)
                         .WithMany()
                         .HasForeignKey("ShopsId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_shop_supplier_shops_shops_id");
 
                     b.HasOne("Saritasa.NetForge.Demo.Models.Supplier", null)
                         .WithMany()
                         .HasForeignKey("SuppliersName", "SuppliersCity")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_shop_supplier_suppliers_suppliers_name_suppliers_city");
                 });

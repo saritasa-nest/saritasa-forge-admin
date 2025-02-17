@@ -1,9 +1,9 @@
-﻿using Saritasa.NetForge.Demo.Infrastructure.UploadFiles.Strategies;
-using Saritasa.NetForge.Demo.Models;
+﻿using Saritasa.NetForge.Domain;
 using Saritasa.NetForge.Domain.Enums;
-using Saritasa.NetForge.DomainServices;
-using Saritasa.NetForge.DomainServices.Interfaces;
+using Saritasa.NetForge.Domain.Interfaces;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
+using Saritasa.NetForge.Demo.Infrastructure.UploadFiles.Strategies;
+using Saritasa.NetForge.Demo.Models;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.Admin;
 
@@ -48,6 +48,7 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             .IncludeNavigation<Address>(shop => shop.Address, navigationOptionsBuilder =>
             {
                 navigationOptionsBuilder
+                    .SetFormOrder(2)
                     .IncludeProperty(address => address.Street, builder =>
                     {
                         builder
@@ -64,6 +65,12 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                         builder
                             .SetOrder(5)
                             .SetShowNavigationDetails(isReadonly: true);
+                    })
+                    .IncludeCalculatedProperty(address => address.FullAddress, builder =>
+                    {
+                        builder
+                            .SetDisplayName("Entire Address")
+                            .SetOrder(6);
                     });
             })
             .IncludeNavigation<Product>(shop => shop.Products, navigationOptionsBuilder =>
@@ -102,7 +109,9 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
 
         entityOptionsBuilder.ConfigureProperty(shop => shop.Name, builder =>
         {
-            builder.SetTruncationMaxCharacters(25);
+            builder
+                .SetTruncationMaxCharacters(25)
+                .SetFormOrder(1);
         });
 
         entityOptionsBuilder.SetAfterUpdateAction((serviceProvider, _, modifiedEntity) =>
@@ -120,7 +129,7 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             {
                 modifiedEntity.Suppliers[0].IsActive = !modifiedEntity.Suppliers[0].IsActive;
             }
-            
+
             dbContext.SaveChanges();
         });
 
@@ -128,8 +137,6 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
         {
             builder.SetIsHidden(true);
         });
-
-        entityOptionsBuilder.AddCalculatedProperties(shop => shop.SupplierCount);
 
         entityOptionsBuilder.ConfigureProperty(shop => shop.Id, builder => builder.SetIsHidden(true));
     }

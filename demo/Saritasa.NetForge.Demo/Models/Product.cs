@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
-using Saritasa.NetForge.Demo.Constants;
-using Saritasa.NetForge.Demo.Net7.Models;
 using Saritasa.NetForge.Domain.Attributes;
+using Saritasa.NetForge.Demo.Constants;
 
 namespace Saritasa.NetForge.Demo.Models;
 
@@ -147,6 +146,6 @@ public class Product
     /// <inheritdoc />
     public override string ToString()
     {
-        return $"{Id} - {Name}";
+        return $"{Name} - {Price}$";
     }
 }

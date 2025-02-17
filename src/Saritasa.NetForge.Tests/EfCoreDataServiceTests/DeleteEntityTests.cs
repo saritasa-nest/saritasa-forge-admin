@@ -14,7 +14,7 @@ namespace Saritasa.NetForge.Tests.EfCoreDataServiceTests;
 /// <summary>
 /// Delete entity tests.
 /// </summary>
-[TestCaseOrderer(Constants.OrdererTypeName, Constants.OrdererAssemblyName)]
+[TestCaseOrderer(Fixtures.Constants.OrdererTypeName, Fixtures.Constants.OrdererAssemblyName)]
 public class DeleteEntityTests : TestBed<NetForgeFixture>
 {
 #pragma warning disable CA2213

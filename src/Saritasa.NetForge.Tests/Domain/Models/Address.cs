@@ -32,7 +32,7 @@ internal class Address
     /// <summary>
     /// The postal code of the address.
     /// </summary>
-    [NetForgeProperty(IsExcludedFromQuery = true)]
+    [NetForgeProperty(IsExcludedFromQuery = true, FormOrder = 1)]
     public string PostalCode { get; set; } = string.Empty;
 
     /// <summary>
@@ -52,7 +52,7 @@ internal class Address
     /// <summary>
     /// The longitude coordinate of the address location.
     /// </summary>
-    [NetForgeProperty(IsHidden = true, IsHiddenFromListView = true, IsHiddenFromDetails = true)]
+    [NetForgeProperty(IsHidden = true, IsHiddenFromListView = true, IsHiddenFromDetails = true, IsHiddenFromCreate = true)]
     public double Longitude { get; set; }
 
     /// <summary>
