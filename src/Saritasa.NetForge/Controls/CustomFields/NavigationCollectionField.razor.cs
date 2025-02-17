@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Components;
 using Saritasa.NetForge.Domain.UseCases.Interfaces;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
+using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
+using Saritasa.NetForge.Infrastructure.EfCore.Services;
+using Saritasa.NetForge.Infrastructure.Helpers;
 
 namespace Saritasa.NetForge.Controls.CustomFields;
 
@@ -24,7 +27,6 @@ public partial class NavigationCollectionField<T> : CustomField
 
     private IEnumerable<T> NavigationInstances { get; set; } = null!;
 
-
     private GetEntityDto EntityMetadata { get; set; } = null!;
 
     /// <inheritdoc />
@@ -37,7 +39,14 @@ public partial class NavigationCollectionField<T> : CustomField
         NavigationInstances = Service
             .GetQuery(entityType)
             .Cast<T>()
-            .OrderBy(instance => instance);
+            .OrderBy(instance => instance).ToList();
+
+        // In case of lazy loading - convert proxies to POCO instances.
+        if (NavigationInstances.Any() && NavigationInstances.First()!.GetType().IsLazyLoadingProxy())
+        {
+            NavigationInstances = NavigationInstances
+                .Select(instance => ProxyToPocoConverter.ConvertProxyToPoco(instance)).Cast<T>();
+        }
 
         EntityMetadata = await EntityService.GetEntityByTypeAsync(entityType, CancellationToken.None);
     }
