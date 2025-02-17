@@ -117,9 +117,6 @@ public class EntityMetadata
     /// </summary>
     public Action<IServiceProvider?, object>? UpdateAction { get; set; }
 
-    /// <summary>
-    /// Represents maximum navigation depth.
-    /// If depth of a navigation is more than this value then such navigation's data will not be loaded.
-    /// </summary>
+    /// <inheritdoc cref="AdminOptions.MaxNavigationDepth"/>
     public byte? MaxNavigationDepth { get; set; }
 }
