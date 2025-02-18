@@ -375,7 +375,6 @@ public class EfCoreDataService : IOrmDataService
         var includedProperties = properties
             .Where(property => property is { IsCalculatedProperty: false, IsExcludedFromQuery: false })
             .ToList();
-
         var selectExpression = SelectProperties(entityType, includedProperties);
         query = query.Select(selectExpression);
 
@@ -879,8 +878,8 @@ public class EfCoreDataService : IOrmDataService
     }
 
     private static IOrderedQueryable<object> Order(
-        IQueryable<object> query, IList<OrderByDto> orderBy, Type entityType)
-        {
+        IQueryable<object> query, List<OrderByDto> orderBy, Type entityType)
+    {
         var orderByTuples = orderBy
             .Select(order =>
                 (order.PropertyPath, order.IsDescending ? ListSortDirection.Descending : ListSortDirection.Ascending))
@@ -892,7 +891,7 @@ public class EfCoreDataService : IOrmDataService
     }
 
     private static (string PropertyPath, Expression<Func<object, object>> Selector)[] GetKeySelectors(
-        IList<OrderByDto> orderByFields, Type entityType)
+        List<OrderByDto> orderByFields, Type entityType)
     {
         // entity
         var entity = Expression.Parameter(typeof(object), "entity");
