@@ -371,11 +371,7 @@ public class EfCoreDataService : IOrmDataService
         }
 
         var query = GetQuery(entityType);
-
-        var includedProperties = properties
-            .Where(property => property is { IsCalculatedProperty: false, IsExcludedFromQuery: false })
-            .ToList();
-        var selectExpression = SelectProperties(entityType, includedProperties);
+        var selectExpression = SelectProperties(entityType, properties);
         query = query.Select(selectExpression);
 
         query = ApplyCustomQuery(query, customQueryFunction);
@@ -402,7 +398,7 @@ public class EfCoreDataService : IOrmDataService
     /// Reflection can't be translated to SQL, so we have to build expression dynamically.
     /// </remarks>
     private static Expression<Func<object, object>> SelectProperties(
-        Type entityType, List<PropertyMetadataDto> properties)
+        Type entityType, ICollection<PropertyMetadataDto> properties)
      {
         // entity
         var entity = Expression.Parameter(typeof(object), "entity");
