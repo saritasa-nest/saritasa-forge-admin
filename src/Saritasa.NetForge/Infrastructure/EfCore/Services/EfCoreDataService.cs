@@ -383,7 +383,10 @@ public class EfCoreDataService : IOrmDataService
 
         query = Search(query, searchOptions.SearchString, entityType, properties, searchFunction);
 
-        query = Order(query, searchOptions.OrderBy, entityType);
+        if (searchOptions.OrderBy.Any())
+        {
+            query = Order(query, searchOptions.OrderBy, entityType);
+        }
 
         var pagedList = PagedListFactory.FromSource(query, searchOptions.Page, searchOptions.PageSize);
 

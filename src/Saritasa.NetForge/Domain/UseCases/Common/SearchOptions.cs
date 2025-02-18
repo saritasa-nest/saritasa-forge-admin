@@ -28,5 +28,5 @@ public record SearchOptions
     /// <summary>
     /// Collection of order by fields with directions.
     /// </summary>
-    public List<OrderByDto> OrderBy { get; init; } = null!;
+    public List<OrderByDto> OrderBy { get; init; } = [];
 }
