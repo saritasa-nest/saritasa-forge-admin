@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using System.Text;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
+using ExpressionExtensions = Saritasa.NetForge.Domain.Extensions.ExpressionExtensions;
 
 namespace Saritasa.NetForge.Infrastructure.EfCore.Services;
 
@@ -75,7 +78,8 @@ public class EfCoreMetadataService : IOrmMetadataService
         };
     }
 
-    private List<NavigationMetadata> GetNavigationsMetadata(IReadOnlyEntityType entityType, int depth = 1)
+    private List<NavigationMetadata> GetNavigationsMetadata(
+        IReadOnlyEntityType entityType, int depth = 1, StringBuilder? propertyPath = null)
     {
         // GetNavigations retrieves all navigations except many-to-many navigations.
         // GetSkipNavigations retrieves many-to-many navigations
@@ -86,7 +90,7 @@ public class EfCoreMetadataService : IOrmMetadataService
         List<NavigationMetadata> navigations = [];
         foreach (var efNavigation in efNavigations)
         {
-            var navigation = GetNavigationMetadata(efNavigation, depth);
+            var navigation = GetNavigationMetadata(efNavigation, depth, propertyPath);
 
             if (navigation is null)
             {
@@ -106,8 +110,10 @@ public class EfCoreMetadataService : IOrmMetadataService
     /// <param name="depth">
     /// Represents current depth. If greater than max depth, then the navigation will not be visited.
     /// </param>
+    /// <param name="propertyPath">Contains full path to the property.</param>
     /// <returns>A <see cref="PropertyMetadata"/> object containing metadata information for the navigation.</returns>
-    private NavigationMetadata? GetNavigationMetadata(IReadOnlyNavigationBase navigation, int depth)
+    private NavigationMetadata? GetNavigationMetadata(
+        IReadOnlyNavigationBase navigation, int depth, StringBuilder? propertyPath)
     {
         var maxNavigationDepth = currentEntityMaxNavigationDepth ?? adminOptions.MaxNavigationDepth;
         if (depth > maxNavigationDepth)
@@ -129,21 +135,28 @@ public class EfCoreMetadataService : IOrmMetadataService
 
         // TODO: What if we won't enter previous conditions?
 
-        return new NavigationMetadata
+        propertyPath = AddPropertyNameToPath(propertyPath, navigation.Name);
+        var navigationMetadata = new NavigationMetadata
         {
             Name = navigation.Name,
+            PropertyPath = propertyPath.ToString(),
             IsCollection = navigation.IsCollection,
-            TargetEntityProperties = GetPropertiesMetadata(navigation.TargetEntityType),
-            TargetEntityNavigations = GetNavigationsMetadata(navigation.TargetEntityType, depth),
+            TargetEntityProperties = GetPropertiesMetadata(navigation.TargetEntityType, propertyPath),
+            TargetEntityNavigations = GetNavigationsMetadata(navigation.TargetEntityType, depth, propertyPath),
             PropertyInformation = navigation.PropertyInfo,
             ClrType = navigation.ClrType,
             IsNullable = isNullable
         };
+        RemovePropertyNameFromPath(propertyPath, navigation.Name);
+        return navigationMetadata;
     }
 
-    private static List<PropertyMetadata> GetPropertiesMetadata(IReadOnlyEntityType entityType)
+    private static List<PropertyMetadata> GetPropertiesMetadata(
+        IReadOnlyEntityType entityType, StringBuilder? propertyPath = null)
     {
-        var propertiesMetadata = entityType.GetProperties().Select(GetPropertyMetadata);
+        var propertiesMetadata = entityType
+            .GetProperties()
+            .Select(property => GetPropertyMetadata(property, propertyPath));
 
         var reflectionProperties = entityType.ClrType
             .GetProperties()
@@ -151,14 +164,7 @@ public class EfCoreMetadataService : IOrmMetadataService
 
         var calculatedProperties = reflectionProperties
             .Where(property => property is { CanRead: true, CanWrite: false })
-            .Select(propertyInfo => new PropertyMetadata
-            {
-                Name = propertyInfo.Name,
-                ClrType = propertyInfo.PropertyType,
-                IsEditable = false,
-                PropertyInformation = propertyInfo,
-                IsCalculatedProperty = true
-            });
+            .Select(propertyInfo => GetCalculatedPropertyMetadata(propertyInfo, propertyPath));
         return propertiesMetadata.Union(calculatedProperties).ToList();
     }
 
@@ -166,12 +172,16 @@ public class EfCoreMetadataService : IOrmMetadataService
     /// Retrieve metadata for a property of an entity type.
     /// </summary>
     /// <param name="property">The EF Core property to retrieve metadata for.</param>
+    /// <param name="propertyPath">Contains full path to the property.</param>
     /// <returns>A <see cref="PropertyMetadata"/> object containing metadata information for the property.</returns>
-    private static PropertyMetadata GetPropertyMetadata(IReadOnlyProperty property)
+    private static PropertyMetadata GetPropertyMetadata(IReadOnlyProperty property, StringBuilder? propertyPath)
     {
+        var propertyName = property.Name;
+        propertyPath = AddPropertyNameToPath(propertyPath, propertyName);
         var propertyMetadata = new PropertyMetadata
         {
-            Name = property.Name,
+            Name = propertyName,
+            PropertyPath = propertyPath.ToString(),
             Description = property.GetComment() ?? string.Empty,
             ClrType = property.ClrType,
             PropertyInformation = property.PropertyInfo,
@@ -184,6 +194,38 @@ public class EfCoreMetadataService : IOrmMetadataService
             IsValueGeneratedOnUpdate = property.ValueGenerated.HasFlag(ValueGenerated.OnUpdate),
             IsReadOnly = property.PropertyInfo?.SetMethod is null || property.PropertyInfo.SetMethod.IsPrivate
         };
+
+        RemovePropertyNameFromPath(propertyPath, propertyName);
         return propertyMetadata;
+    }
+
+    private static PropertyMetadata GetCalculatedPropertyMetadata(PropertyInfo propertyInfo, StringBuilder? propertyPath)
+    {
+        var propertyName = propertyInfo.Name;
+        propertyPath = AddPropertyNameToPath(propertyPath, propertyName);
+        var propertyMetadata = new PropertyMetadata
+        {
+            Name = propertyName,
+            PropertyPath = propertyPath.ToString(),
+            ClrType = propertyInfo.PropertyType,
+            IsEditable = false,
+            PropertyInformation = propertyInfo,
+            IsCalculatedProperty = true
+        };
+
+        RemovePropertyNameFromPath(propertyPath, propertyName);
+        return propertyMetadata;
+    }
+
+    private static StringBuilder AddPropertyNameToPath(StringBuilder? propertyPath, string propertyName)
+    {
+        return propertyPath is null
+            ? new StringBuilder(propertyName)
+            : propertyPath.Append($"{ExpressionExtensions.PropertySeparator}{propertyName}");
+    }
+
+    private static void RemovePropertyNameFromPath(StringBuilder propertyPath, string propertyName)
+    {
+        propertyPath.Replace($"{ExpressionExtensions.PropertySeparator}{propertyName}", string.Empty);
     }
 }
