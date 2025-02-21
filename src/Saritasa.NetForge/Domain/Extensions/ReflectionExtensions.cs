@@ -43,8 +43,8 @@ public static class ReflectionExtensions
         var propertyExpression = ExpressionExtensions.GetPropertyExpression(convertedEntity, propertyPath);
 
         // entity => ((entityType)entity).propertyName
-        var lamda = Expression.Lambda(propertyExpression, entity);
-        var compiledLambda = lamda.Compile();
+        var lambda = Expression.Lambda(propertyExpression, entity);
+        var compiledLambda = lambda.Compile();
         try
         {
             return compiledLambda.DynamicInvoke(obj);
