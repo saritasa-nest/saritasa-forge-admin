@@ -95,10 +95,7 @@ public class EntityService : IEntityService
 
         var propertyDtos = displayableProperties.Select(MapProperty);
 
-        var displayableNavigations = metadata.Navigations
-            .Where(navigation => navigation is { IsIncluded: true });
-
-        var navigationDtos = displayableNavigations.Select(MapNavigation);
+        var navigationDtos = metadata.Navigations.Select(MapNavigation);
 
         propertyDtos = propertyDtos.Union(navigationDtos);
 
@@ -113,6 +110,7 @@ public class EntityService : IEntityService
             DisplayName = property.DisplayName,
             Description = property.Description,
             IsPrimaryKey = property.IsPrimaryKey,
+            IsForeignKey = property.IsForeignKey,
             ClrType = property.ClrType,
             SearchType = property.SearchType,
             Order = property.Order,
@@ -151,6 +149,7 @@ public class EntityService : IEntityService
         {
             IsCollection = navigation.IsCollection,
             TargetEntityProperties = navigation.TargetEntityProperties.ConvertAll(MapProperty),
+            TargetEntityNavigations = navigation.TargetEntityNavigations.ConvertAll(MapNavigation),
             Name = navigation.Name,
             DisplayName = navigation.DisplayName,
             Description = navigation.Description,

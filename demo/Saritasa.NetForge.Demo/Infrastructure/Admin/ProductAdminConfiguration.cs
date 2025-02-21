@@ -3,6 +3,7 @@ using Saritasa.NetForge.Domain.Interfaces;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Demo.Infrastructure.UploadFiles.Strategies;
 using Saritasa.NetForge.Demo.Models;
+using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.Admin;
 
@@ -57,6 +58,38 @@ public class ProductAdminConfiguration : IEntityAdminConfiguration<Product>
                     propertyOptionsBuilder
                         .SetIsImage(true)
                         .SetUploadFileStrategy(new UploadBase64FileStrategy());
+                })
+                .IncludeNavigation<ContactInfo>(shop => shop.OwnerContact, builder =>
+                {
+                    builder.IncludeProperty(contactInfo => contactInfo.Email, propertyBuilder =>
+                    {
+                        propertyBuilder
+                            .SetOrder(1)
+                            .SetDisplayName("Contact Email")
+                            .SetSearchType(SearchType.StartsWithCaseSensitive)
+                            .SetIsSortable(true);
+                    });
+                })
+                .IncludeNavigation<Address>(shop => shop.Address, builder =>
+                {
+                    builder.IncludeProperty(address => address.Country, propertyBuilder =>
+                    {
+                        propertyBuilder
+                            .SetOrder(2)
+                            .SetDisplayName("Shop Country");
+                    });
+                })
+                .IncludeNavigation<Supplier>(shop => shop.Suppliers, builder =>
+                {
+                    builder
+                        .IncludeProperty(supplier => supplier.Name, propertyOptionsBuilder =>
+                        {
+                            propertyOptionsBuilder.SetDisplayName("Supplier Name");
+                        })
+                        .IncludeProperty(supplier => supplier.City, propertyOptionsBuilder =>
+                        {
+                            propertyOptionsBuilder.SetDisplayName("Supplier City");
+                        });
                 });
         });
 

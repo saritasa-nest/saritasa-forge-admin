@@ -11,5 +11,10 @@ public record NavigationMetadataDto : PropertyMetadataDto
     public bool IsCollection { get; set; }
 
     /// <inheritdoc cref="NavigationMetadata.TargetEntityProperties"/>
-    public List<PropertyMetadataDto> TargetEntityProperties { get; set; } = new();
+    public List<PropertyMetadataDto> TargetEntityProperties { get; set; } = [];
+
+    /// <summary>
+    /// Target navigation entity's navigations.
+    /// </summary>
+    public List<NavigationMetadataDto> TargetEntityNavigations { get; set; } = [];
 }

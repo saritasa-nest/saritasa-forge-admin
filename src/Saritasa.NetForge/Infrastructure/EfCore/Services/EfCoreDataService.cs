@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using DeepCopy;
 using Microsoft.EntityFrameworkCore;
@@ -371,18 +372,16 @@ public class EfCoreDataService : IOrmDataService
         }
 
         var query = GetQuery(entityType);
-
-        var includedProperties = properties
-            .Where(property => property is { IsCalculatedProperty: false, IsExcludedFromQuery: false });
-        query = SelectProperties(query, entityType, includedProperties);
+        var selectExpression = SelectProperties(entityType, properties);
+        query = query.Select(selectExpression);
 
         query = ApplyCustomQuery(query, customQueryFunction);
 
         query = Search(query, searchOptions.SearchString, entityType, properties, searchFunction);
 
-        if (searchOptions.OrderBy is not null)
+        if (searchOptions.OrderBy.Any())
         {
-            query = Order(query, searchOptions.OrderBy.ToList(), entityType);
+            query = Order(query, searchOptions.OrderBy, entityType);
         }
 
         var pagedList = PagedListFactory.FromSource(query, searchOptions.Page, searchOptions.PageSize);
@@ -393,27 +392,41 @@ public class EfCoreDataService : IOrmDataService
     /// <summary>
     /// Select only those properties from entity that exists in <paramref name="properties"/>.
     /// </summary>
-    /// <param name="query">
-    /// Query that contain data for some entity. For example, all data of <c>Address</c> entity.
-    /// </param>
     /// <param name="entityType">Entity type.</param>
     /// <param name="properties">Entity properties to select.</param>
     /// <returns>Query with selected data.</returns>
     /// <remarks>
     /// Reflection can't be translated to SQL, so we have to build expression dynamically.
     /// </remarks>
-    private static IQueryable<object> SelectProperties(
-        IQueryable<object> query, Type entityType, IEnumerable<PropertyMetadataDto> properties)
-    {
-        // entity => entity
+    private static Expression<Func<object, object>> SelectProperties(
+        Type entityType, ICollection<PropertyMetadataDto> properties)
+     {
+        // entity
         var entity = Expression.Parameter(typeof(object), "entity");
 
-        // entity => (entityType)entity
+        // (entityType)entity
         var convertedEntity = Expression.Convert(entity, entityType);
 
-        var bindings = properties
-            .Select(property => GetActualPropertyExpression(convertedEntity, property))
-            .Select(member => Expression.Bind(member.Member, member));
+        // ((entityType)entity).PropertyName1, ((entityType)entity).PropertyName2 ...
+        var propertyExpressions = properties
+            .Where(property
+                => property is { IsForeignKey: false, IsCalculatedProperty: false, IsExcludedFromQuery: false }
+                    and not NavigationMetadataDto)
+            .Select(property => GetActualPropertyExpression(convertedEntity, property));
+
+        // PropertyName1 = ((entityType)entity).PropertyName1, PropertyName2 = ((entityType)entity).PropertyName2 ...
+        var bindings = propertyExpressions
+            .Select(propertyExpression => Expression.Bind(propertyExpression.Member, propertyExpression))
+            .ToList();
+
+        var navigationProperties = properties
+            .Where(property => property is NavigationMetadataDto)
+            .OfType<NavigationMetadataDto>();
+        foreach (var navigation in navigationProperties)
+        {
+            var handledNavigation = HandleNavigation(convertedEntity, navigation);
+            bindings.Add(handledNavigation);
+        }
 
         var ctor = entityType.GetConstructors()[0];
 
@@ -421,9 +434,117 @@ public class EfCoreDataService : IOrmDataService
         // { PropertyName1 = ((entityType)entity).PropertyName1, PropertyName2 = ((entityType)entity).PropertyName2 ...  }
         var memberInit = Expression.MemberInit(Expression.New(ctor), bindings);
 
-        var selectLambda = Expression.Lambda<Func<object, object>>(memberInit, entity);
+        return Expression.Lambda<Func<object, object>>(memberInit, entity);
+    }
 
-        return query.Select(selectLambda);
+    private static MemberAssignment HandleNavigation(Expression entityExpression, NavigationMetadataDto navigation)
+    {
+        // Example values: Product.Supplier, Product.Shop.Address, Product.Shop.Products
+        var propertyExpression = GetActualPropertyExpression(entityExpression, navigation);
+
+        if (navigation.IsCollection)
+        {
+            return HandleNavigationCollection(propertyExpression, navigation);
+        }
+
+        var navigationType = navigation.ClrType!;
+        var navigationCtor = navigationType.GetConstructors()[0];
+
+        var allBindings = GetBindings(propertyExpression, navigation);
+
+        // new NavigationName
+        // { PropertyName1 = ((entityType)entity).PropertyName1,
+        // NavigationName1 = new Navigation1 { (entityType)entity).NavigationName1.PropertyName, ... }
+        // ... }
+        var navigationMemberInit = Expression.MemberInit(Expression.New(navigationCtor), allBindings);
+
+        // TODO: Not always check on null
+        // propertyExpression == null
+        var isNullExpression = Expression.Equal(propertyExpression, Expression.Constant(null, propertyExpression.Type));
+
+        // propertyExpression == null
+        // ? null
+        // : new NavigationName
+        // { PropertyName1 = ((entityType)entity).PropertyName1,
+        // NavigationName1 = new Navigation1 { (entityType)entity).NavigationName1.PropertyName, ... }
+        // ... }
+        Expression isNull = Expression
+            .Condition(isNullExpression, Expression.Constant(null, propertyExpression.Type), navigationMemberInit);
+
+        // propertyExpression = propertyExpression == null
+        // ? null
+        // : new Navigation
+        // { PropertyName1 = ((entityType)entity).PropertyName1,
+        // NavigationName1 = new Navigation1 { (entityType)entity).NavigationName1.PropertyName, ... }
+        // ... }
+        return Expression.Bind(propertyExpression.Member, isNull);
+    }
+
+    private static MemberAssignment HandleNavigationCollection(
+        MemberExpression propertyExpression, NavigationMetadataDto navigation)
+    {
+        var selectMethod = typeof(Enumerable)
+            .GetMethods()
+            .First(method => method.Name == nameof(Enumerable.Select) && method.GetParameters().Length == 2)
+            .MakeGenericMethod(typeof(object), typeof(object));
+        var collectionElementType = navigation.ClrType!.GetGenericArguments()[0];
+        // TODO: Ensure that navigation.ClrType is not null
+        var allProperties = navigation.TargetEntityProperties.Union(navigation.TargetEntityNavigations).ToList();
+        var selectLambda = SelectProperties(collectionElementType, allProperties);
+        // propertyExpression.Select(selectLambda)
+        var selectCall = Expression.Call(selectMethod, propertyExpression, selectLambda);
+
+        var castMethod = typeof(Enumerable)
+            .GetMethod(nameof(Enumerable.Cast))!
+            .MakeGenericMethod(collectionElementType);
+        // propertyExpression.Select(selectLambda).OfType<collectionElementType>()
+        var castCall = Expression.Call(castMethod, selectCall);
+
+        var toListMethod = typeof(Enumerable)
+            .GetMethod(nameof(Enumerable.ToList))!
+            .MakeGenericMethod(collectionElementType);
+        // propertyExpression.Select(selectLambda).OfType<collectionElementType>().ToList()
+        var toListCall = Expression.Call(toListMethod, castCall);
+
+        // propertyExpression == null
+        var isNullExpression = Expression
+            .Equal(propertyExpression, Expression.Constant(null, propertyExpression.Type));
+        // propertyExpression == null
+        // ? null
+        // : propertyExpression.Select(selectLambda).OfType<collectionElementType>().ToList()
+        Expression isNull = Expression
+            .Condition(isNullExpression, Expression.Constant(null, navigation.ClrType), toListCall);
+
+        // propertyExpression = propertyExpression == null
+        // ? null
+        // : propertyExpression.Select(selectLambda).OfType<collectionElementType>().ToList()
+        return Expression.Bind(propertyExpression.Member, isNull);
+    }
+
+    private static IEnumerable<MemberAssignment> GetBindings(
+        MemberExpression navigationExpression, NavigationMetadataDto navigation)
+    {
+        var properties = navigation.TargetEntityProperties
+            .Where(property
+                => property is { IsForeignKey: false, IsCalculatedProperty: false, IsExcludedFromQuery: false });
+
+        // ((entityType)entity).PropertyName1, ((entityType)entity).PropertyName2 ...
+        var propertyExpressions = properties
+            .Select(property => Expression.Property(navigationExpression, property.Name));
+
+        // PropertyName1 = ((entityType)entity).PropertyName1, PropertyName2 = ((entityType)entity).PropertyName2 ...
+        IEnumerable<MemberAssignment> propertyBindings = propertyExpressions
+            .Select(property => Expression.Bind(property.Member, property));
+
+        ICollection<MemberAssignment> navigationBindings = [];
+        foreach (var targetNavigation in navigation.TargetEntityNavigations)
+        {
+            // NavigationName = new Navigation { ... }
+            var handledNavigation = HandleNavigation(navigationExpression, targetNavigation);
+            navigationBindings.Add(handledNavigation);
+        }
+
+        return navigationBindings.Union(propertyBindings);
     }
 
     /// <summary>
@@ -474,42 +595,7 @@ public class EfCoreDataService : IOrmDataService
             return query;
         }
 
-        var propertySearches = new List<PropertySearchDto>();
-
-        foreach (var property in properties)
-        {
-            if (property is NavigationMetadataDto navigation)
-            {
-                foreach (var targetProperty in navigation.TargetEntityProperties)
-                {
-                    if (targetProperty.SearchType == SearchType.None)
-                    {
-                        continue;
-                    }
-
-                    propertySearches.Add(new PropertySearchDto
-                    {
-                        PropertyName = targetProperty.Name,
-                        SearchType = targetProperty.SearchType,
-                        NavigationName = navigation.Name
-                    });
-                }
-            }
-            else
-            {
-                if (property.SearchType == SearchType.None)
-                {
-                    continue;
-                }
-
-                propertySearches.Add(new PropertySearchDto
-                {
-                    PropertyName = property.Name,
-                    SearchType = property.SearchType
-                });
-            }
-        }
-
+        var propertySearches = GetPropertySearches(properties);
         var searchExpression = SearchByExpressions(searchString, entityType, propertySearches, out var entityExpression);
 
         if (searchFunction is not null)
@@ -526,6 +612,68 @@ public class EfCoreDataService : IOrmDataService
         }
 
         return query;
+    }
+
+    private static List<PropertySearchDto> GetPropertySearches(ICollection<PropertyMetadataDto> properties)
+    {
+        var propertySearches = new List<PropertySearchDto>();
+
+        foreach (var property in properties)
+        {
+            if (property is NavigationMetadataDto navigationMetadata)
+            {
+                var propertyPath = new StringBuilder(navigationMetadata.Name);
+                GetSearchesFromNavigation(navigationMetadata);
+
+                void GetSearchesFromNavigation(NavigationMetadataDto navigation)
+                {
+                    if (navigation.IsCollection)
+                    {
+                        // We do not have collections search.
+                        return;
+                    }
+
+                    var targetProperties = navigation.TargetEntityProperties
+                        .Where(targetProperty => targetProperty is
+                            {
+                                IsCalculatedProperty: false,
+                                IsExcludedFromQuery: false,
+                                SearchType: not SearchType.None
+                            });
+                    foreach (var targetProperty in targetProperties)
+                    {
+                        propertySearches.Add(new PropertySearchDto
+                        {
+                            PropertyPath = $"{propertyPath}.{targetProperty.Name}",
+                            SearchType = targetProperty.SearchType
+                        });
+                    }
+
+                    foreach (var targetNavigation in navigation.TargetEntityNavigations)
+                    {
+                        var navigationString = $".{targetNavigation.Name}";
+                        propertyPath = propertyPath.Append(navigationString);
+                        GetSearchesFromNavigation(targetNavigation);
+                        propertyPath = propertyPath.Replace(navigationString, string.Empty);
+                    }
+                }
+            }
+            else
+            {
+                if (property.SearchType == SearchType.None)
+                {
+                    continue;
+                }
+
+                propertySearches.Add(new PropertySearchDto
+                {
+                    PropertyPath = property.Name,
+                    SearchType = property.SearchType
+                });
+            }
+        }
+
+        return propertySearches;
     }
 
     private static Expression? SearchByExpressions(
@@ -586,11 +734,7 @@ public class EfCoreDataService : IOrmDataService
         Expression? singleEntrySearchExpression = null;
         foreach (var property in properties)
         {
-            var propertyName = property.NavigationName is null
-                ? property.PropertyName
-                : $"{property.NavigationName}.{property.PropertyName}";
-
-            var propertyExpression = ExpressionExtensions.GetPropertyExpression(entity, propertyName);
+            var propertyExpression = ExpressionExtensions.GetPropertyExpression(entity, property.PropertyPath);
 
             var searchMethodCallExpression = property.SearchType switch
             {
@@ -731,11 +875,11 @@ public class EfCoreDataService : IOrmDataService
     }
 
     private static IOrderedQueryable<object> Order(
-        IQueryable<object> query, IList<OrderByDto> orderBy, Type entityType)
-        {
+        IQueryable<object> query, List<OrderByDto> orderBy, Type entityType)
+    {
         var orderByTuples = orderBy
             .Select(order =>
-                (order.FieldName, order.IsDescending ? ListSortDirection.Descending : ListSortDirection.Ascending))
+                (order.PropertyPath, order.IsDescending ? ListSortDirection.Descending : ListSortDirection.Ascending))
             .ToArray();
 
         var keySelectors = GetKeySelectors(orderBy, entityType);
@@ -743,8 +887,8 @@ public class EfCoreDataService : IOrmDataService
         return CollectionUtils.OrderMultiple(query, orderByTuples, keySelectors);
     }
 
-    private static (string FieldName, Expression<Func<object, object>> Selector)[] GetKeySelectors(
-        IList<OrderByDto> orderByFields, Type entityType)
+    private static (string PropertyPath, Expression<Func<object, object>> Selector)[] GetKeySelectors(
+        List<OrderByDto> orderByFields, Type entityType)
     {
         // entity
         var entity = Expression.Parameter(typeof(object), "entity");
@@ -761,13 +905,10 @@ public class EfCoreDataService : IOrmDataService
         // Note that there are converting property to object.
         // We need it to sort types that are not string. For example, numbers.
         var propertyExpressions = orderByFields
-            .Select(field =>
+            .Select(orderByDto =>
             {
-                var propertyName = field.NavigationName is null
-                    ? field.FieldName
-                    : $"{field.NavigationName}.{field.FieldName}";
-
-                var propertyExpression = ExpressionExtensions.GetPropertyExpression(convertedEntity, propertyName);
+                var propertyExpression = ExpressionExtensions
+                    .GetPropertyExpression(convertedEntity, orderByDto.PropertyPath);
 
                 return Expression.Convert(propertyExpression, typeof(object));
             });
@@ -791,7 +932,7 @@ public class EfCoreDataService : IOrmDataService
         var keySelectors = new (string, Expression<Func<object, object>>)[orderByFields.Count];
         for (var i = 0; i < orderByFields.Count; i++)
         {
-            keySelectors[i] = (orderByFields[i].FieldName, lambdas[i]);
+            keySelectors[i] = (orderByFields[i].PropertyPath, lambdas[i]);
         }
 
         return keySelectors;

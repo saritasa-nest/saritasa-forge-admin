@@ -14,6 +14,11 @@ public abstract class PropertyMetadataBase
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
+    /// Full path to the property. For example: <c>Shop.Address.Street</c>.
+    /// </summary>
+    public string PropertyPath { get; set; } = string.Empty;
+
+    /// <summary>
     /// The type of the property.
     /// </summary>
     public Type? ClrType { get; set; }
