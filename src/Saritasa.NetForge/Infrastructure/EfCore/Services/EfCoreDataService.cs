@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using DeepCopy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
@@ -229,7 +230,7 @@ public class EfCoreDataService : IOrmDataService
 
             if (afterUpdateAction is not null)
             {
-                var originalEntityClone = originalEntity.CloneJson();
+                var originalEntityClone = ObjectCloner.Clone(originalEntity);
                 await UpdateAsync(dbContext, entity, originalEntity, cancellationToken);
 
                 afterUpdateAction.Invoke(serviceProvider, originalEntityClone!, originalEntity);
