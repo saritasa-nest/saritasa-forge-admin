@@ -11,7 +11,6 @@ using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.MVVM.Navigation;
 using Saritasa.NetForge.MVVM.Utils;
 using Saritasa.NetForge.MVVM.ViewModels.EditEntity;
-using Saritasa.NetForge.Pages;
 
 namespace Saritasa.NetForge.Controls;
 
@@ -226,6 +225,12 @@ public partial class EntityPropertyColumns : ComponentBase
         {
             try
             {
+                var entityMetadata = await EntityService.GetEntityByTypeAsync(source.GetType(), CancellationToken.None);
+                if (entityMetadata.CallbackOptions.PreDelete is not null)
+                {
+                    await entityMetadata.CallbackOptions.PreDelete.Invoke(CancellationToken.None);
+                }
+
                 await DataService.DeleteAsync(source, source.GetType(), CancellationToken.None);
                 DataGrid?.ReloadServerData();
                 ShowEntityDeleteMessage();

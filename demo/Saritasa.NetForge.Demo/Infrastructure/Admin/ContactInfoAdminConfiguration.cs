@@ -1,4 +1,4 @@
-﻿using Saritasa.NetForge.Domain;
+using Saritasa.NetForge.Domain;
 using Saritasa.NetForge.Domain.Interfaces;
 using Saritasa.NetForge.Demo.Models;
 
