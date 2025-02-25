@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Saritasa.NetForge.Domain.UseCases.Interfaces;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 
@@ -23,7 +23,6 @@ public partial class NavigationCollectionField<T> : CustomField
     }
 
     private IEnumerable<T> NavigationInstances { get; set; } = null!;
-
 
     private GetEntityDto EntityMetadata { get; set; } = null!;
 

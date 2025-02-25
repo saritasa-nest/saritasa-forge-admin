@@ -24,7 +24,6 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
       - [Delete](#delete)
       - [Bulk Delete](#bulk-delete)
   - [Exclude All Entities and Include Specific Only](#exclude-all-entities-and-include-specific-only)
-  - [Callback Before Create, Edit, Delete Entity](#callback-before-create-edit-delete-entity)
 - [Customizing Entities](#customizing-entities)
   - [Fluent API](#fluent-api)
   - [Creating an Entity Configuration Class](#creating-an-entity-configuration-class)
@@ -265,7 +264,7 @@ Example:
 
 ### Custom Body Content
 
-You can add some content to the end of the body section of admin site. 
+You can add some content to the end of the body section of admin site.
 Static and interactive content can be added separately.
 
 #### Static Content
@@ -480,32 +479,6 @@ Or you can include specific entities using the data attribute:
 public class Shop
 ```
 
-## Callback Before Create, Edit, Delete Entity
-
-You can configure the callback action before entity creation, editing, or deletion.
-
-```csharp
-services.AddNetForge(optionsBuilder => {
-    optionsBuilder.ConfigureCallback(options => {
-        options.PreCreate = cancellationToken =>
-        {
-            Debug.WriteLine("PreCreate Callback");
-            return Task.CompletedTask;
-        };
-        options.PreEdit = cancellationToken =>
-        {
-            Debug.WriteLine("PreEdit Callback");
-            return Task.CompletedTask;
-        };
-        options.PreDelete = cancellationToken =>
-        {
-            Debug.WriteLine("PreDelete Callback");
-            return Task.CompletedTask;
-        };
-    });
-});
-```
-
 # Customizing Entities
 
 In the admin panel, you can customize the way entities are displayed using the Fluent API or special attributes. This enables you to set various properties for your entities, such as their name, description, plural name, etc.
@@ -608,7 +581,7 @@ Also, you can use `ServiceProvider` if you need to access your services.
 ```csharp
 public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
     {
-        entityOptionsBuilder.SetCreateAction((serviceProvider, address) => 
+        entityOptionsBuilder.SetCreateAction((serviceProvider, address) =>
             {
                 address.CreatedByUserId = new Random().Next(1, 1000);
             });
@@ -622,7 +595,7 @@ This one behaves just like [Create Custom Action](#create-custom-action) but wil
 ```csharp
 public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
     {
-        entityOptionsBuilder.SetUpdateAction((serviceProvider, address) => 
+        entityOptionsBuilder.SetUpdateAction((serviceProvider, address) =>
             {
                 address.UpdatedByUserId = new Random().Next(1, 1000);
             });
