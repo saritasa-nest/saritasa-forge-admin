@@ -602,6 +602,20 @@ public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
     }
 ```
 
+## Delete Custom Action
+
+This one behaves just like [Create Custom Action](#create-custom-action) but will be executed after delete instead of create.
+
+```csharp
+public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+    {
+        entityOptionsBuilder.SetDeleteAction((serviceProvider, address) =>
+            {
+                Debug.WriteLine($"Address {address.Id} deleted.");
+            });
+    }
+```
+
 ## After Update Action
 
 You can configure action that will be performed after entity update.
