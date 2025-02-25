@@ -29,11 +29,6 @@ public record CreateEntityModel
     /// </summary>
     public object EntityInstance { get; set; } = null!;
 
-    /// <summary>
-    /// Function to be executed before creating the entity.
-    /// </summary>
-    public Func<CancellationToken, Task>? PreCreateFunc = null;
-
     /// <inheritdoc cref="MessageOptions.EntityCreateMessage"/>
     public string? EntityCreateMessage { get; set; }
 

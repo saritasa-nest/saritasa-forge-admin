@@ -150,11 +150,6 @@ public class CreateEntityViewModel : ValidationEntityViewModel
 
         try
         {
-            if (Model.PreCreateFunc is not null)
-            {
-                await Model.PreCreateFunc.Invoke(CancellationToken);
-            }
-
             await dataService
                 .AddAsync(Model.EntityInstance, Model.ClrType!, CancellationToken, Model.CreateAction);
             navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
