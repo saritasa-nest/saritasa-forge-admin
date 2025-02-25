@@ -164,11 +164,6 @@ public class EditEntityViewModel : ValidationEntityViewModel
 
         try
         {
-            if (Model.PreEditFunction is not null)
-            {
-                await Model.PreEditFunction.Invoke(CancellationToken);
-            }
-
             var updatedEntity = await dataService.UpdateAsync(
                     Model.EntityInstance!,
                     Model.OriginalEntityInstance!,

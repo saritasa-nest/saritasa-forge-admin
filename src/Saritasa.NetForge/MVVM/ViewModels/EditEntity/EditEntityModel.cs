@@ -39,11 +39,6 @@ public record EditEntityModel
     /// </summary>
     public Action<IServiceProvider?, object, object>? AfterUpdateAction { get; init; }
 
-    /// <summary>
-    /// Function to be executed before editing the entity.
-    /// </summary>
-    public Func<CancellationToken, Task>? PreEditFunction = null;
-
     /// <inheritdoc cref="MessageOptions.EntitySaveMessage"/>
     public string? EntitySaveMessage { get; init; }
 
