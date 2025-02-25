@@ -226,12 +226,8 @@ public partial class EntityPropertyColumns : ComponentBase
             try
             {
                 var entityMetadata = await EntityService.GetEntityByTypeAsync(source.GetType(), CancellationToken.None);
-                if (entityMetadata.CallbackOptions.PreDelete is not null)
-                {
-                    await entityMetadata.CallbackOptions.PreDelete.Invoke(CancellationToken.None);
-                }
 
-                await DataService.DeleteAsync(source, source.GetType(), CancellationToken.None);
+                await DataService.DeleteAsync(source, source.GetType(), CancellationToken.None, entityMetadata.DeleteAction);
                 DataGrid?.ReloadServerData();
                 ShowEntityDeleteMessage();
             }

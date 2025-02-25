@@ -218,17 +218,6 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
-    /// Configures callback options for entity lifecycle events.
-    /// </summary>
-    /// <param name="action">An action to configure the entity callback options.</param>
-    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
-    public EntityOptionsBuilder<TEntity> ConfigureCallback(Action<EntityCallbackOptions> action)
-    {
-        action.Invoke(options.CallbackOptions);
-        return this;
-    }
-
-    /// <summary>
     /// Sets entity created message.
     /// </summary>
     /// <param name="entityCreateMessage">Message.</param>
@@ -307,6 +296,17 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     public EntityOptionsBuilder<TEntity> SetUpdateAction(Action<IServiceProvider?, TEntity> action)
     {
         options.UpdateAction = (serviceProvider, entity) => action(serviceProvider, (TEntity)entity);
+        return this;
+    }
+
+    /// <summary>
+    /// Sets action that executes after entity delete and before saving changes to a database.
+    /// </summary>
+    /// <param name="action">Action to execute.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public EntityOptionsBuilder<TEntity> SetDeleteAction(Action<IServiceProvider?, TEntity> action)
+    {
+        options.DeleteAction = (serviceProvider, entity) => action(serviceProvider, (TEntity)entity);
         return this;
     }
 }

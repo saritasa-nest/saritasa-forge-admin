@@ -1,4 +1,4 @@
-using Saritasa.NetForge.Domain.Entities.Metadata;
+﻿using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
 
 namespace Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
@@ -52,9 +52,6 @@ public record GetEntityDto
     /// <inheritdoc cref="EntityMetadata.CanDelete"/>
     public bool CanDelete { get; set; }
 
-    /// <inheritdoc cref="EntityMetadata.CallbackOptions"/>
-    public EntityCallbackOptions CallbackOptions { get; set; } = new();
-
     /// <inheritdoc cref="EntityMetadata.MessageOptions"/>
     public MessageOptions MessageOptions { get; set; } = new();
 
@@ -66,4 +63,7 @@ public record GetEntityDto
 
     /// <inheritdoc cref="EntityMetadata.UpdateAction"/>
     public Action<IServiceProvider?, object>? UpdateAction { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.DeleteAction"/>
+    public Action<IServiceProvider?, object>? DeleteAction { get; set; }
 }

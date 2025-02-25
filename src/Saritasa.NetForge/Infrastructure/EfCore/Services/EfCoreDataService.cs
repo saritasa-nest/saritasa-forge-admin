@@ -170,8 +170,10 @@ public class EfCoreDataService : IOrmDataService
     }
 
     /// <inheritdoc />
-    public async Task DeleteAsync(object entity, Type entityType, CancellationToken cancellationToken)
+    public async Task DeleteAsync(object entity, Type entityType, CancellationToken cancellationToken, Action<IServiceProvider?, object>? customAction)
     {
+        customAction?.Invoke(serviceProvider, entity);
+
         var dbContext = GetDbContextThatContainsEntity(entityType);
 
         try
@@ -186,8 +188,7 @@ public class EfCoreDataService : IOrmDataService
     }
 
     /// <inheritdoc />
-    public async Task BulkDeleteAsync(
-        IEnumerable<object> entities, Type entityType, CancellationToken cancellationToken)
+    public async Task BulkDeleteAsync(IEnumerable<object> entities, Type entityType, CancellationToken cancellationToken, Action<IServiceProvider?, object>? customAction)
     {
         var dbContext = GetDbContextThatContainsEntity(entityType);
 
@@ -195,6 +196,7 @@ public class EfCoreDataService : IOrmDataService
         {
             foreach (var entity in entities)
             {
+                customAction?.Invoke(serviceProvider, entity);
                 dbContext.Remove(entity);
             }
             await dbContext.SaveChangesAsync(cancellationToken);
@@ -724,7 +726,7 @@ public class EfCoreDataService : IOrmDataService
 
     private static IOrderedQueryable<object> Order(
         IQueryable<object> query, IList<OrderByDto> orderBy, Type entityType)
-        {
+    {
         var orderByTuples = orderBy
             .Select(order =>
                 (order.FieldName, order.IsDescending ? ListSortDirection.Descending : ListSortDirection.Ascending))

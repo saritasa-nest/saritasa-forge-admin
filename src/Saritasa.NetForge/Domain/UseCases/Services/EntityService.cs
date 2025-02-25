@@ -196,11 +196,11 @@ public class EntityService : IEntityService
             CanAdd = entity.CanAdd,
             CanEdit = entity.CanEdit,
             CanDelete = entity.CanDelete,
-            CallbackOptions = entity.CallbackOptions,
             MessageOptions = entity.MessageOptions,
             ToStringFunc = entity.ToStringFunc,
             CreateAction = entity.CreateAction,
-            UpdateAction = entity.UpdateAction
+            UpdateAction = entity.UpdateAction,
+            DeleteAction = entity.DeleteAction
         };
     }
 

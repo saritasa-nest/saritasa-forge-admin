@@ -120,7 +120,6 @@ public class CreateEntityViewModel : ValidationEntityViewModel
             PluralName = entity.PluralName,
             ClrType = entity.ClrType,
             Properties = entity.Properties,
-            PreCreateFunc = entity.CallbackOptions.PreCreate,
             EntityCreateMessage = entity.MessageOptions.EntityCreateMessage,
             CreateAction = entity.CreateAction,
         };

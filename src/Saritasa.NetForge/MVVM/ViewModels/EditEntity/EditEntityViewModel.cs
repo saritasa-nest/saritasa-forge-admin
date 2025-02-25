@@ -133,7 +133,6 @@ public class EditEntityViewModel : ValidationEntityViewModel
             ClrType = entity.ClrType,
             Properties = entity.Properties,
             AfterUpdateAction = entity.AfterUpdateAction,
-            PreEditFunction = entity.CallbackOptions.PreEdit,
             EntitySaveMessage = entity.MessageOptions.EntitySaveMessage,
             UpdateAction = entity.UpdateAction
         };

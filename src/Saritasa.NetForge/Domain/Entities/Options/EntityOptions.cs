@@ -95,11 +95,6 @@ public class EntityOptions
     /// </summary>
     public List<string> IncludedProperties { get; set; } = new();
 
-    /// <summary>
-    /// Options for entity callbacks that can be executed during various entity lifecycle events.
-    /// </summary>
-    public EntityCallbackOptions CallbackOptions { get; set; } = new();
-
     /// <inheritdoc cref="EntityMetadata.MessageOptions"/>
     public MessageOptions MessageOptions { get; set; } = new();
 
@@ -111,4 +106,7 @@ public class EntityOptions
 
     /// <inheritdoc cref="EntityMetadata.UpdateAction"/>
     public Action<IServiceProvider?, object>? UpdateAction { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.DeleteAction"/>
+    public Action<IServiceProvider?, object>? DeleteAction { get; set; }
 }

@@ -67,10 +67,10 @@ public static class EntityMetadataOptionsExtensions
             entityMetadata.CanDelete = entityOptions.CanDelete.Value;
         }
 
-        entityMetadata.CallbackOptions = entityOptions.CallbackOptions;
         entityMetadata.MessageOptions = entityOptions.MessageOptions;
         entityMetadata.CreateAction = entityOptions.CreateAction;
         entityMetadata.UpdateAction = entityOptions.UpdateAction;
+        entityMetadata.DeleteAction = entityOptions.DeleteAction;
 
         entityMetadata.ToStringFunc = entityOptions.ToStringFunc;
 

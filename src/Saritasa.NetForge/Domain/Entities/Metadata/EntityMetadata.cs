@@ -98,11 +98,6 @@ public class EntityMetadata
     public bool CanDelete { get; set; } = true;
 
     /// <summary>
-    /// Options for entity callbacks that can be executed during various entity lifecycle events.
-    /// </summary>
-    public EntityCallbackOptions CallbackOptions { get; set; } = new();
-
-    /// <summary>
     /// Contains per-model level custom messages.
     /// </summary>
     public MessageOptions MessageOptions { get; set; } = new();
@@ -121,4 +116,9 @@ public class EntityMetadata
     /// Action that executes after entity update and before saving changes to a database.
     /// </summary>
     public Action<IServiceProvider?, object>? UpdateAction { get; set; }
+
+    /// <summary>
+    /// Action that executes after entity delete and before saving changes to a database.
+    /// </summary>
+    public Action<IServiceProvider?, object>? DeleteAction { get; set; }
 }

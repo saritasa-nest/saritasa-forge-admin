@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace Saritasa.NetForge.Domain.Entities.Options;
 
@@ -97,11 +97,6 @@ public class AdminOptions
     /// The optional type of custom head for the admin panel.
     /// </summary>
     public Type? CustomHeadType { get; set; }
-
-    /// <summary>
-    /// Options for entity callbacks that can be executed during various entity lifecycle events.
-    /// </summary>
-    public EntityCallbackOptions CallbackOptions { get; set; } = new();
 
     /// <summary>
     /// Contains global level custom messages.
