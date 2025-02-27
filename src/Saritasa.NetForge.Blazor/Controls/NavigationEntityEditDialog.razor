@@ -1,0 +1,10 @@
+﻿@using Saritasa.NetForge.Blazor.Pages
+<MudDialog Class="mud-dialog-width-md" ClassActions="justify-center mb-10">
+    <DialogContent>
+        @{
+            var stringId = EntityMetadata.PluralName;
+            var instancePrimaryKey = InstancePrimaryKey.ToString();
+            <EditEntity StringId="@stringId" InstancePrimaryKey="@instancePrimaryKey" />
+        }
+    </DialogContent>
+</MudDialog>

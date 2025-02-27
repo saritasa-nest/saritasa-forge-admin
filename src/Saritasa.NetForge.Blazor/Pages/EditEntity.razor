@@ -14,7 +14,10 @@
 }
 else if (ViewModel.IsEntityExists)
 {
-    <MudBreadcrumbs Items="breadcrumbItems"></MudBreadcrumbs>
+    if (!IsDialogMode)
+    {
+        <MudBreadcrumbs Items="breadcrumbItems"></MudBreadcrumbs>
+    }
 
     var title = $"Edit {ViewModel.Model.DisplayName.ToMeaningfulName()}";
     <PageTitle>@title</PageTitle>
@@ -23,8 +26,8 @@ else if (ViewModel.IsEntityExists)
     if (ViewModel.Model.Properties.Any())
     {
         <MudGrid Justify="Justify.Center">
-            <MudItem xs="6">
-                <EditForm Model="ViewModel.Model.EntityInstance" OnValidSubmit="ViewModel.UpdateEntityAsync">
+            <MudItem xs="@(IsDialogMode?8:6)">
+                <EditForm Model="ViewModel.Model.EntityInstance" OnValidSubmit="Save">
                     <div class="d-flex flex-column flex-grow-1 gap-4">
                         @foreach (var property in ViewModel.Model.Properties)
                         {
@@ -55,26 +58,44 @@ else if (ViewModel.IsEntityExists)
                                     (Action<PropertyMetadataDto, IBrowserFile?>)ViewModel.HandleSelectedFile);
                             }
 
-                            if (property is NavigationMetadataDto navigation
-                                && navigation.EditDetails)
+                            if (property is NavigationMetadataDto navigationMetadata
+                                && navigationMetadata.EditDetails
+                                && !navigationMetadata.IsCollection)
                             {
-                                //var propertyValue = GetPropertyValue(cell.Item, property).ToString();
-                                //navigation.IsPrimaryKey
-                                //navigation.Name
-
-                                var propertyValue = ViewModel.Model.ClrType
+                                var navigationEntityInstance = ViewModel
+                                    .Model.ClrType
                                     .GetProperty(property.Name)
                                     .GetValue(ViewModel.Model.EntityInstance);
 
-                                <NavigationEntityDetails NavigationMetadata="navigation"
-                                    EntityInstance = "propertyValue" />
-                            }
+                                <MudGrid>
+                                    <MudItem xs="10">
+                                        <DynamicComponent Type="componentType" Parameters="parameters" />
+                                    </MudItem>
+                                    <MudItem xs="2">
+                                        @{
+                                            var title = $"Edit {navigationMetadata.Name}";
+                                            var dialogParameters = new DialogParameters();
+                                            dialogParameters.Add("NavigationMetadata", navigationMetadata);
+                                            dialogParameters.Add("NavigationEntityInstance", navigationEntityInstance);
 
-                            <DynamicComponent Type="componentType" Parameters="parameters" />
+                                            <MudTooltip Text="@title">
+                                                <MudButton Variant="Variant.Outlined" Color="Color.Surface" Class="pa-3 mt-1"
+                                                    OnClick="@(() => OpenDialogAsync(navigationDetailsDialogOptions, dialogParameters))">
+                                                    <MudText Typo="Typo.h5">Edit</MudText>
+                                                </MudButton>
+                                            </MudTooltip>
+                                        }
+                                    </MudItem>
+                                </MudGrid>
+                            }
+                            else
+                            {
+                                <DynamicComponent Type="componentType" Parameters="parameters" />
+                            }
                         }
 
                         <div class="d-flex flex-row gap-4 pt-4">
-                            <MudButton Variant="Variant.Outlined" OnClick="NavigateToEntityDetails">
+                            <MudButton Variant="Variant.Outlined" OnClick="Cancel">
                                 Cancel
                             </MudButton>
                             <MudButton Variant="Variant.Outlined" Color="Color.Success" ButtonType="ButtonType.Submit">

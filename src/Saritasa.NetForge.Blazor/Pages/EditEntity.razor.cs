@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Saritasa.NetForge.Blazor.Controls;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Mvvm.Navigation;
 using Saritasa.NetForge.Mvvm.ViewModels.EditEntity;
@@ -14,7 +15,13 @@ namespace Saritasa.NetForge.Blazor.Pages;
 public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
 {
     [Inject]
+    private IDialogService DialogService { get; set; } = null!;
+
+    [Inject]
     private INavigationService NavigationService { get; set; } = null!;
+
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
 
     [Inject]
     private AdminOptions? AdminOptions { get; set; }
@@ -30,6 +37,11 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
     /// </summary>
     [Parameter]
     public string InstancePrimaryKey { get; init; } = null!;
+
+    /// <summary>
+    /// Is dialog mode flag.
+    /// </summary>
+    public bool IsDialogMode => MudDialog != null;
 
     private readonly List<BreadcrumbItem> breadcrumbItems = new();
 
@@ -56,5 +68,34 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
     private void NavigateToEntityDetails()
     {
         NavigationService.NavigateTo<EntityDetailsViewModel>(parameters: StringId);
+    }
+
+    private async void Save()
+    {
+        await ViewModel.UpdateEntityAsync();
+        MudDialog?.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel()
+    {
+        if (MudDialog != null)
+        {
+            MudDialog.Cancel();
+            return;
+        }
+        NavigateToEntityDetails();
+    }
+
+    private readonly DialogOptions navigationDetailsDialogOptions = new()
+    {
+        DisableBackdropClick = true,
+        MaxWidth = MaxWidth.Large,
+        FullWidth = true,
+        NoHeader = true
+    };
+
+    private Task OpenDialogAsync(DialogOptions options, DialogParameters parameters)
+    {
+        return DialogService.ShowAsync<NavigationEntityEditDialog>("Edit", parameters, options);
     }
 }
