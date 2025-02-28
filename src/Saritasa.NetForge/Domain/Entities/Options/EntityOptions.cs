@@ -106,4 +106,7 @@ public class EntityOptions
 
     /// <inheritdoc cref="EntityMetadata.UpdateAction"/>
     public Action<IServiceProvider?, object>? UpdateAction { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.DeleteAction"/>
+    public Action<IServiceProvider?, object>? DeleteAction { get; set; }
 }

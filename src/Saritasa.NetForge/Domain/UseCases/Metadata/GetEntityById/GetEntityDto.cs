@@ -1,4 +1,4 @@
-using Saritasa.NetForge.Domain.Entities.Metadata;
+﻿using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
 
 namespace Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
@@ -63,4 +63,7 @@ public record GetEntityDto
 
     /// <inheritdoc cref="EntityMetadata.UpdateAction"/>
     public Action<IServiceProvider?, object>? UpdateAction { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.DeleteAction"/>
+    public Action<IServiceProvider?, object>? DeleteAction { get; set; }
 }

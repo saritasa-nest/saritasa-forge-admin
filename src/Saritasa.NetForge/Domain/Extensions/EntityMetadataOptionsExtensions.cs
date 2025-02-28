@@ -1,4 +1,4 @@
-using Saritasa.NetForge.Domain.Entities.Metadata;
+﻿using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
 
 namespace Saritasa.NetForge.Domain.Extensions;
@@ -70,6 +70,7 @@ public static class EntityMetadataOptionsExtensions
         entityMetadata.MessageOptions = entityOptions.MessageOptions;
         entityMetadata.CreateAction = entityOptions.CreateAction;
         entityMetadata.UpdateAction = entityOptions.UpdateAction;
+        entityMetadata.DeleteAction = entityOptions.DeleteAction;
 
         entityMetadata.ToStringFunc = entityOptions.ToStringFunc;
 

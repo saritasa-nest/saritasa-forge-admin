@@ -298,4 +298,15 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         options.UpdateAction = (serviceProvider, entity) => action(serviceProvider, (TEntity)entity);
         return this;
     }
+
+    /// <summary>
+    /// Sets action that executes after entity delete and before saving changes to a database.
+    /// </summary>
+    /// <param name="action">Action to execute.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public EntityOptionsBuilder<TEntity> SetDeleteAction(Action<IServiceProvider?, TEntity> action)
+    {
+        options.DeleteAction = (serviceProvider, entity) => action(serviceProvider, (TEntity)entity);
+        return this;
+    }
 }
