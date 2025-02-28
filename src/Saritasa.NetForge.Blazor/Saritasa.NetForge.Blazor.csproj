@@ -77,4 +77,12 @@
     <ProjectReference Include="..\Saritasa.NetForge.UseCases\Saritasa.NetForge.UseCases.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Controls\CustomFields\NavigationDetailsField.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Controls\CustomFields\NavigationDetailsField.razor" />
+  </ItemGroup>
+
 </Project>

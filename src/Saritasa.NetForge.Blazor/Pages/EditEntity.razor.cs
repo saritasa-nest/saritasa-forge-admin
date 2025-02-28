@@ -21,7 +21,7 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
     private INavigationService NavigationService { get; set; } = null!;
 
     [CascadingParameter]
-    private MudDialogInstance MudDialog { get; set; }
+    private MudDialogInstance DialogInstance { get; set; }
 
     [Inject]
     private AdminOptions? AdminOptions { get; set; }
@@ -41,7 +41,7 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
     /// <summary>
     /// Is dialog mode flag.
     /// </summary>
-    public bool IsDialogMode => MudDialog != null;
+    public bool IsDialogMode => DialogInstance != null;
 
     private readonly List<BreadcrumbItem> breadcrumbItems = new();
 
@@ -73,14 +73,14 @@ public partial class EditEntity : MvvmComponentBase<EditEntityViewModel>
     private async void Save()
     {
         await ViewModel.UpdateEntityAsync();
-        MudDialog?.Close(DialogResult.Ok(true));
+        DialogInstance?.Close(DialogResult.Ok(true));
     }
 
     private void Cancel()
     {
-        if (MudDialog != null)
+        if (DialogInstance != null)
         {
-            MudDialog.Cancel();
+            DialogInstance.Cancel();
             return;
         }
         NavigateToEntityDetails();

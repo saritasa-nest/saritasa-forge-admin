@@ -8,7 +8,7 @@ namespace Saritasa.NetForge.Blazor.Controls;
 public partial class NavigationEntityEditDialog : ComponentBase
 {
     [CascadingParameter]
-    private MudDialogInstance MudDialog { get; set; } = null!;
+    private MudDialogInstance DialogInstance { get; set; } = null!;
 
     /// <summary>
     /// Entity service.

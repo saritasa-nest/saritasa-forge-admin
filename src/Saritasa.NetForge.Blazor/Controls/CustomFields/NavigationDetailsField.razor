@@ -1,0 +1,39 @@
+﻿@using Saritasa.NetForge.Blazor.Infrastructure.Helpers;
+@using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
+
+@inherits CustomField
+
+@{
+    var componentType = CustomFieldHelper.GetComponentType(Property);
+    var parameters = new Dictionary<string, object>
+    {
+        { "Property", Property },
+        { "EntityInstance", EntityInstance },
+        { "IsReadOnly", IsReadOnly },
+        { "FieldErrorModel", FieldErrorModel }
+    };
+
+    <MudGrid>
+        <MudItem xs="10">
+            <DynamicComponent Type="componentType" Parameters="parameters" />
+        </MudItem>
+        <MudItem xs="2">
+            @{
+                var title = $"Edit {Property.Name}";
+                var navigationMetadata = (NavigationMetadataDto)Property;
+                var navigationEntityInstance = PropertyValue;
+
+                var dialogParameters = new DialogParameters();
+                dialogParameters.Add("NavigationMetadata", navigationMetadata);
+                dialogParameters.Add("NavigationEntityInstance", navigationEntityInstance);
+
+                <MudTooltip Text="@title">
+                    <MudButton Variant="Variant.Outlined" Color="Color.Surface" Class="pa-3 mt-1"
+                        OnClick="@(() => OpenDialogAsync(navigationDetailsDialogOptions, dialogParameters))">
+                        <MudText Typo="Typo.h5">Edit</MudText>
+                    </MudButton>
+                </MudTooltip>
+            }
+        </MudItem>
+    </MudGrid>
+}

@@ -62,36 +62,9 @@ else if (ViewModel.IsEntityExists)
                                 && navigationMetadata.EditDetails
                                 && !navigationMetadata.IsCollection)
                             {
-                                var navigationEntityInstance = ViewModel
-                                    .Model.ClrType
-                                    .GetProperty(property.Name)
-                                    .GetValue(ViewModel.Model.EntityInstance);
-
-                                <MudGrid>
-                                    <MudItem xs="10">
-                                        <DynamicComponent Type="componentType" Parameters="parameters" />
-                                    </MudItem>
-                                    <MudItem xs="2">
-                                        @{
-                                            var title = $"Edit {navigationMetadata.Name}";
-                                            var dialogParameters = new DialogParameters();
-                                            dialogParameters.Add("NavigationMetadata", navigationMetadata);
-                                            dialogParameters.Add("NavigationEntityInstance", navigationEntityInstance);
-
-                                            <MudTooltip Text="@title">
-                                                <MudButton Variant="Variant.Outlined" Color="Color.Surface" Class="pa-3 mt-1"
-                                                    OnClick="@(() => OpenDialogAsync(navigationDetailsDialogOptions, dialogParameters))">
-                                                    <MudText Typo="Typo.h5">Edit</MudText>
-                                                </MudButton>
-                                            </MudTooltip>
-                                        }
-                                    </MudItem>
-                                </MudGrid>
+                                componentType = typeof(NavigationDetailsField);
                             }
-                            else
-                            {
-                                <DynamicComponent Type="componentType" Parameters="parameters" />
-                            }
+                            <DynamicComponent Type="componentType" Parameters="parameters" />
                         }
 
                         <div class="d-flex flex-row gap-4 pt-4">
