@@ -118,6 +118,10 @@ public class EditEntityViewModel : ValidationEntityViewModel
         {
             IsEntityExists = false;
         }
+        catch (InvalidOperationException) // This exception throw when GetInstanceAsync doesn't return a matching entity.
+        {
+            IsEntityExists = false;
+        }
     }
 
     private readonly IDictionary<PropertyMetadataDto, IBrowserFile> filesToUpload
