@@ -118,7 +118,8 @@ public class EditEntityViewModel : ValidationEntityViewModel
         {
             IsEntityExists = false;
         }
-        catch (InvalidOperationException) // This exception throw when GetInstanceAsync doesn't return a matching entity.
+        // This exception throw when GetInstanceAsync doesn't return a matching entity.
+        catch (InvalidOperationException)
         {
             IsEntityExists = false;
         }
