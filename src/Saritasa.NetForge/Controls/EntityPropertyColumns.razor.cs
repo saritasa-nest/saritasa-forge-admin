@@ -217,79 +217,37 @@ public partial class EntityPropertyColumns : ComponentBase
         Snackbar.Add(entityDeleteMessage, Severity.Success);
     }
 
-    private IEnumerable<ListViewPropertyDto> GetListViewProperties()
+    private IEnumerable<PropertyMetadataDto> GetListViewProperties()
     {
-        List<ListViewPropertyDto> listViewProperties = [];
+        var propertiesToDisplay = GetPropertiesToDisplay(Properties);
 
-        var includedProperties = Properties
+        // Display principal entity primary key at the start of columns if the order is not set.
+        return propertiesToDisplay
+            .OrderByDescending(property => property is { IsPrimaryKey: true, Order: null, NavigationMetadata: null })
+            .ThenByDescending(property => property.Order.HasValue)
+            .ThenBy(property => property.Order);
+    }
+
+    private List<PropertyMetadataDto> GetPropertiesToDisplay(IEnumerable<PropertyMetadataDto> properties)
+    {
+        List<PropertyMetadataDto> propertiesToDisplay = [];
+        var visibleProperties = properties
             .Where(property => property is { IsHidden: false, IsHiddenFromListView: false });
-        foreach (var property in includedProperties)
+        foreach (var property in visibleProperties)
         {
-            if (property is NavigationMetadataDto navigationMetadata)
+            if (property is NavigationMetadataDto { IsCollection: false } navigation)
             {
-                var propertyPath = new StringBuilder(navigationMetadata.Name);
-
-                HandleNavigation(navigationMetadata);
-
-                void HandleNavigation(NavigationMetadataDto navigation)
-                {
-                    if (navigation.IsCollection)
-                    {
-                        var listViewProperty = new ListViewPropertyDto
-                        {
-                            Property = navigation,
-                            PropertyPath = propertyPath.ToString(),
-                            Navigation = navigation
-                        };
-
-                        listViewProperties.Add(listViewProperty);
-                        return;
-                    }
-
-                    var targetProperties = navigation.TargetEntityProperties
-                        .Where(targetProperty => targetProperty is { IsHidden: false, IsHiddenFromListView: false });
-                    foreach (var targetProperty in targetProperties)
-                    {
-                        var listViewProperty = new ListViewPropertyDto
-                        {
-                            Property = targetProperty,
-                            PropertyPath = $"{propertyPath}.{targetProperty.Name}",
-                            Navigation = navigation
-                        };
-
-                        listViewProperties.Add(listViewProperty);
-                    }
-
-                    var targetNavigations = navigation.TargetEntityNavigations
-                        .Where(targetNavigation => targetNavigation is { IsHidden: false, IsHiddenFromListView: false });
-                    foreach (var targetNavigation in targetNavigations)
-                    {
-                        var navigationString = $".{targetNavigation.Name}";
-                        propertyPath = propertyPath.Append(navigationString);
-                        HandleNavigation(targetNavigation);
-                        propertyPath = propertyPath.Replace(navigationString, string.Empty);
-                    }
-                }
+                var allTargetProperties = navigation.TargetEntityProperties!.Union(navigation.TargetEntityNavigations!);
+                var targetPropertiesToDisplay = GetPropertiesToDisplay(allTargetProperties);
+                propertiesToDisplay.AddRange(targetPropertiesToDisplay);
             }
             else
             {
-                var listViewProperty = new ListViewPropertyDto
-                {
-                    Property = property,
-                    PropertyPath = property.Name
-                };
-
-                listViewProperties.Add(listViewProperty);
+                propertiesToDisplay.Add(property);
             }
         }
 
-        // Display principal entity primary key at the start of columns if the order is not set.
-        return listViewProperties
-            .OrderByDescending(property => property is { Property: { IsPrimaryKey: true, Order: null } }
-                                           // If property has separator then it is part of a navigation
-                                           && !property.PropertyPath.Contains(ExpressionExtensions.PropertySeparator))
-            .ThenByDescending(property => property.Property.Order.HasValue)
-            .ThenBy(property => property.Property.Order);
+        return propertiesToDisplay;
     }
 
     /// <summary>

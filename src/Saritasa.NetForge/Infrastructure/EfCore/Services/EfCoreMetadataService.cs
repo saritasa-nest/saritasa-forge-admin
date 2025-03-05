@@ -79,7 +79,10 @@ public class EfCoreMetadataService : IOrmMetadataService
     }
 
     private List<NavigationMetadata> GetNavigationsMetadata(
-        IReadOnlyEntityType entityType, int depth = 1, StringBuilder? propertyPath = null)
+        IReadOnlyEntityType entityType,
+        int depth = 1,
+        StringBuilder? propertyPath = null,
+        NavigationMetadata? navigationMetadata = null)
     {
         // GetNavigations retrieves all navigations except many-to-many navigations.
         // GetSkipNavigations retrieves many-to-many navigations
@@ -90,7 +93,7 @@ public class EfCoreMetadataService : IOrmMetadataService
         List<NavigationMetadata> navigations = [];
         foreach (var efNavigation in efNavigations)
         {
-            var navigation = GetNavigationMetadata(efNavigation, depth, propertyPath);
+            var navigation = GetNavigationMetadata(efNavigation, depth, propertyPath, navigationMetadata);
 
             if (navigation is null)
             {
@@ -111,9 +114,13 @@ public class EfCoreMetadataService : IOrmMetadataService
     /// Represents current depth. If greater than max depth, then the navigation will not be visited.
     /// </param>
     /// <param name="propertyPath">Contains full path to the property.</param>
+    /// <param name="parentNavigationMetadata">Parent navigation. It means one navigation is child of another.</param>
     /// <returns>A <see cref="PropertyMetadata"/> object containing metadata information for the navigation.</returns>
     private NavigationMetadata? GetNavigationMetadata(
-        IReadOnlyNavigationBase navigation, int depth, StringBuilder? propertyPath)
+        IReadOnlyNavigationBase navigation,
+        int depth,
+        StringBuilder? propertyPath,
+        NavigationMetadata? parentNavigationMetadata)
     {
         var maxNavigationDepth = currentEntityMaxNavigationDepth ?? adminOptions.MaxNavigationDepth;
         if (depth > maxNavigationDepth)
@@ -141,22 +148,29 @@ public class EfCoreMetadataService : IOrmMetadataService
             Name = navigation.Name,
             PropertyPath = propertyPath.ToString(),
             IsCollection = navigation.IsCollection,
-            TargetEntityProperties = GetPropertiesMetadata(navigation.TargetEntityType, propertyPath),
-            TargetEntityNavigations = GetNavigationsMetadata(navigation.TargetEntityType, depth, propertyPath),
             PropertyInformation = navigation.PropertyInfo,
             ClrType = navigation.ClrType,
-            IsNullable = isNullable
+            IsNullable = isNullable,
+            NavigationMetadata = parentNavigationMetadata
         };
+
+        navigationMetadata.TargetEntityProperties
+            = GetPropertiesMetadata(navigation.TargetEntityType, propertyPath, navigationMetadata);
+        navigationMetadata.TargetEntityNavigations
+            = GetNavigationsMetadata(navigation.TargetEntityType, depth, propertyPath, navigationMetadata);
+
         RemovePropertyNameFromPath(propertyPath, navigation.Name);
         return navigationMetadata;
     }
 
     private static List<PropertyMetadata> GetPropertiesMetadata(
-        IReadOnlyEntityType entityType, StringBuilder? propertyPath = null)
+        IReadOnlyEntityType entityType,
+        StringBuilder? propertyPath = null,
+        NavigationMetadata? navigationMetadata = null)
     {
         var propertiesMetadata = entityType
             .GetProperties()
-            .Select(property => GetPropertyMetadata(property, propertyPath));
+            .Select(property => GetPropertyMetadata(property, propertyPath, navigationMetadata));
 
         var reflectionProperties = entityType.ClrType
             .GetProperties()
@@ -173,8 +187,10 @@ public class EfCoreMetadataService : IOrmMetadataService
     /// </summary>
     /// <param name="property">The EF Core property to retrieve metadata for.</param>
     /// <param name="propertyPath">Contains full path to the property.</param>
+    /// <param name="navigationMetadata">The property belongs to this navigation.</param>
     /// <returns>A <see cref="PropertyMetadata"/> object containing metadata information for the property.</returns>
-    private static PropertyMetadata GetPropertyMetadata(IReadOnlyProperty property, StringBuilder? propertyPath)
+    private static PropertyMetadata GetPropertyMetadata(
+        IReadOnlyProperty property, StringBuilder? propertyPath, NavigationMetadata? navigationMetadata)
     {
         var propertyName = property.Name;
         propertyPath = AddPropertyNameToPath(propertyPath, propertyName);
@@ -192,7 +208,8 @@ public class EfCoreMetadataService : IOrmMetadataService
             IsShadow = property.IsShadowProperty(),
             IsValueGeneratedOnAdd = property.ValueGenerated.HasFlag(ValueGenerated.OnAdd),
             IsValueGeneratedOnUpdate = property.ValueGenerated.HasFlag(ValueGenerated.OnUpdate),
-            IsReadOnly = property.PropertyInfo?.SetMethod is null || property.PropertyInfo.SetMethod.IsPrivate
+            IsReadOnly = property.PropertyInfo?.SetMethod is null || property.PropertyInfo.SetMethod.IsPrivate,
+            NavigationMetadata = navigationMetadata
         };
 
         RemovePropertyNameFromPath(propertyPath, propertyName);

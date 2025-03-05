@@ -284,9 +284,9 @@ public static class EntityMetadataOptionsExtensions
         foreach (var navigationOption in navigationOptions.NavigationsOptions)
         {
             var targetNavigation = navigation.TargetEntityNavigations
-                .First(property => property.Name == navigationOption.PropertyName);
+                .FirstOrDefault(property => property.Name == navigationOption.PropertyName);
 
-            targetNavigation.ApplyNavigationOptions(navigationOption);
+            targetNavigation?.ApplyNavigationOptions(navigationOption);
         }
 
         var notIncludedProperties = navigation.TargetEntityProperties

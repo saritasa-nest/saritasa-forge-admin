@@ -1,5 +1,4 @@
-﻿@using Saritasa.NetForge.Domain.Dtos
-@using Saritasa.NetForge.Domain.Enums
+﻿@using Saritasa.NetForge.Domain.Enums
 @using Saritasa.NetForge.Domain.Extensions
 @using Saritasa.NetForge.Domain.UseCases.Constants
 @using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById
@@ -17,12 +16,12 @@
         RenderPropertyColumn(listViewProperty);
     }
 
-    void RenderPropertyColumn(ListViewPropertyDto listViewProperty)
+    void RenderPropertyColumn(PropertyMetadataDto property)
     {
-        var property = listViewProperty.Property;
-        var navigation = listViewProperty.Navigation;
+        var navigation = property.NavigationMetadata;
+        var propertyPath = property.PropertyPath;
         <TemplateColumn T="object" Title="@property.Name" Sortable="property.IsSortable"
-                        PropertyPath="@listViewProperty.PropertyPath">
+                        PropertyPath="@propertyPath">
             <HeaderTemplate>
                 @{
                     var displayName = GetPropertyDisplayName(property);
@@ -65,7 +64,7 @@
             <CellTemplate Context="cell">
                 @{
                     var instance = cell.Item;
-                    var propertyValue = instance.GetNestedPropertyValue(listViewProperty.PropertyPath);
+                    var propertyValue = instance.GetNestedPropertyValue(propertyPath);
 
                     if (propertyValue is null || propertyValue.ToString() == string.Empty)
                     {
@@ -124,7 +123,7 @@
 
                     if (navigation is not null)
                     {
-                        var navigationPath = RemoveLastPropertyFromPath(listViewProperty.PropertyPath);
+                        var navigationPath = RemoveLastPropertyFromPath(propertyPath);
                         var navigationValue = instance.GetNestedPropertyValue(navigationPath)!;
 
                         if (property.CanBeNavigatedToDetails)
