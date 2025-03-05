@@ -140,8 +140,6 @@ public class EfCoreMetadataService : IOrmMetadataService
             isNullable = !readOnlyNavigation.ForeignKey.IsRequiredDependent;
         }
 
-        // TODO: What if we won't enter previous conditions?
-
         propertyPath = AddPropertyNameToPath(propertyPath, navigation.Name);
         var navigationMetadata = new NavigationMetadata
         {
