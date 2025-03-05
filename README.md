@@ -264,7 +264,7 @@ Example:
 
 ### Custom Body Content
 
-You can add some content to the end of the body section of admin site. 
+You can add some content to the end of the body section of admin site.
 Static and interactive content can be added separately.
 
 #### Static Content
@@ -581,7 +581,7 @@ Also, you can use `ServiceProvider` if you need to access your services.
 ```csharp
 public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
     {
-        entityOptionsBuilder.SetCreateAction((serviceProvider, address) => 
+        entityOptionsBuilder.SetCreateAction((serviceProvider, address) =>
             {
                 address.CreatedByUserId = new Random().Next(1, 1000);
             });
@@ -595,9 +595,23 @@ This one behaves just like [Create Custom Action](#create-custom-action) but wil
 ```csharp
 public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
     {
-        entityOptionsBuilder.SetUpdateAction((serviceProvider, address) => 
+        entityOptionsBuilder.SetUpdateAction((serviceProvider, address) =>
             {
                 address.UpdatedByUserId = new Random().Next(1, 1000);
+            });
+    }
+```
+
+## Delete Custom Action
+
+This one behaves just like [Create Custom Action](#create-custom-action) but will be executed after delete instead of create.
+
+```csharp
+public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+    {
+        entityOptionsBuilder.SetDeleteAction((serviceProvider, address) =>
+            {
+                Debug.WriteLine($"Address {address.Id} deleted.");
             });
     }
 ```

@@ -1,4 +1,4 @@
-using Saritasa.NetForge.Domain.UseCases.Common;
+﻿using Saritasa.NetForge.Domain.UseCases.Common;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 using Saritasa.Tools.Common.Pagination;
 
@@ -52,7 +52,11 @@ public interface IOrmDataService
     /// <param name="entity">Entity to delete.</param>
     /// <param name="entityType">Entity type.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    Task DeleteAsync(object entity, Type entityType, CancellationToken cancellationToken);
+    /// <param name="customAction">Custom action to change entity right after delete.</param>
+    Task DeleteAsync(object entity,
+        Type entityType,
+        CancellationToken cancellationToken,
+        Action<IServiceProvider?, object>? customAction = null);
 
     /// <summary>
     /// Deletes all provided entities in the database.
@@ -60,7 +64,11 @@ public interface IOrmDataService
     /// <param name="entities">Entities to delete.</param>
     /// <param name="entityType">Entity type.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    Task BulkDeleteAsync(IEnumerable<object> entities, Type entityType, CancellationToken cancellationToken);
+    /// <param name="customAction">Custom action to change entity right after delete.</param>
+    Task BulkDeleteAsync(IEnumerable<object> entities,
+        Type entityType,
+        CancellationToken cancellationToken,
+        Action<IServiceProvider?, object>? customAction);
 
     /// <summary>
     /// Updates entity in the database.

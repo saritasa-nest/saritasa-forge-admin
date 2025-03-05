@@ -16,7 +16,7 @@ public class Address
     /// <summary>
     /// The unique identifier for the address.
     /// </summary>
-    public int Id { get; set; }
+    public int Id { get; private set; }
 
     /// <summary>
     /// The street name and number.

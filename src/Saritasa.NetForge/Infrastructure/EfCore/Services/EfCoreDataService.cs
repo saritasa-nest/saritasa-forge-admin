@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using DeepCopy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
@@ -178,8 +179,10 @@ public class EfCoreDataService : IOrmDataService
     }
 
     /// <inheritdoc />
-    public async Task DeleteAsync(object entity, Type entityType, CancellationToken cancellationToken)
+    public async Task DeleteAsync(object entity, Type entityType, CancellationToken cancellationToken, Action<IServiceProvider?, object>? customAction)
     {
+        customAction?.Invoke(serviceProvider, entity);
+
         var dbContext = GetDbContextThatContainsEntity(entityType);
 
         try
@@ -194,8 +197,7 @@ public class EfCoreDataService : IOrmDataService
     }
 
     /// <inheritdoc />
-    public async Task BulkDeleteAsync(
-        IEnumerable<object> entities, Type entityType, CancellationToken cancellationToken)
+    public async Task BulkDeleteAsync(IEnumerable<object> entities, Type entityType, CancellationToken cancellationToken, Action<IServiceProvider?, object>? customAction)
     {
         var dbContext = GetDbContextThatContainsEntity(entityType);
 
@@ -203,6 +205,7 @@ public class EfCoreDataService : IOrmDataService
         {
             foreach (var entity in entities)
             {
+                customAction?.Invoke(serviceProvider, entity);
                 dbContext.Remove(entity);
             }
             await dbContext.SaveChangesAsync(cancellationToken);
@@ -230,7 +233,7 @@ public class EfCoreDataService : IOrmDataService
 
             if (afterUpdateAction is not null)
             {
-                var originalEntityClone = originalEntity.CloneJson();
+                var originalEntityClone = ObjectCloner.Clone(originalEntity);
                 await UpdateAsync(dbContext, entity, originalEntity, cancellationToken);
 
                 afterUpdateAction.Invoke(serviceProvider, originalEntityClone!, originalEntity);

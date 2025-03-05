@@ -8,7 +8,7 @@
 
 @inherits MvvmComponentBase<EditEntityViewModel>
 
-@if (ViewModel.Model.EntityInstance is null)
+@if (ViewModel.Model.EntityInstance is null && (ViewModel.IsEntityExists))
 {
     <p>Loading...</p>
 }

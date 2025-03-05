@@ -186,7 +186,9 @@ public partial class EntityPropertyColumns : ComponentBase
         {
             try
             {
-                await DataService.DeleteAsync(source, source.GetType(), CancellationToken.None);
+                var entityMetadata = await EntityService.GetEntityByTypeAsync(source.GetType(), CancellationToken.None);
+
+                await DataService.DeleteAsync(source, source.GetType(), CancellationToken.None, entityMetadata.DeleteAction);
                 DataGrid?.ReloadServerData();
                 ShowEntityDeleteMessage();
             }

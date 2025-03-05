@@ -295,6 +295,17 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
+    /// Sets action that executes after entity delete and before saving changes to a database.
+    /// </summary>
+    /// <param name="action">Action to execute.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public EntityOptionsBuilder<TEntity> SetDeleteAction(Action<IServiceProvider?, TEntity> action)
+    {
+        options.DeleteAction = (serviceProvider, entity) => action(serviceProvider, (TEntity)entity);
+        return this;
+    }
+
+    /// <summary>
     /// Sets value that represents maximum navigation depth on the entity level.
     /// Use <see cref="AdminOptionsBuilder.SetMaxNavigationDepth"/> for the global level.
     /// If depth of a navigation is more than this value then such navigation's data will not be loaded.

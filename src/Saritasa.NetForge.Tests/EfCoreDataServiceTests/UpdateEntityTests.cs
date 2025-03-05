@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Saritasa.NetForge.Domain.Extensions;
+﻿using DeepCopy;
+using Microsoft.EntityFrameworkCore;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Tests.Domain;
 using Saritasa.NetForge.Tests.Domain.Models;
@@ -67,7 +67,7 @@ public class UpdateEntityTests : IDisposable
     {
         // Arrange
         var updatedShop = await testDbContext.Shops.AsNoTracking().FirstAsync();
-        var originalShop = updatedShop.CloneJson()!;
+        var originalShop = ObjectCloner.Clone(updatedShop)!;
 
         const string newName = "Test222";
         updatedShop.Name = newName;
@@ -89,7 +89,7 @@ public class UpdateEntityTests : IDisposable
         var shops = testDbContext.Shops.Include(shop => shop.Address).AsNoTracking();
 
         var updatedShop = await shops.FirstAsync();
-        var originalShop = updatedShop.CloneJson()!;
+        var originalShop = ObjectCloner.Clone(updatedShop)!;
 
         var newAddress = Fakers.AddressFaker.Generate();
         updatedShop.Address = newAddress;
@@ -112,7 +112,7 @@ public class UpdateEntityTests : IDisposable
         var shops = testDbContext.Shops.Include(shop => shop.Address).AsNoTracking();
 
         var updatedShop = await shops.FirstAsync();
-        var originalShop = updatedShop.CloneJson()!;
+        var originalShop = ObjectCloner.Clone(updatedShop)!;
 
         var addressToUpdate = await testDbContext.Addresses
             .AsNoTracking()
@@ -136,7 +136,7 @@ public class UpdateEntityTests : IDisposable
         var shops = testDbContext.Shops.Include(shop => shop.Address).AsNoTracking();
 
         var updatedShop = await shops.FirstAsync();
-        var originalShop = updatedShop.CloneJson()!;
+        var originalShop = ObjectCloner.Clone(updatedShop)!;
 
         updatedShop.Address = null;
 
@@ -157,7 +157,7 @@ public class UpdateEntityTests : IDisposable
         var shops = testDbContext.Shops.Include(shop => shop.Products).AsNoTracking();
 
         var updatedShop = await shops.FirstAsync();
-        var originalShop = updatedShop.CloneJson()!;
+        var originalShop = ObjectCloner.Clone(updatedShop)!;
 
         var newProduct = Fakers.ProductFaker.Generate();
         updatedShop.Products.Add(newProduct);
@@ -180,7 +180,7 @@ public class UpdateEntityTests : IDisposable
         var shops = testDbContext.Shops.Include(shop => shop.Products).AsNoTracking();
 
         var updatedShop = await shops.FirstAsync();
-        var originalShop = updatedShop.CloneJson()!;
+        var originalShop = ObjectCloner.Clone(updatedShop)!;
 
         var productToAdd = await testDbContext.Products
             .AsNoTracking()
@@ -204,7 +204,7 @@ public class UpdateEntityTests : IDisposable
         var shops = testDbContext.Shops.Include(shop => shop.Products).AsNoTracking();
 
         var updatedShop = await shops.FirstAsync();
-        var originalShop = updatedShop.CloneJson()!;
+        var originalShop = ObjectCloner.Clone(updatedShop)!;
 
         var productToRemove = updatedShop.Products.First();
         updatedShop.Products.Remove(productToRemove);
@@ -224,7 +224,7 @@ public class UpdateEntityTests : IDisposable
     {
         // Arrange
         var updatedShop = await testDbContext.Shops.AsNoTracking().FirstAsync();
-        var originalShop = updatedShop.CloneJson()!;
+        var originalShop = ObjectCloner.Clone(updatedShop)!;
 
         const string newName = "Test222";
         Action<IServiceProvider?, object, object> afterUpdateAction = (_, _, shop) =>
@@ -248,7 +248,7 @@ public class UpdateEntityTests : IDisposable
     {
         // Arrange
         var updatedShop = await testDbContext.Shops.AsNoTracking().FirstAsync();
-        var originalShop = updatedShop.CloneJson()!;
+        var originalShop = ObjectCloner.Clone(updatedShop);
 
         const string newName = "Test222";
         Action<IServiceProvider?, object> customDatabaseAction = (_, shop) =>

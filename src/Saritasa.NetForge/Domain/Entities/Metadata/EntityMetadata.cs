@@ -116,4 +116,9 @@ public class EntityMetadata
     /// Action that executes after entity update and before saving changes to a database.
     /// </summary>
     public Action<IServiceProvider?, object>? UpdateAction { get; set; }
+
+    /// <summary>
+    /// Action that executes after entity delete and before saving changes to a database.
+    /// </summary>
+    public Action<IServiceProvider?, object>? DeleteAction { get; set; }
 }
