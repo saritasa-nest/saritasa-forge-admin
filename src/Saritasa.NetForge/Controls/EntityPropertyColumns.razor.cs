@@ -5,6 +5,7 @@ using MudBlazor;
 using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Infrastructure.Helpers;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Domain.Extensions;
 using Saritasa.NetForge.Domain.UseCases.Interfaces;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
@@ -248,6 +249,21 @@ public partial class EntityPropertyColumns : ComponentBase
         }
 
         return propertiesToDisplay;
+    }
+
+    /// <summary>
+    /// Gets parent navigation value.
+    /// </summary>
+    /// <param name="propertyPath">Path to access the property. For example: <c>Shop.Address.Street</c>.</param>
+    /// <param name="instance">Instance to get value from.</param>
+    /// <returns>
+    /// If <paramref name="propertyPath"/> is <c>Shop.Address.Street</c>,
+    /// then this method will return value of <c>Shop.Address</c>.
+    /// </returns>
+    private static object GetParentNavigationValue(string propertyPath, object instance)
+    {
+        var navigationPath = RemoveLastPropertyFromPath(propertyPath);
+        return instance.GetNestedPropertyValue(navigationPath)!;
     }
 
     /// <summary>

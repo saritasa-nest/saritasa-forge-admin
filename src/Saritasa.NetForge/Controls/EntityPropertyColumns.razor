@@ -6,7 +6,7 @@
 
 @if (CanDelete)
 {
-    <SelectColumn T="object" ShowInFooter="false" />
+    <SelectColumn T="object" ShowInFooter="false"/>
 }
 
 @{
@@ -57,8 +57,7 @@
                                 </MudTooltip>
                             </div>
                         }
-                    </div>
-                }
+                    </div>}
             </HeaderTemplate>
 
             <CellTemplate Context="cell">
@@ -90,6 +89,7 @@
                         {
                             @navigationValue
                         }
+
                         return;
                     }
 
@@ -123,29 +123,27 @@
 
                     if (navigation is not null)
                     {
-                        var navigationPath = RemoveLastPropertyFromPath(propertyPath);
-                        var navigationValue = instance.GetNestedPropertyValue(navigationPath)!;
-
                         if (property.CanBeNavigatedToDetails)
                         {
+                            var navigationValue = GetParentNavigationValue(propertyPath, instance);
+
                             <MudButton Variant="Variant.Text" Color="Color.Primary" Class="text-transform-none"
                                        OnClick="() => NavigateToEditing(navigationValue, navigation)">
                                 @formattedValue
                             </MudButton>
+                            return;
                         }
-                        else if (property.CanDisplayDetails)
+
+                        if (property.CanDisplayDetails)
                         {
+                            var navigationValue = GetParentNavigationValue(propertyPath, instance);
+
                             <MudButton Variant="Variant.Text" Color="Color.Primary" Class="text-transform-none"
                                        @onclick="() => OpenDialogAsync(navigationValue, navigation)">
                                 @formattedValue
                             </MudButton>
+                            return;
                         }
-                        else
-                        {
-                            @formattedValue
-                        }
-
-                        return;
                     }
 
                     @formattedValue
