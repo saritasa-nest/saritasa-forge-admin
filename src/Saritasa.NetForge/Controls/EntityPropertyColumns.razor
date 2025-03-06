@@ -53,7 +53,7 @@
 
     void RenderPropertyColumn(PropertyMetadataDto property, NavigationMetadataDto? navigation = null)
     {
-        if (DefaultSortPropertyNames.Contains(property.Name))
+        if (DefaultOrderings.Any(order => order.FieldName == property.Name))
         {
             property.IsSortable = true;
         }

@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+using Saritasa.NetForge.Domain.UseCases.Common;
 
 namespace Saritasa.NetForge.Domain.Entities.Options;
 
@@ -110,5 +111,5 @@ public class EntityOptions
     /// <inheritdoc cref="EntityMetadata.DeleteAction"/>
     public Action<IServiceProvider?, object>? DeleteAction { get; set; }
 
-    public List<string> DefaultSortPropertyNames { get; set; } = [];
+    public List<OrderByDto> DefaultOrderings { get; set; } = [];
 }

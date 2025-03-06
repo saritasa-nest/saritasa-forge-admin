@@ -144,6 +144,6 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             builder.SetIsHidden(true);
         });
 
-        entityOptionsBuilder.ConfigureDefaultSort(shop => shop.Id);
+        entityOptionsBuilder.ConfigureDefaultSort((shop => shop.Id, IsDescending: true));
     }
 }

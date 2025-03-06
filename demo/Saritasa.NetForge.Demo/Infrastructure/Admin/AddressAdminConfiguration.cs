@@ -28,7 +28,8 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
                 .SetDescription("Address contact phone.")
                 .SetOrder(1)
                 .SetSearchType(SearchType.ContainsCaseInsensitive)
-                .SetFormOrder(5);
+                .SetFormOrder(5)
+                .SetIsSortable(true);
         }).ConfigureProperty(address => address.PostalCode, propertyBuilder =>
         {
             propertyBuilder
@@ -90,6 +91,7 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
             .SetUpdateAction((_, address) => { address.UpdatedByUserId = new Random().Next(1, 1000); })
             .SetDeleteAction((_, address) => { Debug.WriteLine($"Address {address.Id} deleted."); });
 
-        entityOptionsBuilder.ConfigureDefaultSort(address => address.Street, address => address.City);
+        entityOptionsBuilder.ConfigureDefaultSort(
+            (address => address.Street, IsDescending: true), (address => address.City, IsDescending: true));
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Domain.UseCases.Common;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.MVVM.ViewModels.EntityDetails;
@@ -57,5 +58,5 @@ public record EntityDetailsModel
     /// <inheritdoc cref="MessageOptions.EntityBulkDeleteMessage"/>
     public string? EntityBulkDeleteMessage { get; set; }
 
-    public List<string> DefaultSortPropertyNames { get; set; }
+    public List<OrderByDto> DefaultOrderings { get; set; }
 }

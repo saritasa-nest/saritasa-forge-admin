@@ -4,6 +4,7 @@ using MudBlazor;
 using Saritasa.NetForge.Domain.Extensions;
 using Saritasa.NetForge.Infrastructure.Helpers;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Domain.UseCases.Common;
 using Saritasa.NetForge.Domain.UseCases.Constants;
 using Saritasa.NetForge.Domain.UseCases.Interfaces;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
@@ -76,7 +77,7 @@ public partial class EntityPropertyColumns : ComponentBase
     public string? EntityDeleteMessage { get; set; }
 
     [Parameter]
-    public List<string> DefaultSortPropertyNames { get; set; } = [];
+    public List<OrderByDto> DefaultOrderings { get; set; } = [];
 
     /// <summary>
     /// Gets property's display name.

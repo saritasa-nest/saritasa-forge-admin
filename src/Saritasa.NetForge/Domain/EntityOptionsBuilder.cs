@@ -1,7 +1,9 @@
 ﻿using System.Linq.Expressions;
+using MudBlazor;
 using Saritasa.NetForge.Domain.Extensions;
 using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Domain.UseCases.Common;
 
 namespace Saritasa.NetForge.Domain;
 
@@ -310,12 +312,17 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         return this;
     }
 
-    public EntityOptionsBuilder<TEntity> ConfigureDefaultSort(params Expression<Func<TEntity, object?>>[] propertyExpressions)
+    public EntityOptionsBuilder<TEntity> ConfigureDefaultSort(
+        params (Expression<Func<TEntity, object?>> PropertyExpression, bool IsDescending)[] propertySorts)
     {
-        var propertyNames = propertyExpressions
-            .Select(propertyExpression => propertyExpression.GetMemberName())
+        var orderings = propertySorts
+            .Select(propertySort => new OrderByDto
+            {
+                FieldName = propertySort.PropertyExpression.GetMemberName(),
+                IsDescending = propertySort.IsDescending
+            })
             .ToList();
-        options.DefaultSortPropertyNames = propertyNames;
+        options.DefaultOrderings = orderings;
         return this;
     }
 }

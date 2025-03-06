@@ -135,7 +135,7 @@ public class EntityDetailsViewModel : BaseViewModel
             CanDelete = entity.CanDelete,
             EntityDeleteMessage = entity.MessageOptions.EntityDeleteMessage,
             EntityBulkDeleteMessage = entity.MessageOptions.EntityBulkDeleteMessage,
-            DefaultSortPropertyNames = entity.DefaultSortPropertyNames
+            DefaultOrderings = entity.DefaultOrderings
         };
     }
 
@@ -163,24 +163,27 @@ public class EntityDetailsViewModel : BaseViewModel
 
         if (orderBy.Count == 0)
         {
-            if (Model.DefaultSortPropertyNames.Count == 0)
+            if (Model.DefaultOrderings.Count == 0)
             {
                 var primaryKeys = Model.Properties.Where(property => property.IsPrimaryKey);
                 foreach (var primaryKey in primaryKeys)
                 {
-                    Model.DefaultSortPropertyNames.Add(primaryKey.Name);
+                    var primaryKeyOrder = new OrderByDto
+                    {
+                        FieldName = primaryKey.Name,
+                        IsDescending = false
+                    };
+                    Model.DefaultOrderings.Add(primaryKeyOrder);
                 }
             }
 
-            foreach (var defaultSortPropertyName in Model.DefaultSortPropertyNames)
+            foreach (var defaultOrdering in Model.DefaultOrderings)
             {
-                var column = DataGrid!.RenderedColumns.First(column => column.Title == defaultSortPropertyName);
-                await DataGrid.ExtendSortAsync(column.PropertyName, SortDirection.Ascending, sortFunc: null);
+                var column = DataGrid!.RenderedColumns.First(column => column.Title == defaultOrdering.FieldName);
+                var sortDirection = defaultOrdering.IsDescending ? SortDirection.Descending : SortDirection.Ascending;
+                await DataGrid.ExtendSortAsync(column.PropertyName, sortDirection, sortFunc: null);
 
-                orderBy.Add(new OrderByDto
-                {
-                    FieldName = defaultSortPropertyName
-                });
+                orderBy.Add(defaultOrdering);
             }
         }
 
