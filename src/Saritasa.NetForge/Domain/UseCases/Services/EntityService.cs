@@ -201,7 +201,7 @@ public class EntityService : IEntityService
             CreateAction = entity.CreateAction,
             UpdateAction = entity.UpdateAction,
             DeleteAction = entity.DeleteAction,
-            DefaultSortPropertyName = entity.DefaultSortPropertyName
+            DefaultSortPropertyNames = entity.DefaultSortPropertyNames
         };
     }
 

@@ -90,6 +90,6 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
             .SetUpdateAction((_, address) => { address.UpdatedByUserId = new Random().Next(1, 1000); })
             .SetDeleteAction((_, address) => { Debug.WriteLine($"Address {address.Id} deleted."); });
 
-        entityOptionsBuilder.ConfigureDefaultSort(address => address.Street);
+        entityOptionsBuilder.ConfigureDefaultSort(address => address.Street, address => address.City);
     }
 }

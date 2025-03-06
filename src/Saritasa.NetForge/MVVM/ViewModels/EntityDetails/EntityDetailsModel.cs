@@ -57,5 +57,5 @@ public record EntityDetailsModel
     /// <inheritdoc cref="MessageOptions.EntityBulkDeleteMessage"/>
     public string? EntityBulkDeleteMessage { get; set; }
 
-    public string? DefaultSortPropertyName { get; set; }
+    public List<string> DefaultSortPropertyNames { get; set; }
 }

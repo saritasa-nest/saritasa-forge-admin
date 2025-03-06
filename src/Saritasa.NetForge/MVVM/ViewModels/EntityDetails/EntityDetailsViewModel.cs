@@ -135,7 +135,7 @@ public class EntityDetailsViewModel : BaseViewModel
             CanDelete = entity.CanDelete,
             EntityDeleteMessage = entity.MessageOptions.EntityDeleteMessage,
             EntityBulkDeleteMessage = entity.MessageOptions.EntityBulkDeleteMessage,
-            DefaultSortPropertyName = entity.DefaultSortPropertyName
+            DefaultSortPropertyNames = entity.DefaultSortPropertyNames
         };
     }
 
@@ -163,13 +163,19 @@ public class EntityDetailsViewModel : BaseViewModel
 
         if (!orderBy.Any())
         {
-            var defaultSortPropertyName = Model.DefaultSortPropertyName
-                                          ?? Model.Properties.FirstOrDefault(property => property.IsPrimaryKey)?.Name;
+            if (Model.DefaultSortPropertyNames.Count == 0)
+            {
+                var primaryKeyNames = Model.Properties.FirstOrDefault(property => property.IsPrimaryKey)?.Name;
+                if (primaryKeyNames is not null)
+                {
+                    Model.DefaultSortPropertyNames.Add(primaryKeyNames);
+                }
+            }
 
-            if (defaultSortPropertyName is not null)
+            foreach (var defaultSortPropertyName in Model.DefaultSortPropertyNames)
             {
                 var column = DataGrid!.RenderedColumns.First(column => column.Title == defaultSortPropertyName);
-                await DataGrid!.SetSortAsync(column.PropertyName, SortDirection.Ascending, sortFunc: null);
+                await DataGrid.ExtendSortAsync(column.PropertyName, SortDirection.Ascending, sortFunc: null);
 
                 orderBy.Add(new OrderByDto
                 {

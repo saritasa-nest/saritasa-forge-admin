@@ -122,5 +122,5 @@ public class EntityMetadata
     /// </summary>
     public Action<IServiceProvider?, object>? DeleteAction { get; set; }
 
-    public string? DefaultSortPropertyName { get; set; }
+    public List<string> DefaultSortPropertyNames { get; set; } = [];
 }

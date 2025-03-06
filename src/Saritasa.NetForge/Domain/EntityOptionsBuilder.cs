@@ -310,10 +310,12 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         return this;
     }
 
-    public EntityOptionsBuilder<TEntity> ConfigureDefaultSort(Expression<Func<TEntity, object?>> propertyExpression)
+    public EntityOptionsBuilder<TEntity> ConfigureDefaultSort(params Expression<Func<TEntity, object?>>[] propertyExpressions)
     {
-        var propertyName = propertyExpression.GetMemberName();
-        options.DefaultSortPropertyName = propertyName;
+        var propertyNames = propertyExpressions
+            .Select(propertyExpression => propertyExpression.GetMemberName())
+            .ToList();
+        options.DefaultSortPropertyNames = propertyNames;
         return this;
     }
 }

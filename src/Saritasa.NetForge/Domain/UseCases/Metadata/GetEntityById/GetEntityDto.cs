@@ -67,5 +67,5 @@ public record GetEntityDto
     /// <inheritdoc cref="EntityMetadata.DeleteAction"/>
     public Action<IServiceProvider?, object>? DeleteAction { get; set; }
 
-    public string? DefaultSortPropertyName { get; set; }
+    public List<string> DefaultSortPropertyNames { get; set; }
 }
