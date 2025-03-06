@@ -161,14 +161,14 @@ public class EntityDetailsViewModel : BaseViewModel
             })
             .ToList();
 
-        if (!orderBy.Any())
+        if (orderBy.Count == 0)
         {
             if (Model.DefaultSortPropertyNames.Count == 0)
             {
-                var primaryKeyNames = Model.Properties.FirstOrDefault(property => property.IsPrimaryKey)?.Name;
-                if (primaryKeyNames is not null)
+                var primaryKeys = Model.Properties.Where(property => property.IsPrimaryKey);
+                foreach (var primaryKey in primaryKeys)
                 {
-                    Model.DefaultSortPropertyNames.Add(primaryKeyNames);
+                    Model.DefaultSortPropertyNames.Add(primaryKey.Name);
                 }
             }
 
