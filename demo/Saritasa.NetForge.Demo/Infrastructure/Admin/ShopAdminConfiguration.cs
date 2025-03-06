@@ -71,6 +71,12 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                         builder
                             .SetDisplayName("Entire Address")
                             .SetOrder(6);
+                    })
+                    .IncludeProperty(address => address.Id, builder =>
+                    {
+                        builder
+                            .SetDisplayName("Address Id")
+                            .SetOrder(1);
                     });
             })
             .IncludeNavigation<Product>(shop => shop.Products, navigationOptionsBuilder =>
@@ -138,6 +144,6 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             builder.SetIsHidden(true);
         });
 
-        entityOptionsBuilder.ConfigureProperty(shop => shop.Id, builder => builder.SetIsHidden(true));
+        entityOptionsBuilder.ConfigureDefaultSort(shop => shop.Id);
     }
 }

@@ -168,6 +168,9 @@ public class EntityDetailsViewModel : BaseViewModel
 
             if (defaultSortPropertyName is not null)
             {
+                var column = DataGrid!.RenderedColumns.First(column => column.Title == defaultSortPropertyName);
+                await DataGrid!.SetSortAsync(column.PropertyName, SortDirection.Ascending, sortFunc: null);
+
                 orderBy.Add(new OrderByDto
                 {
                     FieldName = defaultSortPropertyName
