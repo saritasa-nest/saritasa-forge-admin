@@ -53,6 +53,11 @@
 
     void RenderPropertyColumn(PropertyMetadataDto property, NavigationMetadataDto? navigation = null)
     {
+        if (DefaultSortPropertyNames.Contains(property.Name))
+        {
+            property.IsSortable = true;
+        }
+
         <TemplateColumn T="object" Title="@property.Name" Sortable="property.IsSortable" NavigationName="@navigation?.Name">
             <HeaderTemplate>
                 @{

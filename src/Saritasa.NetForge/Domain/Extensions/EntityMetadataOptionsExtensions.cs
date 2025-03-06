@@ -74,29 +74,7 @@ public static class EntityMetadataOptionsExtensions
 
         entityMetadata.ToStringFunc = entityOptions.ToStringFunc;
 
-        if (entityOptions.DefaultSortPropertyNames.Count > 0)
-        {
-            entityMetadata.DefaultSortPropertyNames = entityOptions.DefaultSortPropertyNames;
-
-            foreach (var defaultSortPropertyName in entityOptions.DefaultSortPropertyNames)
-            {
-                var defaultSortProperty = entityOptions.PropertyOptions
-                    .FirstOrDefault(option => option.PropertyName == defaultSortPropertyName);
-
-                if (defaultSortProperty is not null)
-                {
-                    defaultSortProperty.IsSortable = true;
-                }
-                else
-                {
-                    var propertyOptionsBuilder = new PropertyOptionsBuilder();
-                    var propertyOptions = propertyOptionsBuilder
-                        .SetIsSortable(true)
-                        .Create(defaultSortPropertyName);
-                    entityOptions.PropertyOptions.Add(propertyOptions);
-                }
-            }
-        }
+        entityMetadata.DefaultSortPropertyNames = entityOptions.DefaultSortPropertyNames;
 
         foreach (var option in entityOptions.PropertyOptions)
         {

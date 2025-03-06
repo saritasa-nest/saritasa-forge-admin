@@ -75,6 +75,9 @@ public partial class EntityPropertyColumns : ComponentBase
     [Parameter]
     public string? EntityDeleteMessage { get; set; }
 
+    [Parameter]
+    public List<string> DefaultSortPropertyNames { get; set; } = [];
+
     /// <summary>
     /// Gets property's display name.
     /// </summary>
