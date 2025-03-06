@@ -135,6 +135,7 @@ public class EntityDetailsViewModel : BaseViewModel
             CanDelete = entity.CanDelete,
             EntityDeleteMessage = entity.MessageOptions.EntityDeleteMessage,
             EntityBulkDeleteMessage = entity.MessageOptions.EntityBulkDeleteMessage,
+            DefaultSortPropertyName = entity.DefaultSortPropertyName
         };
     }
 
@@ -162,13 +163,14 @@ public class EntityDetailsViewModel : BaseViewModel
 
         if (!orderBy.Any())
         {
-            var primaryKeyName = Model.Properties.FirstOrDefault(property => property.IsPrimaryKey)?.Name;
+            var defaultSortPropertyName = Model.DefaultSortPropertyName
+                                          ?? Model.Properties.FirstOrDefault(property => property.IsPrimaryKey)?.Name;
 
-            if (primaryKeyName is not null)
+            if (defaultSortPropertyName is not null)
             {
                 orderBy.Add(new OrderByDto
                 {
-                    FieldName = primaryKeyName
+                    FieldName = defaultSortPropertyName
                 });
             }
         }

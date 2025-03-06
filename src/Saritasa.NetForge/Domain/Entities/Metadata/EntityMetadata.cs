@@ -121,4 +121,6 @@ public class EntityMetadata
     /// Action that executes after entity delete and before saving changes to a database.
     /// </summary>
     public Action<IServiceProvider?, object>? DeleteAction { get; set; }
+
+    public string? DefaultSortPropertyName { get; set; }
 }

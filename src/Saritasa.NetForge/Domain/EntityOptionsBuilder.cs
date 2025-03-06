@@ -309,4 +309,11 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         options.DeleteAction = (serviceProvider, entity) => action(serviceProvider, (TEntity)entity);
         return this;
     }
+
+    public EntityOptionsBuilder<TEntity> ConfigureDefaultSort(Expression<Func<TEntity, object?>> propertyExpression)
+    {
+        var propertyName = propertyExpression.GetMemberName();
+        options.DefaultSortPropertyName = propertyName;
+        return this;
+    }
 }

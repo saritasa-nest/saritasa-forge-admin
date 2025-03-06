@@ -200,7 +200,8 @@ public class EntityService : IEntityService
             ToStringFunc = entity.ToStringFunc,
             CreateAction = entity.CreateAction,
             UpdateAction = entity.UpdateAction,
-            DeleteAction = entity.DeleteAction
+            DeleteAction = entity.DeleteAction,
+            DefaultSortPropertyName = entity.DefaultSortPropertyName
         };
     }
 

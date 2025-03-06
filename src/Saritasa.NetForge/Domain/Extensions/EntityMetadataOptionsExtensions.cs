@@ -74,6 +74,8 @@ public static class EntityMetadataOptionsExtensions
 
         entityMetadata.ToStringFunc = entityOptions.ToStringFunc;
 
+        entityMetadata.DefaultSortPropertyName = entityOptions.DefaultSortPropertyName;
+
         foreach (var option in entityOptions.PropertyOptions)
         {
             var property = entityMetadata.Properties
