@@ -240,7 +240,7 @@ public partial class EntityPropertyColumns : ComponentBase
         {
             if (property is NavigationMetadataDto { IsCollection: false } navigation)
             {
-                var allTargetProperties = navigation.TargetEntityProperties!.Union(navigation.TargetEntityNavigations!);
+                var allTargetProperties = navigation.TargetEntityProperties.Union(navigation.TargetEntityNavigations);
                 var targetPropertiesToDisplay = GetPropertiesToDisplay(allTargetProperties);
                 propertiesToDisplay.AddRange(targetPropertiesToDisplay);
             }
