@@ -36,6 +36,35 @@
             </MudItem>
         }
 
+        <MudItem xs="12" Class="d-flex">
+            <MudText Inline="true" Align="Align.Center" Class="me-3">Action:</MudText>
+            @if (ViewModel.Model.CustomActions.Count != 0)
+            {
+                <div class="me-3">
+                    <MudSelect @bind-Value="ViewModel.SelectedCustomAction" Class="width-50">
+                        @foreach (var action in ViewModel.Model.CustomActions)
+                        {
+                            <MudTooltip Text="@action.Description">
+                                <MudSelectItem Value="@action.Name">@action.Name</MudSelectItem>
+                            </MudTooltip>
+                        }
+                    </MudSelect>
+                </div>
+                <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Class="me-3"
+                           OnClick="ExecuteCustomActionAsync"
+                           Disabled="!ViewModel.SelectedEntities.Any()">
+                    Execute
+                </MudButton>
+                <MudText Inline="true">
+                    @(ViewModel.DataGrid?.SelectedItems?.Count ?? 0) of @(ViewModel.DataGrid?.FilteredItems?.Count() ?? 0) selected.
+                </MudText>
+            }
+            else
+            {
+                <MudText Inline="true">No Custom Action for this Model</MudText>
+            }
+        </MudItem>
+
         @if (ViewModel.IsDisplaySearchInput)
         {
             const int debounceInterval = 250;
@@ -48,7 +77,7 @@
                               AdornmentIcon="@Icons.Material.Filled.Search"
                               IconSize="Size.Medium"
                               DebounceInterval="debounceInterval"
-                              OnDebounceIntervalElapsed="ViewModel.Search" />
+                              OnDebounceIntervalElapsed="ViewModel.Search"/>
             </MudItem>
         }
 
@@ -64,6 +93,7 @@
             <MudItem xs="12">
                 <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true"
                              MultiSelection="true" @bind-SelectedItems="ViewModel.SelectedEntities"
+                             RowClassFunc="RowClassFunc"
                              @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple"
                              @attributes="NonKeylessEntityDataGridAttributes">
                     <Columns>

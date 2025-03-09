@@ -109,4 +109,9 @@ public class EntityOptions
 
     /// <inheritdoc cref="EntityMetadata.DeleteAction"/>
     public Action<IServiceProvider?, object>? DeleteAction { get; set; }
+
+    /// <summary>
+    /// Custom actions for the entity.
+    /// </summary>
+    public List<CustomAction> CustomActions { get; set; } = [];
 }

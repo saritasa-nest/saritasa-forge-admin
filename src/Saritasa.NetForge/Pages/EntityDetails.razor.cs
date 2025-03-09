@@ -27,6 +27,9 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     [Inject]
     private ILogger<EntityDetails> Logger { get; set; } = default!;
 
+    [Inject]
+    private IServiceProvider ServiceProvider { get; set; } = default!;
+
     /// <summary>
     /// Entity id.
     /// </summary>
@@ -100,5 +103,33 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     {
         var primaryKeyValues = row.Item.GetPrimaryKeyValues(ViewModel.Model.Properties);
         NavigationService.NavigateTo<EditEntityViewModel>(parameters: [StringId, primaryKeyValues]);
+    }
+
+    private string RowClassFunc(object item, int index)
+    {
+        if (ViewModel.SelectedEntities.Contains(item))
+        {
+            return "background: yellow";
+        }
+
+        return string.Empty;
+    }
+
+    private async Task ExecuteCustomActionAsync()
+    {
+        var action = ViewModel.Model.CustomActions.FirstOrDefault(e => e.Name == ViewModel.SelectedCustomAction);
+        if (action is null)
+        {
+            return;
+        }
+
+        try
+        {
+            action.Handler?.Invoke(ServiceProvider, ViewModel.SelectedEntities.AsQueryable());
+        }
+        catch (Exception ex)
+        {
+
+        }
     }
 }

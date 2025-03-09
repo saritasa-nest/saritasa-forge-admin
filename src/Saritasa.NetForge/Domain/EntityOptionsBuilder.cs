@@ -309,4 +309,15 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         options.DeleteAction = (serviceProvider, entity) => action(serviceProvider, (TEntity)entity);
         return this;
     }
+
+    /// <summary>
+    /// Adds a custom action to the entity options.
+    /// </summary>
+    /// <param name="action">The custom action to add.</param>
+    /// <returns>The current instance of <see cref="EntityOptionsBuilder{TEntity}"/>.</returns>
+    public EntityOptionsBuilder<TEntity> AddCustomAction(CustomAction action)
+    {
+        options.CustomActions.Add(action);
+        return this;
+    }
 }

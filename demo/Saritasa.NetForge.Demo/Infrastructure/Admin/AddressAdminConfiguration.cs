@@ -3,6 +3,7 @@ using Saritasa.NetForge.Domain;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Domain.Interfaces;
 using Saritasa.NetForge.Demo.Models;
+using Saritasa.NetForge.Domain.Entities.Options;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.Admin;
 
@@ -89,5 +90,18 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
             .SetCreateAction((_, address) => { address.CreatedByUserId = new Random().Next(1, 1000); })
             .SetUpdateAction((_, address) => { address.UpdatedByUserId = new Random().Next(1, 1000); })
             .SetDeleteAction((_, address) => { Debug.WriteLine($"Address {address.Id} deleted."); });
+
+        entityOptionsBuilder.AddCustomAction(new CustomAction
+        {
+            Name = "Address",
+            Description = "Description",
+            Handler = (provider, query) => {
+                foreach (var address in query.ToList().Select(item => item as Address))
+                {
+                    Debug.WriteLine(address.FullAddress);
+                }
+            }
+        });
+
     }
 }

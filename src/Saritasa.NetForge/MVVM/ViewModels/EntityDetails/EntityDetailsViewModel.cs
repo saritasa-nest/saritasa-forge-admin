@@ -85,7 +85,12 @@ public class EntityDetailsViewModel : BaseViewModel
     /// <summary>
     /// Selected entities.
     /// </summary>
-    public HashSet<object> SelectedEntities { get; set; } = new();
+    public HashSet<object> SelectedEntities { get; set; } = [];
+
+    /// <summary>
+    /// Selected custom action.
+    /// </summary>
+    public string SelectedCustomAction { get; set; }
 
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
@@ -135,6 +140,7 @@ public class EntityDetailsViewModel : BaseViewModel
             CanDelete = entity.CanDelete,
             EntityDeleteMessage = entity.MessageOptions.EntityDeleteMessage,
             EntityBulkDeleteMessage = entity.MessageOptions.EntityBulkDeleteMessage,
+            CustomActions = entity.CustomActions
         };
     }
 
