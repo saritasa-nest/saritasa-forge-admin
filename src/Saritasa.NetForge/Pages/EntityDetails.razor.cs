@@ -109,7 +109,7 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     {
         if (ViewModel.SelectedEntities.Contains(item))
         {
-            return "background: yellow";
+            return "property-grid__item--selected";
         }
 
         return string.Empty;
@@ -120,6 +120,17 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
         var action = ViewModel.Model.CustomActions.FirstOrDefault(e => e.Name == ViewModel.SelectedCustomAction);
         if (action is null)
         {
+            Snackbar.Add($"Please select custom action you want to execute.", Severity.Error);
+            Logger.LogError("User not selected any custom action.");
+
+            return;
+        }
+
+        if (ViewModel.SelectedEntities.Count == 0)
+        {
+            Snackbar.Add($"Please select at least one item you want to apply action {action.Name}", Severity.Error);
+            Logger.LogError("User not selected any item to apply {ActionName}", action.Name);
+
             return;
         }
 
@@ -129,7 +140,12 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
         }
         catch (Exception ex)
         {
-
+            Snackbar.Add($"Failed to execute custom action due to error: {ex.Message}", Severity.Error);
+            Logger.LogError(ex, "Failed to execute custom action. CustomAction: {CustomAction}", action);
         }
+
+        Snackbar.Add($"Action {action.Name} was executed.", Severity.Info);
+        // Remove selected item.
+        ViewModel.SelectedEntities = [];
     }
 }

@@ -36,33 +36,36 @@
             </MudItem>
         }
 
-        <MudItem xs="12" Class="d-flex">
-            <MudText Inline="true" Align="Align.Center" Class="me-3">Action:</MudText>
-            @if (ViewModel.Model.CustomActions.Count != 0)
-            {
-                <div class="me-3">
-                    <MudSelect @bind-Value="ViewModel.SelectedCustomAction" Class="width-50">
-                        @foreach (var action in ViewModel.Model.CustomActions)
-                        {
-                            <MudTooltip Text="@action.Description">
-                                <MudSelectItem Value="@action.Name">@action.Name</MudSelectItem>
-                            </MudTooltip>
-                        }
-                    </MudSelect>
-                </div>
-                <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Class="me-3"
-                           OnClick="ExecuteCustomActionAsync"
-                           Disabled="!ViewModel.SelectedEntities.Any()">
-                    Execute
-                </MudButton>
-                <MudText Inline="true">
-                    @(ViewModel.DataGrid?.SelectedItems?.Count ?? 0) of @(ViewModel.DataGrid?.FilteredItems?.Count() ?? 0) selected.
-                </MudText>
-            }
-            else
-            {
-                <MudText Inline="true">No Custom Action for this Model</MudText>
-            }
+        <MudItem xs="12">
+            <MudStack Row AlignItems="AlignItems.Center">
+                <MudText Typo="Typo.h6" Inline="true" Align="Align.Center">Action:</MudText>
+                @if (ViewModel.Model.CustomActions.Count != 0)
+                {
+                    <div class="me-3">
+                        <MudSelect @bind-Value="ViewModel.SelectedCustomAction"
+                                   Variant="Variant.Outlined">
+                            @foreach (var action in ViewModel.Model.CustomActions)
+                            {
+                                <MudTooltip Text="@action.Description">
+                                    <MudSelectItem Value="@action.Name">@action.Name</MudSelectItem>
+                                </MudTooltip>
+                            }
+                        </MudSelect>
+                    </div>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary"
+                               OnClick="ExecuteCustomActionAsync"
+                               Disabled="!ViewModel.SelectedEntities.Any()">
+                        Execute
+                    </MudButton>
+                    <MudText Typo="Typo.h6" Inline="true">
+                        @(ViewModel.DataGrid?.SelectedItems?.Count ?? 0) of @(ViewModel.DataGrid?.FilteredItems?.Count() ?? 0) selected.
+                    </MudText>
+                }
+                else
+                {
+                    <MudText Inline="true">No Custom Action for this Model</MudText>
+                }
+            </MudStack>
         </MudItem>
 
         @if (ViewModel.IsDisplaySearchInput)
@@ -77,7 +80,7 @@
                               AdornmentIcon="@Icons.Material.Filled.Search"
                               IconSize="Size.Medium"
                               DebounceInterval="debounceInterval"
-                              OnDebounceIntervalElapsed="ViewModel.Search"/>
+                              OnDebounceIntervalElapsed="ViewModel.Search" />
             </MudItem>
         }
 
@@ -100,11 +103,11 @@
                         <EntityPropertyColumns Properties="ViewModel.Model.Properties"
                                                DataGrid="ViewModel.DataGrid"
                                                CanDelete="ViewModel.CanDelete"
-                                               EntityDeleteMessage="@ViewModel.Model.EntityDeleteMessage"/>
+                                               EntityDeleteMessage="@ViewModel.Model.EntityDeleteMessage" />
                     </Columns>
 
                     <PagerContent>
-                        <MudDataGridPager T="object"/>
+                        <MudDataGridPager T="object" />
                     </PagerContent>
                 </MudDataGrid>
             </MudItem>
@@ -113,5 +116,5 @@
 }
 else
 {
-    <NotFound/>
+    <NotFound />
 }

@@ -30,6 +30,7 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
   - [Data Attributes](#data-attributes)
   - [Custom Query](#custom-query)
   - [After Update Action](#after-update-action)
+  - [Custom Action](#custom-action)
 - [Customizing Entity Properties](#customizing-entity-properties)
   - [Fluent API](#fluent-api-1)
   - [Data Attributes](#data-attributes-1)
@@ -645,6 +646,39 @@ You can configure action that will be performed after entity update.
 
 You can use `ServiceProvider` to access your services.
 
+## Custom Action
+
+You can configure custom action that apply to selected item grid.
+
+```csharp
+.ConfigureEntity<Address>(entityOptionsBuilder =>
+{
+    entityOptionsBuilder.AddCustomAction(new CustomAction
+        {
+            Name = "Log all selected address",
+            Description = "Log all selected addresses",
+            Handler = (serviceProvider, query) => {
+                foreach (var address in query.ToList().Select(item => item as Address))
+                {
+                    Debug.WriteLine(address.FullAddress);
+                }
+            }
+        });
+
+})
+```
+
+You can use `ServiceProvider` to access your services.
+
+## Custom Action
+
+You can configure a custom action that applies to the selected items in the grid. This allows you to perform specific operations on multiple selected entities at once.
+
+**Using Fluent API**
+You can use `ServiceProvider` to access your services.
+## Custom Action
+
+You can configure a custom action that applies to the selected items in the grid.
 # Customizing Entity Properties
 
 You can customize entity properties as well. For example, you can change display name, add description, hide it or change property column order.
