@@ -8,16 +8,16 @@ public static class EphemeralModule
     public static void AddEphemeralSqlite(this IServiceCollection services)
     {
         services.AddHttpContextAccessor();
-        services.TryAddScoped<EphemeralStorage>();
         services.TryAddScoped<IEphemeralStorage>(static sp =>
         {
             var httpContext = sp.GetRequiredService<IHttpContextAccessor>().HttpContext;
-            if (httpContext != null)
+            if (httpContext == null)
             {
-                sp = httpContext.RequestServices;
+                return new EphemeralStorage(null);
             }
 
-            return sp.GetRequiredService<EphemeralStorage>();
+            return EphemeralDatabaseRoot.Stores
+                .GetOrAdd(httpContext, static ctx => new EphemeralStorage(ctx));
         });
     }
 }
