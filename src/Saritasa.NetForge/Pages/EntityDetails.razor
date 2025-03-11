@@ -57,9 +57,13 @@
                                Disabled="!ViewModel.SelectedEntities.Any()">
                         Execute
                     </MudButton>
-                    <MudText Typo="Typo.h6" Inline="true">
-                        @(ViewModel.DataGrid?.SelectedItems?.Count ?? 0) of @(ViewModel.DataGrid?.FilteredItems?.Count() ?? 0) selected.
-                    </MudText>
+                    @if (ViewModel.SelectedEntities.Count > 0)
+                    {
+                        <MudText Typo="Typo.h6" Inline="true">
+                            @(ViewModel.SelectedEntities.Count) of @(ViewModel.TotalItems) selected.
+                        </MudText>
+                    }
+
                 }
                 else
                 {

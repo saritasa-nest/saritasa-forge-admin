@@ -92,6 +92,11 @@ public class EntityDetailsViewModel : BaseViewModel
     /// </summary>
     public string SelectedCustomAction { get; set; }
 
+    /// <summary>
+    /// Total items in data grid.
+    /// </summary>
+    public int TotalItems { get; set; }
+
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
     {
@@ -189,6 +194,8 @@ public class EntityDetailsViewModel : BaseViewModel
 
         var entityData = await dataService
             .SearchDataForEntityAsync(Model.ClrType, Model.Properties, searchOptions, Model.SearchFunction, Model.CustomQueryFunction);
+
+        TotalItems = entityData.Metadata.TotalCount;
 
         var data = new GridData<object>
         {
