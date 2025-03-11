@@ -136,6 +136,13 @@
                             @propertyValue
                         </MudButton>
                     }
+                    else if (property.ClrType == typeof(bool) || property.ClrType == typeof(bool?))
+                    {
+                        var value = GetPropertyValue(cell.Item, property);
+                        bool? nullableBooleanValue = value != null ? Convert.ToBoolean(value) : null;
+
+                        <MudCheckBox T="bool" Value="@(nullableBooleanValue ?? false)" Disabled="true" />
+                    }
                     else
                     {
                         @propertyValue
