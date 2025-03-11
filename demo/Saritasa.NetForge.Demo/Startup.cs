@@ -1,10 +1,13 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Saritasa.NetForge.Demo.Infrastructure.DependencyInjection;
 using Saritasa.NetForge.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Demo.Infrastructure.Startup;
 using Saritasa.NetForge.Demo.Infrastructure.Startup.HealthCheck;
+using Saritasa.NetForge.Demo.Infrastructure.Storage;
 using Saritasa.NetForge.Demo.Infrastructure.UploadFiles.S3Storage;
 using Saritasa.NetForge.Demo.Infrastructure.Web;
 using Saritasa.NetForge.Demo.Models;
@@ -35,16 +38,14 @@ public class Startup
     public void ConfigureServices(IServiceCollection services, IWebHostEnvironment environment)
     {
         services.AddRazorPages();
-        var connectionString = configuration.GetConnectionString("AppDatabase")
-                               ?? throw new ArgumentNullException("ConnectionStrings:AppDatabase",
-                                   "Database connection string is not initialized");
 
         services.AddDbContext<ShopDbContext>(options =>
         {
-            options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
+            options.UseEphemeralSqlite().UseSnakeCaseNamingConvention();
         });
-        services.AddAsyncInitializer<DatabaseInitializer>();
-        services.AddHealthChecks().AddNpgSql(connectionString);
+        services.AddAsyncInitialization();
+        // services.AddAsyncInitializer<DatabaseInitializer>();
+        services.AddHealthChecks();
 
         // Identity.
         services.AddIdentity<User, IdentityRole>()
@@ -57,6 +58,7 @@ public class Startup
 
         services.AddScoped<IBlobStorageService, S3StorageService>();
         services.AddScoped<ICloudBlobStorageService, S3StorageService>();
+        services.AddEphemeralSqlite();
 
         // Other dependencies
         services.AddSingleton<AppInitializationStatusStorage>();
