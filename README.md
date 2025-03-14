@@ -581,12 +581,12 @@ Also, you can use `ServiceProvider` if you need to access your services.
 
 ```csharp
 public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+{
+    entityOptionsBuilder.SetCreateAction((serviceProvider, address) =>
     {
-        entityOptionsBuilder.SetCreateAction((serviceProvider, address) =>
-            {
-                address.CreatedByUserId = new Random().Next(1, 1000);
-            });
-    }
+        address.CreatedByUserId = new Random().Next(1, 1000);
+    });
+}
 ```
 
 ## Update Custom Action
@@ -595,12 +595,12 @@ This one behaves just like [Create Custom Action](#create-custom-action) but wil
 
 ```csharp
 public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+{
+    entityOptionsBuilder.SetUpdateAction((serviceProvider, address) =>
     {
-        entityOptionsBuilder.SetUpdateAction((serviceProvider, address) =>
-            {
-                address.UpdatedByUserId = new Random().Next(1, 1000);
-            });
-    }
+        address.UpdatedByUserId = new Random().Next(1, 1000);
+    });
+}
 ```
 
 ## Delete Custom Action
@@ -609,12 +609,12 @@ This one behaves just like [Create Custom Action](#create-custom-action) but wil
 
 ```csharp
 public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+{
+    entityOptionsBuilder.SetDeleteAction((serviceProvider, address) =>
     {
-        entityOptionsBuilder.SetDeleteAction((serviceProvider, address) =>
-            {
-                Debug.WriteLine($"Address {address.Id} deleted.");
-            });
-    }
+        Debug.WriteLine($"Address {address.Id} deleted.");
+    });
+}
 ```
 
 ## After Update Action
@@ -651,34 +651,25 @@ You can use `ServiceProvider` to access your services.
 You can configure custom action that apply to selected item grid.
 
 ```csharp
-.ConfigureEntity<Address>(entityOptionsBuilder =>
+public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
 {
     entityOptionsBuilder.AddCustomAction(new CustomAction
+    {
+        Name = "Log address information",
+        Description = "Logs detailed information about each address, including ID, full address, latitude, and longitude.",
+        Handler = (serviceProvider, query) =>
         {
-            Name = "Log all selected address",
-            Description = "Log all selected addresses",
-            Handler = (serviceProvider, query) => {
-                foreach (var address in query.ToList().Select(item => item as Address))
-                {
-                    Debug.WriteLine(address.FullAddress);
-                }
+            foreach (var address in query.ToList().Select(item => item as Address))
+            {
+                Debug.WriteLine($"{address.Id} - {address.FullAddress} - {address.Latitude} - {address.Longitude}");
             }
-        });
-
-})
+        }
+    });
+}
 ```
 
 You can use `ServiceProvider` to access your services.
 
-## Custom Action
-
-You can configure a custom action that applies to the selected items in the grid. This allows you to perform specific operations on multiple selected entities at once.
-
-**Using Fluent API**
-You can use `ServiceProvider` to access your services.
-## Custom Action
-
-You can configure a custom action that applies to the selected items in the grid.
 # Customizing Entity Properties
 
 You can customize entity properties as well. For example, you can change display name, add description, hide it or change property column order.

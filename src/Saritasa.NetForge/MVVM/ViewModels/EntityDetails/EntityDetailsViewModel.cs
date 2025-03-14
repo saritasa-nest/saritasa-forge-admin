@@ -90,7 +90,7 @@ public class EntityDetailsViewModel : BaseViewModel
     /// <summary>
     /// Selected custom action.
     /// </summary>
-    public string SelectedCustomAction { get; set; }
+    public string SelectedCustomAction { get; set; } = string.Empty;
 
     /// <summary>
     /// Total items in data grid.

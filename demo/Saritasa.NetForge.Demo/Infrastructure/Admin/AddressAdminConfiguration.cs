@@ -93,15 +93,15 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
 
         entityOptionsBuilder.AddCustomAction(new CustomAction
         {
-            Name = "Address",
-            Description = "Description",
-            Handler = (provider, query) => {
+            Name = "Log address information",
+            Description = "Logs detailed information about each address, including ID, full address, latitude, and longitude.",
+            Handler = (serviceProvider, query) =>
+            {
                 foreach (var address in query.ToList().Select(item => item as Address))
                 {
-                    Debug.WriteLine(address.FullAddress);
+                    Debug.WriteLine($"{address.Id} - {address.FullAddress} - {address.Latitude} - {address.Longitude}");
                 }
             }
         });
-
     }
 }

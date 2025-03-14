@@ -38,12 +38,11 @@
 
         <MudItem xs="12">
             <MudStack Row AlignItems="AlignItems.Center">
-                <MudText Typo="Typo.h6" Inline="true" Align="Align.Center">Action:</MudText>
-                @if (ViewModel.Model.CustomActions.Count != 0)
+                <MudText Inline="true" Align="Align.Center">Action:</MudText>
+                @if (ViewModel.Model.CustomActions.Count > 0)
                 {
                     <div class="me-3">
-                        <MudSelect @bind-Value="ViewModel.SelectedCustomAction"
-                                   Variant="Variant.Outlined">
+                        <MudSelect @bind-Value="ViewModel.SelectedCustomAction">
                             @foreach (var action in ViewModel.Model.CustomActions)
                             {
                                 <MudTooltip Text="@action.Description">
@@ -54,7 +53,7 @@
                     </div>
                     <MudButton Variant="Variant.Outlined" Color="Color.Secondary"
                                OnClick="ExecuteCustomActionAsync"
-                               Disabled="!ViewModel.SelectedEntities.Any()">
+                               Disabled="ViewModel.SelectedEntities.Count <= 0">
                         Execute
                     </MudButton>
                     @if (ViewModel.SelectedEntities.Count > 0)
@@ -63,11 +62,6 @@
                             @(ViewModel.SelectedEntities.Count) of @(ViewModel.TotalItems) selected.
                         </MudText>
                     }
-
-                }
-                else
-                {
-                    <MudText Inline="true">No Custom Action for this Model</MudText>
                 }
             </MudStack>
         </MudItem>

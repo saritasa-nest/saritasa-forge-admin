@@ -19,6 +19,6 @@ public class CustomAction
     /// Gets or sets the handler for the custom action.
     /// The handler is an action that takes an <see cref="IServiceProvider"/> and an <see cref="IQueryable{T}"/> of objects.
     /// </summary>
-    public Action<IServiceProvider?, IQueryable<object>>? Handler { get; set; } = null;
+    public Action<IServiceProvider?, IQueryable<object>>? Handler { get; set; }
 }
 }
