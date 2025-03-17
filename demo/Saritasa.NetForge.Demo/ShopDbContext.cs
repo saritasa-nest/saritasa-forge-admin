@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Saritasa.NetForge.Demo.Infrastructure.Storage;
 using Saritasa.NetForge.Demo.Models;
 
 namespace Saritasa.NetForge.Demo;
@@ -11,7 +10,6 @@ namespace Saritasa.NetForge.Demo;
 /// </summary>
 public class ShopDbContext : IdentityDbContext<User>
 {
-    private bool seeded;
     static ShopDbContext()
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -20,25 +18,9 @@ public class ShopDbContext : IdentityDbContext<User>
     /// <summary>
     /// Initializes a new instance of the <see cref="ShopDbContext"/> class.
     /// </summary>
-    /// <param name="httpContextAccessor">HTTP context accessor.</param>
     /// <param name="options">The database context options.</param>
-    public ShopDbContext(IHttpContextAccessor httpContextAccessor,
-        DbContextOptions<ShopDbContext> options) : base(options)
+    public ShopDbContext(DbContextOptions<ShopDbContext> options) : base(options)
     {
-        base.Database.Migrate();
-        if (httpContextAccessor.HttpContext == null ||
-            !EphemeralDatabaseRoot.Stores.TryGetValue(httpContextAccessor.HttpContext, out var store))
-        {
-            return;
-        }
-
-        if (store.IsSeeded)
-        {
-            return;
-        }
-
-        this.SeedData();
-        store.IsSeeded = true;
     }
 
     /// <summary>

@@ -3,19 +3,26 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.Storage;
 
-public class EphemeralSqliteRelationalConnection : RelationalConnection
+/// <summary>
+/// Ephemeral SQLite relational connection.
+/// </summary>
+internal class EphemeralSqliteRelationalConnection : RelationalConnection
 {
-    private readonly IEphemeralStorage ephemeralStorage;
+    private readonly IEphemeralSqliteConnection ephemeralSqliteConnection;
     
+    /// <summary>
+    /// Constructor.
+    /// </summary>
     public EphemeralSqliteRelationalConnection(RelationalConnectionDependencies dependencies,
-        IEphemeralStorage ephemeralStorage)
+        IEphemeralSqliteConnection ephemeralSqliteConnection)
         : base(dependencies)
     {
-        this.ephemeralStorage = ephemeralStorage;
+        this.ephemeralSqliteConnection = ephemeralSqliteConnection;
     }
 
+    /// <inheritdoc />
     protected override DbConnection CreateDbConnection()
     {
-        return ephemeralStorage.Connection;
+        return ephemeralSqliteConnection.CreateConnection();
     }
 }

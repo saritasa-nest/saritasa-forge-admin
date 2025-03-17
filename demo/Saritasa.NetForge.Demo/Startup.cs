@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Saritasa.NetForge.Demo.Infrastructure.DependencyInjection;
+using Saritasa.NetForge.Demo.Infrastructure.Middlewares;
 using Saritasa.NetForge.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Demo.Infrastructure.Startup;
@@ -44,7 +45,7 @@ public class Startup
             options.UseEphemeralSqlite().UseSnakeCaseNamingConvention();
         });
         services.AddAsyncInitialization();
-        // services.AddAsyncInitializer<DatabaseInitializer>();
+        services.AddAsyncInitializer<DatabaseInitializer>();
         services.AddHealthChecks();
 
         // Identity.
@@ -80,6 +81,7 @@ public class Startup
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();
+        app.UseMiddleware<DbSnapshotLoaderMiddleware>();
         app.MapControllers();
         app.UseNetForge();
 
