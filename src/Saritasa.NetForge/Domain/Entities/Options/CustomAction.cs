@@ -1,5 +1,5 @@
-﻿namespace Saritasa.NetForge.Domain.Entities.Options
-{
+﻿namespace Saritasa.NetForge.Domain.Entities.Options;
+
 /// <summary>
 /// Represents a custom action that can be executed with a specified handler.
 /// </summary>
@@ -20,5 +20,4 @@ public class CustomAction
     /// The handler is an action that takes an <see cref="IServiceProvider"/> and an <see cref="IQueryable{T}"/> of objects.
     /// </summary>
     public Action<IServiceProvider?, IQueryable<object>>? Handler { get; set; }
-}
 }

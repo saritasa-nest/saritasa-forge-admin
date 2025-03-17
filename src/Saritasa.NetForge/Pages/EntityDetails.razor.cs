@@ -144,7 +144,7 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
             Logger.LogError(ex, "Failed to execute custom action. CustomAction: {CustomAction}.", action);
         }
 
-        Snackbar.Add($"Action {action.Name} was executed.", Severity.Info);
+        Snackbar.Add($"Action \"{action.Name}\" was executed.", Severity.Success);
 
         ViewModel.SelectedEntities.Clear();
 

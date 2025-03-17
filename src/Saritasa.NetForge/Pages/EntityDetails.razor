@@ -36,13 +36,13 @@
             </MudItem>
         }
 
-        <MudItem xs="12">
-            <MudStack Row AlignItems="AlignItems.Center">
-                <MudText Inline="true" Align="Align.Center">Action:</MudText>
-                @if (ViewModel.Model.CustomActions.Count > 0)
-                {
+        @if (ViewModel.Model.CustomActions.Count > 0)
+        {
+            <MudItem xs="12">
+                <MudStack Row AlignItems="AlignItems.Center">
+                    <MudText Inline="true" Align="Align.Center">Action:</MudText>
                     <div class="me-3">
-                        <MudSelect @bind-Value="ViewModel.SelectedCustomAction">
+                        <MudSelect @bind-Value="ViewModel.SelectedCustomAction" Placeholder="Action">
                             @foreach (var action in ViewModel.Model.CustomActions)
                             {
                                 <MudTooltip Text="@action.Description">
@@ -58,13 +58,13 @@
                     </MudButton>
                     @if (ViewModel.SelectedEntities.Count > 0)
                     {
-                        <MudText Typo="Typo.h6" Inline="true">
+                        <MudText Inline="true" Align="Align.Center">
                             @(ViewModel.SelectedEntities.Count) of @(ViewModel.TotalItems) selected.
                         </MudText>
                     }
-                }
-            </MudStack>
-        </MudItem>
+                </MudStack>
+            </MudItem>
+        }
 
         @if (ViewModel.IsDisplaySearchInput)
         {
