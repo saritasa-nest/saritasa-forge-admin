@@ -655,14 +655,30 @@ public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
 {
     entityOptionsBuilder.AddCustomAction(new CustomAction
     {
-        Name = "Log address information",
-        Description = "Logs detailed information about each address, including ID, full address, latitude, and longitude.",
+        Name = "Random longitude, latitude value",
+        Description = "Assigns random longitude and latitude values to the selected addresses.",
         Handler = (serviceProvider, query) =>
         {
+            double GetRandomNumber(double min, double max)
+            {
+                var random = new Random();
+                return random.NextDouble() * (max - min) + min;
+            }
+
+            var context = serviceProvider?.GetRequiredService<ShopDbContext>();
+            if (context is null)
+            {
+                return;
+            }
+
             foreach (var address in query.ToList().Select(item => item as Address))
             {
-                Debug.WriteLine($"{address.Id} - {address.FullAddress} - {address.Latitude} - {address.Longitude}");
+                address.Longitude = GetRandomNumber(-180, 180);
+                address.Latitude = GetRandomNumber(-180, 180);
             }
+
+            context.UpdateRange(query);
+            context.SaveChanges();
         }
     });
 }
