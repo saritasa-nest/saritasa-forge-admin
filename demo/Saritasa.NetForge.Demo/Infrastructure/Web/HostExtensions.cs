@@ -12,13 +12,27 @@ public static class HostExtensions
     /// <param name="host">Host to run.</param>
     public static async Task RunAndInit(this IHost host)
     {
-        var initializationStatus = host.Services.GetRequiredService<AppInitializationStatusStorage>();
-        await host.StartAsync();
+        try
+        {
+            var initializationStatus = host.Services.GetRequiredService<AppInitializationStatusStorage>();
+            await host.StartAsync();
 
-        await host.InitAsync();
+            await host.InitAsync();
 
-        initializationStatus.HasAppInitialized = true;
+            initializationStatus.HasAppInitialized = true;
 
-        await host.WaitForShutdownAsync();
+            await host.WaitForShutdownAsync();
+        }
+        finally
+        {
+            if (host is IAsyncDisposable asyncDisposable)
+            {
+                await asyncDisposable.DisposeAsync();
+            }
+            else
+            {
+                host.Dispose();
+            }
+        }
     }
 }

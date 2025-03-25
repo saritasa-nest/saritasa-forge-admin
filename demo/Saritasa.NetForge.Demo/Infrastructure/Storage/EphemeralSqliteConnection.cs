@@ -15,23 +15,20 @@ internal class EphemeralSqliteConnection : CriticalFinalizerObject, IEphemeralSq
         return new SqliteConnection($"Data Source={path}");
     }
 
-    /// <inheritdoc cref="IEphemeralSqliteConnection.CreateConnection" />
-    public SqliteConnection CreateConnection() => CreateConnection(path);
-
     /// <inheritdoc />
-    DbConnection IEphemeralSqliteConnection.CreateConnection() => CreateConnection();
+    DbConnection IEphemeralSqliteConnection.CreateConnection() => CreateConnection(path);
 
     /// <inheritdoc cref="Dispose()" />
     /// <param name="disposing">Whether this method is called by <see cref="Dispose()"/> or not.</param>
     protected virtual void Dispose(bool disposing)
     {
+        if (disposed)
+        {
+            return;
+        }
+
         try
         {
-            if (disposed)
-            {
-                return;
-            }
-
             File.Delete(path);
         }
         finally
@@ -64,6 +61,8 @@ internal class EphemeralSqliteConnection : CriticalFinalizerObject, IEphemeralSq
     /// <inheritdoc />
     public Task LoadDatabase(string source, CancellationToken cancellationToken)
     {
+        // We could just copy and paste the file
+        // but this would prevent edge cases.
         return BackupDatabase(source, path, cancellationToken);
     }
 

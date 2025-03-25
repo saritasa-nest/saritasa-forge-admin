@@ -66,6 +66,7 @@ public class Startup
 
         // Add NetForge admin panel.
         Infrastructure.DependencyInjection.NetForgeModule.Register(services, configuration);
+        Infrastructure.DependencyInjection.SeederModule.Register(services);
     }
 
     /// <summary>
