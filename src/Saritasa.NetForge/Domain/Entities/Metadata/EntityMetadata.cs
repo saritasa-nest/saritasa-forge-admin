@@ -125,5 +125,5 @@ public class EntityMetadata
     /// <summary>
     /// A collection of custom actions associated with this entity.
     /// </summary>
-    public List<CustomAction> CustomActions { get; set; } = [];
+    public List<CustomAction<object>> CustomActions { get; set; } = [];
 }

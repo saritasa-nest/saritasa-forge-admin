@@ -68,5 +68,5 @@ public record GetEntityDto
     public Action<IServiceProvider?, object>? DeleteAction { get; set; }
 
     /// <inheritdoc cref="EntityMetadata.CustomActions"/>
-    public List<CustomAction> CustomActions { get; set; } = [];
+    public List<CustomAction<object>> CustomActions { get; set; } = [];
 }

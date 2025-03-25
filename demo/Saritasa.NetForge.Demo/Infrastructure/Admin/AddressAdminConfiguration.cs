@@ -91,7 +91,7 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
             .SetUpdateAction((_, address) => { address.UpdatedByUserId = new Random().Next(1, 1000); })
             .SetDeleteAction((_, address) => { Debug.WriteLine($"Address {address.Id} deleted."); });
 
-        entityOptionsBuilder.AddCustomAction(new CustomAction
+        entityOptionsBuilder.AddCustomAction(new CustomAction<Address>
         {
             Name = "Random longitude, latitude value",
             Description = "Assigns random longitude and latitude values to the selected addresses.",
@@ -109,7 +109,7 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
                     return;
                 }
 
-                foreach (var address in query.ToList().Select(item => item as Address))
+                foreach (var address in query.ToList().Select(item => item))
                 {
                     address.Longitude = GetRandomNumber(-180, 180);
                     address.Latitude = GetRandomNumber(-180, 180);

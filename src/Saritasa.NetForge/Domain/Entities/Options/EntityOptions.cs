@@ -113,5 +113,5 @@ public class EntityOptions
     /// <summary>
     /// Custom actions for the entity.
     /// </summary>
-    public List<CustomAction> CustomActions { get; set; } = [];
+    public List<CustomAction<object>> CustomActions { get; set; } = [];
 }

@@ -315,9 +315,16 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     /// </summary>
     /// <param name="action">The custom action to add.</param>
     /// <returns>The current instance of <see cref="EntityOptionsBuilder{TEntity}"/>.</returns>
-    public EntityOptionsBuilder<TEntity> AddCustomAction(CustomAction action)
+    public EntityOptionsBuilder<TEntity> AddCustomAction(CustomAction<TEntity> action)
     {
-        options.CustomActions.Add(action);
+        var castedAction = new CustomAction<object>
+        {
+            Name = action.Name,
+            Description = action.Description,
+            Handler = (serviceProvider, query) => action.Handler?.Invoke(serviceProvider, query.Cast<TEntity>())
+        };
+        options.CustomActions.Add(castedAction);
+
         return this;
     }
 }

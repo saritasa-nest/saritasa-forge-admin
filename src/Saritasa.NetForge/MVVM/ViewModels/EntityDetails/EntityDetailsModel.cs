@@ -58,5 +58,5 @@ public record EntityDetailsModel
     public string? EntityBulkDeleteMessage { get; set; }
 
     /// <inheritdoc cref="EntityMetadata.CustomActions"/>
-    public List<CustomAction> CustomActions { get; set; } = [];
+    public List<CustomAction<object>> CustomActions { get; set; } = [];
 }
