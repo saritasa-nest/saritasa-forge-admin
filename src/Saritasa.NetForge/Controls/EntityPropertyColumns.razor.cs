@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Extensions;
 using Saritasa.NetForge.Infrastructure.Helpers;
 using Saritasa.NetForge.Domain.Entities.Options;
@@ -76,6 +77,7 @@ public partial class EntityPropertyColumns : ComponentBase
     [Parameter]
     public string? EntityDeleteMessage { get; set; }
 
+    /// <inheritdoc cref="EntityMetadata.DefaultOrderings"/>
     [Parameter]
     public List<OrderByDto> DefaultOrderings { get; set; } = [];
 

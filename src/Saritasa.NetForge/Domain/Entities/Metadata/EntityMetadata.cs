@@ -123,5 +123,8 @@ public class EntityMetadata
     /// </summary>
     public Action<IServiceProvider?, object>? DeleteAction { get; set; }
 
+    /// <summary>
+    /// Contains properties to use for sort when no one sort is applied.
+    /// </summary>
     public List<OrderByDto> DefaultOrderings { get; set; } = [];
 }

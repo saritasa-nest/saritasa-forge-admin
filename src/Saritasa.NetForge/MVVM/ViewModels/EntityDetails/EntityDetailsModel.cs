@@ -58,5 +58,6 @@ public record EntityDetailsModel
     /// <inheritdoc cref="MessageOptions.EntityBulkDeleteMessage"/>
     public string? EntityBulkDeleteMessage { get; set; }
 
-    public List<OrderByDto> DefaultOrderings { get; set; }
+    /// <inheritdoc cref="EntityMetadata.DefaultOrderings"/>
+    public List<OrderByDto> DefaultOrderings { get; set; } = [];
 }

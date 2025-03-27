@@ -312,6 +312,13 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         return this;
     }
 
+    /// <summary>
+    /// Configures properties that will have initial sort when loading data.
+    /// When multiple properties were provided, then their order in the array will be used.
+    /// For example: <c>[City, Street]</c>, sort will be performed by city then by street.
+    /// </summary>
+    /// <param name="propertySorts">Contains information which properties and directions to use for sort.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
     public EntityOptionsBuilder<TEntity> ConfigureDefaultSort(
         params (Expression<Func<TEntity, object?>> PropertyExpression, bool IsDescending)[] propertySorts)
     {
