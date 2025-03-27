@@ -91,7 +91,7 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
             .SetUpdateAction((_, address) => { address.UpdatedByUserId = new Random().Next(1, 1000); })
             .SetDeleteAction((_, address) => { Debug.WriteLine($"Address {address.Id} deleted."); });
 
-        entityOptionsBuilder.ConfigureDefaultSort(
+        entityOptionsBuilder.SetDefaultSort(
             (address => address.City, IsDescending: true), (address => address.Street, IsDescending: true));
     }
 }

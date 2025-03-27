@@ -319,7 +319,7 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     /// </summary>
     /// <param name="propertySorts">Contains information which properties and directions to use for sort.</param>
     /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
-    public EntityOptionsBuilder<TEntity> ConfigureDefaultSort(
+    public EntityOptionsBuilder<TEntity> SetDefaultSort(
         params (Expression<Func<TEntity, object?>> PropertyExpression, bool IsDescending)[] propertySorts)
     {
         var orderings = propertySorts
