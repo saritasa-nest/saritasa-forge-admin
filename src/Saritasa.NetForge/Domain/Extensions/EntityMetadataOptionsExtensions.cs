@@ -78,6 +78,14 @@ public static class EntityMetadataOptionsExtensions
         if (entityOptions.DefaultOrderings.Count > 0)
         {
             entityMetadata.DefaultOrderings = entityOptions.DefaultOrderings;
+
+            foreach (var property in entityMetadata.Properties)
+            {
+                if (entityOptions.DefaultOrderings.Any(order => order.FieldName == property.Name))
+                {
+                    property.IsSortable = true;
+                }
+            }
         }
         else
         {
@@ -144,6 +152,8 @@ public static class EntityMetadataOptionsExtensions
                 IsDescending = false
             };
             entityMetadata.DefaultOrderings.Add(primaryKeyOrder);
+
+            primaryKey.IsSortable = true;
         }
     }
 
