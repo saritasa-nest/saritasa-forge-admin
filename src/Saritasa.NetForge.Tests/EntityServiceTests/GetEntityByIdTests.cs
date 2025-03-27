@@ -743,4 +743,84 @@ public class GetEntityByIdTests : IDisposable
         // Assert
         Assert.NotNull(entity.UpdateAction);
     }
+
+    /// <summary>
+    /// Verifies default sort configured correctly.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_SetDefaultSort_ShouldBeConfigured()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.SetDefaultSort((shop => shop.Name, IsDescending: false));
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(
+            entity.DefaultOrderings, ordering => ordering is { FieldName: nameof(Shop.Name), IsDescending: false });
+        Assert.Single(entity.DefaultOrderings);
+    }
+
+    /// <summary>
+    /// Verifies default sort on multiple properties configured correctly.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_SetDefaultSort_MultipleSort_ShouldBeConfigured()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
+        {
+            builder.SetDefaultSort((shop => shop.Name, IsDescending: false), (shop => shop.IsOpen, IsDescending: true));
+        });
+        const int orderingsCount = 2;
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        Assert.Contains(
+            entity.DefaultOrderings, ordering => ordering is { FieldName: nameof(Shop.Name), IsDescending: false });
+        Assert.Contains(
+            entity.DefaultOrderings, ordering => ordering is { FieldName: nameof(Shop.IsOpen), IsDescending: true });
+        Assert.Equal(orderingsCount, entity.DefaultOrderings.Count);
+    }
+
+    /// <summary>
+    /// Verifies default sort uses primary key when not configured.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithoutDefaultSortConfiguration_ShouldUsePrimaryKey()
+    {
+        // Act
+        var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+
+        // Assert
+        var primaryKey = entity.Properties.First(property => property.IsPrimaryKey);
+        Assert.Contains(entity.DefaultOrderings, ordering => ordering.FieldName == primaryKey.Name);
+        Assert.Single(entity.DefaultOrderings);
+    }
+
+    /// <summary>
+    /// Verifies default sort on entity with composite primary key uses all primary keys when not configured.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_WithoutDefaultSortConfiguration_CompositePrimaryKey_ShouldUseAllPrimaryKeys()
+    {
+        // Arrange
+        const int primaryKeysCount = 2;
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync("Suppliers", CancellationToken.None);
+
+        // Assert
+        var primaryKeyNames = entity.Properties
+            .Where(property => property.IsPrimaryKey)
+            .Select(property => property.Name);
+        Assert.Contains(entity.DefaultOrderings, ordering => primaryKeyNames.Contains(ordering.FieldName));
+        Assert.Equal(primaryKeysCount, entity.DefaultOrderings.Count);
+    }
 }
