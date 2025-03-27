@@ -63,6 +63,10 @@ public class AdminMetadataService
                     ExcludeProperties(entityMetadata, entityOptions);
                 }
             }
+            else
+            {
+                entityMetadata.SetPrimaryKeysDefaultOrderings();
+            }
 
             entityMetadata.ApplyEntityAttributes(adminOptions);
             entityMetadata.Id = Guid.NewGuid();

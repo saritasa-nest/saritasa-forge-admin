@@ -92,6 +92,6 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
             .SetDeleteAction((_, address) => { Debug.WriteLine($"Address {address.Id} deleted."); });
 
         entityOptionsBuilder.ConfigureDefaultSort(
-            (address => address.Street, IsDescending: true), (address => address.City, IsDescending: true));
+            (address => address.City, IsDescending: true), (address => address.Street, IsDescending: true));
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Domain.UseCases.Common;
 
 namespace Saritasa.NetForge.Domain.Extensions;
 
@@ -74,7 +75,14 @@ public static class EntityMetadataOptionsExtensions
 
         entityMetadata.ToStringFunc = entityOptions.ToStringFunc;
 
-        entityMetadata.DefaultOrderings = entityOptions.DefaultOrderings;
+        if (entityOptions.DefaultOrderings.Count > 0)
+        {
+            entityMetadata.DefaultOrderings = entityOptions.DefaultOrderings;
+        }
+        else
+        {
+            SetPrimaryKeysDefaultOrderings(entityMetadata);
+        }
 
         foreach (var option in entityOptions.PropertyOptions)
         {
@@ -119,6 +127,24 @@ public static class EntityMetadataOptionsExtensions
         }
 
         entityMetadata.AssignGroupToEntity(entityOptions.GroupName, adminOptions);
+    }
+
+    /// <summary>
+    /// Set orderings using entity's primary keys.
+    /// </summary>
+    /// <param name="entityMetadata">Entity metadata.</param>
+    public static void SetPrimaryKeysDefaultOrderings(this EntityMetadata entityMetadata)
+    {
+        var primaryKeys = entityMetadata.Properties.Where(property => property.IsPrimaryKey);
+        foreach (var primaryKey in primaryKeys)
+        {
+            var primaryKeyOrder = new OrderByDto
+            {
+                FieldName = primaryKey.Name,
+                IsDescending = false
+            };
+            entityMetadata.DefaultOrderings.Add(primaryKeyOrder);
+        }
     }
 
     private static void ApplyPropertyOptions(

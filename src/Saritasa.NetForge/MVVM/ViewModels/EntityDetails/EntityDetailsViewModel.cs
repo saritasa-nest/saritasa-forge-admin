@@ -163,20 +163,6 @@ public class EntityDetailsViewModel : BaseViewModel
 
         if (orderBy.Count == 0)
         {
-            if (Model.DefaultOrderings.Count == 0)
-            {
-                var primaryKeys = Model.Properties.Where(property => property.IsPrimaryKey);
-                foreach (var primaryKey in primaryKeys)
-                {
-                    var primaryKeyOrder = new OrderByDto
-                    {
-                        FieldName = primaryKey.Name,
-                        IsDescending = false
-                    };
-                    Model.DefaultOrderings.Add(primaryKeyOrder);
-                }
-            }
-
             foreach (var defaultOrdering in Model.DefaultOrderings)
             {
                 var column = DataGrid!.RenderedColumns.First(column => column.Title == defaultOrdering.FieldName);
