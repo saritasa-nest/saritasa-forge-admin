@@ -25,6 +25,7 @@ public static class HostExtensions
         }
         finally
         {
+            // This would make sure our DB snapshot is removed.
             if (host is IAsyncDisposable asyncDisposable)
             {
                 await asyncDisposable.DisposeAsync();

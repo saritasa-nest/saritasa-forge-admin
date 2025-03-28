@@ -4,8 +4,12 @@ using Microsoft.Data.Sqlite;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.Storage;
 
-/// <inheritdoc cref="IEphemeralSqliteConnection" />
-internal class EphemeralSqliteConnection : CriticalFinalizerObject, IEphemeralSqliteConnection
+/// <inheritdoc cref="IEphemeralSqliteConnectionFactory" />
+/// <remarks>
+/// Hold the reference to the actual SQLite database.
+/// Will automatically remove it when the scope ends.
+/// </remarks>
+internal class EphemeralSqliteConnectionFactory : CriticalFinalizerObject, IEphemeralSqliteConnectionFactory
 {
     private readonly string path = Path.GetTempFileName();
     private bool disposed;
@@ -16,7 +20,7 @@ internal class EphemeralSqliteConnection : CriticalFinalizerObject, IEphemeralSq
     }
 
     /// <inheritdoc />
-    DbConnection IEphemeralSqliteConnection.CreateConnection() => CreateConnection(path);
+    DbConnection IEphemeralSqliteConnectionFactory.CreateConnection() => CreateConnection(path);
 
     /// <inheritdoc cref="Dispose()" />
     /// <param name="disposing">Whether this method is called by <see cref="Dispose()"/> or not.</param>
@@ -67,7 +71,7 @@ internal class EphemeralSqliteConnection : CriticalFinalizerObject, IEphemeralSq
     }
 
     /// <inheritdoc />
-    ~EphemeralSqliteConnection()
+    ~EphemeralSqliteConnectionFactory()
     {
         Dispose(false);
     }

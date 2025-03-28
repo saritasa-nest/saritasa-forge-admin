@@ -32,7 +32,7 @@ internal sealed class DbSnapshotLoaderMiddleware
         var dbContext = sp.GetRequiredService<ShopDbContext>();
         IInfrastructure<IServiceProvider> infrastructure = dbContext.Database;
 
-        var ephemeralConnection = infrastructure.Instance.GetRequiredService<IEphemeralSqliteConnection>();
+        var ephemeralConnection = infrastructure.Instance.GetRequiredService<IEphemeralSqliteConnectionFactory>();
         await ephemeralConnection.LoadDatabase(snapshot.SnapshotLocation, ct);
         await next(httpContext);
     }

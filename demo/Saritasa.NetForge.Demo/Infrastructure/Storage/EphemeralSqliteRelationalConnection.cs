@@ -8,13 +8,13 @@ namespace Saritasa.NetForge.Demo.Infrastructure.Storage;
 /// </summary>
 internal class EphemeralSqliteRelationalConnection : RelationalConnection
 {
-    private readonly IEphemeralSqliteConnection ephemeralSqliteConnection;
+    private readonly IEphemeralSqliteConnectionFactory ephemeralSqliteConnection;
     
     /// <summary>
     /// Constructor.
     /// </summary>
     public EphemeralSqliteRelationalConnection(RelationalConnectionDependencies dependencies,
-        IEphemeralSqliteConnection ephemeralSqliteConnection)
+        IEphemeralSqliteConnectionFactory ephemeralSqliteConnection)
         : base(dependencies)
     {
         this.ephemeralSqliteConnection = ephemeralSqliteConnection;

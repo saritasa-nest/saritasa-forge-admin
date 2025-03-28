@@ -5,7 +5,7 @@ namespace Saritasa.NetForge.Demo.Infrastructure.Storage;
 /// <summary>
 /// Represent a service that create ephemeral SQLite connection.
 /// </summary>
-internal interface IEphemeralSqliteConnection : IDisposable
+internal interface IEphemeralSqliteConnectionFactory : IDisposable
 {
     /// <summary>
     /// Create database connection.

@@ -19,8 +19,8 @@ public static class EphemeralSqliteModule
 
         // This make sure that all DbConnection reference the same file,
         // and the SQLite file will be cleaned up when the scope ends.
-        services.TryAddScoped<EphemeralSqliteConnection>();
-        services.TryAddTransient<IEphemeralSqliteConnection>(static sp =>
+        services.TryAddScoped<EphemeralSqliteConnectionFactory>();
+        services.TryAddTransient<IEphemeralSqliteConnectionFactory>(static sp =>
         {
             // This is required because the Demo app's SP
             // and NetForge's SP are different, for some reason.
@@ -30,7 +30,7 @@ public static class EphemeralSqliteModule
                 sp = httpContext.RequestServices;
             }
 
-            return sp.GetRequiredService<EphemeralSqliteConnection>();
+            return sp.GetRequiredService<EphemeralSqliteConnectionFactory>();
         });
     }
 }

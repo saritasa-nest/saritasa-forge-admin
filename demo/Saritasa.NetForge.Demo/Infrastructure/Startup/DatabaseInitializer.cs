@@ -34,7 +34,7 @@ internal sealed class DatabaseInitializer : IAsyncInitializer
         // dbContext uses a service provider different from the one
         // our current scope uses.
         IInfrastructure<IServiceProvider> infrastructure = dbContext.Database;
-        var ephemeralConnection = infrastructure.Instance.GetRequiredService<IEphemeralSqliteConnection>();
+        var ephemeralConnection = infrastructure.Instance.GetRequiredService<IEphemeralSqliteConnectionFactory>();
         var filename = Path.GetTempFileName();
         await ephemeralConnection.DumpDatabase(filename, cancellationToken);
         return filename;
