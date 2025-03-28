@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Components;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.JSInterop;
 
 namespace Saritasa.NetForge.Demo.Views.Admin;
@@ -10,9 +9,6 @@ namespace Saritasa.NetForge.Demo.Views.Admin;
 public partial class AdminFooter : ComponentBase, IAsyncDisposable
 {
     private IJSObjectReference? module;
-
-    [Inject]
-    private ShopDbContext DbContext { get; set; } = null!;
 
     [Inject]
     private IJSRuntime Js { get; set; } = null!;
@@ -29,12 +25,9 @@ public partial class AdminFooter : ComponentBase, IAsyncDisposable
     {
         if (firstRender)
         {
-            return;
+            module = await Js.InvokeAsync<IJSObjectReference>("import", "../Views/Admin/AdminFooter.razor.js");
+            await module.InvokeVoidAsync("incrementVisitsCount");
         }
-
-        module = await Js.InvokeAsync<IJSObjectReference>("import", "../Views/Admin/AdminFooter.razor.js");
-        await module.InvokeVoidAsync("incrementVisitsCount");
-        await DbContext.Database.MigrateAsync();
     }
 
     /// <inheritdoc />
