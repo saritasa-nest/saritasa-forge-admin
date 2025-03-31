@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
 using MudBlazor;
 using Saritasa.NetForge.Domain.Extensions;
 using Saritasa.NetForge.Domain.Attributes;
@@ -345,7 +346,7 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         var orderings = propertySorts
             .Select(propertySort => new OrderByDto
             {
-                PropertyPath = propertySort.PropertyExpression.GetMemberName(),
+                PropertyPath = propertySort.PropertyExpression.GetFullMemberName(),
                 IsAscending = propertySort.IsAscending
             })
             .ToList();

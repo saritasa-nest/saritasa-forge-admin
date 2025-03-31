@@ -102,5 +102,7 @@ public class ProductAdminConfiguration : IEntityAdminConfiguration<Product>
         {
             builder.SetIsReadOnly(true);
         });
+
+        entityOptionsBuilder.SetDefaultSort((product => product.Shop!.Address!.Country, IsAscending: true));
     }
 }

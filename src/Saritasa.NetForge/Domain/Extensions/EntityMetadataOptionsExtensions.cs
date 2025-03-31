@@ -75,23 +75,6 @@ public static class EntityMetadataOptionsExtensions
 
         entityMetadata.ToStringFunc = entityOptions.ToStringFunc;
 
-        if (entityOptions.DefaultOrderings.Count > 0)
-        {
-            entityMetadata.DefaultOrderings = entityOptions.DefaultOrderings;
-
-            foreach (var property in entityMetadata.Properties)
-            {
-                if (entityOptions.DefaultOrderings.Any(order => order.PropertyPath == property.Name))
-                {
-                    property.IsSortable = true;
-                }
-            }
-        }
-        else
-        {
-            SetPrimaryKeysDefaultOrderings(entityMetadata);
-        }
-
         foreach (var option in entityOptions.PropertyOptions)
         {
             var property = entityMetadata.Properties
@@ -136,27 +119,9 @@ public static class EntityMetadataOptionsExtensions
             navigation.ApplyNavigationOptions(navigationOptions);
         }
 
+        SetDefaultOrderings(entityMetadata, entityOptions.DefaultOrderings);
+
         entityMetadata.AssignGroupToEntity(entityOptions.GroupName, adminOptions);
-    }
-
-    /// <summary>
-    /// Set orderings using entity's primary keys.
-    /// </summary>
-    /// <param name="entityMetadata">Entity metadata.</param>
-    public static void SetPrimaryKeysDefaultOrderings(this EntityMetadata entityMetadata)
-    {
-        var primaryKeys = entityMetadata.Properties.Where(property => property.IsPrimaryKey);
-        foreach (var primaryKey in primaryKeys)
-        {
-            var primaryKeyOrder = new OrderByDto
-            {
-                PropertyPath = primaryKey.Name,
-                IsAscending = true
-            };
-            entityMetadata.DefaultOrderings.Add(primaryKeyOrder);
-
-            primaryKey.IsSortable = true;
-        }
     }
 
     private static void ApplyPropertyOptions(
@@ -347,5 +312,60 @@ public static class EntityMetadataOptionsExtensions
         return navigations
             .Where(targetNavigation => navigationOptions.Any(option => option.PropertyName == targetNavigation.Name))
             .ToList();
+    }
+
+    private static void SetDefaultOrderings(EntityMetadata entityMetadata, List<OrderByDto> defaultOrderings)
+    {
+        if (defaultOrderings.Count > 0)
+        {
+            entityMetadata.DefaultOrderings = defaultOrderings;
+
+            SetIsSortableInProperties(entityMetadata.Properties, defaultOrderings);
+            SetIsSortableInNavigations(entityMetadata.Navigations, defaultOrderings);
+        }
+        else
+        {
+            SetPrimaryKeysDefaultOrderings(entityMetadata);
+        }
+    }
+
+    private static void SetIsSortableInProperties(List<PropertyMetadata> properties, List<OrderByDto> orders)
+    {
+        foreach (var property in properties)
+        {
+            if (orders.Any(order => order.PropertyPath == property.PropertyPath))
+            {
+                property.IsSortable = true;
+            }
+        }
+    }
+
+    private static void SetIsSortableInNavigations(List<NavigationMetadata> navigations, List<OrderByDto> orders)
+    {
+        foreach (var navigation in navigations)
+        {
+            SetIsSortableInProperties(navigation.TargetEntityProperties, orders);
+            SetIsSortableInNavigations(navigation.TargetEntityNavigations, orders);
+        }
+    }
+
+    /// <summary>
+    /// Set orderings using entity's primary keys.
+    /// </summary>
+    /// <param name="entityMetadata">Entity metadata.</param>
+    public static void SetPrimaryKeysDefaultOrderings(this EntityMetadata entityMetadata)
+    {
+        var primaryKeys = entityMetadata.Properties.Where(property => property.IsPrimaryKey);
+        foreach (var primaryKey in primaryKeys)
+        {
+            var primaryKeyOrder = new OrderByDto
+            {
+                PropertyPath = primaryKey.Name,
+                IsAscending = true
+            };
+            entityMetadata.DefaultOrderings.Add(primaryKeyOrder);
+
+            primaryKey.IsSortable = true;
+        }
     }
 }
