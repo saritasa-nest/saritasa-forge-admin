@@ -13,5 +13,9 @@ internal static class InfrastructureExtensions
     /// <param name="infrastructure">Infrastructure.</param>
     /// <typeparam name="T">Instance type.</typeparam>
     /// <returns>Instance.</returns>
+    /// <remarks>
+    /// <see cref="Microsoft.EntityFrameworkCore.DbContext"/> uses a service provider different from the one our current scope uses.
+    /// This method would help extracting such service provider.
+    /// </remarks>
     public static T GetInstance<T>(this IInfrastructure<T> infrastructure) => infrastructure.Instance;
 }

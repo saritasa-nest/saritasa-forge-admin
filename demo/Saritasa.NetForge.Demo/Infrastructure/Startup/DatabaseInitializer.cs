@@ -32,8 +32,6 @@ internal sealed class DatabaseInitializer : IAsyncInitializer
 
     private async Task<string> DumpDatabase(CancellationToken cancellationToken)
     {
-        // dbContext uses a service provider different from the one
-        // our current scope uses.
         var ephemeralConnection = dbContext.Database
             .GetInstance()
             .GetRequiredService<IEphemeralSqliteConnectionFactory>();
