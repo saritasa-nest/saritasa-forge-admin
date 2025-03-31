@@ -155,7 +155,7 @@ public class EntityDetailsViewModel : BaseViewModel
                 return new OrderByDto
                 {
                     FieldName = column.Title,
-                    IsDescending = sort.Descending,
+                    IsAscending = !sort.Descending,
                     NavigationName = navigationName
                 };
             })
@@ -166,7 +166,7 @@ public class EntityDetailsViewModel : BaseViewModel
             foreach (var defaultOrdering in Model.DefaultOrderings)
             {
                 var column = DataGrid!.RenderedColumns.First(column => column.Title == defaultOrdering.FieldName);
-                var sortDirection = defaultOrdering.IsDescending ? SortDirection.Descending : SortDirection.Ascending;
+                var sortDirection = defaultOrdering.IsAscending ? SortDirection.Ascending : SortDirection.Descending;
                 await DataGrid.ExtendSortAsync(column.PropertyName, sortDirection, sortFunc: null);
 
                 orderBy.Add(defaultOrdering);

@@ -13,7 +13,7 @@ public record OrderByDto
     /// <summary>
     /// Direction of order.
     /// </summary>
-    public bool IsDescending { get; init; }
+    public bool IsAscending { get; init; }
 
     /// <summary>
     /// If the order is part of navigation's property, then this property will be populated with navigation name.

@@ -753,7 +753,7 @@ public class GetEntityByIdTests : IDisposable
         // Arrange
         adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
         {
-            builder.SetDefaultSort((shop => shop.Name, IsDescending: false));
+            builder.SetDefaultSort((shop => shop.Name, IsAscending: true));
         });
 
         // Act
@@ -761,7 +761,7 @@ public class GetEntityByIdTests : IDisposable
 
         // Assert
         Assert.Contains(
-            entity.DefaultOrderings, ordering => ordering is { FieldName: nameof(Shop.Name), IsDescending: false });
+            entity.DefaultOrderings, ordering => ordering is { FieldName: nameof(Shop.Name), IsAscending: true });
         Assert.Single(entity.DefaultOrderings);
     }
 
@@ -774,7 +774,7 @@ public class GetEntityByIdTests : IDisposable
         // Arrange
         adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
         {
-            builder.SetDefaultSort((shop => shop.Name, IsDescending: false), (shop => shop.IsOpen, IsDescending: true));
+            builder.SetDefaultSort((shop => shop.Name, IsAscending: true), (shop => shop.IsOpen, IsAscending: false));
         });
         const int orderingsCount = 2;
 
@@ -783,9 +783,9 @@ public class GetEntityByIdTests : IDisposable
 
         // Assert
         Assert.Contains(
-            entity.DefaultOrderings, ordering => ordering is { FieldName: nameof(Shop.Name), IsDescending: false });
+            entity.DefaultOrderings, ordering => ordering is { FieldName: nameof(Shop.Name), IsAscending: true });
         Assert.Contains(
-            entity.DefaultOrderings, ordering => ordering is { FieldName: nameof(Shop.IsOpen), IsDescending: true });
+            entity.DefaultOrderings, ordering => ordering is { FieldName: nameof(Shop.IsOpen), IsAscending: false });
         Assert.Equal(orderingsCount, entity.DefaultOrderings.Count);
     }
 

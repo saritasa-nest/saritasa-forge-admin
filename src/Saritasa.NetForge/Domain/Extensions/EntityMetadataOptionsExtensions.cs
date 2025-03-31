@@ -149,7 +149,7 @@ public static class EntityMetadataOptionsExtensions
             var primaryKeyOrder = new OrderByDto
             {
                 FieldName = primaryKey.Name,
-                IsDescending = false
+                IsAscending = true
             };
             entityMetadata.DefaultOrderings.Add(primaryKeyOrder);
 
