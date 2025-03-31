@@ -8,6 +8,11 @@ namespace Saritasa.NetForge.Domain.Extensions;
 public static class ExpressionExtensions
 {
     /// <summary>
+    /// Separator between properties. For example: <c>Shop.Address.Street</c>.
+    /// </summary>
+    public const char PropertySeparator = '.';
+
+    /// <summary>
     /// Gets <paramref name="expression"/> member name.
     /// </summary>
     /// <param name="expression">Expression.</param>
@@ -67,7 +72,7 @@ public static class ExpressionExtensions
     public static MemberExpression GetPropertyExpression(Expression entity, string propertyName)
     {
         var body = entity;
-        foreach (var member in propertyName.Split('.'))
+        foreach (var member in propertyName.Split(PropertySeparator))
         {
             body = Expression.Property(body, member);
         }
