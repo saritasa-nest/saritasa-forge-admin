@@ -147,12 +147,7 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         Expression<Func<TEntity, object?>> navigationExpression,
         Action<NavigationOptionsBuilder<TNavigation>> navigationOptionsBuilderAction)
     {
-        var navigationOptionsBuilder = new NavigationOptionsBuilder<TNavigation>();
-        navigationOptionsBuilderAction.Invoke(navigationOptionsBuilder);
-
-        var includedPropertyName = navigationExpression.GetMemberName();
-        var navigationOptions = navigationOptionsBuilder.Create(includedPropertyName);
-
+        var navigationOptions = NavigationOptionsHelper.CreateNavigationOptions(navigationExpression, navigationOptionsBuilderAction);
         options.NavigationOptions.Add(navigationOptions);
         return this;
     }
@@ -313,6 +308,31 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
+    /// Sets value that represents maximum navigation depth on the entity level.
+    /// Use <see cref="AdminOptionsBuilder.SetMaxNavigationDepth"/> for the global level.
+    /// If depth of a navigation is more than this value then such navigation's data will not be loaded.
+    /// Default value is 2.
+    /// </summary>
+    /// <param name="maxNavigationDepth">
+    /// Maximum navigation depth. Examples of navigation depth:
+    /// <list type="bullet">
+    /// <item><c>Product.Shop</c> has depth = 1</item>
+    /// <item><c>Product.Shop.OwnerContact</c> has depth = 2</item>
+    /// <item><c>Product.Shop.Suppliers.Shops</c> has depth = 3</item>
+    /// </list>
+    /// So, if <c>maxNavigationDepth = 2</c>, then <c>Product.Shop.Suppliers.Shops</c> will not be loaded.
+    /// </param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    /// <remarks>
+    /// Beware that high value will increase the amount of data loaded, so performance will be slower.
+    /// </remarks>
+    public EntityOptionsBuilder<TEntity> SetMaxNavigationDepth(byte maxNavigationDepth)
+    {
+        options.MaxNavigationDepth = maxNavigationDepth;
+        return this;
+    }
+
+    /// <summary>
     /// Configures properties that will have initial sort when loading data.
     /// When multiple properties were provided, then their order in the array will be used.
     /// For example: <c>[City, Street]</c>, sort will be performed by city then by street.
@@ -325,7 +345,7 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         var orderings = propertySorts
             .Select(propertySort => new OrderByDto
             {
-                FieldName = propertySort.PropertyExpression.GetMemberName(),
+                PropertyPath = propertySort.PropertyExpression.GetMemberName(),
                 IsAscending = propertySort.IsAscending
             })
             .ToList();

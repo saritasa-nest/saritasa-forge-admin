@@ -6,54 +6,21 @@
 
 @if (CanDelete)
 {
-    <SelectColumn T="object" ShowInFooter="false" />
+    <SelectColumn T="object" ShowInFooter="false"/>
 }
 
 @{
-    var allProperties = new List<(PropertyMetadataDto Property, NavigationMetadataDto? Navigation)>();
-    foreach (var property in Properties.Where(property => property is { IsHidden: false, IsHiddenFromListView: false }))
+    var listViewProperties = GetListViewProperties();
+    foreach (var listViewProperty in listViewProperties)
     {
-        if (property is NavigationMetadataDto navigation)
-        {
-            if (IsNavigationEntity)
-            {
-                continue;
-            }
-
-            if (!navigation.IsCollection)
-            {
-                var targetNavigationProperties = navigation.TargetEntityProperties
-                    .Where(targetProperty => targetProperty is { IsHidden: false, IsHiddenFromListView: false });
-                foreach (var targetProperty in targetNavigationProperties)
-                {
-                    allProperties.Add((targetProperty, navigation));
-                }
-            }
-            else
-            {
-                allProperties.Add((property, navigation));
-            }
-
-        }
-        else
-        {
-            allProperties.Add((property, null));
-        }
+        RenderPropertyColumn(listViewProperty);
     }
 
-    // Display principal entity primary key at the start of columns if the order is not set.
-    var orderedProperties = allProperties
-        .OrderByDescending(property => property is { Property: { IsPrimaryKey: true, Order: null }, Navigation: null })
-        .ThenByDescending(property => property.Property.Order.HasValue)
-        .ThenBy(property => property.Property.Order);
-    foreach (var (property, navigation) in orderedProperties)
+    void RenderPropertyColumn(PropertyMetadataDto property)
     {
-        RenderPropertyColumn(property, navigation);
-    }
-
-    void RenderPropertyColumn(PropertyMetadataDto property, NavigationMetadataDto? navigation = null)
-    {
-        <TemplateColumn T="object" Title="@property.Name" Sortable="property.IsSortable" NavigationName="@navigation?.Name">
+        var navigation = property.NavigationMetadata;
+        var propertyPath = property.PropertyPath;
+        <TemplateColumn T="object" Title="@property.Name" Sortable="property.IsSortable" PropertyPath="@propertyPath">
             <HeaderTemplate>
                 @{
                     var displayName = GetPropertyDisplayName(property);
@@ -85,68 +52,115 @@
                                 <MudTooltip Text="@property.SearchType.ToString().ToMeaningfulName()"
                                             Arrow="true"
                                             Placement="Placement.Bottom">
-                                    <MudIcon Icon="@Icons.Material.Filled.Search" Size="Size.Small" />
+                                    <MudIcon Icon="@Icons.Material.Filled.Search" Size="Size.Small"/>
                                 </MudTooltip>
                             </div>
                         }
-                    </div>
-                }
+                    </div>}
             </HeaderTemplate>
 
             <CellTemplate Context="cell">
                 @{
-                    var propertyValue = GetPropertyValue(cell.Item, property).ToString();
+                    var instance = cell.Item;
 
-                    if (navigation is not null && !navigation.IsCollection)
-                    {
-                        var navigationInstance = cell.Item.GetPropertyValue(navigation.Name);
-                        propertyValue = GetPropertyValue(navigationInstance, property).ToString();
-                    }
+                    // Property may be part of a complex object hierarchy.
+                    // This allows us to display or manipulate the value of deeply nested properties within the object.
+                    var propertyValue = instance.GetNestedPropertyValue(propertyPath);
 
-                    if (propertyValue!.Equals(property.EmptyValueDisplay)
-                    || propertyValue.Equals(DefaultValueConstants.DefaultEmptyPropertyValueDisplay))
+                    if (property.ClrType == typeof(bool) || property.ClrType == typeof(bool?))
                     {
-                        @propertyValue
-                    }
-                    else if (property.IsImage)
-                    {
-                        <div>
-                            <MudImage Src="@property.UploadFileStrategy!.GetFileSource(propertyValue)"
-                                      Elevation="25"
-                                      Class="rounded-lg property-image" />
-                        </div>
-                    }
-                    else if (property.DisplayAsHtml)
-                    {
-                        @((MarkupString)propertyValue!)
-                    }
-                    else if (navigation is not null && property.CanBeNavigatedToDetails)
-                    {
-                        var navigationInstance = cell.Item.GetPropertyValue(navigation.Name)!;
-                        <MudButton Variant="Variant.Text" Color="Color.Primary" Class="text-tranform-none"
-                                   OnClick="() => NavigateToEditing(navigationInstance, navigation)">
-                            @propertyValue
-                        </MudButton>
-                    }
-                    else if (navigation is not null && (property.CanDisplayDetails || navigation.IsCollection))
-                    {
-                        var navigationInstance = cell.Item.GetPropertyValue(navigation.Name)!;
-                        <MudButton Variant="Variant.Text" Color="Color.Primary" Class="text-tranform-none"
-                                   @onclick="() => OpenDialogAsync(navigationInstance, navigation)">
-                            @propertyValue
-                        </MudButton>
-                    }
-                    else if (property.ClrType == typeof(bool) || property.ClrType == typeof(bool?))
-                    {
-                        var value = GetPropertyValue(cell.Item, property);
-                        bool? nullableBooleanValue = value != null ? Convert.ToBoolean(value) : null;
+                        bool? nullableBooleanValue = propertyValue != null ? Convert.ToBoolean(propertyValue) : null;
 
                         <MudCheckBox T="bool" Value="@(nullableBooleanValue ?? false)" Disabled="true" />
+                        return;
                     }
-                    else
+
+                    if (propertyValue is null || propertyValue.ToString() == string.Empty)
                     {
-                        @propertyValue
+                        var emptyValue = !string.IsNullOrEmpty(property.EmptyValueDisplay)
+                            ? property.EmptyValueDisplay
+                            : DefaultValueConstants.DefaultEmptyPropertyValueDisplay;
+                        @emptyValue
+                        return;
                     }
+
+                    if (property is NavigationMetadataDto navigationMetadata)
+                    {
+                        var navigationValue = GetNavigationValue(propertyValue, navigationMetadata);
+
+                        if (navigationMetadata.IsCollection)
+                        {
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" Class="text-transform-none"
+                                       @onclick="() => OpenDialogAsync(propertyValue, navigationMetadata)">
+                                @navigationValue
+                            </MudButton>
+                        }
+                        else
+                        {
+                            @navigationValue
+                        }
+
+                        return;
+                    }
+
+                    if (property.IsImage)
+                    {
+                        <div>
+                            <MudImage Src="@property.UploadFileStrategy!.GetFileSource(propertyValue.ToString()!)"
+                                      Elevation="25"
+                                      Class="rounded-lg property-image"/>
+                        </div>
+                        return;
+                    }
+
+
+                    var formattedValue = FormatValue(propertyValue, property);
+
+                    if (property.DisplayAsHtml)
+                    {
+                        @((MarkupString)formattedValue)
+                        return;
+                    }
+
+                    if (property.ClrType == typeof(string))
+                    {
+                        var maxCharacters = property.TruncationMaxCharacters ?? AdminOptions.TruncationMaxCharacters;
+
+                        if (maxCharacters != default)
+                        {
+                            formattedValue = formattedValue!.Truncate(maxCharacters);
+                        }
+                    }
+
+                    // For the properties that are referenced from navigations.
+                    if (navigation is not null)
+                    {
+                        // We have to store the link to the navigation property is referenced from, in order to
+                        // navigate to the details page of the referenced entity or open the dialog.
+                        if (property.CanBeNavigatedToDetails)
+                        {
+                            var navigationValue = GetParentNavigationValue(propertyPath, instance);
+
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" Class="text-transform-none"
+                                       OnClick="() => NavigateToEditing(navigationValue, navigation)">
+                                @formattedValue
+                            </MudButton>
+                            return;
+                        }
+
+                        if (property.CanDisplayDetails)
+                        {
+                            var navigationValue = GetParentNavigationValue(propertyPath, instance);
+
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" Class="text-transform-none"
+                                       @onclick="() => OpenDialogAsync(navigationValue, navigation)">
+                                @formattedValue
+                            </MudButton>
+                            return;
+                        }
+                    }
+
+                    @formattedValue
                 }
             </CellTemplate>
         </TemplateColumn>

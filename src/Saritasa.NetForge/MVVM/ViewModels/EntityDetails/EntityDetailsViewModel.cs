@@ -1,4 +1,5 @@
 ﻿using MudBlazor;
+using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Domain.Exceptions;
@@ -95,17 +96,7 @@ public class EntityDetailsViewModel : BaseViewModel
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
             Model = MapModel(entity);
 
-            IsDisplaySearchInput = Model.Properties.Any(property =>
-                                   {
-                                       if (property is NavigationMetadataDto navigation)
-                                       {
-                                           return navigation.TargetEntityProperties
-                                               .Any(targetProperty => targetProperty.SearchType != SearchType.None);
-                                       }
-
-                                       return property.SearchType != SearchType.None;
-                                   })
-                                   || Model.SearchFunction is not null;
+            IsDisplaySearchInput = Model.Properties.Any(SearchAvailable) || Model.SearchFunction is not null;
 
             CanAdd = Model is { CanAdd: true, IsKeyless: false } && HasProperties;
             CanEdit = Model is { CanEdit: true, IsKeyless: false } && HasProperties;
@@ -139,6 +130,22 @@ public class EntityDetailsViewModel : BaseViewModel
         };
     }
 
+    private static bool SearchAvailable(PropertyMetadataDto property)
+    {
+        if (property.SearchType != SearchType.None)
+        {
+            return true;
+        }
+
+        if (property is NavigationMetadataDto navigation)
+        {
+            return navigation.TargetEntityProperties.Any(targetProperty => targetProperty.SearchType != SearchType.None)
+                   || navigation.TargetEntityNavigations.Any(SearchAvailable);
+        }
+
+        return false;
+    }
+
     /// <summary>
     /// Loads entity's data to data grid.
     /// </summary>
@@ -150,13 +157,12 @@ public class EntityDetailsViewModel : BaseViewModel
             .Select(sort =>
             {
                 var column = DataGrid!.RenderedColumns.First(column => column.PropertyName.Equals(sort.SortBy));
-                var navigationName = column.UserAttributes["NavigationName"]?.ToString();
+                var propertyPath = column.UserAttributes["PropertyPath"].ToString();
 
                 return new OrderByDto
                 {
-                    FieldName = column.Title,
+                    PropertyPath = propertyPath!,
                     IsAscending = !sort.Descending,
-                    NavigationName = navigationName
                 };
             })
             .ToList();
@@ -165,7 +171,8 @@ public class EntityDetailsViewModel : BaseViewModel
         {
             foreach (var defaultOrdering in Model.DefaultOrderings)
             {
-                var column = DataGrid!.RenderedColumns.First(column => column.Title == defaultOrdering.FieldName);
+                var column = DataGrid!.RenderedColumns
+                    .First(column => column.UserAttributes["PropertyPath"].ToString() == defaultOrdering.PropertyPath);
                 var sortDirection = defaultOrdering.IsAscending ? SortDirection.Ascending : SortDirection.Descending;
                 await DataGrid.ExtendSortAsync(column.PropertyName, sortDirection, sortFunc: null);
 

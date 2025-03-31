@@ -294,6 +294,7 @@ public class SearchTests : TestBed<NetForgeFixture>
             new NavigationMetadataDto
             {
                 Name = nameof(Product.Supplier),
+                ClrType = typeof(Supplier),
                 TargetEntityProperties = [new PropertyMetadataDto
                 {
                     Name = nameof(Supplier.City),

@@ -761,7 +761,7 @@ public class GetEntityByIdTests : IDisposable
 
         // Assert
         Assert.Contains(
-            entity.DefaultOrderings, ordering => ordering is { FieldName: nameof(Shop.Name), IsAscending: true });
+            entity.DefaultOrderings, ordering => ordering is { PropertyPath: nameof(Shop.Name), IsAscending: true });
         Assert.Single(entity.DefaultOrderings);
     }
 
@@ -783,9 +783,9 @@ public class GetEntityByIdTests : IDisposable
 
         // Assert
         Assert.Contains(
-            entity.DefaultOrderings, ordering => ordering is { FieldName: nameof(Shop.Name), IsAscending: true });
+            entity.DefaultOrderings, ordering => ordering is { PropertyPath: nameof(Shop.Name), IsAscending: true });
         Assert.Contains(
-            entity.DefaultOrderings, ordering => ordering is { FieldName: nameof(Shop.IsOpen), IsAscending: false });
+            entity.DefaultOrderings, ordering => ordering is { PropertyPath: nameof(Shop.IsOpen), IsAscending: false });
         Assert.Equal(orderingsCount, entity.DefaultOrderings.Count);
     }
 
@@ -800,7 +800,7 @@ public class GetEntityByIdTests : IDisposable
 
         // Assert
         var primaryKey = entity.Properties.First(property => property.IsPrimaryKey);
-        Assert.Contains(entity.DefaultOrderings, ordering => ordering.FieldName == primaryKey.Name);
+        Assert.Contains(entity.DefaultOrderings, ordering => ordering.PropertyPath == primaryKey.Name);
         Assert.Single(entity.DefaultOrderings);
     }
 
@@ -820,7 +820,7 @@ public class GetEntityByIdTests : IDisposable
         var primaryKeyNames = entity.Properties
             .Where(property => property.IsPrimaryKey)
             .Select(property => property.Name);
-        Assert.Contains(entity.DefaultOrderings, ordering => primaryKeyNames.Contains(ordering.FieldName));
+        Assert.Contains(entity.DefaultOrderings, ordering => primaryKeyNames.Contains(ordering.PropertyPath));
         Assert.Equal(primaryKeysCount, entity.DefaultOrderings.Count);
     }
 }

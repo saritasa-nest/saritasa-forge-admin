@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Saritasa.NetForge.Tests.Domain.Models;
+using Saritasa.NetForge.Tests.EfCoreMetadataServiceTests.NavigationMetadata.Models;
 
 namespace Saritasa.NetForge.Tests.Domain;
 
@@ -46,6 +47,26 @@ internal class TestDbContext : IdentityDbContext<User>
     /// Gets or sets the database set for the suppliers.
     /// </summary>
     public DbSet<Supplier> Suppliers { get; private set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the database set for the employees.
+    /// </summary>
+    public DbSet<Employee> Employees { get; private set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the database set for the departments.
+    /// </summary>
+    public DbSet<Department> Departments { get; private set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the database set for the projects.
+    /// </summary>
+    public DbSet<Project> Projects { get; private set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the database set for the clients.
+    /// </summary>
+    public DbSet<Client> Clients { get; private set; } = null!;
 
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)
