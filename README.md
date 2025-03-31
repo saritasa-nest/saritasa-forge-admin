@@ -684,6 +684,23 @@ public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
 }
 ```
 
+Or
+
+```csharp
+public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+{
+    entityOptionsBuilder.AddCustomAction(option =>
+    {
+        option.SetName("Random longitude, latitude value")
+            .SetDescription("Assigns random longitude and latitude values to the selected addresses.")
+            .SetHandler((serviceProvider, query) =>
+            {
+                ...
+            });
+    });
+}
+```
+
 You can use `ServiceProvider` to access your services.
 
 # Customizing Entity Properties

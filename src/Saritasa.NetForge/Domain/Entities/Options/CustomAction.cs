@@ -1,7 +1,7 @@
 ﻿namespace Saritasa.NetForge.Domain.Entities.Options;
 
 /// <summary>
-/// Represents a custom action that can be executed with a specified handler.
+/// Custom action that can be executed with a specified handler.
 /// </summary>
 public class CustomAction<TEntity>
 {

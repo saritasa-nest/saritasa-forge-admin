@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.Interfaces;
