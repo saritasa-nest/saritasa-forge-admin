@@ -30,15 +30,30 @@ internal class DbSnapshot : IDisposable
         }
     }
 
-    /// <inheritdoc />
-    public void Dispose()
+    /// <inheritdoc cref="Dispose()" />
+    /// <param name="disposing">Whether this method is called from <see cref="Dispose()"/> or not.</param>
+    protected virtual void Dispose(bool disposing)
     {
-        if (string.IsNullOrEmpty(snapShotLocation))
+        var snapshotLocationLocal = Interlocked.Exchange(ref snapShotLocation, null);
+        if (string.IsNullOrEmpty(snapshotLocationLocal))
         {
             return;
         }
 
-        File.Delete(snapShotLocation);
-        logger.LogInformation("Deleted database snapshot: {Location}", snapShotLocation);
+        File.Delete(snapshotLocationLocal);
+        logger.LogInformation("Deleted database snapshot: {Location}", snapshotLocationLocal);
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <inheritdoc />
+    ~DbSnapshot()
+    {
+        Dispose(false);
     }
 }

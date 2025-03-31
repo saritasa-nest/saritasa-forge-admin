@@ -17,6 +17,6 @@ public static class EphemeralSqliteExtensions
         var extension = new EphemeralSqliteOptionsExtension();
         ((IDbContextOptionsBuilderInfrastructure)optionsBuilder).AddOrUpdateExtension(extension);
         // Connection string does not matter since we will be overriding the connection provider
-        return optionsBuilder.UseSqlite(string.Empty);
+        return optionsBuilder.UseSqlite(connectionString: string.Empty);
     }
 }

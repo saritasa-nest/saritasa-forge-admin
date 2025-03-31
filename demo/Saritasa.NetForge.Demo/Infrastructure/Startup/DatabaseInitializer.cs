@@ -1,6 +1,7 @@
 using Extensions.Hosting.AsyncInitialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Saritasa.NetForge.Demo.Infrastructure.Extensions;
 using Saritasa.NetForge.Demo.Infrastructure.Seeders;
 using Saritasa.NetForge.Demo.Infrastructure.Storage;
 
@@ -21,7 +22,7 @@ internal sealed class DatabaseInitializer : IAsyncInitializer
     /// </summary>
     /// <param name="dbContext">Data context.</param>
     /// <param name="dbSnapshot">Database snapshot.</param>
-    /// <param name="seeders">Seedeers.</param>
+    /// <param name="seeders">Seeders.</param>
     public DatabaseInitializer(ShopDbContext dbContext, DbSnapshot dbSnapshot, IEnumerable<ISeeder> seeders)
     {
         this.dbContext = dbContext;
@@ -33,9 +34,10 @@ internal sealed class DatabaseInitializer : IAsyncInitializer
     {
         // dbContext uses a service provider different from the one
         // our current scope uses.
-        IInfrastructure<IServiceProvider> infrastructure = dbContext.Database;
-        var ephemeralConnection = infrastructure.Instance.GetRequiredService<IEphemeralSqliteConnectionFactory>();
-        var filename = Path.GetTempFileName();
+        var ephemeralConnection = dbContext.Database
+            .GetInstance()
+            .GetRequiredService<IEphemeralSqliteConnectionFactory>();
+        var filename = FileHelpers.CreateTemporaryFileSecure(".sqlite");
         await ephemeralConnection.DumpDatabase(filename, cancellationToken);
         return filename;
     }

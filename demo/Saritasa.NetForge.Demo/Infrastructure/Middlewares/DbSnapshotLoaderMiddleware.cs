@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Saritasa.NetForge.Demo.Infrastructure.Extensions;
 using Saritasa.NetForge.Demo.Infrastructure.Storage;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.Middlewares;
@@ -24,15 +25,16 @@ internal sealed class DbSnapshotLoaderMiddleware
     /// <param name="httpContext">HTTP context.</param>
     public async Task Invoke(HttpContext httpContext)
     {
-        var sp = httpContext.RequestServices;
-        var snapshot = sp.GetRequiredService<DbSnapshot>();
+        var serviceProvider = httpContext.RequestServices;
+        var snapshot = serviceProvider.GetRequiredService<DbSnapshot>();
         ArgumentNullException.ThrowIfNull(snapshot.SnapshotLocation, nameof(snapshot.SnapshotLocation));
 
         var ct = httpContext.RequestAborted;
-        var dbContext = sp.GetRequiredService<ShopDbContext>();
-        IInfrastructure<IServiceProvider> infrastructure = dbContext.Database;
+        var dbContext = serviceProvider.GetRequiredService<ShopDbContext>();
 
-        var ephemeralConnection = infrastructure.Instance.GetRequiredService<IEphemeralSqliteConnectionFactory>();
+        var ephemeralConnection = dbContext.Database
+            .GetInstance()
+            .GetRequiredService<IEphemeralSqliteConnectionFactory>();
         await ephemeralConnection.LoadDatabase(snapshot.SnapshotLocation, ct);
         await next(httpContext);
     }

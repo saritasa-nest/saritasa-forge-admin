@@ -11,7 +11,7 @@ namespace Saritasa.NetForge.Demo.Infrastructure.Storage;
 /// </remarks>
 internal class EphemeralSqliteConnectionFactory : CriticalFinalizerObject, IEphemeralSqliteConnectionFactory
 {
-    private readonly string path = Path.GetTempFileName();
+    private readonly string sqliteDbPath = FileHelpers.CreateTemporaryFileSecure(".sqlite");
     private bool disposed;
 
     private static SqliteConnection CreateConnection(string path)
@@ -20,7 +20,7 @@ internal class EphemeralSqliteConnectionFactory : CriticalFinalizerObject, IEphe
     }
 
     /// <inheritdoc />
-    DbConnection IEphemeralSqliteConnectionFactory.CreateConnection() => CreateConnection(path);
+    DbConnection IEphemeralSqliteConnectionFactory.CreateConnection() => CreateConnection(sqliteDbPath);
 
     /// <inheritdoc cref="Dispose()" />
     /// <param name="disposing">Whether this method is called by <see cref="Dispose()"/> or not.</param>
@@ -33,7 +33,7 @@ internal class EphemeralSqliteConnectionFactory : CriticalFinalizerObject, IEphe
 
         try
         {
-            File.Delete(path);
+            File.Delete(sqliteDbPath);
         }
         finally
         {
@@ -50,16 +50,16 @@ internal class EphemeralSqliteConnectionFactory : CriticalFinalizerObject, IEphe
 
     private static async Task BackupDatabase(string targetPath, string destinationPath, CancellationToken cancellationToken)
     {
-        await using var targetConn = CreateConnection(targetPath);
-        await targetConn.OpenAsync(cancellationToken);
-        await using var destinationConn = CreateConnection(destinationPath);
-        targetConn.BackupDatabase(destinationConn);
+        await using var targetConnection = CreateConnection(targetPath);
+        await targetConnection.OpenAsync(cancellationToken);
+        await using var destinationConnection = CreateConnection(destinationPath);
+        targetConnection.BackupDatabase(destinationConnection);
     }
 
     /// <inheritdoc />
     public Task DumpDatabase(string destination, CancellationToken cancellationToken)
     {
-        return BackupDatabase(path, destination, cancellationToken);
+        return BackupDatabase(sqliteDbPath, destination, cancellationToken);
     }
 
     /// <inheritdoc />
@@ -67,7 +67,7 @@ internal class EphemeralSqliteConnectionFactory : CriticalFinalizerObject, IEphe
     {
         // We could just copy and paste the file
         // but this would prevent edge cases.
-        return BackupDatabase(source, path, cancellationToken);
+        return BackupDatabase(source, sqliteDbPath, cancellationToken);
     }
 
     /// <inheritdoc />

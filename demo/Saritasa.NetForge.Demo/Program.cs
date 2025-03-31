@@ -1,7 +1,5 @@
 using McMaster.Extensions.CommandLineUtils;
-using Microsoft.Data.Sqlite;
 using Saritasa.NetForge.Demo.Commands;
-using Saritasa.NetForge.Demo.Infrastructure.Storage;
 using Saritasa.NetForge.Demo.Infrastructure.Web;
 
 namespace Saritasa.NetForge.Demo;
