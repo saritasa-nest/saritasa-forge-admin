@@ -27,15 +27,15 @@ internal sealed class DbSnapshotLoaderMiddleware
     {
         var serviceProvider = httpContext.RequestServices;
         var snapshot = serviceProvider.GetRequiredService<DbSnapshot>();
-        ArgumentNullException.ThrowIfNull(snapshot.SnapshotLocation, nameof(snapshot.SnapshotLocation));
+        ArgumentNullException.ThrowIfNull(snapshot.SnapshotLocation);
 
-        var ct = httpContext.RequestAborted;
+        var cancellationToken = httpContext.RequestAborted;
         var dbContext = serviceProvider.GetRequiredService<ShopDbContext>();
 
         var ephemeralConnection = dbContext.Database
             .GetInstance()
             .GetRequiredService<IEphemeralSqliteConnectionFactory>();
-        await ephemeralConnection.LoadDatabase(snapshot.SnapshotLocation, ct);
+        await ephemeralConnection.LoadDatabase(snapshot.SnapshotLocation, cancellationToken);
         await next(httpContext);
     }
 }
