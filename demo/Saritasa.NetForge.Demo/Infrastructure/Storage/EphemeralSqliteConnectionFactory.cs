@@ -16,7 +16,7 @@ internal class EphemeralSqliteConnectionFactory : CriticalFinalizerObject, IEphe
 
     private static SqliteConnection CreateConnection(string path)
     {
-        return new SqliteConnection($"Data Source={path}");
+        return new SqliteConnection($"Data Source={path};Pooling=false");
     }
 
     /// <inheritdoc />
