@@ -110,6 +110,8 @@ public static class EntityMetadataOptionsExtensions
             navigation?.ApplyCalculatedPropertyOptions(option);
         }
 
+        entityMetadata.Navigations = GetIncludedNavigations(entityMetadata.Navigations, entityOptions.NavigationOptions);
+
         foreach (var navigationOptions in entityOptions.NavigationOptions)
         {
             var navigation = entityMetadata.Navigations
@@ -258,8 +260,6 @@ public static class EntityMetadataOptionsExtensions
     private static void ApplyNavigationOptions(
         this NavigationMetadata navigation, NavigationOptions navigationOptions)
     {
-        navigation.IsIncluded = true;
-
         if (navigationOptions.FormOrder.HasValue)
         {
             navigation.FormOrder = navigationOptions.FormOrder.Value;
@@ -281,6 +281,17 @@ public static class EntityMetadataOptionsExtensions
             property?.ApplyCalculatedPropertyOptions(propertyOptions);
         }
 
+        navigation.TargetEntityNavigations
+            = GetIncludedNavigations(navigation.TargetEntityNavigations, navigationOptions.NavigationsOptions);
+
+        foreach (var navigationOption in navigationOptions.NavigationsOptions)
+        {
+            var targetNavigation = navigation.TargetEntityNavigations
+                .FirstOrDefault(property => property.Name == navigationOption.PropertyName);
+
+            targetNavigation?.ApplyNavigationOptions(navigationOption);
+        }
+
         var notIncludedProperties = navigation.TargetEntityProperties
             .Where(p => !navigationOptions.PropertyOptions.Any(option => option.PropertyName == p.Name)
                         && !navigationOptions.CalculatedPropertyOptions.Any(option => option.PropertyName == p.Name));
@@ -288,5 +299,17 @@ public static class EntityMetadataOptionsExtensions
         {
             notIncludedProperty.IsHidden = true;
         }
+    }
+
+    /// <summary>
+    /// Gets only included navigations in configuration
+    /// so data of excluded navigations will not be loaded to improve performance.
+    /// </summary>
+    private static List<NavigationMetadata> GetIncludedNavigations(
+        List<NavigationMetadata> navigations, ICollection<NavigationOptions> navigationOptions)
+    {
+        return navigations
+            .Where(targetNavigation => navigationOptions.Any(option => option.PropertyName == targetNavigation.Name))
+            .ToList();
     }
 }

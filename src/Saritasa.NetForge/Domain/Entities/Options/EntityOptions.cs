@@ -110,6 +110,9 @@ public class EntityOptions
     /// <inheritdoc cref="EntityMetadata.DeleteAction"/>
     public Action<IServiceProvider?, object>? DeleteAction { get; set; }
 
+    /// <inheritdoc cref="AdminOptions.MaxNavigationDepth"/>
+    public byte? MaxNavigationDepth { get; set; }
+
     /// <summary>
     /// Custom actions for the entity.
     /// </summary>
