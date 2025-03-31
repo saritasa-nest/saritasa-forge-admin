@@ -78,6 +78,11 @@ public class ProductAdminConfiguration : IEntityAdminConfiguration<Product>
                             .SetOrder(2)
                             .SetDisplayName("Shop Country");
                     });
+
+                    builder.IncludeCalculatedProperty(address => address.FullAddress, propertyBuilder =>
+                    {
+                        propertyBuilder.SetOrder(3);
+                    });
                 })
                 .IncludeNavigation<Supplier>(shop => shop.Suppliers, builder =>
                 {
