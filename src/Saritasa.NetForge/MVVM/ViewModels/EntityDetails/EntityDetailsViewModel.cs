@@ -153,11 +153,13 @@ public class EntityDetailsViewModel : BaseViewModel
     /// <returns>Grid data collection populated with entity's data.</returns>
     public async Task<GridData<object>> LoadEntityGridDataAsync(GridState<object> gridState)
     {
+        const string propertyPathAttribute = "PropertyPath";
+
         var orderBy = gridState.SortDefinitions
             .Select(sort =>
             {
                 var column = DataGrid!.RenderedColumns.First(column => column.PropertyName.Equals(sort.SortBy));
-                var propertyPath = column.UserAttributes["PropertyPath"].ToString();
+                var propertyPath = column.UserAttributes[propertyPathAttribute].ToString();
 
                 return new OrderByDto
                 {
@@ -173,7 +175,8 @@ public class EntityDetailsViewModel : BaseViewModel
             {
                 var column = DataGrid!.RenderedColumns
                     .Where(column => column.Sortable == true)
-                    .FirstOrDefault(column => column.UserAttributes["PropertyPath"].ToString() == defaultOrdering.PropertyPath);
+                    .FirstOrDefault(column =>
+                        column.UserAttributes[propertyPathAttribute].ToString() == defaultOrdering.PropertyPath);
 
                 // When column is null, then the sortable property is hidden.
                 // In this case we still perform order, but it cannot be seen on UI.
