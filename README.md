@@ -809,6 +809,33 @@ You can sort multiple properties at once. It can be achieved by pressing sort bu
 
 Sorting can be cancelled by pressing on it with `ALT`.
 
+### Default Sort
+
+Default sort is applied when no other sort is applied, for example when you just entered list view page.
+
+#### Multiple Default Sort
+
+There are `order` parameter when you set default sort. 
+It is used when multiple sort is configured to identify in which order properties should be sorted.
+Example with Address: City has `Order = 1`, Street has `Order = 2`, so sort will be applied by city first, then by street.
+
+#### Fluent API
+
+`SetDefaultSort` makes property `Sortable`, so you do not need to call `SetIsSortable` with this method.
+
+```csharp
+public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+{
+    entityOptionsBuilder.ConfigureProperty(address => address.City, propertyBuilder =>
+    {
+        propertyBuilder.SetDefaultSort(order: 1, isAscending: true);
+    }).ConfigureProperty(address => address.Street, propertyBuilder =>
+    {
+        propertyBuilder.SetDefaultSort(order: 2, isAscending: false);
+    });
+}
+```
+
 ## Calculated Properties
 
 Calculated properties are properties that don't have a direct representation in your database but are computed based on other existing properties. These properties can be useful for displaying calculated values in the admin panel.
