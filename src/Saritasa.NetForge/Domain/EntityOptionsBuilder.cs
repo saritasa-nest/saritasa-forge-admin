@@ -332,25 +332,4 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         options.MaxNavigationDepth = maxNavigationDepth;
         return this;
     }
-
-    /// <summary>
-    /// Configures properties that will have initial sort when loading data.
-    /// When multiple properties were provided, then their order in the array will be used.
-    /// For example: <c>[City, Street]</c>, sort will be performed by city then by street.
-    /// </summary>
-    /// <param name="propertySorts">Contains information which properties and directions to use for sort.</param>
-    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
-    public EntityOptionsBuilder<TEntity> SetDefaultSort(
-        params (Expression<Func<TEntity, object?>> PropertyExpression, bool IsAscending)[] propertySorts)
-    {
-        var orderings = propertySorts
-            .Select(propertySort => new OrderByDto
-            {
-                PropertyPath = propertySort.PropertyExpression.GetFullMemberName(),
-                IsAscending = propertySort.IsAscending
-            })
-            .ToList();
-        options.DefaultOrderings = orderings;
-        return this;
-    }
 }

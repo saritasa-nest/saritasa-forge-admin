@@ -76,7 +76,8 @@ public class ProductAdminConfiguration : IEntityAdminConfiguration<Product>
                     {
                         propertyBuilder
                             .SetOrder(2)
-                            .SetDisplayName("Shop Country");
+                            .SetDisplayName("Shop Country")
+                            .SetDefaultSort(order: 1, isAscending: true);
                     });
 
                     builder.IncludeCalculatedProperty(address => address.FullAddress, propertyBuilder =>
@@ -102,7 +103,5 @@ public class ProductAdminConfiguration : IEntityAdminConfiguration<Product>
         {
             builder.SetIsReadOnly(true);
         });
-
-        entityOptionsBuilder.SetDefaultSort((product => product.Shop!.Address!.Country, IsAscending: true));
     }
 }

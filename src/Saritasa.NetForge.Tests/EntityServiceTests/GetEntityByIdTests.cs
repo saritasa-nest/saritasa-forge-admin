@@ -753,7 +753,10 @@ public class GetEntityByIdTests : IDisposable
         // Arrange
         adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
         {
-            builder.SetDefaultSort((shop => shop.Name, IsAscending: true));
+            builder.ConfigureProperty(shop => shop.Name, propertyBuilder =>
+            {
+                propertyBuilder.SetDefaultSort(1, isAscending: true);
+            });
         });
 
         // Act
@@ -774,7 +777,15 @@ public class GetEntityByIdTests : IDisposable
         // Arrange
         adminOptionsBuilder.ConfigureEntity<Shop>(builder =>
         {
-            builder.SetDefaultSort((shop => shop.Name, IsAscending: true), (shop => shop.IsOpen, IsAscending: false));
+            builder.ConfigureProperty(shop => shop.Name, propertyBuilder =>
+            {
+                propertyBuilder.SetDefaultSort(1, isAscending: true);
+            });
+
+            builder.ConfigureProperty(shop => shop.IsOpen, propertyBuilder =>
+            {
+                propertyBuilder.SetDefaultSort(2, isAscending: false);
+            });
         });
         const int orderingsCount = 2;
 

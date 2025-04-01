@@ -1,4 +1,6 @@
-﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+﻿using MudBlazor;
+using Saritasa.NetForge.Domain.Dtos;
+using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.UseCases.Common;
 
@@ -9,6 +11,8 @@ namespace Saritasa.NetForge.Domain.Extensions;
 /// </summary>
 public static class EntityMetadataOptionsExtensions
 {
+    private static List<DefaultSortDto> defaultSorts = [];
+
     /// <summary>
     /// Applies entity-specific options to the given <see cref="EntityMetadata"/> using the provided options.
     /// </summary>
@@ -75,6 +79,8 @@ public static class EntityMetadataOptionsExtensions
 
         entityMetadata.ToStringFunc = entityOptions.ToStringFunc;
 
+        defaultSorts = [];
+
         foreach (var option in entityOptions.PropertyOptions)
         {
             var property = entityMetadata.Properties
@@ -119,7 +125,21 @@ public static class EntityMetadataOptionsExtensions
             navigation.ApplyNavigationOptions(navigationOptions);
         }
 
-        SetDefaultOrderings(entityMetadata, entityOptions.DefaultOrderings);
+        if (defaultSorts.Count > 0)
+        {
+            entityMetadata.DefaultOrderings = defaultSorts
+                .OrderBy(sort => sort.Order)
+                .Select(sort => new OrderByDto
+                {
+                    PropertyPath = sort.PropertyPath,
+                    IsAscending = sort.SortDirection == SortDirection.Ascending,
+                })
+                .ToList();
+        }
+        else
+        {
+            entityMetadata.SetPrimaryKeysDefaultSort();
+        }
 
         entityMetadata.AssignGroupToEntity(entityOptions.GroupName, adminOptions);
     }
@@ -193,6 +213,14 @@ public static class EntityMetadataOptionsExtensions
             if (propertyOptions.CanBeNavigatedToDetails)
             {
                 propertyMetadata.CanBeNavigatedToDetails = propertyOptions.CanBeNavigatedToDetails;
+            }
+
+            if (propertyOptions.DefaultSort is not null)
+            {
+                propertyOptions.DefaultSort.PropertyPath = propertyMetadata.PropertyPath;
+                defaultSorts.Add(propertyOptions.DefaultSort);
+
+                propertyMetadata.IsSortable = true;
             }
         }
 
@@ -314,46 +342,11 @@ public static class EntityMetadataOptionsExtensions
             .ToList();
     }
 
-    private static void SetDefaultOrderings(EntityMetadata entityMetadata, List<OrderByDto> defaultOrderings)
-    {
-        if (defaultOrderings.Count > 0)
-        {
-            entityMetadata.DefaultOrderings = defaultOrderings;
-
-            SetIsSortableInProperties(entityMetadata.Properties, defaultOrderings);
-            SetIsSortableInNavigations(entityMetadata.Navigations, defaultOrderings);
-        }
-        else
-        {
-            SetPrimaryKeysDefaultOrderings(entityMetadata);
-        }
-    }
-
-    private static void SetIsSortableInProperties(List<PropertyMetadata> properties, List<OrderByDto> orders)
-    {
-        foreach (var property in properties)
-        {
-            if (orders.Any(order => order.PropertyPath == property.PropertyPath))
-            {
-                property.IsSortable = true;
-            }
-        }
-    }
-
-    private static void SetIsSortableInNavigations(List<NavigationMetadata> navigations, List<OrderByDto> orders)
-    {
-        foreach (var navigation in navigations)
-        {
-            SetIsSortableInProperties(navigation.TargetEntityProperties, orders);
-            SetIsSortableInNavigations(navigation.TargetEntityNavigations, orders);
-        }
-    }
-
     /// <summary>
-    /// Set orderings using entity's primary keys.
+    /// Set sort using entity's primary keys.
     /// </summary>
     /// <param name="entityMetadata">Entity metadata.</param>
-    public static void SetPrimaryKeysDefaultOrderings(this EntityMetadata entityMetadata)
+    public static void SetPrimaryKeysDefaultSort(this EntityMetadata entityMetadata)
     {
         var primaryKeys = entityMetadata.Properties.Where(property => property.IsPrimaryKey);
         foreach (var primaryKey in primaryKeys)

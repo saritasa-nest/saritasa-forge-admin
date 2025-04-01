@@ -1,4 +1,5 @@
-﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+﻿using Saritasa.NetForge.Domain.Dtos;
+using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.Domain.Entities.Options;
@@ -88,4 +89,9 @@ public class PropertyOptions
 
     /// <inheritdoc cref="PropertyMetadata.CanBeNavigatedToDetails"/>
     public bool CanBeNavigatedToDetails { get; set; }
+
+    /// <summary>
+    /// Contains information about default sort.
+    /// </summary>
+    public DefaultSortDto? DefaultSort { get; set; }
 }

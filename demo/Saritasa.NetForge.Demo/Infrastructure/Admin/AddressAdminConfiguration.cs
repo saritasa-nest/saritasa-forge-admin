@@ -37,10 +37,14 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
                 .SetFormOrder(4);
         }).ConfigureProperty(address => address.City, propertyBuilder =>
         {
-            propertyBuilder.SetDisplayName("Town");
+            propertyBuilder
+                .SetDisplayName("Town")
+                .SetDefaultSort(order: 1, isAscending: true);
         }).ConfigureProperty(address => address.Street, propertyBuilder =>
         {
-            propertyBuilder.SetIsMultiline(autoGrow: true, maxLines: 10);
+            propertyBuilder
+                .SetIsMultiline(autoGrow: true, maxLines: 10)
+                .SetDefaultSort(order: 2, isAscending: false);
         }).ConfigureCalculatedProperty(address => address.FullAddress, propertyBuilder =>
         {
             propertyBuilder
@@ -90,8 +94,5 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
             .SetCreateAction((_, address) => { address.CreatedByUserId = new Random().Next(1, 1000); })
             .SetUpdateAction((_, address) => { address.UpdatedByUserId = new Random().Next(1, 1000); })
             .SetDeleteAction((_, address) => { Debug.WriteLine($"Address {address.Id} deleted."); });
-
-        entityOptionsBuilder.SetDefaultSort(
-            (address => address.City, IsAscending: true), (address => address.Street, IsAscending: true));
     }
 }

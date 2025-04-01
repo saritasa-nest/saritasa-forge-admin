@@ -65,7 +65,7 @@ public class AdminMetadataService
             }
             else
             {
-                entityMetadata.SetPrimaryKeysDefaultOrderings();
+                entityMetadata.SetPrimaryKeysDefaultSort();
             }
 
             entityMetadata.ApplyEntityAttributes(adminOptions);

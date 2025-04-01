@@ -1,4 +1,6 @@
-﻿using Saritasa.NetForge.Domain.Entities.Options;
+﻿using MudBlazor;
+using Saritasa.NetForge.Domain.Dtos;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.Domain;
@@ -246,6 +248,22 @@ public class PropertyOptionsBuilder
         {
             options.CanBeNavigatedToDetails = true;
         }
+        return this;
+    }
+
+    /// <summary>
+    /// Sets default sort that will be applied when no other sort is applied.
+    /// </summary>
+    /// <param name="order">
+    /// Represents order that used when multiple sort is configured.
+    /// Example with Address: City has <c>Order = 1</c>, Street has <c>Order = 2</c>,
+    /// so sort will be applied by city first, then by street.
+    /// </param>
+    /// <param name="isAscending">Direction of sort.</param>
+    public PropertyOptionsBuilder SetDefaultSort(int order, bool isAscending)
+    {
+        var sortDirection = isAscending ? SortDirection.Ascending : SortDirection.Descending;
+        options.DefaultSort = new DefaultSortDto { Order = order, SortDirection = sortDirection };
         return this;
     }
 }
