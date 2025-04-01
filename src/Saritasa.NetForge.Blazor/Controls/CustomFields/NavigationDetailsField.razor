@@ -1,6 +1,8 @@
 ﻿@using Saritasa.NetForge.Blazor.Infrastructure.Helpers;
+@using Saritasa.NetForge.UseCases.Interfaces
 @using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
+@inject IEntityService EntityService
 @inherits CustomField
 
 @{
@@ -23,9 +25,13 @@
                 var navigationMetadata = (NavigationMetadataDto)Property;
                 var navigationEntityInstance = PropertyValue;
 
+                var entityMetadata = EntityService
+                    .GetEntityByTypeAsync(navigationMetadata.ClrType!, CancellationToken.None)
+                    .Result;
+
                 var dialogParameters = new DialogParameters();
-                dialogParameters.Add("NavigationMetadata", navigationMetadata);
-                dialogParameters.Add("NavigationEntityInstance", navigationEntityInstance);
+                dialogParameters.Add("EntityMetadata", entityMetadata);
+                dialogParameters.Add("EntityInstance", navigationEntityInstance);
 
                 <MudTooltip Text="@title">
                     <MudButton Variant="Variant.Outlined" Color="Color.Surface" Class="pa-3 mt-1"

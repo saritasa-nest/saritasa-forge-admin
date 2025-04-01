@@ -36,7 +36,6 @@ public partial class NavigationDetailsField : CustomField
 
     private Task OpenDialogAsync(DialogOptions options, DialogParameters parameters)
     {
-
         return DialogService.ShowAsync<NavigationEntityEditDialog>("Edit", parameters, options);
     }
 }
