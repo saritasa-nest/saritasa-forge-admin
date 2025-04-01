@@ -45,6 +45,7 @@ public class Startup
         });
         services.AddAsyncInitialization();
         services.AddAsyncInitializer<DatabaseInitializer>();
+        services.AddAsyncInitializer<GCTrigger>();
         services.AddHealthChecks();
 
         // Identity.
