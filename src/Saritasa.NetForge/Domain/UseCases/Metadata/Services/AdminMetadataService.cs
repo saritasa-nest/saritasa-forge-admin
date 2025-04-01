@@ -65,6 +65,7 @@ public class AdminMetadataService
             }
             else
             {
+                // When entityOptions is null, the entity does not have any configurations
                 entityMetadata.SetPrimaryKeysDefaultSort();
             }
 
