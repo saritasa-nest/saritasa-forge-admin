@@ -173,10 +173,9 @@ public class EntityDetailsViewModel : BaseViewModel
         {
             foreach (var defaultOrdering in Model.DefaultOrderings)
             {
-                var column = DataGrid!.RenderedColumns
-                    .Where(column => column.Sortable == true)
-                    .FirstOrDefault(column =>
-                        column.UserAttributes[propertyPathAttribute].ToString() == defaultOrdering.PropertyPath);
+                var column = DataGrid!.RenderedColumns.FirstOrDefault(column =>
+                    column.UserAttributes.ContainsKey(propertyPathAttribute)
+                    && column.UserAttributes[propertyPathAttribute]!.ToString() == defaultOrdering.PropertyPath);
 
                 // When column is null, then the sortable property is hidden.
                 // In this case we still perform order, but it cannot be seen on UI.
