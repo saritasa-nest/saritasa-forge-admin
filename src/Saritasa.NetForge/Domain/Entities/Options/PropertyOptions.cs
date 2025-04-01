@@ -51,6 +51,11 @@ public class PropertyOptions
     /// <inheritdoc cref="PropertyMetadataBase.IsSortable"/>
     public bool IsSortable { get; set; }
 
+    /// <summary>
+    /// Contains information about default sort.
+    /// </summary>
+    public DefaultSortDto? DefaultSort { get; set; }
+
     /// <inheritdoc cref="PropertyMetadataBase.EmptyValueDisplay"/>
     public string EmptyValueDisplay { get; set; } = string.Empty;
 
@@ -89,9 +94,4 @@ public class PropertyOptions
 
     /// <inheritdoc cref="PropertyMetadata.CanBeNavigatedToDetails"/>
     public bool CanBeNavigatedToDetails { get; set; }
-
-    /// <summary>
-    /// Contains information about default sort.
-    /// </summary>
-    public DefaultSortDto? DefaultSort { get; set; }
 }
