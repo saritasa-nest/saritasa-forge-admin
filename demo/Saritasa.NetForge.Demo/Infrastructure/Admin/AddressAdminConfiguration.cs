@@ -28,8 +28,7 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
                 .SetDescription("Address contact phone.")
                 .SetOrder(1)
                 .SetSearchType(SearchType.ContainsCaseInsensitive)
-                .SetFormOrder(5)
-                .SetIsSortable(true);
+                .SetFormOrder(5);
         }).ConfigureProperty(address => address.PostalCode, propertyBuilder =>
         {
             propertyBuilder
