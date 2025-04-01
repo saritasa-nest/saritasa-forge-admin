@@ -11,8 +11,23 @@ namespace Saritasa.NetForge.Demo.Infrastructure.Storage;
 /// </remarks>
 internal class EphemeralSqliteConnectionFactory : CriticalFinalizerObject, IEphemeralSqliteConnectionFactory
 {
-    private readonly string sqliteDbPath = FileHelpers.CreateTemporaryFileSecure(".sqlite");
+    private readonly string sqliteDbPath;
+    private readonly EphemeralSqliteReleaseHandle releaseHandle;
     private bool disposed;
+
+    /// <summary>
+    /// Custom SQLite connection that hold a reference to <see cref="EphemeralSqliteReleaseHandle"/>.
+    /// </summary>
+    /// <param name="releaseHandle">Release handle.</param>
+    /// <param name="connectionString">Connection string.</param>
+    private class EphemeralSqliteConnection(EphemeralSqliteReleaseHandle releaseHandle, string connectionString)
+        : SqliteConnection(connectionString);
+
+    public EphemeralSqliteConnectionFactory()
+    {
+        sqliteDbPath = FileHelpers.CreateTemporaryFileSecure(".sqlite");
+        releaseHandle = new(sqliteDbPath);
+    }
 
     private static SqliteConnection CreateConnection(string path)
     {
@@ -20,7 +35,8 @@ internal class EphemeralSqliteConnectionFactory : CriticalFinalizerObject, IEphe
     }
 
     /// <inheritdoc />
-    DbConnection IEphemeralSqliteConnectionFactory.CreateConnection() => CreateConnection(sqliteDbPath);
+    DbConnection IEphemeralSqliteConnectionFactory.CreateConnection()
+        => new EphemeralSqliteConnection(releaseHandle, $"Data Source={sqliteDbPath};Pooling=false");
 
     /// <inheritdoc cref="Dispose()" />
     /// <param name="disposing">Whether this method is called by <see cref="Dispose()"/> or not.</param>
@@ -33,7 +49,7 @@ internal class EphemeralSqliteConnectionFactory : CriticalFinalizerObject, IEphe
 
         try
         {
-            File.Delete(sqliteDbPath);
+            // File.Delete(sqliteDbPath);
         }
         finally
         {

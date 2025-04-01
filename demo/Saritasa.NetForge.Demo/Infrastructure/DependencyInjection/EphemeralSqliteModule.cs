@@ -15,6 +15,9 @@ public static class EphemeralSqliteModule
     public static void AddEphemeralSqlite(this IServiceCollection services)
     {
         services.AddHttpContextAccessor();
+
+        // Stores the migrated and seeded database snapshot's location.
+        // Automatically delete it after the application is closed.
         services.TryAddSingleton<DbSnapshot>();
 
         // This make sure that all DbConnection reference the same file,

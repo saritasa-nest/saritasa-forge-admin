@@ -1,7 +1,7 @@
 namespace Saritasa.NetForge.Demo.Infrastructure.Storage;
 
 /// <summary>
-/// Stores the database snapshot's location.
+/// Stores the migrated and seeded database snapshot's location.
 /// Automatically delete it after the application is closed.
 /// </summary>
 internal class DbSnapshot : IDisposable
@@ -26,7 +26,7 @@ internal class DbSnapshot : IDisposable
         set
         {
             snapShotLocation = value;
-            logger.LogInformation("Snapshot location set: {Location}", value);
+            logger.LogDebug("Snapshot location set: {Location}", value);
         }
     }
 
@@ -34,6 +34,9 @@ internal class DbSnapshot : IDisposable
     /// <param name="disposing">Whether this method is called from <see cref="Dispose()"/> or not.</param>
     protected virtual void Dispose(bool disposing)
     {
+        logger.LogDebug("Cleaning unreleased handles.");
+        GC.Collect(2);
+        
         var snapshotLocationLocal = Interlocked.Exchange(ref snapShotLocation, null);
         if (string.IsNullOrEmpty(snapshotLocationLocal))
         {
@@ -41,7 +44,7 @@ internal class DbSnapshot : IDisposable
         }
 
         File.Delete(snapshotLocationLocal);
-        logger.LogInformation("Deleted database snapshot: {Location}", snapshotLocationLocal);
+        logger.LogDebug("Deleted database snapshot: {Location}", snapshotLocationLocal);
     }
 
     /// <inheritdoc />
