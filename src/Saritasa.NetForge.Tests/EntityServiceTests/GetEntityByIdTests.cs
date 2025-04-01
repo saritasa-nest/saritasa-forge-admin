@@ -761,11 +761,50 @@ public class GetEntityByIdTests : IDisposable
 
         // Act
         var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+        var name = entity.Properties.First(property => property.PropertyPath == nameof(Shop.Name));
 
         // Assert
         Assert.Contains(
             entity.DefaultOrderings, ordering => ordering is { PropertyPath: nameof(Shop.Name), IsAscending: true });
         Assert.Single(entity.DefaultOrderings);
+
+        Assert.True(name.IsSortable);
+    }
+
+    /// <summary>
+    /// Verifies default sort configured correctly using navigation's property.
+    /// </summary>
+    [Fact]
+    public async Task GetEntityByIdAsync_SetDefaultSort_InNavigation_ShouldBeConfigured()
+    {
+        // Arrange
+        adminOptionsBuilder.ConfigureEntity<Product>(builder =>
+        {
+            builder.IncludeNavigation<Shop>(product => product.Shop, shopBuilder =>
+            {
+                shopBuilder.IncludeNavigation<Address>(shop => shop.Address, addressBuilder =>
+                {
+                    addressBuilder.IncludeProperty(address => address.Street, streetBuilder =>
+                    {
+                        streetBuilder.SetDefaultSort(1, isAscending: true);
+                    });
+                });
+            });
+        });
+
+        // Act
+        var entity = await entityService.GetEntityByIdAsync("Products", CancellationToken.None);
+
+        var shop = (NavigationMetadataDto)entity.Properties.First(property => property.Name == nameof(Product.Shop));
+        var address = shop.TargetEntityNavigations.First(property => property.Name == nameof(Shop.Address));
+        var sortableProperty = address.TargetEntityProperties.First(property => property.Name == nameof(Address.Street));
+
+        // Assert
+        Assert.Contains(
+            entity.DefaultOrderings, ordering => ordering is { PropertyPath: "Shop.Address.Street", IsAscending: true });
+        Assert.Single(entity.DefaultOrderings);
+
+        Assert.True(sortableProperty.IsSortable);
     }
 
     /// <summary>
@@ -792,12 +831,18 @@ public class GetEntityByIdTests : IDisposable
         // Act
         var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
 
+        var name = entity.Properties.First(property => property.PropertyPath == nameof(Shop.Name));
+        var isOpen = entity.Properties.First(property => property.PropertyPath == nameof(Shop.IsOpen));
+
         // Assert
         Assert.Contains(
             entity.DefaultOrderings, ordering => ordering is { PropertyPath: nameof(Shop.Name), IsAscending: true });
         Assert.Contains(
             entity.DefaultOrderings, ordering => ordering is { PropertyPath: nameof(Shop.IsOpen), IsAscending: false });
         Assert.Equal(orderingsCount, entity.DefaultOrderings.Count);
+
+        Assert.True(name.IsSortable);
+        Assert.True(isOpen.IsSortable);
     }
 
     /// <summary>
@@ -808,11 +853,14 @@ public class GetEntityByIdTests : IDisposable
     {
         // Act
         var entity = await entityService.GetEntityByIdAsync(FluentApiTestEntityId, CancellationToken.None);
+        var id = entity.Properties.First(property => property.PropertyPath == nameof(Shop.Id));
 
         // Assert
         var primaryKey = entity.Properties.First(property => property.IsPrimaryKey);
         Assert.Contains(entity.DefaultOrderings, ordering => ordering.PropertyPath == primaryKey.Name);
         Assert.Single(entity.DefaultOrderings);
+
+        Assert.True(id.IsSortable);
     }
 
     /// <summary>
@@ -826,12 +874,18 @@ public class GetEntityByIdTests : IDisposable
 
         // Act
         var entity = await entityService.GetEntityByIdAsync("Suppliers", CancellationToken.None);
-
-        // Assert
         var primaryKeyNames = entity.Properties
             .Where(property => property.IsPrimaryKey)
             .Select(property => property.Name);
+
+        var name = entity.Properties.First(property => property.PropertyPath == nameof(Supplier.Name));
+        var city = entity.Properties.First(property => property.PropertyPath == nameof(Supplier.City));
+
+        // Assert
         Assert.Contains(entity.DefaultOrderings, ordering => primaryKeyNames.Contains(ordering.PropertyPath));
         Assert.Equal(primaryKeysCount, entity.DefaultOrderings.Count);
+
+        Assert.True(name.IsSortable);
+        Assert.True(city.IsSortable);
     }
 }
