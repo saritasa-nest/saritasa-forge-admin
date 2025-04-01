@@ -1,11 +1,9 @@
 ﻿using System.Collections;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Infrastructure.Helpers;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.Extensions;
-using Saritasa.NetForge.Domain.UseCases.Common;
 using Saritasa.NetForge.Domain.UseCases.Interfaces;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
@@ -76,10 +74,6 @@ public partial class EntityPropertyColumns : ComponentBase
     /// <inheritdoc cref="MessageOptions.EntityDeleteMessage"/>
     [Parameter]
     public string? EntityDeleteMessage { get; set; }
-
-    /// <inheritdoc cref="EntityMetadata.DefaultOrderings"/>
-    [Parameter]
-    public List<OrderByDto> DefaultOrderings { get; set; } = [];
 
     /// <summary>
     /// Gets property's display name.

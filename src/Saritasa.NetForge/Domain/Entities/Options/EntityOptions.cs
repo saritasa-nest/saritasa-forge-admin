@@ -1,5 +1,4 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Metadata;
-using Saritasa.NetForge.Domain.UseCases.Common;
 
 namespace Saritasa.NetForge.Domain.Entities.Options;
 
@@ -113,7 +112,4 @@ public class EntityOptions
 
     /// <inheritdoc cref="AdminOptions.MaxNavigationDepth"/>
     public byte? MaxNavigationDepth { get; set; }
-
-    /// <inheritdoc cref="EntityMetadata.DefaultOrderings"/>
-    public List<OrderByDto> DefaultOrderings { get; set; } = [];
 }
