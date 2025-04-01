@@ -35,6 +35,7 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
   - [Data Attributes](#data-attributes-1)
   - [Display Formatting](#display-formatting)
   - [Data Sorting](#data-sorting)
+    - [Default Sort](#default-sort)
   - [Calculated Properties](#calculated-properties)
   - [Display Properties as Title Case](#display-properties-as-title-case)
   - [Default Values](#default-values)
