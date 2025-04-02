@@ -47,6 +47,6 @@ public static class EntityProxyExtensions
     /// </returns>
     public static Type GetPocoType(this Type entityType)
     {
-        return !entityType.IsLazyLoadingProxy() ? entityType : entityType.BaseType!;
+        return entityType.IsLazyLoadingProxy() ? entityType.BaseType! : entityType;
     }
 }
