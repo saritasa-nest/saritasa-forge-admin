@@ -41,13 +41,6 @@ public partial class NavigationCollectionField<T> : CustomField
             .Cast<T>()
             .OrderBy(instance => instance).ToList();
 
-        // In case of lazy loading - convert proxies to POCO instances.
-        if (NavigationInstances.Any() && NavigationInstances.First()!.GetType().IsLazyLoadingProxy())
-        {
-            NavigationInstances = NavigationInstances
-                .Select(instance => ProxyToPocoConverter.ConvertProxyToPoco(instance)).Cast<T>();
-        }
-
         EntityMetadata = await EntityService.GetEntityByTypeAsync(entityType, CancellationToken.None);
     }
 }
