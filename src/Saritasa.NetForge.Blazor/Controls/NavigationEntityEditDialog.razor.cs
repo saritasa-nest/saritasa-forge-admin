@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Saritasa.NetForge.UseCases.Interfaces;
 using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
@@ -26,6 +27,12 @@ public partial class NavigationEntityEditDialog : ComponentBase
     public GetEntityDto EntityMetadata { get; set; } = null!;
 
     /// <summary>
+    /// Entity metadata.
+    /// </summary>
+    [Parameter]
+    public PropertyInfo EntityPrimaryKeyProperty { get; set; } = null!;
+
+    /// <summary>
     /// Navigation instance. Collection instance in case of navigation collection.
     /// </summary>
     [Parameter]
@@ -41,10 +48,7 @@ public partial class NavigationEntityEditDialog : ComponentBase
     {
         await base.OnParametersSetAsync();
 
-        var primaryKeyPropertyMetadata = EntityMetadata.Properties.First(e => e.IsPrimaryKey);
-        var primaryKeyProperty = EntityMetadata.ClrType!
-            .GetProperty(primaryKeyPropertyMetadata.Name, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-
+        var primaryKeyProperty = EntityPrimaryKeyProperty;
         InstancePrimaryKey = primaryKeyProperty!.GetValue(EntityInstance!);
     }
 }

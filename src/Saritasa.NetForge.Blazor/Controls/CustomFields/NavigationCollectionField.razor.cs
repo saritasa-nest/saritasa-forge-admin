@@ -1,4 +1,7 @@
-﻿namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
+﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
+
+namespace Saritasa.NetForge.Blazor.Controls.CustomFields;
 
 /// <summary>
 /// Field for a navigation collection.
@@ -6,6 +9,9 @@
 /// <typeparam name="T">Underlying type of the collection.</typeparam>
 public partial class NavigationCollectionField<T> : CustomField
 {
+    [Inject]
+    private IDialogService DialogService { get; set; } = null!;
+
     /// <summary>
     /// Navigation collection.
     /// </summary>
@@ -28,5 +34,18 @@ public partial class NavigationCollectionField<T> : CustomField
             .GetQuery(propertyType)
             .Cast<T>()
             .OrderBy(instance => instance);
+    }
+
+    private readonly DialogOptions navigationDetailsDialogOptions = new()
+    {
+        DisableBackdropClick = true,
+        MaxWidth = MaxWidth.Large,
+        FullWidth = true,
+        NoHeader = true
+    };
+
+    private Task OpenDialogAsync(DialogOptions options, DialogParameters parameters)
+    {
+        return DialogService.ShowAsync<NavigationEntityEditDialog>("Edit", parameters, options);
     }
 }

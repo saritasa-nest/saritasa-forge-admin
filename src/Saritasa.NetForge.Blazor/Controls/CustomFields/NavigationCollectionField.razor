@@ -1,20 +1,62 @@
 ﻿@using Saritasa.NetForge.DomainServices.Comparers
+@using Saritasa.NetForge.UseCases.Interfaces
+@using Saritasa.NetForge.UseCases.Metadata.GetEntityById
+@using Saritasa.NetForge.UseCases.Metadata.Services
+
+@inject AdminMetadataService adminMetadataService;
 
 @inherits CustomField
-
+@inject IEntityService EntityService
 @typeparam T
 
-<MudSelect @bind-SelectedValues="PropertyValue"
-           Label="@Property.Name"
-           Variant="Variant.Outlined"
-           HelperText="@Property.Description"
-           Disabled="IsReadOnly"
-           MultiSelection="true"
-           Comparer="new ObjectComparer<T>()"
-           Error="@FieldErrorModel.IsError"
-           ErrorText="@FieldErrorModel.ErrorMessage">
-    @foreach (var instance in NavigationInstances)
-    {
-        <MudSelectItem Value="instance" />
+@{
+    var navigationCollectionMetadata = (NavigationMetadataDto)Property;
+
+    var entityType = Property.ClrType!.GetGenericArguments().First();
+    var entityMetadata = EntityService
+        .GetEntityByTypeAsync(entityType!, CancellationToken.None)
+        .Result;
+    var navigationPrimaryKeyMetadata = navigationCollectionMetadata.TargetEntityProperties.First(e => e.IsPrimaryKey);
+    var primaryKeyProperty = entityType.GetProperty(navigationPrimaryKeyMetadata.Name);
+
+    var selectedIds = PropertyValue.Select(e => primaryKeyProperty!.GetValue(e));
+    <MudSelect @bind-SelectedValues="PropertyValue"
+        Label="@Property.Name"
+        Variant="Variant.Outlined"
+        HelperText="@Property.Description"
+        Disabled="IsReadOnly"
+        MultiSelection="true"
+        Comparer="new ObjectComparer<T>()"
+        Error="@FieldErrorModel.IsError"
+        ErrorText="@FieldErrorModel.ErrorMessage">
+        @foreach (var instance in NavigationInstances)
+        {
+            var instanceId = primaryKeyProperty!.GetValue(instance);
+            if (selectedIds.Contains(instanceId))
+            {
+                var dialogParameters = new DialogParameters();
+                dialogParameters.Add("EntityMetadata", entityMetadata);
+                dialogParameters.Add("EntityInstance", instance);
+                dialogParameters.Add("EntityPrimaryKeyProperty", primaryKeyProperty);
+
+                <MudSelectItem Value="instance">
+                    <MudGrid>
+                        <MudItem xs="10">
+                            <MudText Class="mt-5">@instance</MudText>
+                        </MudItem>
+                        <MudItem xs="2">
+                            <MudButton Variant="Variant.Outlined" Color="Color.Surface" Class="pa-3 mt-1"
+                                       OnClick="@(() => OpenDialogAsync(navigationDetailsDialogOptions, dialogParameters))">
+                                <MudText Typo="Typo.h5">Edit</MudText>
+                            </MudButton>
+                        </MudItem>
+                    </MudGrid>
+                </MudSelectItem>
+            }
+            else
+            {
+                <MudSelectItem Value="instance" />
+            }
     }
 </MudSelect>
+}

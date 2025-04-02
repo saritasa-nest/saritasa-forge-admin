@@ -3,45 +3,77 @@
 @using Saritasa.NetForge.Mvvm.ViewModels
 @using Saritasa.NetForge.UseCases.Metadata.GetEntityById
 
-<MudPaper Class="mud-background-gray">
-    <MudPaper Class="my-4 mx-2 pa-4">
-@{
+@* @code {
+    bool _expanded = true;
 
+    private void OnExpandCollapseClick()
+    {
+        _expanded = !_expanded;
+    }
+}
+
+@{
+    var title = $"Edit {NavigationMetadata.Name}";
+<MudButton OnClick="OnExpandCollapseClick">
+    <MudText Typo="Typo.h4">
+        @title
+    </MudText>
+</MudButton>
+}
+
+<MudCollapse Expanded="_expanded"> *@
+@* <MudPaper Class="mud-background-gray"> *@
+    @* <MudPaper Class="my-4 mx-2 pa-6 ma-2" Elevation="4"> *@
+   @*  <MudPaper Class="pa-4 ma-2" Elevation="4"> *@
+    @{
         var title = $"Edit {NavigationMetadata.Name}";
-            <MudText Class="pb-4" Typo="Typo.h4">@title</MudText>
+        // <MudButton OnClick="OnExpandCollapseClick">
+        //     <MudText Typo="Typo.h4">
+        //         @title
+        //     </MudText>
+        // </MudButton>
+
+
 
             //var entityMetadata = await EntityService.GetEntityByTypeAsync(Property.ClrType!, CancellationToken.None);
 
             // var allProperties = new List<(PropertyMetadataDto Property, NavigationMetadataDto? Navigation)>();
 
-        var editedProperties = Properties
-            .Where(property => property is { IsPrimaryKey: false, IsReadOnly: false });
 
-        foreach (var property in editedProperties)
-        {
-            var componentType = CustomFieldHelper.GetComponentType(property);
+            <MudText Class="pb-4" Typo="Typo.h4">@title</MudText>
+        @*<MudCollapse Expanded="true">*@
 
-            var fieldError = new FieldErrorModel
-            {
-                Property = property
-            };
+                var editedProperties = Properties
+                    .Where(property => property is { IsPrimaryKey: false, IsReadOnly: false });
 
-            var parameters = new Dictionary<string, object>
-            {
-                { "Property", property },
-                { "EntityInstance", EntityInstance },
-                //{ "IsReadOnly", property.IsPrimaryKey || property.IsReadOnly },
-                { "FieldErrorModel", fieldError }
-            };
+                foreach (var property in editedProperties)
+                {
+                    var componentType = CustomFieldHelper.GetComponentType(property);
 
-            // if (property.UploadFileStrategy is not null)
-            // {
-            //     //parameters.Add(nameof(UploadImage.OnFileSelected),
-            //     //    (Action<PropertyMetadataDto, IBrowserFile?>)ViewModel.HandleSelectedFile);
-            // }
+                    var fieldError = new FieldErrorModel
+                    {
+                        Property = property
+                    };
 
-            <DynamicComponent Type="componentType" Parameters="parameters" />
-        }
+                    var parameters = new Dictionary<string, object>
+                    {
+                        { "Property", property },
+                        { "EntityInstance", EntityInstance },
+                        { "IsReadOnly", property.IsPrimaryKey || property.IsReadOnly },
+                        { "FieldErrorModel", fieldError }
+                    };
+
+                    // if (property.UploadFileStrategy is not null)
+                    // {
+                    //     //parameters.Add(nameof(UploadImage.OnFileSelected),
+                    //     //    (Action<PropertyMetadataDto, IBrowserFile?>)ViewModel.HandleSelectedFile);
+                    // }
+
+
+                    <DynamicComponent Type="componentType" Parameters="parameters" />
+                }
+
+
         // <MudDivider />
 
         //     if (property is NavigationMetadataDto navigation)
@@ -72,5 +104,6 @@
         //     }
 
 }
-    </MudPaper>
-</MudPaper>
+    @* </MudPaper> *@
+@* </MudCollapse> *@
+@* </MudPaper> *@

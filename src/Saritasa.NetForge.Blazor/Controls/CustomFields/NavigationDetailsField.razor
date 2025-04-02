@@ -2,8 +2,8 @@
 @using Saritasa.NetForge.UseCases.Interfaces
 @using Saritasa.NetForge.UseCases.Metadata.GetEntityById;
 
-@inject IEntityService EntityService
 @inherits CustomField
+@inject IEntityService EntityService
 
 @{
     var componentType = CustomFieldHelper.GetComponentType(Property);
@@ -21,18 +21,19 @@
         </MudItem>
         <MudItem xs="2">
             @{
-                var title = $"Edit {Property.Name}";
                 var navigationMetadata = (NavigationMetadataDto)Property;
-                var navigationEntityInstance = PropertyValue;
-
+                var pkPropertyMetadata = navigationMetadata.TargetEntityProperties.First(e => e.IsPrimaryKey);
                 var entityMetadata = EntityService
                     .GetEntityByTypeAsync(navigationMetadata.ClrType!, CancellationToken.None)
                     .Result;
+                var pkPropertyInfo = entityMetadata.ClrType!.GetProperty(pkPropertyMetadata.Name);
 
                 var dialogParameters = new DialogParameters();
                 dialogParameters.Add("EntityMetadata", entityMetadata);
-                dialogParameters.Add("EntityInstance", navigationEntityInstance);
+                dialogParameters.Add("EntityInstance", PropertyValue);
+                dialogParameters.Add("EntityPrimaryKeyProperty", pkPropertyInfo);
 
+                var title = $"Edit {Property.Name}";
                 <MudTooltip Text="@title">
                     <MudButton Variant="Variant.Outlined" Color="Color.Surface" Class="pa-3 mt-1"
                         OnClick="@(() => OpenDialogAsync(navigationDetailsDialogOptions, dialogParameters))">
