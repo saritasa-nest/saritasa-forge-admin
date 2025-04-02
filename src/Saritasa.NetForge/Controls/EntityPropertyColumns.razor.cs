@@ -110,9 +110,27 @@ public partial class EntityPropertyColumns : ComponentBase
             return JoinPrimaryKeys(primaryKeys, navigationInstance);
         }
 
+        var navigationCollectionInstance = (navigationInstance as IEnumerable)!;
+
+        if (navigationMetadata.ListViewPropertyNames.Count > 0)
+        {
+            List<object?> propertyValues = [];
+
+            foreach (var item in navigationCollectionInstance)
+            {
+                foreach (var propertyName in navigationMetadata.ListViewPropertyNames)
+                {
+                    var propertyValue = item.GetPropertyValue(propertyName);
+                    propertyValues.Add(propertyValue);
+                }
+            }
+
+            return GetNavigationCollectionString(propertyValues);
+        }
+
         var primaryKeyValues = new List<object?>();
 
-        foreach (var item in (navigationInstance as IEnumerable)!)
+        foreach (var item in navigationCollectionInstance)
         {
             if (primaryKeys.Count == 1)
             {
@@ -124,7 +142,12 @@ public partial class EntityPropertyColumns : ComponentBase
             }
         }
 
-        return $"[ {string.Join(", ", primaryKeyValues)} ]";
+        return GetNavigationCollectionString(primaryKeyValues);
+    }
+
+    private static string GetNavigationCollectionString(List<object?> valuesToDisplay)
+    {
+        return $"[ {string.Join(", ", valuesToDisplay)} ]";
     }
 
     private static string JoinPrimaryKeys(IEnumerable<PropertyMetadataDto> primaryKeys, object navigation)
