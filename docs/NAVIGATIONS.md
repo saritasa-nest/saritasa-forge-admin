@@ -185,3 +185,34 @@ It is not working for displaying navigation collection.
 
     public override int GetHashCode() => Street.GetHashCode() + City.GetHashCode();
 ```
+
+## List View Navigation Collection Display
+
+You can choose any property except navigations to represent navigation collection.
+
+We will use this data in examples:
+
+`Shop` entity has `Products` navigation collection:
+1. Id: 1, Name: Pasta, Price: 100
+2. Id: 2, Name: Sausage, Price: 500
+3. Id: 3, Name: Banana, Price 900
+
+### One Property
+
+Example when `Product.Name` is chosen:
+
+```text
+[ Pasta, Sausage, Banana ]
+```
+
+### Multiple Properties
+
+Example when `Product.Name` and `Product.Price` are chosen:
+
+```text
+[ { Pasta; 100 }, { Sausage; 500 }, { Banana; 900 } ]
+```
+
+### Default Behavior
+
+When no property is chosen then all primary keys will be used to display navigation collection.
