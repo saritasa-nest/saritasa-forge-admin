@@ -89,7 +89,7 @@ public partial class EntityPropertyColumns : ComponentBase
             : property.Name;
     }
 
-    private static object GetNavigationValue(object navigationInstance, NavigationMetadataDto navigationMetadata)
+    private static object GetNavigationCollectionValue(object navigationInstance, NavigationMetadataDto navigationMetadata)
     {
         var primaryKeys = navigationMetadata.TargetEntityProperties
             .Where(targetProperty => targetProperty.IsPrimaryKey)
@@ -100,16 +100,6 @@ public partial class EntityPropertyColumns : ComponentBase
             return navigationInstance;
         }
 
-        if (!navigationMetadata.IsCollection)
-        {
-            if (primaryKeys.Count == 1)
-            {
-                return navigationInstance.GetType().GetProperty(primaryKeys[0].Name)!.GetValue(navigationInstance)!;
-            }
-
-            return JoinPrimaryKeys(primaryKeys, navigationInstance);
-        }
-
         var navigationCollectionInstance = (navigationInstance as IEnumerable)!;
 
         if (navigationMetadata.ListViewPropertyNames.Count > 0)
@@ -118,14 +108,18 @@ public partial class EntityPropertyColumns : ComponentBase
 
             foreach (var item in navigationCollectionInstance)
             {
-                foreach (var propertyName in navigationMetadata.ListViewPropertyNames)
+                if (navigationMetadata.ListViewPropertyNames.Count == 1)
                 {
-                    var propertyValue = item.GetPropertyValue(propertyName);
+                    var propertyValue = item.GetPropertyValue(navigationMetadata.ListViewPropertyNames[0]);
                     propertyValues.Add(propertyValue);
+                }
+                else
+                {
+                    propertyValues.Add(JoinProperties(navigationMetadata.ListViewPropertyNames, item));
                 }
             }
 
-            return GetNavigationCollectionString(propertyValues);
+            return JoinNavigationValues(propertyValues);
         }
 
         var primaryKeyValues = new List<object?>();
@@ -138,25 +132,23 @@ public partial class EntityPropertyColumns : ComponentBase
             }
             else
             {
-                primaryKeyValues.Add($"{{ {JoinPrimaryKeys(primaryKeys, item)} }}");
+                var primaryKeyNames = primaryKeys.Select(primaryKey => primaryKey.Name);
+                primaryKeyValues.Add(JoinProperties(primaryKeyNames, item));
             }
         }
 
-        return GetNavigationCollectionString(primaryKeyValues);
+        return JoinNavigationValues(primaryKeyValues);
     }
 
-    private static string GetNavigationCollectionString(List<object?> valuesToDisplay)
+    private static string JoinProperties(IEnumerable<string> propertyNames, object navigation)
+    {
+        var propertyValues = propertyNames.Select(navigation.GetPropertyValue);
+        return $"{{ {string.Join("; ", propertyValues)} }}";
+    }
+
+    private static string JoinNavigationValues(List<object?> valuesToDisplay)
     {
         return $"[ {string.Join(", ", valuesToDisplay)} ]";
-    }
-
-    private static string JoinPrimaryKeys(IEnumerable<PropertyMetadataDto> primaryKeys, object navigation)
-    {
-        var primaryKeyValues = primaryKeys
-            .Select(primaryKey => primaryKey.Name)
-            .Select(primaryKeyName => navigation.GetType().GetProperty(primaryKeyName)!.GetValue(navigation));
-
-        return string.Join("; ", primaryKeyValues);
     }
 
     private string FormatValue(object value, PropertyMetadataDto propertyMetadata)

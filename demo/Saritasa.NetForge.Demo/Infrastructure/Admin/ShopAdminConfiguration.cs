@@ -75,7 +75,7 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             })
             .IncludeNavigation<Product>(shop => shop.Products, navigationOptionsBuilder =>
             {
-                navigationOptionsBuilder.SetListViewPropertyNames([nameof(Product.Name)]);
+                navigationOptionsBuilder.SetListViewPropertyNames([nameof(Product.Id), nameof(Product.Name)]);
             })
             .IncludeNavigation<Supplier>(shop => shop.Suppliers, navigationOptionsBuilder =>
             {
