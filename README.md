@@ -1,8 +1,8 @@
-# NetForge - Admin Panel for ASP.NET Core 8
+# NetForge - Admin Panel for ASP.NET Core 8 & 9
 
 The **NetForge** is a library that provides a user-friendly and intuitive user interface for performing CRUD operations on your database entities within your .NET applications.
 
-- [NetForge - Admin Panel for ASP.NET Core 8](#netforge---admin-panel-for-aspnet-core-8)
+- [NetForge - Admin Panel for ASP.NET Core 8 & 9](#netforge---admin-panel-for-aspnet-core-8--9)
 - [How to Use](#how-to-use)
 - [Global Configurations](#global-configurations)
   - [Customizing the Endpoint](#customizing-the-endpoint)
