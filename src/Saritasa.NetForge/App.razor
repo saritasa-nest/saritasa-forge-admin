@@ -7,15 +7,56 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <base href="/admin/" />
-    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet"/>
-    <link href="_content/Saritasa.NetForge/Saritasa.NetForge.bundle.scp.css" rel="stylesheet"/>
-    <link href="_content/Saritasa.NetForge/index.css" rel="stylesheet"/>
+    @{
+#if NET9_0_OR_GREATER
+        {
+            if (AdminOptions.MapStaticAssetsEnabled)
+            {
+                <link href="@Assets["_content/MudBlazor/MudBlazor.min.css"]" rel="stylesheet"/>
+                <link href="@Assets["_content/Saritasa.NetForge/Saritasa.NetForge.bundle.scp.css"]" rel="stylesheet"/>
+                <link href="@Assets["_content/Saritasa.NetForge/index.css"]" rel="stylesheet"/>
+                <ImportMap/>
+            }
+            else
+            {
+                <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet"/>
+                <link href="_content/Saritasa.NetForge/Saritasa.NetForge.bundle.scp.css" rel="stylesheet"/>
+                <link href="_content/Saritasa.NetForge/index.css" rel="stylesheet"/>
+            }
+        }
+#else
+        {
+            <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet"/>
+            <link href="_content/Saritasa.NetForge/Saritasa.NetForge.bundle.scp.css" rel="stylesheet"/>
+            <link href="_content/Saritasa.NetForge/index.css" rel="stylesheet"/>
+        }
+#endif
+    }
+
     <HeadOutlet @rendermode="InteractiveServer"/>
 </head>
 <body>
     <Routes @rendermode="InteractiveServer"/>
     <script src="_framework/blazor.web.js"></script>
-    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    @{
+#if NET9_0_OR_GREATER
+        {
+            if (AdminOptions.MapStaticAssetsEnabled)
+            {
+                <script src="@Assets["_content/MudBlazor/MudBlazor.min.js"]"></script>
+            }
+            else
+            {
+                <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+            }
+        }
+#else
+        {
+            <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+        }
+#endif
+    }
+
     @if (AdminOptions.StaticBodyComponentType is not null)
     {
         <component type="AdminOptions.StaticBodyComponentType" render-mode="Static"/>

@@ -39,6 +39,7 @@ internal static class NetForgeModule
                     builder.AddAttribute(1, nameof(AdminFooter.VisitorsCount), 1234);
                     builder.CloseComponent();
                 })
+                .EnableMapStaticAssets()
                 .ConfigureEntity(new ShopAdminConfiguration(services))
                 .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
                 {

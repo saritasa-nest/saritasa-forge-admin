@@ -51,12 +51,27 @@ public static class AdminExtensions
         app.MapWhen(context => context.Request.Path.StartsWithSegments(adminPanelEndpoint), applicationBuilder =>
         {
             applicationBuilder.UsePathBase(adminPanelEndpoint);
+
+#if NET9_0_OR_GREATER
+            if (!optionsService.MapStaticAssetsEnabled)
+            {
+                applicationBuilder.UseStaticFiles();
+            }
+#else
             applicationBuilder.UseStaticFiles();
+#endif
+
             applicationBuilder.UseRouting();
             applicationBuilder.Use(AuthMiddleware);
             applicationBuilder.UseAntiforgery();
             applicationBuilder.UseEndpoints(endpointBuilder =>
             {
+#if NET9_0_OR_GREATER
+                if (optionsService.MapStaticAssetsEnabled)
+                {
+                    endpointBuilder.MapStaticAssets();
+                }
+#endif
                 endpointBuilder
                     .MapRazorComponents<App>()
                     .AddInteractiveServerRenderMode();

@@ -24,6 +24,7 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
       - [Delete](#delete)
       - [Bulk Delete](#bulk-delete)
   - [Exclude All Entities and Include Specific Only](#exclude-all-entities-and-include-specific-only)
+  - [Map Static Assets](#map-static-assets)
 - [Customizing Entities](#customizing-entities)
   - [Fluent API](#fluent-api)
   - [Creating an Entity Configuration Class](#creating-an-entity-configuration-class)
@@ -477,6 +478,18 @@ Or you can include specific entities using the data attribute:
 ```csharp
 [NetForgeEntity]
 public class Shop
+```
+
+## Map Static Assets
+
+If you have .NET 9 or greater you can use `MapStaticAssets`. Only static files related to admin site will be affected.
+See details in [blazor documentation](https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/static-files?view=aspnetcore-9.0).
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.EnableMapStaticAssets();
+});
 ```
 
 # Customizing Entities
