@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Saritasa.NetForge.Infrastructure.Helpers;
 using Saritasa.NetForge.Constants;
 using Saritasa.NetForge.Domain;
 using Saritasa.NetForge.Domain.Entities.Options;
@@ -55,18 +54,18 @@ public static class AdminExtensions
             applicationBuilder.UseStaticFiles();
             applicationBuilder.UseRouting();
             applicationBuilder.Use(AuthMiddleware);
+            applicationBuilder.UseAntiforgery();
             applicationBuilder.UseEndpoints(endpointBuilder =>
             {
-                endpointBuilder.MapBlazorHub();
+                endpointBuilder
+                    .MapRazorComponents<App>()
+                    .AddInteractiveServerRenderMode();
             });
 
             applicationBuilder.Run(async context =>
             {
-                var result = new ViewResult
-                {
-                    ViewName = "_NetForge"
-                };
-                await context.WriteResultAsync(result);
+                var razorComponentResult = new RazorComponentResult<App>();
+                await razorComponentResult.ExecuteAsync(context);
             });
         });
     }
