@@ -21,7 +21,7 @@ public class AdminMetadataService
 
     /// <summary>
     /// Constructor.
-    /// </summary>>
+    /// </summary>
     public AdminMetadataService(IOrmMetadataService ormMetadataService, AdminOptions adminOptions,
         IMemoryCache memoryCache)
     {

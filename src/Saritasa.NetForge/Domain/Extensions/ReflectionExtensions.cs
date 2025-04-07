@@ -21,7 +21,7 @@ public static class ReflectionExtensions
     /// </summary>
     /// <param name="obj">Object instance to get property value from.</param>
     /// <param name="propertyPath">
-    /// Property name. Can be a property of a navigation. For example: <c>Product.Shop.OwnerContact.Email</c>
+    /// Property name. Can be a property of a navigation. For example: <c>Product.Shop.OwnerContact.Email</c>.
     /// </param>
     /// <returns>Property value.</returns>
     public static object? GetNestedPropertyValue(this object? obj, string propertyPath)

@@ -80,7 +80,7 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
         };
 
         var result = await (await DialogService.ShowAsync<ConfirmationDialog>("Bulk Delete", parameters)).Result;
-        if (result.Canceled)
+        if (result is null || result.Canceled)
         {
             return;
         }

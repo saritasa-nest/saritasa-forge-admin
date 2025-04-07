@@ -182,7 +182,7 @@ public partial class EntityPropertyColumns : ComponentBase
         };
 
         var result = await (await DialogService.ShowAsync<ConfirmationDialog>("Delete", parameters)).Result;
-        if (!result.Canceled)
+        if (result is not null && !result.Canceled)
         {
             try
             {
