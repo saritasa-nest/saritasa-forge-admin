@@ -20,7 +20,11 @@
     {
         var navigation = property.NavigationMetadata;
         var propertyPath = property.PropertyPath;
-        <TemplateColumn T="object" Title="@property.Name" Sortable="property.IsSortable" PropertyPath="@propertyPath">
+        <TemplateColumn T="object"
+                        Title="@property.Name"
+                        Sortable="property.IsSortable"
+                        DragAndDropEnabled="true"
+                        PropertyPath="@propertyPath">
             <HeaderTemplate>
                 @{
                     var displayName = GetPropertyDisplayName(property);
