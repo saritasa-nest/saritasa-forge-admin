@@ -12,7 +12,7 @@ public partial class ConfirmationDialog
     /// Mud Dialog instance.
     /// </summary>
     [CascadingParameter]
-    MudDialogInstance MudDialog { get; set; } = null!;
+    private IMudDialogInstance MudDialog { get; set; } = null!;
 
     /// <summary>
     /// Content of the dialog.
