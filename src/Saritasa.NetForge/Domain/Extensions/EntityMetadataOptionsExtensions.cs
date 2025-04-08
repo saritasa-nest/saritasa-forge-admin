@@ -72,6 +72,8 @@ public static class EntityMetadataOptionsExtensions
         entityMetadata.UpdateAction = entityOptions.UpdateAction;
         entityMetadata.DeleteAction = entityOptions.DeleteAction;
 
+        entityMetadata.CustomActions = entityOptions.CustomActions;
+
         entityMetadata.ToStringFunc = entityOptions.ToStringFunc;
 
         foreach (var option in entityOptions.PropertyOptions)

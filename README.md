@@ -30,6 +30,7 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
   - [Data Attributes](#data-attributes)
   - [Custom Query](#custom-query)
   - [After Update Action](#after-update-action)
+  - [Custom Action](#custom-action)
 - [Customizing Entity Properties](#customizing-entity-properties)
   - [Fluent API](#fluent-api-1)
   - [Data Attributes](#data-attributes-1)
@@ -580,12 +581,12 @@ Also, you can use `ServiceProvider` if you need to access your services.
 
 ```csharp
 public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+{
+    entityOptionsBuilder.SetCreateAction((serviceProvider, address) =>
     {
-        entityOptionsBuilder.SetCreateAction((serviceProvider, address) =>
-            {
-                address.CreatedByUserId = new Random().Next(1, 1000);
-            });
-    }
+        address.CreatedByUserId = new Random().Next(1, 1000);
+    });
+}
 ```
 
 ## Update Custom Action
@@ -594,12 +595,12 @@ This one behaves just like [Create Custom Action](#create-custom-action) but wil
 
 ```csharp
 public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+{
+    entityOptionsBuilder.SetUpdateAction((serviceProvider, address) =>
     {
-        entityOptionsBuilder.SetUpdateAction((serviceProvider, address) =>
-            {
-                address.UpdatedByUserId = new Random().Next(1, 1000);
-            });
-    }
+        address.UpdatedByUserId = new Random().Next(1, 1000);
+    });
+}
 ```
 
 ## Delete Custom Action
@@ -608,12 +609,12 @@ This one behaves just like [Create Custom Action](#create-custom-action) but wil
 
 ```csharp
 public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+{
+    entityOptionsBuilder.SetDeleteAction((serviceProvider, address) =>
     {
-        entityOptionsBuilder.SetDeleteAction((serviceProvider, address) =>
-            {
-                Debug.WriteLine($"Address {address.Id} deleted.");
-            });
-    }
+        Debug.WriteLine($"Address {address.Id} deleted.");
+    });
+}
 ```
 
 ## After Update Action
@@ -641,6 +642,63 @@ You can configure action that will be performed after entity update.
         dbContext.SaveChanges();
     });
 })
+```
+
+You can use `ServiceProvider` to access your services.
+
+## Custom Action
+
+You can configure custom action that apply to selected item grid.
+
+```csharp
+public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+{
+    entityOptionsBuilder.AddCustomAction(new CustomAction<Address>
+    {
+        Name = "Random longitude, latitude value",
+        Description = "Assigns random longitude and latitude values to the selected addresses.",
+        Handler = (serviceProvider, query) =>
+        {
+            double GetRandomNumber(double min, double max)
+            {
+                var random = new Random();
+                return random.NextDouble() * (max - min) + min;
+            }
+
+            var context = serviceProvider?.GetRequiredService<ShopDbContext>();
+            if (context is null)
+            {
+                return;
+            }
+
+            foreach (var address in query.ToList().Select(item => item))
+            {
+                address.Longitude = GetRandomNumber(-180, 180);
+                address.Latitude = GetRandomNumber(-180, 180);
+            }
+
+            context.UpdateRange(query);
+            context.SaveChanges();
+        }
+    });
+}
+```
+
+Or
+
+```csharp
+public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+{
+    entityOptionsBuilder.AddCustomAction(option =>
+    {
+        option.SetName("Random longitude, latitude value")
+            .SetDescription("Assigns random longitude and latitude values to the selected addresses.")
+            .SetHandler((serviceProvider, query) =>
+            {
+                ...
+            });
+    });
+}
 ```
 
 You can use `ServiceProvider` to access your services.
