@@ -382,4 +382,34 @@ public class AdminOptionsBuilder
         options.MaxNavigationDepth = maxNavigationDepth;
         return this;
     }
+
+    /// <summary>
+    /// Adds a global custom action to the admin panel.
+    /// </summary>
+    /// <param name="action">The custom action to add.</param>
+    /// <param name="disabledTypes">A list of entity types for which the action is disabled.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public AdminOptionsBuilder AddGlobalCustomAction(CustomAction<object> action, List<Type> disabledTypes)
+    {
+        options.GlobalCustomActions.Add(action, disabledTypes);
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a global custom action to the admin panel using a builder.
+    /// </summary>
+    /// <param name="action">
+    /// An action that configures the custom action using a <see cref="CustomActionBuilder{TEntity}"/>
+    /// and a list of disabled entity types.
+    /// </param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public AdminOptionsBuilder AddGlobalCustomAction(Action<CustomActionBuilder<object>, List<Type>> action)
+    {
+        var actionOptionBuilder = new CustomActionBuilder<object>();
+        var disabledTypes = new List<Type>();
+        action(actionOptionBuilder, disabledTypes);
+
+        options.GlobalCustomActions.Add(actionOptionBuilder.Build(), disabledTypes);
+        return this;
+    }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Saritasa.NetForge.Controls;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Infrastructure.Helpers;
 using Saritasa.NetForge.MVVM.Navigation;
 using Saritasa.NetForge.MVVM.ViewModels.CreateEntity;
@@ -121,7 +122,7 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
         if (action is null)
         {
             Snackbar.Add("Please select custom action you want to execute.", Severity.Error);
-            Logger.LogInformation("User not selected any custom action.");
+            Logger.LogInformation("User not selected any custom actions.");
 
             return Task.CompletedTask;
         }
@@ -140,11 +141,51 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
         }
         catch (Exception ex)
         {
-            Snackbar.Add($"Failed to execute custom action due to error: {ex.Message}", Severity.Error);
-            Logger.LogError(ex, "Failed to execute custom action. CustomAction: {CustomAction}.", action);
+            Snackbar.Add($"Failed to execute global custom action due to error: {ex.Message}", Severity.Error);
+            Logger.LogError(ex, "Failed to execute global custom action. CustomAction: {CustomAction}.", action);
+
+            return Task.CompletedTask;
         }
 
-        Snackbar.Add($"Action \"{action.Name}\" was executed.", Severity.Success);
+        Snackbar.Add($"Global action \"{action.Name}\" was executed.", Severity.Success);
+
+        ViewModel.SelectedEntities.Clear();
+
+        return Task.CompletedTask;
+    }
+
+    private Task ExecuteGlobalCustomActionAsync()
+    {
+        var action = ViewModel.Model.GlobalCustomActions.FirstOrDefault(e => e.Name == ViewModel.SelectedGlobalCustomAction);
+        if (action is null)
+        {
+            Snackbar.Add($"Please select global custom action you want to execute.", Severity.Error);
+            Logger.LogInformation("User not selected any global custom actions.");
+
+            return Task.CompletedTask;
+        }
+
+        if (ViewModel.SelectedEntities.Count == 0)
+        {
+            Snackbar.Add($"Please select at least one record you want to apply action {action.Name}", Severity.Error);
+            Logger.LogError("User not selected any item to apply {ActionName}.", action.Name);
+
+            return Task.CompletedTask;
+        }
+
+        try
+        {
+            action.Handler?.Invoke(ServiceProvider, ViewModel.SelectedEntities.AsQueryable());
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to execute global custom action due to error: {ex.Message}", Severity.Error);
+            Logger.LogError(ex, "Failed to execute global custom action. CustomAction: {CustomAction}.", action);
+
+            return Task.CompletedTask;
+        }
+
+        Snackbar.Add($"Global action \"{action.Name}\" was executed.", Severity.Success);
 
         ViewModel.SelectedEntities.Clear();
 
