@@ -112,4 +112,9 @@ public class EntityOptions
 
     /// <inheritdoc cref="AdminOptions.MaxNavigationDepth"/>
     public byte? MaxNavigationDepth { get; set; }
+
+    /// <summary>
+    /// Custom actions for the entity.
+    /// </summary>
+    public List<CustomAction<object>> CustomActions { get; set; } = [];
 }

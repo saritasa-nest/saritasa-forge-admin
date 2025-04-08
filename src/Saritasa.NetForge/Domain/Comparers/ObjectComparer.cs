@@ -1,4 +1,5 @@
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
+using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 using Saritasa.NetForge.Infrastructure.Helpers;
 
 namespace Saritasa.NetForge.Domain.Comparers;
@@ -27,7 +28,20 @@ public class ObjectComparer<T> : IEqualityComparer<T>
             return true;
         }
 
-        if (x is null || y is null || x.GetType() != y.GetType())
+        if (x is null || y is null)
+        {
+            return false;
+        }
+
+        var xType = x.GetType();
+        var yType = y.GetType();
+
+        if (xType.IsLazyLoadingProxy() || yType.IsLazyLoadingProxy())
+        {
+            return xType.GetPocoType() == yType.GetPocoType();
+        }
+
+        if (xType != yType)
         {
             return false;
         }

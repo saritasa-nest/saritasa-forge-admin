@@ -1,3 +1,7 @@
 ﻿.text-tranform-none > .mud-button-label {
     text-transform: none;
 }
+
+.property-grid__item--selected {
+    background-color: lightyellow;
+}

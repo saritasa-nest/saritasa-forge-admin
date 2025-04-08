@@ -302,19 +302,27 @@ public class EfCoreDataService : IOrmDataService
         NavigationEntry originalNavigationEntry,
         IEqualityComparer<object> comparer)
     {
-        // Case when the user want to remove navigation value
-        if (navigationEntry.CurrentValue is null && originalNavigationEntry.CurrentValue is not null)
+        var updatedNavigationReference = navigationEntry.CurrentValue;
+
+        // In case of lazy loading - convert proxies to POCO instances.
+        if (updatedNavigationReference is not null && updatedNavigationReference.GetType().IsLazyLoadingProxy())
         {
-            originalNavigationEntry.CurrentValue = navigationEntry.CurrentValue;
+            updatedNavigationReference = ProxyToPocoConverter.ConvertProxyToPoco(updatedNavigationReference);
+        }
+
+        // Case when the user want to remove navigation value
+        if (updatedNavigationReference is null && originalNavigationEntry.CurrentValue is not null)
+        {
+            originalNavigationEntry.CurrentValue = updatedNavigationReference;
         }
         else
         {
-            var isTracked = dbContext.IsTracked(navigationEntry.CurrentValue!, comparer);
+            var isTracked = dbContext.IsTracked(updatedNavigationReference!, comparer);
 
             if (!isTracked)
             {
-                dbContext.Attach(navigationEntry.CurrentValue!);
-                originalNavigationEntry.CurrentValue = navigationEntry.CurrentValue;
+                dbContext.Attach(updatedNavigationReference!);
+                originalNavigationEntry.CurrentValue = updatedNavigationReference;
             }
         }
     }
@@ -325,7 +333,17 @@ public class EfCoreDataService : IOrmDataService
         NavigationEntry navigationEntry,
         IEqualityComparer<object> comparer)
     {
-        var navigationCollectionInstance = (IEnumerable<object>)navigationEntry.CurrentValue!;
+        var navigationCollectionInstance = ((IEnumerable<object>)navigationEntry.CurrentValue!).ToList();
+
+        // In case of lazy loading - convert proxies to POCO instances.
+        for (var instanceIndex = 0; instanceIndex < navigationCollectionInstance.Count; instanceIndex++)
+        {
+            var instance = navigationCollectionInstance[instanceIndex];
+            if (instance.GetType().IsLazyLoadingProxy())
+            {
+                navigationCollectionInstance[instanceIndex] = ProxyToPocoConverter.ConvertProxyToPoco(instance)!;
+            }
+        }
 
         // Track added elements
         foreach (var element in navigationCollectionInstance)
@@ -338,7 +356,7 @@ public class EfCoreDataService : IOrmDataService
             }
         }
 
-        var originalNavigationCollectionInstance = (IEnumerable<object>)originalNavigationEntry.CurrentValue!;
+        var originalNavigationCollectionInstance = ((IEnumerable<object>)originalNavigationEntry.CurrentValue!).ToList();
 
         var addedElements = navigationCollectionInstance
             .Except(originalNavigationCollectionInstance, comparer);
