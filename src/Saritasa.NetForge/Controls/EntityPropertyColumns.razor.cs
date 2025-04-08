@@ -139,7 +139,7 @@ public partial class EntityPropertyColumns : ComponentBase
     private string FormatValue(object value, PropertyMetadataDto propertyMetadata)
     {
         return DataFormatUtils
-            .GetFormattedValue(value, propertyMetadata?.DisplayFormat, propertyMetadata?.FormatProvider);
+            .GetFormattedValue(value, propertyMetadata.DisplayFormat, propertyMetadata?.FormatProvider);
     }
 
     private async Task OpenDialogAsync(object navigationInstance, NavigationMetadataDto navigationMetadata)
