@@ -478,7 +478,6 @@ public class EfCoreDataService : IOrmDataService
         // ... }
         var navigationMemberInit = Expression.MemberInit(Expression.New(navigationCtor), allBindings);
 
-        // TODO: Not always check on null
         // propertyExpression == null
         var isNullExpression = Expression.Equal(propertyExpression, Expression.Constant(null, propertyExpression.Type));
 
@@ -508,7 +507,6 @@ public class EfCoreDataService : IOrmDataService
             .First(method => method.Name == nameof(Enumerable.Select) && method.GetParameters().Length == 2)
             .MakeGenericMethod(typeof(object), typeof(object));
         var collectionElementType = navigation.ClrType!.GetGenericArguments()[0];
-        // TODO: Ensure that navigation.ClrType is not null
         var allProperties = navigation.TargetEntityProperties.Union(navigation.TargetEntityNavigations).ToList();
         var selectLambda = SelectProperties(collectionElementType, allProperties);
         // propertyExpression.Select(selectLambda)
