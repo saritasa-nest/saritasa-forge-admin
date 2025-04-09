@@ -37,4 +37,16 @@ public static class EntityProxyExtensions
 
         return entityType.BaseType!;
     }
+
+    /// <summary>
+    /// Gets POCO type when the given type is lazy loading proxy.
+    /// </summary>
+    /// <param name="entityType">Entity type.</param>
+    /// <returns>
+    /// If given type is lazy loading proxy, returns POCO type, otherwise returns given type unchanged.
+    /// </returns>
+    public static Type GetPocoType(this Type entityType)
+    {
+        return entityType.IsLazyLoadingProxy() ? entityType.BaseType! : entityType;
+    }
 }

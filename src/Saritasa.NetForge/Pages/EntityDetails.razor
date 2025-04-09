@@ -36,6 +36,36 @@
             </MudItem>
         }
 
+        @if (ViewModel.Model.CustomActions.Count > 0)
+        {
+            <MudItem xs="12">
+                <MudStack Row AlignItems="AlignItems.Center">
+                    <MudText Inline="true" Align="Align.Center">Action:</MudText>
+                    <div class="me-3">
+                        <MudSelect @bind-Value="ViewModel.SelectedCustomAction" Placeholder="Action">
+                            @foreach (var action in ViewModel.Model.CustomActions)
+                            {
+                                <MudTooltip Text="@action.Description">
+                                    <MudSelectItem Value="@action.Name">@action.Name</MudSelectItem>
+                                </MudTooltip>
+                            }
+                        </MudSelect>
+                    </div>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary"
+                               OnClick="ExecuteCustomActionAsync"
+                               Disabled="ViewModel.SelectedEntities.Count <= 0">
+                        Execute
+                    </MudButton>
+                    @if (ViewModel.SelectedEntities.Count > 0)
+                    {
+                        <MudText Inline="true" Align="Align.Center">
+                            @(ViewModel.SelectedEntities.Count) of @(ViewModel.TotalItems) selected.
+                        </MudText>
+                    }
+                </MudStack>
+            </MudItem>
+        }
+
         @if (ViewModel.IsDisplaySearchInput)
         {
             const int debounceInterval = 250;
@@ -64,17 +94,18 @@
             <MudItem xs="12">
                 <MudDataGrid T="object" ServerData="ViewModel.LoadEntityGridDataAsync" DragDropColumnReordering="true"
                              MultiSelection="true" @bind-SelectedItems="ViewModel.SelectedEntities"
+                             RowClassFunc="RowClassFunc"
                              @ref="ViewModel.DataGrid" SortMode="SortMode.Multiple"
                              @attributes="NonKeylessEntityDataGridAttributes">
                     <Columns>
                         <EntityPropertyColumns Properties="ViewModel.Model.Properties"
                                                DataGrid="ViewModel.DataGrid"
                                                CanDelete="ViewModel.CanDelete"
-                                               EntityDeleteMessage="@ViewModel.Model.EntityDeleteMessage"/>
+                                               EntityDeleteMessage="@ViewModel.Model.EntityDeleteMessage" />
                     </Columns>
 
                     <PagerContent>
-                        <MudDataGridPager T="object"/>
+                        <MudDataGridPager T="object" />
                     </PagerContent>
                 </MudDataGrid>
             </MudItem>
@@ -83,5 +114,5 @@
 }
 else
 {
-    <NotFound/>
+    <NotFound />
 }

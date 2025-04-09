@@ -86,7 +86,17 @@ public class EntityDetailsViewModel : BaseViewModel
     /// <summary>
     /// Selected entities.
     /// </summary>
-    public HashSet<object> SelectedEntities { get; set; } = new();
+    public HashSet<object> SelectedEntities { get; set; } = [];
+
+    /// <summary>
+    /// Selected custom action.
+    /// </summary>
+    public string SelectedCustomAction { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Total items in data grid.
+    /// </summary>
+    public int TotalItems { get; set; }
 
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
@@ -126,6 +136,7 @@ public class EntityDetailsViewModel : BaseViewModel
             CanDelete = entity.CanDelete,
             EntityDeleteMessage = entity.MessageOptions.EntityDeleteMessage,
             EntityBulkDeleteMessage = entity.MessageOptions.EntityBulkDeleteMessage,
+            CustomActions = entity.CustomActions,
             DefaultOrderings = entity.DefaultOrderings
         };
     }
@@ -199,6 +210,8 @@ public class EntityDetailsViewModel : BaseViewModel
 
         var entityData = await dataService
             .SearchDataForEntityAsync(Model.ClrType, Model.Properties, searchOptions, Model.SearchFunction, Model.CustomQueryFunction);
+
+        TotalItems = entityData.Metadata.TotalCount;
 
         var data = new GridData<object>
         {

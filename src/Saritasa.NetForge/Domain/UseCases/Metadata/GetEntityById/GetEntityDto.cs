@@ -68,6 +68,9 @@ public record GetEntityDto
     /// <inheritdoc cref="EntityMetadata.DeleteAction"/>
     public Action<IServiceProvider?, object>? DeleteAction { get; set; }
 
+    /// <inheritdoc cref="EntityMetadata.CustomActions"/>
+    public List<CustomAction<object>> CustomActions { get; set; } = [];
+
     /// <inheritdoc cref="EntityMetadata.DefaultOrderings"/>
     public List<OrderByDto> DefaultOrderings { get; set; } = [];
 }

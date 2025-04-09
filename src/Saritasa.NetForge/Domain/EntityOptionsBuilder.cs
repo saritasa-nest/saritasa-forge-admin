@@ -306,6 +306,45 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     }
 
     /// <summary>
+    /// Adds a custom action to the entity options.
+    /// </summary>
+    /// <param name="action">The custom action to add.</param>
+    /// <returns>The current instance of <see cref="EntityOptionsBuilder{TEntity}"/>.</returns>
+    public EntityOptionsBuilder<TEntity> AddCustomAction(CustomAction<TEntity> action)
+    {
+        var castedAction = new CustomAction<object>
+        {
+            Name = action.Name,
+            Description = action.Description,
+            Handler = (serviceProvider, query) => action.Handler?.Invoke(serviceProvider, query.Cast<TEntity>())
+        };
+        options.CustomActions.Add(castedAction);
+
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a custom action to the entity options.
+    /// </summary>
+    /// <param name="action">An action that builds custom action options.</param>
+    /// <returns>The current instance of <see cref="EntityOptionsBuilder{TEntity}"/>.</returns>
+    public EntityOptionsBuilder<TEntity> AddCustomAction(Action<CustomActionBuilder<TEntity>> action)
+    {
+        var actionOptionsBuilder = new CustomActionBuilder<TEntity>();
+        action(actionOptionsBuilder);
+        var customAction = actionOptionsBuilder.Build();
+
+        var castedCustomAction = new CustomAction<object>
+        {
+            Name = customAction.Name,
+            Description = customAction.Description,
+            Handler = (serviceProvider, query) => customAction.Handler?.Invoke(serviceProvider, query.Cast<TEntity>())
+        };
+        options.CustomActions.Add(castedCustomAction);
+        return this;
+    }
+
+    /// <summary>
     /// Sets value that represents maximum navigation depth on the entity level.
     /// Use <see cref="AdminOptionsBuilder.SetMaxNavigationDepth"/> for the global level.
     /// If depth of a navigation is more than this value then such navigation's data will not be loaded.

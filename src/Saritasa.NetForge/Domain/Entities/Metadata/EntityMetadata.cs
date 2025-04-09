@@ -124,6 +124,11 @@ public class EntityMetadata
     public Action<IServiceProvider?, object>? DeleteAction { get; set; }
 
     /// <summary>
+    /// A collection of custom actions associated with this entity.
+    /// </summary>
+    public List<CustomAction<object>> CustomActions { get; set; } = [];
+
+    /// <summary>
     /// Contains properties to use for sort when no one sort is applied.
     /// </summary>
     public List<OrderByDto> DefaultOrderings { get; set; } = [];
