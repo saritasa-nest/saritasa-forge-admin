@@ -1,4 +1,6 @@
-﻿using Saritasa.NetForge.Demo.Constants;
+﻿using System.Globalization;
+using System.Text.Json;
+using Saritasa.NetForge.Demo.Constants;
 using Saritasa.NetForge.Demo.Infrastructure.Admin;
 using Saritasa.NetForge.Demo.Infrastructure.Extensions;
 using Saritasa.NetForge.Demo.Models;
@@ -6,6 +8,7 @@ using Saritasa.NetForge.Demo.Views.Admin;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Extensions;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
+using Address = Saritasa.NetForge.Demo.Models.Address;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.DependencyInjection;
 
@@ -56,12 +59,29 @@ internal static class NetForgeModule
                         {
                             navigationOptionsBuilder
                                 .IncludeProperty(shop => shop.Name, propertyOptionsBuilder =>
-                                    {
-                                        propertyOptionsBuilder.SetDisplayName("Shop name");
-                                    });
+                                {
+                                    propertyOptionsBuilder.SetDisplayName("Shop name");
+                                });
                         });
                 })
-                .ConfigureEntity(new ContactInfoAdminConfiguration());
+                .ConfigureEntity(new ContactInfoAdminConfiguration())
+                .AddGlobalCustomAction((builder, disabledTypes) =>
+                {
+                    builder.SetName("Exported to JSON file");
+                    builder.SetDescription("Exports all selected item to a JSON file.");
+                    builder.SetHandler((serviceProvider, query) =>
+                    {
+                        var items = query.ToList();
+
+                        var jsonString = JsonSerializer.Serialize(items).ToCharArray();
+                        var path = $"{items.First().GetType().Name}-{DateTime.UtcNow.ToString("yyyy-MM-ddTHH-mm-ss-fffffff", CultureInfo.InvariantCulture)}.json";
+
+                        using var outputFile = new StreamWriter(path);
+                        outputFile.Write(jsonString);
+                    });
+
+                    disabledTypes.Add(typeof(Address));
+                });
         });
     }
 }

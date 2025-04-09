@@ -24,6 +24,7 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
       - [Delete](#delete)
       - [Bulk Delete](#bulk-delete)
   - [Exclude All Entities and Include Specific Only](#exclude-all-entities-and-include-specific-only)
+  - [Global Custom Action](#global-custom-action)
 - [Customizing Entities](#customizing-entities)
   - [Fluent API](#fluent-api)
   - [Creating an Entity Configuration Class](#creating-an-entity-configuration-class)
@@ -478,6 +479,33 @@ Or you can include specific entities using the data attribute:
 ```csharp
 [NetForgeEntity]
 public class Shop
+```
+
+## Global Custom Action
+
+You can configure custom action that apply to selected item grid.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.AddGlobalCustomAction((builder, disabledTypes) =>
+    {
+        builder.SetName("Exported to JSON file");
+        builder.SetDescription("Exports all selected item to a JSON file.");
+        builder.SetHandler((serviceProvider, query) =>
+        {
+            var items = query.ToList();
+
+            var jsonString = JsonSerializer.Serialize(items).ToCharArray();
+            var path = $"{items.First().GetType().Name}-{DateTime.UtcNow.ToString("yyyy-MM-ddTHH-mm-ss-fffffff", CultureInfo.InvariantCulture)}.json";
+
+            using var outputFile = new StreamWriter(path);
+            outputFile.Write(jsonString);
+        });
+
+        disabledTypes.Add(typeof(Address));
+    });
+});
 ```
 
 # Customizing Entities
