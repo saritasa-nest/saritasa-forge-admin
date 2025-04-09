@@ -28,6 +28,9 @@ public class CalculatedPropertyOptions
     /// <inheritdoc cref="PropertyMetadataBase.FormatProvider"/>
     public IFormatProvider? FormatProvider { get; set; }
 
+    /// <inheritdoc cref="PropertyMetadataBase.IsSortable"/>
+    public bool IsSortable { get; set; }
+
     /// <inheritdoc cref="PropertyMetadataBase.EmptyValueDisplay"/>
     public string EmptyValueDisplay { get; set; } = string.Empty;
 

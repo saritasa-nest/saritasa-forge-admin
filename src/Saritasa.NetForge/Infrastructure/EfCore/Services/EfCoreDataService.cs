@@ -20,6 +20,7 @@ using Saritasa.NetForge.Domain.UseCases.Common;
 using Saritasa.NetForge.Domain.UseCases.Interfaces;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
+using Saritasa.Tools.EntityFrameworkCore.Pagination;
 using ExpressionExtensions = Saritasa.NetForge.Domain.Extensions.ExpressionExtensions;
 
 namespace Saritasa.NetForge.Infrastructure.EfCore.Services;
@@ -379,7 +380,7 @@ public class EfCoreDataService : IOrmDataService
     }
 
     /// <inheritdoc />
-    public Task<PagedListMetadataDto<object>> SearchDataForEntityAsync(
+    public async Task<PagedListMetadataDto<object>> SearchDataForEntityAsync(
         Type? entityType,
         ICollection<PropertyMetadataDto> properties,
         SearchOptions searchOptions,
@@ -399,14 +400,26 @@ public class EfCoreDataService : IOrmDataService
 
         query = Search(query, searchOptions.SearchString, entityType, properties, searchFunction);
 
-        if (searchOptions.OrderBy.Any())
+        var hasOrderByCalculatedProperty = properties
+            .Where(property => searchOptions.OrderBy.Any(orderBy => property.PropertyPath == orderBy.PropertyPath))
+            .Any(property => property.IsCalculatedProperty);
+
+        if (!hasOrderByCalculatedProperty && searchOptions.OrderBy.Count > 0)
         {
             query = Order(query, searchOptions.OrderBy, entityType);
         }
+        else if (hasOrderByCalculatedProperty)
+        {
+            // We switch query to client-side because calculated properties can't be ordered in database.
+            var objects = await query.ToListAsync();
+            var orderedObjects = Order(objects, searchOptions.OrderBy, entityType);
 
-        var pagedList = PagedListFactory.FromSource(query, searchOptions.Page, searchOptions.PageSize);
+            var pagedObjects = PagedListFactory.FromSource(orderedObjects, searchOptions.Page, searchOptions.PageSize);
+            return pagedObjects.ToMetadataObject();
+        }
 
-        return Task.FromResult(pagedList.ToMetadataObject());
+        var pagedList = await EFPagedListFactory.FromSourceAsync(query, searchOptions.Page, searchOptions.PageSize);
+        return pagedList.ToMetadataObject();
     }
 
     /// <summary>
@@ -897,14 +910,28 @@ public class EfCoreDataService : IOrmDataService
     private static IOrderedQueryable<object> Order(
         IQueryable<object> query, List<OrderByDto> orderBy, Type entityType)
     {
-        var orderByTuples = orderBy
+        var orderEntries = GetOrderEntries(orderBy);
+        var keySelectors = GetKeySelectors(orderBy, entityType);
+        return CollectionUtils.OrderMultiple(query, orderEntries, keySelectors);
+    }
+
+    private static IOrderedEnumerable<object> Order(
+        IEnumerable<object> items, List<OrderByDto> orderBy, Type entityType)
+    {
+        var orderEntries = GetOrderEntries(orderBy);
+        var keySelectors = GetKeySelectors(orderBy, entityType)
+            .Select(tuple => (tuple.PropertyPath, tuple.Selector.Compile()))
+            .ToArray();
+
+        return CollectionUtils.OrderMultiple(items, orderEntries, keySelectors);
+    }
+
+    private static (string PropertyPath, ListSortDirection)[] GetOrderEntries(List<OrderByDto> orderBy)
+    {
+        return orderBy
             .Select(order =>
                 (order.PropertyPath, order.IsDescending ? ListSortDirection.Descending : ListSortDirection.Ascending))
             .ToArray();
-
-        var keySelectors = GetKeySelectors(orderBy, entityType);
-
-        return CollectionUtils.OrderMultiple(query, orderByTuples, keySelectors);
     }
 
     private static (string PropertyPath, Expression<Func<object, object>> Selector)[] GetKeySelectors(

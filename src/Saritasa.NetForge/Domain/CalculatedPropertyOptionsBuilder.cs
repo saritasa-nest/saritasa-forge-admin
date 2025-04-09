@@ -85,6 +85,15 @@ public class CalculatedPropertyOptionsBuilder
     }
 
     /// <summary>
+    /// Sets whether the property is sortable.
+    /// </summary>
+    public CalculatedPropertyOptionsBuilder SetIsSortable(bool isSortable)
+    {
+        options.IsSortable = isSortable;
+        return this;
+    }
+
+    /// <summary>
     /// Sets the value to display when value of calculated property is empty.
     /// </summary>
     public CalculatedPropertyOptionsBuilder SetEmptyValueDisplay(string emptyValueDisplay)

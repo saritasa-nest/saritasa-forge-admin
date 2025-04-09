@@ -45,7 +45,8 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
         {
             propertyBuilder
                 .SetDescription("Contains street, city and country.")
-                .SetOrder(5);
+                .SetOrder(5)
+                .SetIsSortable(true);
         }).ConfigureProperty(address => address.Longitude, propertyBuilder =>
         {
             propertyBuilder

@@ -244,6 +244,8 @@ public static class EntityMetadataOptionsExtensions
         property.DisplayFormat = propertyOptions.DisplayFormat ?? property.DisplayFormat;
         property.FormatProvider = propertyOptions.FormatProvider ?? property.FormatProvider;
 
+        property.IsSortable = propertyOptions.IsSortable;
+
         if (!string.IsNullOrEmpty(propertyOptions.EmptyValueDisplay))
         {
             property.EmptyValueDisplay = propertyOptions.EmptyValueDisplay;
