@@ -215,10 +215,16 @@ public static class EntityMetadataOptionsExtensions
                 propertyMetadata.CanBeNavigatedToDetails = propertyOptions.CanBeNavigatedToDetails;
             }
 
-            if (propertyOptions.DefaultSort is not null)
+            if (propertyOptions.DefaultSort.HasValue)
             {
-                propertyOptions.DefaultSort.PropertyPath = propertyMetadata.PropertyPath;
-                defaultSorts.Add(propertyOptions.DefaultSort);
+                var defaultSort = new DefaultSortDto
+                {
+                    PropertyPath = propertyMetadata.PropertyPath,
+                    SortDirection = propertyOptions.DefaultSort.Value.SortDirection,
+                    Order = propertyOptions.DefaultSort.Value.Order
+                };
+
+                defaultSorts.Add(defaultSort);
 
                 propertyMetadata.IsSortable = true;
             }

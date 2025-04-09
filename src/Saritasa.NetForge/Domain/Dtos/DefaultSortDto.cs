@@ -8,13 +8,13 @@ namespace Saritasa.NetForge.Domain.Dtos;
 public class DefaultSortDto
 {
     /// <summary>
-    /// Represents order that used when multiple sort is configured.
+    /// Path to property including navigations.
     /// </summary>
     /// <remarks>
-    /// Example with Address: City has <c>Order = 1</c>, Street has <c>Order = 2</c>,
-    /// so sort will be applied by city first, then by street.
+    /// For example full path to property: <c>Product.Shop.Address.Street</c>,
+    /// then this should contain <c>Shop.Address.Street</c>.
     /// </remarks>
-    public int Order { get; init; }
+    public string PropertyPath { get; init; } = string.Empty;
 
     /// <summary>
     /// Sort direction.
@@ -22,11 +22,11 @@ public class DefaultSortDto
     public SortDirection SortDirection { get; init; }
 
     /// <summary>
-    /// Path to property including navigations.
+    /// Represents order that used when multiple sort is configured.
     /// </summary>
     /// <remarks>
-    /// For example full path to property: <c>Product.Shop.Address.Street</c>,
-    /// then this should contain <c>Shop.Address.Street</c>.
+    /// Example with Address: City has <c>Order = 1</c>, Street has <c>Order = 2</c>,
+    /// so sort will be applied by city first, then by street.
     /// </remarks>
-    public string? PropertyPath { get; set; }
+    public int Order { get; init; }
 }

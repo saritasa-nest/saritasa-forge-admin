@@ -159,7 +159,7 @@ public class PropertyOptionsBuilder
     public PropertyOptionsBuilder SetDefaultSort(int order, bool isAscending)
     {
         var sortDirection = isAscending ? SortDirection.Ascending : SortDirection.Descending;
-        options.DefaultSort = new DefaultSortDto { Order = order, SortDirection = sortDirection };
+        options.DefaultSort = (order, sortDirection);
         return this;
     }
 

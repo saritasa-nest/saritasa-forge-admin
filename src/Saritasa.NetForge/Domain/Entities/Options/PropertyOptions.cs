@@ -1,4 +1,4 @@
-﻿using Saritasa.NetForge.Domain.Dtos;
+﻿using MudBlazor;
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Enums;
 
@@ -54,7 +54,7 @@ public class PropertyOptions
     /// <summary>
     /// Contains information about default sort.
     /// </summary>
-    public DefaultSortDto? DefaultSort { get; set; }
+    public (int Order, SortDirection SortDirection)? DefaultSort { get; set; }
 
     /// <inheritdoc cref="PropertyMetadataBase.EmptyValueDisplay"/>
     public string EmptyValueDisplay { get; set; } = string.Empty;
