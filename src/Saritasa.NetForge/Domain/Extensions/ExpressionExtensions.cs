@@ -58,21 +58,21 @@ public static class ExpressionExtensions
 
     /// <summary>
     /// Gets property expression that contains in <paramref name="entity"/>.
-    /// To get property, just pass its name in <paramref name="propertyName"/>. For example: <c>Description</c>.
+    /// To get property, just pass its name in <paramref name="propertyPath"/>. For example: <c>Description</c>.
     /// This method supports getting nested properties.
-    /// For example: You can pass <paramref name="propertyName"/> as <c>Address.Id</c>.
+    /// For example: You can pass <paramref name="propertyPath"/> as <c>Address.Id</c>.
     /// </summary>
     /// <param name="entity">
     /// Entity <see cref="ParameterExpression"/>. Can have different <see cref="Expression"/> representation.
     /// For example:
     /// When you use <see cref="Expression.Convert(Expression, Type)"/> to <see cref="ParameterExpression"/>.
     /// </param>
-    /// <param name="propertyName">Property name.</param>
+    /// <param name="propertyPath">Property path.</param>
     /// <returns>Property <see cref="MemberExpression"/>.</returns>
-    public static MemberExpression GetPropertyExpression(Expression entity, string propertyName)
+    public static MemberExpression GetPropertyExpression(Expression entity, string propertyPath)
     {
         var body = entity;
-        foreach (var member in propertyName.Split(PropertySeparator))
+        foreach (var member in propertyPath.Split(PropertySeparator))
         {
             body = Expression.Property(body, member);
         }
