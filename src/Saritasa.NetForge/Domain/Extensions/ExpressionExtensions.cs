@@ -81,6 +81,73 @@ public static class ExpressionExtensions
     }
 
     /// <summary>
+    /// Gets property expression and check that navigations are not null in case of nested property.
+    /// </summary>
+    /// <param name="entity">
+    /// Entity <see cref="ParameterExpression"/>. Can have different <see cref="Expression"/> representation.
+    /// For example:
+    /// When you use <see cref="Expression.Convert(Expression, Type)"/> to <see cref="ParameterExpression"/>.
+    /// </param>
+    /// <param name="propertyPath">Property path.</param>
+    /// <returns>
+    /// Property expression with null checks on navigations.
+    /// For example: if <paramref name="propertyPath"/> is <c>Shop.Address.Street</c>,
+    /// then this method will return expression like <c>Shop.Address?.Street</c>.
+    /// </returns>
+    /// <remarks>
+    /// Use case where we need null check in property expression:
+    /// When the property expression will be used in <see cref="IEnumerable{T}"/>.
+    /// In case of <see cref="IQueryable"/> use <see cref="GetPropertyExpression"/>.
+    /// </remarks>
+    public static Expression GetPropertyExpressionWithNullCheck(Expression entity, string propertyPath)
+    {
+        var body = entity;
+        var splitPropertyPath = propertyPath.Split(PropertySeparator);
+        for (var propertyIndex = 0; propertyIndex < splitPropertyPath.Length; propertyIndex++)
+        {
+            var propertyName = splitPropertyPath[propertyIndex];
+            Expression property = Expression.Property(body, propertyName);
+
+            var isRootProperty = propertyIndex == 0;
+            var isLastProperty = splitPropertyPath.Length == propertyIndex + 1;
+            var isSingleProperty = isRootProperty && isLastProperty;
+            if (isSingleProperty)
+            {
+                // Note that there are converting property to object.
+                // We need it to sort types that are not string. For example, numbers.
+                body = Expression.Convert(property, typeof(object));
+            }
+            else if (isRootProperty)
+            {
+                // Root property can't be null, so we don't perform the null check.
+                body = property;
+            }
+            else if (isLastProperty)
+            {
+                // We use GetPropertyExpression to remove null checks from "body" expression.
+                // Otherwise, expression will fail when used in some cases, for example in a collection Select method.
+                var propertyExpression = GetPropertyExpression(entity, propertyPath);
+                body = Expression.Condition(
+                    Expression.Equal(body, Expression.Constant(null, body.Type)),
+                    Expression.Constant(null, typeof(object)),
+                    Expression.Convert(propertyExpression, typeof(object)));
+            }
+            else
+            {
+                // In case of nested property we check that navigation that contains property is not null.
+                // For example: Shop has Name property, we check that Shop is not null.
+                // (Shop == null) ? null : Shop.Name
+                body = Expression.Condition(
+                    Expression.Equal(body, Expression.Constant(null, body.Type)),
+                    Expression.Constant(null, property.Type),
+                    property);
+            }
+        }
+
+        return body;
+    }
+
+    /// <summary>
     /// Combines all expressions to one with <see langword="AND"/> operator between.
     /// </summary>
     /// <returns>

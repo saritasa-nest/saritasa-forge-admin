@@ -70,7 +70,8 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                     {
                         builder
                             .SetDisplayName("Entire Address")
-                            .SetOrder(6);
+                            .SetOrder(6)
+                            .SetIsSortable(true);
                     });
             })
             .IncludeNavigation<Product>(shop => shop.Products, navigationOptionsBuilder =>

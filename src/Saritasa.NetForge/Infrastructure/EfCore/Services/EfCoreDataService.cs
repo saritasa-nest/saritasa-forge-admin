@@ -400,15 +400,12 @@ public class EfCoreDataService : IOrmDataService
 
         query = Search(query, searchOptions.SearchString, entityType, properties, searchFunction);
 
-        var hasOrderByCalculatedProperty = properties
-            .Where(property => searchOptions.OrderBy.Any(orderBy => property.PropertyPath == orderBy.PropertyPath))
-            .Any(property => property.IsCalculatedProperty);
-
-        if (!hasOrderByCalculatedProperty && searchOptions.OrderBy.Count > 0)
+        var hasSortableCalculatedProperty = DoesPropertiesHaveSortableCalculatedProperty(properties, searchOptions.OrderBy);
+        if (!hasSortableCalculatedProperty && searchOptions.OrderBy.Count > 0)
         {
             query = Order(query, searchOptions.OrderBy, entityType);
         }
-        else if (hasOrderByCalculatedProperty)
+        else if (hasSortableCalculatedProperty)
         {
             // We switch query to client-side because calculated properties can't be ordered in database.
             var objects = await query.ToListAsync();
@@ -907,11 +904,40 @@ public class EfCoreDataService : IOrmDataService
         return lambdaBodyWithNewParameter;
     }
 
+    private static bool DoesPropertiesHaveSortableCalculatedProperty(
+        IEnumerable<PropertyMetadataDto> properties, List<OrderByDto> orderBy)
+    {
+        foreach (var property in properties)
+        {
+            if (property is { IsCalculatedProperty: true, IsSortable: true }
+                && orderBy.Any(order => order.PropertyPath == property.PropertyPath))
+            {
+                return true;
+            }
+
+            if (property is not NavigationMetadataDto navigationMetadata)
+            {
+                continue;
+            }
+
+            var navigationsProperties = navigationMetadata.TargetEntityProperties
+                .Union(navigationMetadata.TargetEntityNavigations);
+            var hasSortableCalculatedProperty = DoesPropertiesHaveSortableCalculatedProperty(navigationsProperties, orderBy);
+
+            if (hasSortableCalculatedProperty)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static IOrderedQueryable<object> Order(
         IQueryable<object> query, List<OrderByDto> orderBy, Type entityType)
     {
         var orderEntries = GetOrderEntries(orderBy);
-        var keySelectors = GetKeySelectors(orderBy, entityType);
+        var keySelectors = GetKeySelectors(orderBy, entityType, isQuery: true);
         return CollectionUtils.OrderMultiple(query, orderEntries, keySelectors);
     }
 
@@ -919,7 +945,7 @@ public class EfCoreDataService : IOrmDataService
         IEnumerable<object> items, List<OrderByDto> orderBy, Type entityType)
     {
         var orderEntries = GetOrderEntries(orderBy);
-        var keySelectors = GetKeySelectors(orderBy, entityType)
+        var keySelectors = GetKeySelectors(orderBy, entityType, isQuery: false)
             .Select(tuple => (tuple.PropertyPath, tuple.Selector.Compile()))
             .ToArray();
 
@@ -935,7 +961,7 @@ public class EfCoreDataService : IOrmDataService
     }
 
     private static (string PropertyPath, Expression<Func<object, object>> Selector)[] GetKeySelectors(
-        List<OrderByDto> orderByFields, Type entityType)
+        List<OrderByDto> orderByFields, Type entityType, bool isQuery)
     {
         // entity
         var entity = Expression.Parameter(typeof(object), "entity");
@@ -949,16 +975,25 @@ public class EfCoreDataService : IOrmDataService
         // ((entityType)entity).Count
         // ((entityType)entity).Address.Street
         // ...
-        // Note that there are converting property to object.
-        // We need it to sort types that are not string. For example, numbers.
-        var propertyExpressions = orderByFields
-            .Select(orderByDto =>
-            {
-                var propertyExpression = ExpressionExtensions
-                    .GetPropertyExpression(convertedEntity, orderByDto.PropertyPath);
+        IEnumerable<Expression> propertyExpressions;
+        if (isQuery)
+        {
+            propertyExpressions = orderByFields
+                .Select(orderByDto =>
+                {
+                    var propertyExpression = ExpressionExtensions
+                        .GetPropertyExpression(convertedEntity, orderByDto.PropertyPath);
 
-                return Expression.Convert(propertyExpression, typeof(object));
-            });
+                    // Note that there are converting property to object.
+                    // We need it to sort types that are not string. For example, numbers.
+                    return Expression.Convert(propertyExpression, typeof(object));
+                });
+        }
+        else
+        {
+            propertyExpressions = orderByFields.Select(orderByDto
+                => ExpressionExtensions.GetPropertyExpressionWithNullCheck(convertedEntity, orderByDto.PropertyPath));
+        }
 
         // Make lambdas with properties. For example:
         // entity => ((entityType)entity).Name
