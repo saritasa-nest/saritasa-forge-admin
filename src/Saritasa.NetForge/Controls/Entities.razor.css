@@ -7,7 +7,7 @@
 
 /* Set background color for header of group */
 ::deep .mud-table-row {
-    background-color: var(--mud-palette-background-grey);
+    background-color: var(--mud-palette-background-gray);
 }
 
 /* Set background color for entity inside of group */

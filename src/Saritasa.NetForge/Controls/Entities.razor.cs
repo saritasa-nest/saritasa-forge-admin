@@ -18,7 +18,7 @@ public partial class Entities : MvvmComponentBase<EntitiesViewModel>
 
     private void NavigateToDetails(TableRowClickEventArgs<EntityMetadataDto> rowEventArgs)
     {
-        NavigationService.NavigateTo<EntityDetailsViewModel>(parameters: rowEventArgs.Item.StringId);
+        NavigationService.NavigateTo<EntityDetailsViewModel>(parameters: rowEventArgs.Item!.StringId);
     }
 
     private TableGroupDefinition<EntityMetadataDto>? groupDefinition;
