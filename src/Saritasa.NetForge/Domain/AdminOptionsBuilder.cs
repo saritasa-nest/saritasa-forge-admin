@@ -382,18 +382,4 @@ public class AdminOptionsBuilder
         options.MaxNavigationDepth = maxNavigationDepth;
         return this;
     }
-
-#if NET9_0_OR_GREATER
-    /// <summary>
-    /// Enables optimized handling of static files. See details in
-    /// <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/static-files?view=aspnetcore-9.0">
-    /// blazor documentation
-    /// </a>.
-    /// </summary>
-    public AdminOptionsBuilder EnableMapStaticAssets()
-    {
-        options.MapStaticAssetsEnabled = true;
-        return this;
-    }
-#endif
 }

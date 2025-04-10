@@ -52,12 +52,7 @@ public static class AdminExtensions
         {
             applicationBuilder.UsePathBase(adminPanelEndpoint);
 
-#if NET9_0_OR_GREATER
-            if (!optionsService.MapStaticAssetsEnabled)
-            {
-                applicationBuilder.UseStaticFiles();
-            }
-#else
+#if NET8_0
             applicationBuilder.UseStaticFiles();
 #endif
 
@@ -67,10 +62,7 @@ public static class AdminExtensions
             applicationBuilder.UseEndpoints(endpointBuilder =>
             {
 #if NET9_0_OR_GREATER
-                if (optionsService.MapStaticAssetsEnabled)
-                {
-                    endpointBuilder.MapStaticAssets();
-                }
+                endpointBuilder.MapStaticAssets();
 #endif
                 endpointBuilder
                     .MapRazorComponents<App>()

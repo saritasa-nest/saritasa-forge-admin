@@ -122,14 +122,4 @@ public class AdminOptions
     /// If depth of a navigation is more than this value then such navigation's data will not be loaded.
     /// </summary>
     public byte MaxNavigationDepth { get; set; } = 2;
-
-#if NET9_0_OR_GREATER
-    /// <summary>
-    /// Defines that optimized handling of static files is enabled. See details in
-    /// <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/static-files?view=aspnetcore-9.0">
-    /// blazor documentation
-    /// </a>.
-    /// </summary>
-    public bool MapStaticAssetsEnabled { get; set; }
-#endif
 }
