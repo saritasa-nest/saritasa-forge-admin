@@ -26,7 +26,7 @@ internal class DbSnapshot : IDisposable
         set
         {
             snapShotLocation = value;
-            logger.LogInformation("Snapshot location set: {Location}", value);
+            logger.LogDebug("Snapshot location set: {Location}", value);
         }
     }
 
@@ -41,7 +41,7 @@ internal class DbSnapshot : IDisposable
         }
 
         File.Delete(snapshotLocationLocal);
-        logger.LogInformation("Deleted database snapshot: {Location}", snapshotLocationLocal);
+        logger.LogDebug("Deleted database snapshot: {Location}", snapshotLocationLocal);
     }
 
     /// <inheritdoc />

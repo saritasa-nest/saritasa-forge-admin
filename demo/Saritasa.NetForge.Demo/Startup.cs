@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Saritasa.NetForge.Demo.Infrastructure.DependencyInjection;
 using Saritasa.NetForge.Demo.Infrastructure.Middlewares;
 using Saritasa.NetForge.Extensions;
