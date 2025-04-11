@@ -17,20 +17,6 @@ public static class EphemeralSqliteModule
         services.AddHttpContextAccessor();
         services.TryAddSingleton<DbSnapshot>();
 
-        // This make sure that all DbConnection reference the same file,
-        // and the SQLite file will be cleaned up when the scope ends.
-        services.TryAddScoped<EphemeralSqliteConnectionFactory>();
-        services.TryAddTransient<IEphemeralSqliteConnectionFactory>(static sp =>
-        {
-            // This is required because the Demo app's SP
-            // and NetForge's SP are different, for some reason.
-            var httpContext = sp.GetRequiredService<IHttpContextAccessor>().HttpContext;
-            if (httpContext != null)
-            {
-                sp = httpContext.RequestServices;
-            }
-
-            return sp.GetRequiredService<EphemeralSqliteConnectionFactory>();
-        });
+        services.TryAddScoped<IEphemeralSqliteConnectionFactory, EphemeralSqliteConnectionFactory>();
     }
 }
