@@ -29,13 +29,28 @@ internal sealed class DbSnapshotLoaderMiddleware
         var snapshot = serviceProvider.GetRequiredService<DbSnapshot>();
         ArgumentNullException.ThrowIfNull(snapshot.SnapshotLocation);
 
+        // HttpContext.RequestAborted did not work,
+        // probably related to this: https://github.com/dotnet/aspnetcore/issues/38917
         var cancellationToken = httpContext.RequestAborted;
+        using var manualCancellationTokenSource = new CancellationTokenSource();
+        using var linkedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken,
+            manualCancellationTokenSource.Token);
+        cancellationToken = linkedCancellationTokenSource.Token;
+        httpContext.RequestAborted = cancellationToken;
+
         var dbContext = serviceProvider.GetRequiredService<ShopDbContext>();
 
         var ephemeralConnection = dbContext.Database
             .GetInstance()
             .GetRequiredService<IEphemeralSqliteConnectionFactory>();
         await ephemeralConnection.LoadDatabase(snapshot.SnapshotLocation, cancellationToken);
-        await next(httpContext);
+        try
+        {
+            await next(httpContext);
+        }
+        finally
+        {
+            await manualCancellationTokenSource.CancelAsync();
+        }
     }
 }
