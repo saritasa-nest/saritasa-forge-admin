@@ -78,9 +78,9 @@ internal class EphemeralSqliteConnectionFactory : CriticalFinalizerObject, IEphe
         GC.SuppressFinalize(this);
     }
 
-    private static async Task BackupDatabase(string targetPath, string destinationPath, CancellationToken cancellationToken)
+    private static async Task BackupDatabase(string sourcePath, string destinationPath, CancellationToken cancellationToken)
     {
-        await using var targetConnection = CreateConnection(targetPath);
+        await using var targetConnection = CreateConnection(sourcePath);
         await targetConnection.OpenAsync(cancellationToken);
         await using var destinationConnection = CreateConnection(destinationPath);
         targetConnection.BackupDatabase(destinationConnection);
