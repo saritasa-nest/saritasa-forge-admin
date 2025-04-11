@@ -25,7 +25,6 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="MimeTypeMapOfficial" Version="1.0.17" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
         <PackageReference Include="Saritasa.Tools.Common" Version="5.0.0" />
         <PackageReference Include="Saritasa.Tools.Domain" Version="0.8.2" />
     </ItemGroup>
