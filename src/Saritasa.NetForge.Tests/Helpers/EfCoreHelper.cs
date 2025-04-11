@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moq;
 using Saritasa.NetForge.Domain;
+using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.UseCases.Metadata.Services;
 using Saritasa.NetForge.Domain.UseCases.Services;
 using Saritasa.NetForge.Infrastructure.EfCore;
@@ -50,12 +51,14 @@ internal static class EfCoreHelper
     /// <summary>
     /// Creates <see cref="EfCoreMetadataService"/>.
     /// </summary>
-    internal static EfCoreMetadataService CreateEfCoreMetadataService(DbContext dbContext)
+    internal static EfCoreMetadataService CreateEfCoreMetadataService(
+        DbContext dbContext, AdminOptions? adminOptions = null)
     {
         var efCoreOptions = CreateEfCoreOptions(dbContext);
         var serviceProvider = CreateServiceProvider(dbContext);
+        adminOptions ??= new AdminOptions();
 
-        return new EfCoreMetadataService(efCoreOptions, serviceProvider);
+        return new EfCoreMetadataService(efCoreOptions, serviceProvider, adminOptions);
     }
 
     private static EfCoreOptions CreateEfCoreOptions(DbContext dbContext)

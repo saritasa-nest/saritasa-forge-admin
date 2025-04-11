@@ -27,6 +27,9 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     [Inject]
     private ILogger<EntityDetails> Logger { get; set; } = default!;
 
+    [Inject]
+    private IServiceProvider ServiceProvider { get; set; } = default!;
+
     /// <summary>
     /// Entity id.
     /// </summary>
@@ -80,7 +83,7 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
         };
 
         var result = await (await DialogService.ShowAsync<ConfirmationDialog>("Bulk Delete", parameters)).Result;
-        if (result.Canceled)
+        if (result is null || result.Canceled)
         {
             return;
         }
@@ -100,5 +103,51 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
     {
         var primaryKeyValues = row.Item.GetPrimaryKeyValues(ViewModel.Model.Properties);
         NavigationService.NavigateTo<EditEntityViewModel>(parameters: [StringId, primaryKeyValues]);
+    }
+
+    private string RowClassFunc(object item, int index)
+    {
+        if (ViewModel.SelectedEntities.Contains(item))
+        {
+            return "property-grid__item--selected";
+        }
+
+        return string.Empty;
+    }
+
+    private Task ExecuteCustomActionAsync()
+    {
+        var action = ViewModel.Model.CustomActions.FirstOrDefault(e => e.Name == ViewModel.SelectedCustomAction);
+        if (action is null)
+        {
+            Snackbar.Add("Please select custom action you want to execute.", Severity.Error);
+            Logger.LogInformation("User not selected any custom action.");
+
+            return Task.CompletedTask;
+        }
+
+        if (ViewModel.SelectedEntities.Count == 0)
+        {
+            Snackbar.Add($"Please select at least one record you want to apply action {action.Name}", Severity.Error);
+            Logger.LogError("User not selected any item to apply {ActionName}.", action.Name);
+
+            return Task.CompletedTask;
+        }
+
+        try
+        {
+            action.Handler?.Invoke(ServiceProvider, ViewModel.SelectedEntities.AsQueryable());
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to execute custom action due to error: {ex.Message}", Severity.Error);
+            Logger.LogError(ex, "Failed to execute custom action. CustomAction: {CustomAction}.", action);
+        }
+
+        Snackbar.Add($"Action \"{action.Name}\" was executed.", Severity.Success);
+
+        ViewModel.SelectedEntities.Clear();
+
+        return Task.CompletedTask;
     }
 }

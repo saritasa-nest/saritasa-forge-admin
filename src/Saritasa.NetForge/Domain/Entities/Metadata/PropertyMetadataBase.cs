@@ -14,6 +14,11 @@ public abstract class PropertyMetadataBase
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
+    /// Full path to the property. For example: <c>Shop.Address.Street</c>.
+    /// </summary>
+    public string PropertyPath { get; set; } = string.Empty;
+
+    /// <summary>
     /// The type of the property.
     /// </summary>
     public Type? ClrType { get; set; }
@@ -137,4 +142,9 @@ public abstract class PropertyMetadataBase
     /// Property identifies whether the height of the text field automatically changes with the number of lines of text.
     /// </summary>
     public bool IsAutoGrow { get; set; }
+
+    /// <summary>
+    /// The property belongs to this navigation.
+    /// </summary>
+    public NavigationMetadata? NavigationMetadata { get; set; }
 }

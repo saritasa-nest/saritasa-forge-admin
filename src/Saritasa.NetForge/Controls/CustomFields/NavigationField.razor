@@ -1,5 +1,4 @@
-﻿@using Saritasa.NetForge.Domain.Comparers
-@using Saritasa.NetForge.Infrastructure.Helpers
+﻿@using Saritasa.NetForge.Infrastructure.Helpers
 
 @inherits CustomField
 
@@ -11,8 +10,7 @@
            Clearable="Property.IsNullable"
            Error="@FieldErrorModel.IsError"
            ErrorText="@FieldErrorModel.ErrorMessage"
-           Comparer="new ObjectComparer<object>(EntityMetadata)"
-           ToStringFunc="navigation => navigation.ConvertToString(EntityMetadata)">
+           ToStringFunc="navigation => EntityInstanceExtensions.ConvertToString(navigation, EntityMetadata)">
     @foreach (var instance in NavigationInstances)
     {
         <MudSelectItem Value="instance" />

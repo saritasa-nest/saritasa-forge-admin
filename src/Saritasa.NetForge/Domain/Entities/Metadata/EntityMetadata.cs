@@ -121,4 +121,9 @@ public class EntityMetadata
     /// Action that executes after entity delete and before saving changes to a database.
     /// </summary>
     public Action<IServiceProvider?, object>? DeleteAction { get; set; }
+
+    /// <summary>
+    /// A collection of custom actions associated with this entity.
+    /// </summary>
+    public List<CustomAction<object>> CustomActions { get; set; } = [];
 }

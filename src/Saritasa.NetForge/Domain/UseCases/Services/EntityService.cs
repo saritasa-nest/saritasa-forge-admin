@@ -1,19 +1,11 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq.Expressions;
-using Saritasa.NetForge.Domain.Dtos;
+﻿using System.ComponentModel.DataAnnotations;
 using Saritasa.NetForge.Domain.Entities.Metadata;
-using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Domain.Exceptions;
 using Saritasa.NetForge.Domain.Extensions;
-using Saritasa.NetForge.Domain.UseCases.Common;
 using Saritasa.NetForge.Domain.UseCases.Interfaces;
 using Saritasa.NetForge.Domain.UseCases.Metadata.DTOs;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.Domain.UseCases.Metadata.Services;
-using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
-using Saritasa.Tools.Common.Pagination;
-using Saritasa.Tools.Common.Utils;
 
 namespace Saritasa.NetForge.Domain.UseCases.Services;
 
@@ -90,29 +82,28 @@ public class EntityService : IEntityService
 
     private static GetEntityDto GetEntityMetadataDto(EntityMetadata metadata)
     {
-        var displayableProperties = metadata.Properties
-            .Where(property => property is { IsForeignKey: false });
+        var propertyDtos = metadata.Properties
+            .Where(property => property is { IsForeignKey: false })
+            .Select(property => MapProperty(property));
 
-        var propertyDtos = displayableProperties.Select(MapProperty);
-
-        var displayableNavigations = metadata.Navigations
-            .Where(navigation => navigation is { IsIncluded: true });
-
-        var navigationDtos = displayableNavigations.Select(MapNavigation);
+        var navigationDtos = metadata.Navigations.Select(navigation => MapNavigation(navigation));
 
         propertyDtos = propertyDtos.Union(navigationDtos);
 
         return MapGetEntityDto(metadata) with { Properties = propertyDtos.ToList() };
     }
 
-    private static PropertyMetadataDto MapProperty(PropertyMetadata property)
+    private static PropertyMetadataDto MapProperty(
+        PropertyMetadata property, NavigationMetadataDto? navigation = null)
     {
         return new PropertyMetadataDto
         {
             Name = property.Name,
+            PropertyPath = property.PropertyPath,
             DisplayName = property.DisplayName,
             Description = property.Description,
             IsPrimaryKey = property.IsPrimaryKey,
+            IsForeignKey = property.IsForeignKey,
             ClrType = property.ClrType,
             SearchType = property.SearchType,
             Order = property.Order,
@@ -142,16 +133,18 @@ public class EntityService : IEntityService
             IsAutoGrow = property.IsAutoGrow,
             CanDisplayDetails = property.CanDisplayDetails,
             CanBeNavigatedToDetails = property.CanBeNavigatedToDetails,
+            NavigationMetadata = navigation
         };
     }
 
-    private static NavigationMetadataDto MapNavigation(NavigationMetadata navigation)
+    private static NavigationMetadataDto MapNavigation(
+        NavigationMetadata navigation, NavigationMetadataDto? parentNavigation = null)
     {
-        return new NavigationMetadataDto
+        var navigationMetadata = new NavigationMetadataDto
         {
             IsCollection = navigation.IsCollection,
-            TargetEntityProperties = navigation.TargetEntityProperties.ConvertAll(MapProperty),
             Name = navigation.Name,
+            PropertyPath = navigation.PropertyPath,
             DisplayName = navigation.DisplayName,
             Description = navigation.Description,
             ClrType = navigation.ClrType,
@@ -175,8 +168,16 @@ public class EntityService : IEntityService
             IsMultiline = navigation.IsMultiline,
             Lines = navigation.Lines,
             MaxLines = navigation.MaxLines,
-            IsAutoGrow = navigation.IsAutoGrow
+            IsAutoGrow = navigation.IsAutoGrow,
+            NavigationMetadata = parentNavigation
         };
+
+        navigationMetadata.TargetEntityProperties = navigation.TargetEntityProperties
+            .ConvertAll(targetProperty => MapProperty(targetProperty, navigationMetadata));
+        navigationMetadata.TargetEntityNavigations = navigation.TargetEntityNavigations
+            .ConvertAll(targetNavigation => MapNavigation(targetNavigation, navigationMetadata));
+
+        return navigationMetadata;
     }
 
     private static GetEntityDto MapGetEntityDto(EntityMetadata entity)
@@ -200,7 +201,8 @@ public class EntityService : IEntityService
             ToStringFunc = entity.ToStringFunc,
             CreateAction = entity.CreateAction,
             UpdateAction = entity.UpdateAction,
-            DeleteAction = entity.DeleteAction
+            DeleteAction = entity.DeleteAction,
+            CustomActions = entity.CustomActions
         };
     }
 

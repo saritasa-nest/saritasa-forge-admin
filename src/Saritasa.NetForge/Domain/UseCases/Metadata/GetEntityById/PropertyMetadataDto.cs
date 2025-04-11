@@ -11,6 +11,9 @@ public record PropertyMetadataDto
     /// <inheritdoc cref="PropertyMetadataBase.Name"/>
     public string Name { get; set; } = string.Empty;
 
+    /// <inheritdoc cref="PropertyMetadataBase.PropertyPath"/>
+    public string PropertyPath { get; set; } = string.Empty;
+
     /// <inheritdoc cref="PropertyMetadataBase.DisplayName"/>
     public string DisplayName { get; set; } = string.Empty;
 
@@ -19,6 +22,9 @@ public record PropertyMetadataDto
 
     /// <inheritdoc cref="PropertyMetadata.IsPrimaryKey"/>
     public bool IsPrimaryKey { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadata.IsForeignKey"/>
+    public bool IsForeignKey { get; set; }
 
     /// <inheritdoc cref="PropertyMetadataBase.ClrType"/>
     public Type? ClrType { get; set; }
@@ -106,4 +112,7 @@ public record PropertyMetadataDto
 
     /// <inheritdoc cref="PropertyMetadata.CanBeNavigatedToDetails"/>
     public bool CanBeNavigatedToDetails { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadataBase.NavigationMetadata"/>
+    public NavigationMetadataDto? NavigationMetadata { get; set; }
 }
