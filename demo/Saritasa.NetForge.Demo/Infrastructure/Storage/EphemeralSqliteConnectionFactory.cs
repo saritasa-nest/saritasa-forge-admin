@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Data.Common;
 using System.Runtime.ConstrainedExecution;
 using Microsoft.Data.Sqlite;
@@ -11,12 +12,41 @@ namespace Saritasa.NetForge.Demo.Infrastructure.Storage;
 /// </remarks>
 internal class EphemeralSqliteConnectionFactory : CriticalFinalizerObject, IEphemeralSqliteConnectionFactory
 {
-    private readonly string sqliteDbPath = FileHelpers.CreateTemporaryFileSecure(".sqlite");
+    private static ConcurrentDictionary<HttpContext, string> SqliteDbPathStores { get; } = new();
+    
+    private readonly string sqliteDbPath;
     private bool disposed;
 
     private static SqliteConnection CreateConnection(string path)
     {
         return new SqliteConnection($"Data Source={path};Pooling=false");
+    }
+    
+    private static string GetNewDbPath() => FileHelpers.CreateTemporaryFileSecure(".sqlite");
+
+    public EphemeralSqliteConnectionFactory(IHttpContextAccessor httpContextAccessor)
+    {
+        var httpContext = httpContextAccessor.HttpContext;
+        if (httpContext == null)
+        {
+            sqliteDbPath = GetNewDbPath();
+            return;
+        }
+
+        var cancellationToken = httpContext.RequestAborted;
+        if (!cancellationToken.CanBeCanceled)
+        {
+            sqliteDbPath = GetNewDbPath();
+            return;
+        }
+        
+        sqliteDbPath = SqliteDbPathStores.GetOrAdd(httpContext, static _ => GetNewDbPath());
+        cancellationToken.Register(() =>
+        {
+            File.Delete(sqliteDbPath);
+            SqliteDbPathStores.Remove(httpContext, out _);
+        });
+        disposed = true;
     }
 
     /// <inheritdoc />
