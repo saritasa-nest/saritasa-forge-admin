@@ -41,6 +41,7 @@ public class ContactInfo
     /// <summary>
     /// Date when contact was created.
     /// </summary>
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     /// <inheritdoc />
