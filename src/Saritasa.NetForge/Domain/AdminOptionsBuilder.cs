@@ -403,13 +403,13 @@ public class AdminOptionsBuilder
     /// and a list of disabled entity types.
     /// </param>
     /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
-    public AdminOptionsBuilder AddGlobalCustomAction(Action<CustomActionBuilder<object>, List<Type>> action)
+    public AdminOptionsBuilder AddGlobalCustomAction(Action<CustomActionBuilder<object>> action)
     {
         var actionOptionBuilder = new CustomActionBuilder<object>();
-        var disabledTypes = new List<Type>();
-        action(actionOptionBuilder, disabledTypes);
+        action(actionOptionBuilder);
 
-        options.GlobalCustomActions.Add(actionOptionBuilder.Build(), disabledTypes);
+        var (customAction, disabledTypes) = actionOptionBuilder.Build();
+        options.GlobalCustomActions.Add(customAction, disabledTypes);
         return this;
     }
 }

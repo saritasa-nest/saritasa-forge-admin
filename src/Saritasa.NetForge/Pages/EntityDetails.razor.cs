@@ -154,7 +154,7 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
         return Task.CompletedTask;
     }
 
-    private Task ExecuteGlobalCustomActionAsync()
+    private async Task ExecuteGlobalCustomActionAsync()
     {
         var action = ViewModel.Model.GlobalCustomActions.FirstOrDefault(e => e.Name == ViewModel.SelectedGlobalCustomAction);
         if (action is null)
@@ -162,7 +162,7 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
             Snackbar.Add($"Please select global custom action you want to execute.", Severity.Error);
             Logger.LogInformation("User not selected any global custom actions.");
 
-            return Task.CompletedTask;
+            return;
         }
 
         if (ViewModel.SelectedEntities.Count == 0)
@@ -170,25 +170,27 @@ public partial class EntityDetails : MvvmComponentBase<EntityDetailsViewModel>
             Snackbar.Add($"Please select at least one record you want to apply action {action.Name}", Severity.Error);
             Logger.LogError("User not selected any item to apply {ActionName}.", action.Name);
 
-            return Task.CompletedTask;
+            return;
         }
 
         try
         {
-            action.Handler?.Invoke(ServiceProvider, ViewModel.SelectedEntities.AsQueryable());
+            var task = action.Handler?.Invoke(ServiceProvider, ViewModel.SelectedEntities.AsQueryable());
+            if (task is not null)
+            {
+                await task;
+            }
         }
         catch (Exception ex)
         {
             Snackbar.Add($"Failed to execute global custom action due to error: {ex.Message}", Severity.Error);
             Logger.LogError(ex, "Failed to execute global custom action. CustomAction: {CustomAction}.", action);
 
-            return Task.CompletedTask;
+            return;
         }
 
         Snackbar.Add($"Global action \"{action.Name}\" was executed.", Severity.Success);
 
         ViewModel.SelectedEntities.Clear();
-
-        return Task.CompletedTask;
     }
 }

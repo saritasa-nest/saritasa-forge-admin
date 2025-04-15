@@ -9,6 +9,7 @@ namespace Saritasa.NetForge.Domain;
 public class CustomActionBuilder<TEntity> where TEntity : class
 {
     private readonly CustomAction<TEntity> customAction = new();
+    private readonly List<Type> disabledTypes = [];
 
     /// <summary>
     /// Sets the name of the custom action.
@@ -37,9 +38,21 @@ public class CustomActionBuilder<TEntity> where TEntity : class
     /// </summary>
     /// <param name="handler">The handler action that takes an <see cref="IServiceProvider"/> and an <see cref="IQueryable{TEntity}"/>.</param>
     /// <returns>The current instance of <see cref="CustomActionBuilder{TEntity}"/>.</returns>
-    public CustomActionBuilder<TEntity> SetHandler(Action<IServiceProvider?, IQueryable<TEntity>> handler)
+    public CustomActionBuilder<TEntity> SetHandler(Func<IServiceProvider?, IQueryable<TEntity>, Task> handler)
     {
         customAction.Handler = handler;
+        return this;
+    }
+
+    /// <summary>
+    /// Excludes the specified types from being processed by the custom action.
+    /// </summary>
+    /// <param name="types">An array of <see cref="Type"/> objects to exclude.</param>
+    /// <returns>The current instance of <see cref="CustomActionBuilder{TEntity}"/>.</returns>
+    public CustomActionBuilder<TEntity> ExcludeTypes(params Type[] types)
+    {
+        disabledTypes.AddRange(types);
+
         return this;
     }
 
@@ -47,8 +60,8 @@ public class CustomActionBuilder<TEntity> where TEntity : class
     /// Builds the custom action with the configured settings.
     /// </summary>
     /// <returns>The configured <see cref="CustomAction{TEntity}"/> instance.</returns>
-    public CustomAction<TEntity> Build()
+    public (CustomAction<TEntity> CustomAction, List<Type> DisabledTypes) Build()
     {
-        return customAction;
+        return (customAction, disabledTypes.Distinct().ToList());
     }
 }

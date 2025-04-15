@@ -1,5 +1,5 @@
-﻿using System.Globalization;
-using System.Text.Json;
+﻿using System.Text.Json;
+using MudBlazor;
 using Saritasa.NetForge.Demo.Constants;
 using Saritasa.NetForge.Demo.Infrastructure.Admin;
 using Saritasa.NetForge.Demo.Infrastructure.Extensions;
@@ -8,7 +8,6 @@ using Saritasa.NetForge.Demo.Views.Admin;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Extensions;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
-using Address = Saritasa.NetForge.Demo.Models.Address;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.DependencyInjection;
 
@@ -43,10 +42,7 @@ internal static class NetForgeModule
                     builder.CloseComponent();
                 })
                 .ConfigureEntity(new ShopAdminConfiguration(services))
-                .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
-                {
-                    entityOptionsBuilder.SetIsHidden(true);
-                })
+                .ConfigureEntity<ProductTag>(entityOptionsBuilder => { entityOptionsBuilder.SetIsHidden(true); })
                 .AddIdentityGroup()
                 .ConfigureEntity(new UserAdminConfiguration())
                 .ConfigureEntity(new AddressAdminConfiguration())
@@ -58,29 +54,31 @@ internal static class NetForgeModule
                         navigationOptionsBuilder =>
                         {
                             navigationOptionsBuilder
-                                .IncludeProperty(shop => shop.Name, propertyOptionsBuilder =>
-                                {
-                                    propertyOptionsBuilder.SetDisplayName("Shop name");
-                                });
+                                .IncludeProperty(shop => shop.Name,
+                                    propertyOptionsBuilder => { propertyOptionsBuilder.SetDisplayName("Shop name"); });
                         });
                 })
                 .ConfigureEntity(new ContactInfoAdminConfiguration())
-                .AddGlobalCustomAction((builder, disabledTypes) =>
+                .AddGlobalCustomAction(builder =>
                 {
-                    builder.SetName("Exported to JSON file");
-                    builder.SetDescription("Exports all selected item to a JSON file.");
+                    builder.SetName("Show entity as JSON");
+                    builder.SetDescription("Display the selected entities as JSON in a snackbar.");
                     builder.SetHandler((serviceProvider, query) =>
                     {
                         var items = query.ToList();
+                        var snackbar = serviceProvider?.GetRequiredService<ISnackbar>();
+                        if (snackbar is null)
+                        {
+                            return Task.CompletedTask;
+                        }
 
-                        var jsonString = JsonSerializer.Serialize(items).ToCharArray();
-                        var path = $"{items.First().GetType().Name}-{DateTime.UtcNow.ToString("yyyy-MM-ddTHH-mm-ss-fffffff", CultureInfo.InvariantCulture)}.json";
-
-                        using var outputFile = new StreamWriter(path);
-                        outputFile.Write(jsonString);
+                        var jsonString = JsonSerializer.Serialize(items, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                        snackbar.Add(jsonString);
+                        
+                        return Task.CompletedTask;
                     });
 
-                    disabledTypes.Add(typeof(Address));
+                    builder.ExcludeTypes(typeof(Shop));
                 });
         });
     }

@@ -19,5 +19,5 @@ public class CustomAction<TEntity>
     /// Gets or sets the handler for the custom action.
     /// The handler is an action that takes an <see cref="IServiceProvider"/> and an <see cref="IQueryable{TEntity}"/> of objects.
     /// </summary>
-    public Action<IServiceProvider?, IQueryable<TEntity>>? Handler { get; set; }
+    public Func<IServiceProvider?, IQueryable<TEntity>, Task>? Handler { get; set; }
 }
