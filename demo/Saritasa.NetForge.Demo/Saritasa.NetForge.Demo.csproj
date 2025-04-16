@@ -27,6 +27,7 @@
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
         <PackageReference Include="Saritasa.Tools.Common" Version="5.0.0" />
         <PackageReference Include="Saritasa.Tools.Domain" Version="0.8.2" />
+        <PackageReference Include="System.Text.Json" Version="9.0.4" />
     </ItemGroup>
     
     <ItemGroup>
