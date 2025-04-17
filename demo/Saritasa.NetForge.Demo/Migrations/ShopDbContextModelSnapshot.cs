@@ -17,7 +17,7 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "9.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -843,6 +843,43 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                         .HasConstraintName("fk_shop_products_counts_shops_shop_id");
 
                     b.Navigation("Shop");
+                });
+
+            modelBuilder.Entity("Saritasa.NetForge.Demo.Models.Supplier", b =>
+                {
+                    b.OwnsOne("Saritasa.NetForge.Demo.Models.Director", "Director", b1 =>
+                        {
+                            b1.Property<string>("SupplierName")
+                                .IsUnicode(false)
+                                .HasColumnType("text")
+                                .HasColumnName("name");
+
+                            b1.Property<string>("SupplierCity")
+                                .IsUnicode(false)
+                                .HasColumnType("text")
+                                .HasColumnName("city");
+
+                            b1.Property<int>("Age")
+                                .HasColumnType("integer")
+                                .HasColumnName("director_age");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .IsUnicode(false)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("director_name");
+
+                            b1.HasKey("SupplierName", "SupplierCity");
+
+                            b1.ToTable("suppliers");
+
+                            b1.WithOwner()
+                                .HasForeignKey("SupplierName", "SupplierCity")
+                                .HasConstraintName("fk_suppliers_suppliers_name_city");
+                        });
+
+                    b.Navigation("Director");
                 });
 
             modelBuilder.Entity("ShopSupplier", b =>

@@ -31,6 +31,11 @@ public class Supplier
     /// </summary>
     public List<Shop> Shops { get; set; } = new();
 
+    /// <summary>
+    /// Represents director of the supplier company.
+    /// </summary>
+    public Director? Director { get; set; }
+
     /// <inheritdoc />
     public override string ToString()
     {

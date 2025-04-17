@@ -168,7 +168,8 @@ public class EfCoreMetadataService : IOrmMetadataService
     {
         var propertiesMetadata = entityType
             .GetProperties()
-            .Select(property => GetPropertyMetadata(property, propertyPath, navigationMetadata));
+            .Select(property => GetPropertyMetadata(property, propertyPath, navigationMetadata))
+            .Where(property => !property.IsShadow); // We can't access shadow properties data, so it should be excluded.
 
         var reflectionProperties = entityType.ClrType
             .GetProperties()

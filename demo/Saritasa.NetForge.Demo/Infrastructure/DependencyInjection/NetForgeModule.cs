@@ -61,7 +61,8 @@ internal static class NetForgeModule
                                     });
                         });
                 })
-                .ConfigureEntity(new ContactInfoAdminConfiguration());
+                .ConfigureEntity(new ContactInfoAdminConfiguration())
+                .ConfigureEntity(new SupplierAdminConfiguration());
         });
     }
 }
