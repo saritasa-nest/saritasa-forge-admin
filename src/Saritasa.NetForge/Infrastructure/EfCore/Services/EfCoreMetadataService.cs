@@ -152,6 +152,11 @@ public class EfCoreMetadataService : IOrmMetadataService
             NavigationMetadata = parentNavigationMetadata
         };
 
+        if (navigation is INavigation efNavigation)
+        {
+            navigationMetadata.IsOwnership = efNavigation.ForeignKey.IsOwnership;
+        }
+
         navigationMetadata.TargetEntityProperties
             = GetPropertiesMetadata(navigation.TargetEntityType, propertyPath, navigationMetadata);
         navigationMetadata.TargetEntityNavigations

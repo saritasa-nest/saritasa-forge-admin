@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using DeepCopy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 using Saritasa.Tools.Common.Pagination;
 using Saritasa.Tools.Common.Utils;
@@ -155,6 +156,19 @@ public class EfCoreDataService : IOrmDataService
             // EF will try to create new entity and create all navigation (even when they are exist in database).
             // Attach resolves this problem by explicitly attaching navigation to EF change tracker.
             dbContext.Attach(entity);
+
+            foreach (var navigationEntry in dbContext.Entry(entity).Navigations)
+            {
+                if (navigationEntry.Metadata is not INavigation navigationMetadata)
+                {
+                    continue;
+                }
+
+                if (navigationMetadata.ForeignKey.IsOwnership)
+                {
+                    dbContext.Add(navigationEntry.CurrentValue!);
+                }
+            }
             dbContext.Add(entity);
             await dbContext.SaveChangesAsync(cancellationToken);
         }

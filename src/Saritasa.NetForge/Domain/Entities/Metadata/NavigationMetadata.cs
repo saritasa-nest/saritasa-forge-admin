@@ -11,6 +11,14 @@ public class NavigationMetadata : PropertyMetadataBase
     public bool IsCollection { get; set; }
 
     /// <summary>
+    /// If true, the navigation cannot exist without its parent entity.
+    /// </summary>
+    /// <remarks>
+    /// See documentation <see href="https://learn.microsoft.com/en-us/ef/core/modeling/owned-entities"/>.
+    /// </remarks>
+    public bool IsOwnership { get; set; }
+
+    /// <summary>
     /// Target navigation entity's properties.
     /// </summary>
     public List<PropertyMetadata> TargetEntityProperties { get; set; } = [];
