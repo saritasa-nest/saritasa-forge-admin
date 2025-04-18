@@ -1,4 +1,6 @@
-﻿namespace Saritasa.NetForge.Controls.CustomFields;
+﻿using Saritasa.NetForge.Domain.Extensions;
+
+namespace Saritasa.NetForge.Controls.CustomFields;
 
 /// <summary>
 /// Represents number field.
@@ -10,7 +12,7 @@ public partial class NumberField<T> : CustomField
     /// </summary>
     public T? PropertyValue
     {
-        get => (T?)EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance);
-        set => EntityInstance.GetType().GetProperty(Property.Name)?.SetValue(EntityInstance, value);
+        get => (T?)EntityInstance.GetNestedPropertyValue(Property.PropertyPath);
+        set => EntityInstance.SetNestedPropertyValue(Property.PropertyPath, value);
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Saritasa.NetForge.Controls.CustomFields;
+﻿using Saritasa.NetForge.Domain.Extensions;
+
+namespace Saritasa.NetForge.Controls.CustomFields;
 
 /// <summary>
 /// Represents bool field.
@@ -10,7 +12,7 @@ public partial class BoolField : CustomField
     /// </summary>
     public bool? PropertyValue
     {
-        get => (bool?)EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance);
-        set => EntityInstance.GetType().GetProperty(Property.Name)?.SetValue(EntityInstance, value);
+        get => (bool?)EntityInstance.GetNestedPropertyValue(Property.PropertyPath);
+        set => EntityInstance.SetNestedPropertyValue(Property.PropertyPath, value);
     }
 }

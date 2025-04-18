@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+using Saritasa.NetForge.Domain.Extensions;
 
 namespace Saritasa.NetForge.Controls.CustomFields;
 
@@ -12,8 +13,8 @@ public partial class TextField : CustomField
     /// </summary>
     public string? PropertyValue
     {
-        get => EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance)?.ToString();
-        set => EntityInstance.GetType().GetProperty(Property.Name)?.SetValue(EntityInstance, value);
+        get => EntityInstance.GetNestedPropertyValue(Property.PropertyPath)?.ToString();
+        set => EntityInstance.SetNestedPropertyValue(Property.PropertyPath, value);
     }
 
     /// <inheritdoc cref="PropertyMetadataBase.Lines"/>

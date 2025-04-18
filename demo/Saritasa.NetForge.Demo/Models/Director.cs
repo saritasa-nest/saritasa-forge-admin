@@ -19,4 +19,11 @@ public class Director
     /// Age.
     /// </summary>
     public int Age { get; set; }
+
+    /// <summary>
+    /// Is active.
+    /// </summary>
+    public bool IsActive { get; set; }
+
+    // public DateTime Birthday { get; set; }
 }
