@@ -1,0 +1,10 @@
+@using Saritasa.NetForge.Infrastructure.Helpers
+
+@{
+    var componentType = CustomFieldHelper.GetComponentType(Property);
+
+    var fieldError = GetFieldError(Property);
+    var parameters = GetFieldParameters(Property, fieldError);
+
+    <DynamicComponent Type="componentType" Parameters="parameters"/>
+}

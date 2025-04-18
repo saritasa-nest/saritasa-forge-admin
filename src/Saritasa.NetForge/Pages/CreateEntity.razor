@@ -1,8 +1,9 @@
 ﻿@using Saritasa.NetForge.Controls
-@using Saritasa.NetForge.Domain.Extensions
 @using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById
 @using Saritasa.NetForge.Extensions
+@using Saritasa.NetForge.Infrastructure.Helpers
 @using Saritasa.NetForge.MVVM.ViewModels.CreateEntity
+@using Saritasa.NetForge.Controls.CustomFields
 
 @inherits MvvmComponentBase<CreateEntityViewModel>
 
@@ -23,15 +24,10 @@
                         {
                             if (property is NavigationMetadataDto { IsOwnership: true } navigation)
                             {
-                                var navigationValue = ViewModel.Model.EntityInstance.GetPropertyValue(navigation.Name);
-                                if (navigationValue is null)
-                                {
-                                    CreateNavigationInstance(navigation);
-                                }
+                                OwnedEntityHelper.EnsureNavigationInstance(ViewModel.Model.EntityInstance, navigation);
 
                                 foreach (var targetProperty in navigation.TargetEntityProperties)
                                 {
-
                                     RenderProperty(targetProperty);
                                 }
                             }
@@ -42,10 +38,10 @@
 
                             void RenderProperty(PropertyMetadataDto property)
                             {
-                                var fieldError = GetFieldError(property);
-                                var attributes = GetInputAttributes(property, fieldError);
-
-                                <DynamicComponent Type="attributes.ComponentType" Parameters="attributes.Parameters"/>
+                                <DynamicField EntityInstance="ViewModel.Model.EntityInstance"
+                                              Property="property"
+                                              FieldErrorModels="ViewModel.FieldErrorModels"
+                                              HandleFile="ViewModel.HandleSelectedFile"/>
                             }
                         }
 

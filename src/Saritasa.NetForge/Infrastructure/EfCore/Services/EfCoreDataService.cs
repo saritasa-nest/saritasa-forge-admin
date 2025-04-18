@@ -331,12 +331,34 @@ public class EfCoreDataService : IOrmDataService
         }
         else
         {
-            var isTracked = dbContext.IsTracked(updatedNavigationReference!, comparer);
+            var foreignKey = ((INavigation)navigationEntry.Metadata).ForeignKey;
+            var isOwnership = foreignKey.IsOwnership;
 
-            if (!isTracked)
+            if (isOwnership)
             {
-                dbContext.Attach(updatedNavigationReference!);
-                originalNavigationEntry.CurrentValue = updatedNavigationReference;
+                if (originalNavigationEntry.CurrentValue is null)
+                {
+                    // Owned entity does not exist, use updated reference.
+                    // EF will track such entity as Added.
+                    originalNavigationEntry.CurrentValue = updatedNavigationReference;
+                }
+                else
+                {
+                    // If owned entity exists, only update its properties.
+                    // EF will track such entity as Updated.
+                    var referenceEntry = (ReferenceEntry)originalNavigationEntry;
+                    referenceEntry.TargetEntry!.CurrentValues.SetValues(updatedNavigationReference!);
+                }
+            }
+            else
+            {
+                var isTracked = dbContext.IsTracked(updatedNavigationReference!, comparer);
+
+                if (!isTracked)
+                {
+                    dbContext.Attach(updatedNavigationReference!);
+                    originalNavigationEntry.CurrentValue = updatedNavigationReference;
+                }
             }
         }
     }
