@@ -57,7 +57,7 @@ public partial class UploadImage : CustomField
     /// <summary>
     /// Property value.
     /// </summary>
-    private string? PropertyValue => EntityInstance.GetPropertyValue(Property.Name)?.ToString();
+    private string? PropertyValue => EntityTracker.GetPropertyValue(Property.Name)?.ToString();
 
     private IBrowserFile? selectedFile;
 

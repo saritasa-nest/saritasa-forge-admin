@@ -1,5 +1,6 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Domain.UseCases.Common;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.MVVM.ViewModels.EditEntity;
@@ -25,9 +26,9 @@ public record EditEntityModel
     public ICollection<PropertyMetadataDto> Properties { get; init; } = new List<PropertyMetadataDto>();
 
     /// <summary>
-    /// Entity instance.
+    /// Changes tracker.
     /// </summary>
-    public object? EntityInstance { get; set; }
+    public EntityTracker? ChangesTracker { get; set; }
 
     /// <summary>
     /// Original unchanged entity instance.

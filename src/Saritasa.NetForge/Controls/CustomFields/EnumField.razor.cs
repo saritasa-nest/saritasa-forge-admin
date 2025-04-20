@@ -10,13 +10,13 @@ public partial class EnumField : CustomField
     /// </summary>
     public string? PropertyValue
     {
-        get => EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance)?.ToString();
+        get => EntityTracker.GetPropertyValue(Property.Name)?.ToString();
         set
         {
             var propertyType = Property.ClrType!;
             var actualPropertyType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
             var enumValue = Enum.Parse(actualPropertyType, value!);
-            EntityInstance.GetType().GetProperty(Property.Name)?.SetValue(EntityInstance, enumValue);
+            EntityTracker.SetPropertyValue(Property.Name, enumValue);
         }
     }
 }

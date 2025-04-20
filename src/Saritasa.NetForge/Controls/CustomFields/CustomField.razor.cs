@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Saritasa.NetForge.Domain.UseCases.Common;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.MVVM.ViewModels;
@@ -31,7 +32,7 @@ public abstract class CustomField : OwningComponentBase<IOrmDataService>
     /// </summary>
     [Parameter]
     [EditorRequired]
-    public object EntityInstance { get; init; } = null!;
+    public EntityTracker EntityTracker { get; init; } = null!;
 
     /// <summary>
     /// Is field with read only access.

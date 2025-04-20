@@ -12,7 +12,7 @@ public partial class TimeOnlyField : CustomField
     {
         get
         {
-            var propertyValue = EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance)?.ToString();
+            var propertyValue = EntityTracker.GetPropertyValue(Property.Name)?.ToString();
 
             var isTimeParsed = DateTime.TryParse(propertyValue, out var dateTime);
 
@@ -36,21 +36,22 @@ public partial class TimeOnlyField : CustomField
     /// <param name="value">Input value.</param>
     private void SetPropertyValue(TimeSpan? value)
     {
-        var property = EntityInstance.GetType().GetProperty(Property.Name)!;
-
-        if (!value.HasValue)
+        if (value == null)
         {
-            property.SetValue(EntityInstance, null);
+            if (Property.IsNullable)
+            {
+                EntityTracker.SetPropertyValue(Property.Name, null);
+            }
             return;
         }
 
         if (Property.ClrType == typeof(TimeOnly) || Property.ClrType == typeof(TimeOnly?))
         {
-            property.SetValue(EntityInstance, TimeOnly.FromTimeSpan(value.Value));
+            EntityTracker.SetPropertyValue(Property.Name, TimeOnly.FromTimeSpan(value.Value));
         }
         else
         {
-            property.SetValue(EntityInstance, value);
+            EntityTracker.SetPropertyValue(Property.Name, value);
         }
     }
 }

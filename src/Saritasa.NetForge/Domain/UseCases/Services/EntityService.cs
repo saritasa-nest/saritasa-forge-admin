@@ -2,6 +2,7 @@
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Exceptions;
 using Saritasa.NetForge.Domain.Extensions;
+using Saritasa.NetForge.Domain.UseCases.Common;
 using Saritasa.NetForge.Domain.UseCases.Interfaces;
 using Saritasa.NetForge.Domain.UseCases.Metadata.DTOs;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
@@ -207,8 +208,9 @@ public class EntityService : IEntityService
     }
 
     /// <inheritdoc />
-    public bool ValidateEntity(object instance, ICollection<PropertyMetadataDto> properties, ref List<ValidationResult> errors)
+    public bool ValidateEntity(EntityTracker entityTracker, ICollection<PropertyMetadataDto> properties, ref List<ValidationResult> errors)
     {
+        var instance = entityTracker.TrackingObject;
         var context = new ValidationContext(instance, serviceProvider, items: null);
 
         Validator.TryValidateObject(instance, context, errors, validateAllProperties: true);
@@ -279,6 +281,11 @@ public class EntityService : IEntityService
         if (requiredErrors.Count != 0)
         {
             errors.AddRange(requiredErrors);
+        }
+
+        if (entityTracker.PropertyErrors.Count > 0)
+        {
+            errors.AddRange(entityTracker.PropertyErrors.Select(static pair => new ValidationResult(pair.Value, [pair.Key])));
         }
 
         return errors.Count == 0;

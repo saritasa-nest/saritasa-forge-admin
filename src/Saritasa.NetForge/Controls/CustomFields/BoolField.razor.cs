@@ -10,7 +10,7 @@ public partial class BoolField : CustomField
     /// </summary>
     public bool? PropertyValue
     {
-        get => (bool?)EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance);
-        set => EntityInstance.GetType().GetProperty(Property.Name)?.SetValue(EntityInstance, value);
+        get => EntityTracker.GetPropertyValue(Property.Name) as bool?;
+        set => EntityTracker.SetPropertyValue(Property.Name, value);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Domain.UseCases.Common;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.MVVM.ViewModels.CreateEntity;
@@ -25,9 +26,9 @@ public record CreateEntityModel
     public ICollection<PropertyMetadataDto> Properties { get; init; } = new List<PropertyMetadataDto>();
 
     /// <summary>
-    /// Entity instance.
+    /// Change tracker.
     /// </summary>
-    public object EntityInstance { get; set; } = null!;
+    public EntityTracker EntityTracker { get; set; } = null!;
 
     /// <inheritdoc cref="MessageOptions.EntityCreateMessage"/>
     public string? EntityCreateMessage { get; set; }

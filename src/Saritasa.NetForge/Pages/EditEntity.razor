@@ -8,7 +8,7 @@
 
 @inherits MvvmComponentBase<EditEntityViewModel>
 
-@if (ViewModel.Model.EntityInstance is null && (ViewModel.IsEntityExists))
+@if (ViewModel.Model.ChangesTracker is null && (ViewModel.IsEntityExists))
 {
     <p>Loading...</p>
 }
@@ -29,7 +29,7 @@ else if (ViewModel.IsEntityExists)
                     <MudAlert Severity="Severity.Error" Class="mb-5">@ViewModel.GeneralError</MudAlert>
                 }
 
-                <EditForm Model="ViewModel.Model.EntityInstance" OnValidSubmit="ViewModel.UpdateEntityAsync">
+                <EditForm Model="ViewModel.Model.ChangesTracker.TrackingObject" OnValidSubmit="ViewModel.UpdateEntityAsync">
                     <div class="d-flex flex-column flex-grow-1 gap-4">
                         @foreach (var property in ViewModel.Model.Properties)
                         {
@@ -47,10 +47,10 @@ else if (ViewModel.IsEntityExists)
                             var componentType = CustomFieldHelper.GetComponentType(property);
                             var parameters = new Dictionary<string, object>
                             {
-                                { "Property", property },
-                                { "EntityInstance", ViewModel.Model.EntityInstance! },
-                                { "IsReadOnly", property.IsPrimaryKey || property.IsReadOnly },
-                                { "FieldErrorModel", fieldError }
+                                { nameof(CustomField.Property), property },
+                                { nameof(CustomField.EntityTracker), ViewModel.Model.ChangesTracker! },
+                                { nameof(CustomField.IsReadOnly), property.IsPrimaryKey || property.IsReadOnly },
+                                { nameof(CustomField.FieldErrorModel), fieldError }
                             };
 
                             if (property.UploadFileStrategy is not null)

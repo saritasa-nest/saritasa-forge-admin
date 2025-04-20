@@ -64,7 +64,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
         {
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
             Model = MapModel(entity);
-            Model.EntityInstance = Activator.CreateInstance(Model.ClrType!)!;
+            Model.EntityTracker = new(Activator.CreateInstance(Model.ClrType!)!);
             Model = Model with
             {
                 Properties = Model.Properties
@@ -133,7 +133,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
         foreach (var (property, file) in filesToUpload)
         {
             var fileString = await property.UploadFileStrategy!.UploadFileAsync(file, CancellationToken);
-            Model.EntityInstance.SetPropertyValue(property.Name, fileString);
+            Model.EntityTracker.SetPropertyValue(property.Name, fileString);
         }
 
         var errors = new List<ValidationResult>();
@@ -141,7 +141,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
         // Clear the error on the previous validation.
         FieldErrorModels.ForEach(e => e.ErrorMessage = string.Empty);
 
-        if (!entityService.ValidateEntity(Model.EntityInstance, Model.Properties, ref errors))
+        if (!entityService.ValidateEntity(Model.EntityTracker, Model.Properties, ref errors))
         {
             FieldErrorModels.MappingErrorToCorrectField(errors);
 
@@ -151,7 +151,7 @@ public class CreateEntityViewModel : ValidationEntityViewModel
         try
         {
             await dataService
-                .AddAsync(Model.EntityInstance, Model.ClrType!, CancellationToken, Model.CreateAction);
+                .AddAsync(Model.EntityTracker.TrackingObject, Model.ClrType!, CancellationToken, Model.CreateAction);
             navigationService.NavigateTo<EntityDetailsViewModel>(parameters: Model.StringId);
             ShowEntityCreateMessage();
         }

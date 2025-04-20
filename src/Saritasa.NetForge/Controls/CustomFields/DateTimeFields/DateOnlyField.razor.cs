@@ -12,7 +12,7 @@ public partial class DateOnlyField : CustomField
     {
         get
         {
-            var propertyValue = EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance)?.ToString();
+            var propertyValue = EntityTracker.GetPropertyValue(Property.Name)?.ToString();
 
             var isDateParsed = DateTime.TryParse(propertyValue, out var parsedDate);
 
@@ -36,14 +36,15 @@ public partial class DateOnlyField : CustomField
     /// <param name="value">Input value.</param>
     private void SetPropertyValue(DateTime? value)
     {
-        var property = EntityInstance.GetType().GetProperty(Property.Name)!;
-
-        if (!value.HasValue)
+        if (value == null)
         {
-            property.SetValue(EntityInstance, null);
+            if (Property.IsNullable)
+            {
+                EntityTracker.SetPropertyValue(Property.Name, null);
+            }
             return;
         }
 
-        property.SetValue(EntityInstance, DateOnly.FromDateTime(value.Value));
+        EntityTracker.SetPropertyValue(Property.Name, DateOnly.FromDateTime(value.Value));
     }
 }

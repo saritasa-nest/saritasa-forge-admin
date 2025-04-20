@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Saritasa.NetForge.Domain.Entities.Metadata;
+using Saritasa.NetForge.Domain.UseCases.Common;
 using Saritasa.NetForge.Domain.UseCases.Metadata.DTOs;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 
@@ -34,9 +35,9 @@ public interface IEntityService
     /// <summary>
     /// Validates the specified entity instance and populates the provided list of validation errors.
     /// </summary>
-    /// <param name="instance">The object instance to be validated.</param>
+    /// <param name="entityTracker">Change tracker.</param>
     /// <param name="properties">The metadata of properties for entity.</param>
     /// <param name="errors">A reference to a list of <see cref="ValidationResult"/> where validation errors will be stored.</param>
     /// <returns>Returns <c>true</c> if the entity is valid; otherwise, returns <c>false</c>.</returns>
-    bool ValidateEntity(object instance, ICollection<PropertyMetadataDto> properties, ref List<ValidationResult> errors);
+    bool ValidateEntity(EntityTracker entityTracker, ICollection<PropertyMetadataDto> properties, ref List<ValidationResult> errors);
 }

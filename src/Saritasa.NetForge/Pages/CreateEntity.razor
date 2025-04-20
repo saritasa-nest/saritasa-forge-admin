@@ -19,7 +19,7 @@
     {
         <MudGrid Justify="Justify.Center">
             <MudItem xs="6">
-                <EditForm Model="ViewModel.Model.EntityInstance" OnValidSubmit="ViewModel.CreateEntityAsync">
+                <EditForm Model="ViewModel.Model.EntityTracker.TrackingObject" OnValidSubmit="ViewModel.CreateEntityAsync">
                     <div class="d-flex flex-column flex-grow-1 gap-4">
                         @foreach (var property in ViewModel.Model.Properties)
                         {
@@ -38,8 +38,8 @@
                             var parameters = new Dictionary<string, object>
                             {
                                 { nameof(CustomField.Property), property },
-                                { nameof(CustomField.EntityInstance), ViewModel.Model.EntityInstance },
-                                { "FieldErrorModel", fieldError }
+                                { nameof(CustomField.EntityTracker), ViewModel.Model.EntityTracker },
+                                { nameof(CustomField.FieldErrorModel), fieldError }
                             };
 
                             if (property.UploadFileStrategy is not null)

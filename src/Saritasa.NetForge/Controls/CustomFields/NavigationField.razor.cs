@@ -18,8 +18,8 @@ public partial class NavigationField : CustomField
     /// </summary>
     public object? PropertyValue
     {
-        get => EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance);
-        set => EntityInstance.GetType().GetProperty(Property.Name)?.SetValue(EntityInstance, value);
+        get => EntityTracker.GetPropertyValue(Property.Name);
+        set => EntityTracker.SetPropertyValue(Property.Name, value);
     }
 
     private IEnumerable<object> NavigationInstances { get; set; } = null!;

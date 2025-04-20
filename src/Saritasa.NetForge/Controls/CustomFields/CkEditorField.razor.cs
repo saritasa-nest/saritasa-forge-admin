@@ -37,8 +37,8 @@ public partial class CkEditorField : CustomField, IAsyncDisposable
     /// </summary>
     public string? PropertyValue
     {
-        get => EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance)?.ToString();
-        set => EntityInstance.GetType().GetProperty(Property.Name)?.SetValue(EntityInstance, value);
+        get => EntityTracker.GetPropertyValue(Property.Name)?.ToString();
+        set => EntityTracker.SetPropertyValue(Property.Name, value);
     }
 
     /// <inheritdoc />

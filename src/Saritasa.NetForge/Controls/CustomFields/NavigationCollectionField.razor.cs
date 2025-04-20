@@ -21,8 +21,8 @@ public partial class NavigationCollectionField<T> : CustomField
     /// </summary>
     public IEnumerable<T> PropertyValue
     {
-        get => (IEnumerable<T>)EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance)!;
-        set => EntityInstance.GetType().GetProperty(Property.Name)?.SetValue(EntityInstance, value.ToList());
+        get => (IEnumerable<T>)EntityTracker.GetPropertyValue(Property.Name)!;
+        set => EntityTracker.SetPropertyValue(Property.Name, value.ToList());
     }
 
     private IEnumerable<T> NavigationInstances { get; set; } = null!;
