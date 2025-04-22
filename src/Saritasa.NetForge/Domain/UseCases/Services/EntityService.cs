@@ -169,6 +169,7 @@ public class EntityService : IEntityService
             Lines = navigation.Lines,
             MaxLines = navigation.MaxLines,
             IsAutoGrow = navigation.IsAutoGrow,
+            ListViewPropertyNames = navigation.ListViewPropertyNames,
             NavigationMetadata = parentNavigation
         };
 

@@ -13,6 +13,9 @@ public class NavigationOptions
     /// <inheritdoc cref="PropertyMetadataBase.FormOrder"/>
     public int? FormOrder { get; set; }
 
+    /// <inheritdoc cref="NavigationMetadata.ListViewPropertyNames"/>
+    public List<string> ListViewPropertyNames { get; set; } = [];
+
     /// <summary>
     /// Property options for the navigation properties.
     /// </summary>
