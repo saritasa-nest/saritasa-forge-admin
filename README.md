@@ -1007,10 +1007,9 @@ public required string Description { get; set; }
 ```csharp
 optionsBuilder.ConfigureEntity<Product>(entityOptionsBuilder =>
 {
-    entityOptionsBuilder.ConfigureProperty(product => product.Description,
-        propertyBuilder => propertyBuilder.SetIsRichTextField(true));
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public DateTime CreatedAt { get; set; }
+    entityOptionsBuilder.ConfigureProperty(product => product.Description, propertyBuilder 
+        => propertyBuilder.SetIsRichTextField(true));
+}
 ```
 
 ## Image Properties
