@@ -37,6 +37,11 @@ public class Director
     public Department Department { get; set; }
 
     /// <summary>
+    /// Photo.
+    /// </summary>
+    public string Photo { get; set; }
+
+    /// <summary>
     /// Birthday.
     /// </summary>
     public DateOnly Birthday { get; set; }

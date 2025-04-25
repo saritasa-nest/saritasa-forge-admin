@@ -166,7 +166,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
         foreach (var (property, file) in filesToUpload)
         {
             var fileString = await property.UploadFileStrategy!.UploadFileAsync(file, CancellationToken);
-            Model.EntityInstance.SetPropertyValue(property.Name, fileString);
+            Model.EntityInstance.SetNestedPropertyValue(property.PropertyPath, fileString);
         }
 
         var errors = new List<ValidationResult>();

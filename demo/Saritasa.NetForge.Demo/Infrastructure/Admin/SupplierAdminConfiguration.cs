@@ -1,3 +1,4 @@
+using Saritasa.NetForge.Demo.Infrastructure.UploadFiles.Strategies;
 using Saritasa.NetForge.Demo.Models;
 using Saritasa.NetForge.Domain;
 using Saritasa.NetForge.Domain.Interfaces;
@@ -21,6 +22,14 @@ public class SupplierAdminConfiguration : IEntityAdminConfiguration<Supplier>
                 builder
                     .SetDisplayName("Director Description")
                     .SetIsRichTextField(true);
+            });
+
+            navigationOptionsBuilder.IncludeProperty(director => director.Photo, builder =>
+            {
+                builder
+                    .SetDisplayName("Director Photo")
+                    .SetIsImage(true)
+                    .SetUploadFileStrategy(new UploadBase64FileStrategy());
             });
         });
     }
