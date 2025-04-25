@@ -1,4 +1,6 @@
-﻿namespace Saritasa.NetForge.Controls.CustomFields;
+﻿using Saritasa.NetForge.Domain.Extensions;
+
+namespace Saritasa.NetForge.Controls.CustomFields;
 
 /// <summary>
 /// Represents enum field.
@@ -10,13 +12,13 @@ public partial class EnumField : CustomField
     /// </summary>
     public string? PropertyValue
     {
-        get => EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance)?.ToString();
+        get => EntityInstance.GetNestedPropertyValue(Property.PropertyPath)?.ToString();
         set
         {
             var propertyType = Property.ClrType!;
             var actualPropertyType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
             var enumValue = Enum.Parse(actualPropertyType, value!);
-            EntityInstance.GetType().GetProperty(Property.Name)?.SetValue(EntityInstance, enumValue);
+            EntityInstance.SetNestedPropertyValue(Property.PropertyPath, enumValue);
         }
     }
 }

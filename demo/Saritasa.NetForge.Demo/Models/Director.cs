@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
+using Saritasa.NetForge.Domain.Attributes;
 
 namespace Saritasa.NetForge.Demo.Models;
 
@@ -16,6 +17,11 @@ public class Director
     public required string Name { get; set; }
 
     /// <summary>
+    /// Description.
+    /// </summary>
+    public string? Description { get; set; }
+
+    /// <summary>
     /// Age.
     /// </summary>
     public int Age { get; set; }
@@ -24,6 +30,11 @@ public class Director
     /// Is active.
     /// </summary>
     public bool IsActive { get; set; }
+
+    /// <summary>
+    /// Department.
+    /// </summary>
+    public Department Department { get; set; }
 
     /// <summary>
     /// Birthday.

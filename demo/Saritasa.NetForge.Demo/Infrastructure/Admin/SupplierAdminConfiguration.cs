@@ -15,6 +15,13 @@ public class SupplierAdminConfiguration : IEntityAdminConfiguration<Supplier>
             {
                 builder.SetDisplayName("Supplier Director");
             });
+
+            navigationOptionsBuilder.IncludeProperty(director => director.Description, builder =>
+            {
+                builder
+                    .SetDisplayName("Director Description")
+                    .SetIsRichTextField(true);
+            });
         });
     }
 }
