@@ -25,5 +25,43 @@ public class Director
     /// </summary>
     public bool IsActive { get; set; }
 
-    // public DateTime Birthday { get; set; }
+    /// <summary>
+    /// Birthday.
+    /// </summary>
+    public DateOnly Birthday { get; set; }
+
+    /// <summary>
+    /// First work day.
+    /// </summary>
+    public DateOnly? FirstWorkDay { get; set; }
+
+    /// <summary>
+    /// First work day as director.
+    /// </summary>
+    public DateTime DirectorSince { get; set; }
+
+    /// <summary>
+    /// Last work day.
+    /// </summary>
+    public DateTime? LastWorkDay { get; set; }
+
+    /// <summary>
+    /// First work day as director with time zone info.
+    /// </summary>
+    public DateTimeOffset DirectorSinceOffset { get; set; }
+
+    /// <summary>
+    /// Last work day with timezone info.
+    /// </summary>
+    public DateTimeOffset? LastWorkDayOffset { get; set; }
+
+    /// <summary>
+    /// Start work time.
+    /// </summary>
+    public TimeOnly StartWorkTime { get; set; }
+
+    /// <summary>
+    /// End work time.
+    /// </summary>
+    public TimeOnly? EndWorkTime { get; set; }
 }

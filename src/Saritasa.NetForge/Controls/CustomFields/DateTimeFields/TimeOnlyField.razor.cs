@@ -1,3 +1,5 @@
+using Saritasa.NetForge.Domain.Extensions;
+
 namespace Saritasa.NetForge.Controls.CustomFields.DateTimeFields;
 
 /// <summary>
@@ -12,7 +14,7 @@ public partial class TimeOnlyField : CustomField
     {
         get
         {
-            var propertyValue = EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance)?.ToString();
+            var propertyValue = EntityInstance.GetNestedPropertyValue(Property.PropertyPath)?.ToString();
 
             var isTimeParsed = DateTime.TryParse(propertyValue, out var dateTime);
 
@@ -24,10 +26,7 @@ public partial class TimeOnlyField : CustomField
             return null;
         }
 
-        set
-        {
-            SetPropertyValue(value);
-        }
+        set => SetPropertyValue(value);
     }
 
     /// <summary>
@@ -36,21 +35,19 @@ public partial class TimeOnlyField : CustomField
     /// <param name="value">Input value.</param>
     private void SetPropertyValue(TimeSpan? value)
     {
-        var property = EntityInstance.GetType().GetProperty(Property.Name)!;
-
         if (!value.HasValue)
         {
-            property.SetValue(EntityInstance, null);
+            EntityInstance.SetNestedPropertyValue(Property.PropertyPath, null);
             return;
         }
 
         if (Property.ClrType == typeof(TimeOnly) || Property.ClrType == typeof(TimeOnly?))
         {
-            property.SetValue(EntityInstance, TimeOnly.FromTimeSpan(value.Value));
+            EntityInstance.SetNestedPropertyValue(Property.PropertyPath, TimeOnly.FromTimeSpan(value.Value));
         }
         else
         {
-            property.SetValue(EntityInstance, value);
+            EntityInstance.SetNestedPropertyValue(Property.PropertyPath, value);
         }
     }
 }

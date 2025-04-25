@@ -94,8 +94,12 @@ public static class ReflectionExtensions
         // ((entityType)entity).propertyName
         var propertyExpression = ExpressionExtensions.GetPropertyExpression(convertedEntity, propertyPath);
 
+        // We have type specified in parameters in case of nullable type.
+        // Otherwise, we will try to assign not nullable type of value to nullable type, it will cause error.
+        var constantExpression = Expression.Constant(value, propertyExpression.Type);
+
         // ((entityType)entity).propertyName = value
-        var assignExpression = Expression.Assign(propertyExpression, Expression.Constant(value));
+        var assignExpression = Expression.Assign(propertyExpression, constantExpression);
 
         // entity => ((entityType)entity).propertyName = value
         var lambda = Expression.Lambda(assignExpression, entity);

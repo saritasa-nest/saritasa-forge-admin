@@ -1,3 +1,5 @@
+using Saritasa.NetForge.Domain.Extensions;
+
 namespace Saritasa.NetForge.Controls.CustomFields.DateTimeFields;
 
 /// <summary>
@@ -12,7 +14,7 @@ public partial class DateOnlyField : CustomField
     {
         get
         {
-            var propertyValue = EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance)?.ToString();
+            var propertyValue = EntityInstance.GetNestedPropertyValue(Property.PropertyPath)?.ToString();
 
             var isDateParsed = DateTime.TryParse(propertyValue, out var parsedDate);
 
@@ -24,10 +26,7 @@ public partial class DateOnlyField : CustomField
             return null;
         }
 
-        set
-        {
-            SetPropertyValue(value);
-        }
+        set => SetPropertyValue(value);
     }
 
     /// <summary>
@@ -36,14 +35,12 @@ public partial class DateOnlyField : CustomField
     /// <param name="value">Input value.</param>
     private void SetPropertyValue(DateTime? value)
     {
-        var property = EntityInstance.GetType().GetProperty(Property.Name)!;
-
         if (!value.HasValue)
         {
-            property.SetValue(EntityInstance, null);
+            EntityInstance.SetNestedPropertyValue(Property.PropertyPath, null);
             return;
         }
 
-        property.SetValue(EntityInstance, DateOnly.FromDateTime(value.Value));
+        EntityInstance.SetNestedPropertyValue(Property.PropertyPath, DateOnly.FromDateTime(value.Value));
     }
 }
