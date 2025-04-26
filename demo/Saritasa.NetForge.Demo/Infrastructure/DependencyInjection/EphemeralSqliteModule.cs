@@ -15,6 +15,7 @@ public static class EphemeralSqliteModule
     public static void AddEphemeralSqlite(this IServiceCollection services)
     {
         services.AddHttpContextAccessor();
+        services.TryAddSingleton<IManualCancellationTokenAccessor, ManualCancellationTokenAccessor>();
 
         // Stores the database snapshot's location.
         // Automatically delete it after the application is closed.

@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Saritasa.NetForge.Demo.Infrastructure.Extensions;
 using Saritasa.NetForge.Demo.Infrastructure.Storage;
 
@@ -29,21 +28,18 @@ internal sealed class DbSnapshotLoaderMiddleware
         var snapshot = serviceProvider.GetRequiredService<DbSnapshot>();
         ArgumentNullException.ThrowIfNull(snapshot.SnapshotLocation);
 
-        // HttpContext.RequestAborted did not work,
-        // probably related to this: https://github.com/dotnet/aspnetcore/issues/38917
-        var cancellationToken = httpContext.RequestAborted;
-        using var manualCancellationTokenSource = new CancellationTokenSource();
-        using var linkedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken,
-            manualCancellationTokenSource.Token);
-        cancellationToken = linkedCancellationTokenSource.Token;
-        httpContext.RequestAborted = cancellationToken;
-
         var dbContext = serviceProvider.GetRequiredService<ShopDbContext>();
+        var manualCancellationTokenAccessor = serviceProvider.GetRequiredService<IManualCancellationTokenAccessor>();
+
+        // We could not rely on HttpContext.RequestAborted,
+        // probably related to this issue: https://github.com/dotnet/aspnetcore/issues/38917
+        using var manualCancellationTokenSource = new CancellationTokenSource();
+        manualCancellationTokenAccessor.CancellationToken = manualCancellationTokenSource.Token;
 
         var ephemeralConnection = dbContext.Database
             .GetInstance()
             .GetRequiredService<IEphemeralSqliteConnectionFactory>();
-        await ephemeralConnection.LoadDatabase(snapshot.SnapshotLocation, cancellationToken);
+        await ephemeralConnection.LoadDatabase(snapshot.SnapshotLocation, httpContext.RequestAborted);
         try
         {
             await next(httpContext);

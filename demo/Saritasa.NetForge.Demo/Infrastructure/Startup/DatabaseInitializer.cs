@@ -1,6 +1,5 @@
 using Extensions.Hosting.AsyncInitialization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Saritasa.NetForge.Demo.Infrastructure.Extensions;
 using Saritasa.NetForge.Demo.Infrastructure.Seeders;
 using Saritasa.NetForge.Demo.Infrastructure.Storage;

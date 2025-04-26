@@ -8,7 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="9.0.0" />
         <PackageReference Include="AWSSDK.S3" Version="3.7.416.3" />
         <PackageReference Include="Bogus" Version="35.6.2" />
         <PackageReference Include="EFCore.NamingConventions" Version="9.0.0" />

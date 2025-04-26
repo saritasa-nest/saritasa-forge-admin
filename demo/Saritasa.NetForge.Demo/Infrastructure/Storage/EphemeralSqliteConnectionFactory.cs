@@ -12,7 +12,7 @@ namespace Saritasa.NetForge.Demo.Infrastructure.Storage;
 /// </remarks>
 internal class EphemeralSqliteConnectionFactory : CriticalFinalizerObject, IEphemeralSqliteConnectionFactory
 {
-    private static ConcurrentDictionary<HttpContext, string> SqliteDbPathStores { get; } = new();
+    private static ConcurrentDictionary<CancellationToken, string> SqliteDbPathStores { get; } = new();
     
     private readonly string sqliteDbPath;
     private bool disposed;
@@ -24,27 +24,30 @@ internal class EphemeralSqliteConnectionFactory : CriticalFinalizerObject, IEphe
     
     private static string GetNewDbPath() => FileHelpers.CreateTemporaryFileSecure(".sqlite");
 
-    public EphemeralSqliteConnectionFactory(IHttpContextAccessor httpContextAccessor)
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    public EphemeralSqliteConnectionFactory(IManualCancellationTokenAccessor manualCancellationTokenAccessor)
     {
-        var httpContext = httpContextAccessor.HttpContext;
-        if (httpContext == null)
+        var manualCancellationToken = manualCancellationTokenAccessor.CancellationToken;
+
+        // This class can be used during program start up (meaning no token yet),
+        // so this check is necessary.
+        if (manualCancellationToken is not { CanBeCanceled: true } cancellationToken)
         {
             sqliteDbPath = GetNewDbPath();
             return;
         }
 
-        var cancellationToken = httpContext.RequestAborted;
-        if (!cancellationToken.CanBeCanceled)
+        sqliteDbPath = SqliteDbPathStores.GetOrAdd(cancellationToken, static cancellationToken =>
         {
-            sqliteDbPath = GetNewDbPath();
-            return;
-        }
-        
-        sqliteDbPath = SqliteDbPathStores.GetOrAdd(httpContext, static _ => GetNewDbPath());
-        cancellationToken.Register(() =>
-        {
-            File.Delete(sqliteDbPath);
-            SqliteDbPathStores.Remove(httpContext, out _);
+            var newDbPath = GetNewDbPath();
+            cancellationToken.Register(() =>
+            {
+                File.Delete(newDbPath);
+                SqliteDbPathStores.Remove(cancellationToken, out _);
+            });
+            return newDbPath;
         });
         disposed = true;
     }
