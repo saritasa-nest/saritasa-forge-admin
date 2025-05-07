@@ -126,4 +126,9 @@ public class EntityMetadata
     /// A collection of custom actions associated with this entity.
     /// </summary>
     public List<CustomAction<object>> CustomActions { get; set; } = [];
+
+    /// <summary>
+    /// Indicates that this entity owned by another.
+    /// </summary>
+    public bool IsOwned { get; set; }
 }

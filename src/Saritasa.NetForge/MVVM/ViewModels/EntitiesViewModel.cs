@@ -43,7 +43,7 @@ public class EntitiesViewModel : BaseViewModel
     private async Task GetEntitiesAsync(CancellationToken cancellationToken)
     {
         var entitiesMetadataDto = await entityService.SearchEntitiesAsync(cancellationToken);
-        EntitiesMetadata = entitiesMetadataDto;
+        EntitiesMetadata = entitiesMetadataDto.Where(entity => !entity.IsOwned);
     }
 
     /// <summary>

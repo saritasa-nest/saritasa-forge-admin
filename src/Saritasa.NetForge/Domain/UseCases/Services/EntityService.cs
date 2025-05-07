@@ -42,7 +42,8 @@ public class EntityService : IEntityService
             IsEditable = entityMetadata.IsEditable,
             Id = entityMetadata.Id,
             Group = entityMetadata.Group,
-            StringId = entityMetadata.StringId
+            StringId = entityMetadata.StringId,
+            IsOwned = entityMetadata.IsOwned
         });
     }
 

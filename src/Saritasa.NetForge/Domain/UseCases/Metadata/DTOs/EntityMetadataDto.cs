@@ -40,4 +40,7 @@ public class EntityMetadataDto
 
     /// <inheritdoc cref="EntityMetadata.StringId"/>
     public string StringId { get; set; } = string.Empty;
+
+    /// <inheritdoc cref="EntityMetadata.IsOwned"/>
+    public bool IsOwned { get; init; }
 }

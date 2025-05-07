@@ -74,7 +74,8 @@ public class EfCoreMetadataService : IOrmMetadataService
             IsHidden = entityType.IsPropertyBag,
             Properties = GetPropertiesMetadata(entityType),
             Navigations = GetNavigationsMetadata(entityType),
-            IsKeyless = entityType.FindPrimaryKey() is null
+            IsKeyless = entityType.FindPrimaryKey() is null,
+            IsOwned = entityType.IsOwned()
         };
     }
 
