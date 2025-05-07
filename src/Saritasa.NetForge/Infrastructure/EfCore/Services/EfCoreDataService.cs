@@ -57,7 +57,7 @@ public class EfCoreDataService : IOrmDataService
     public async Task<object> GetInstanceAsync(
         string primaryKey,
         Type entityType,
-        IEnumerable<string> includedNavigationNames,
+        IEnumerable<NavigationMetadataDto> includedNavigations,
         CancellationToken cancellationToken)
     {
         var dbContext = GetDbContextThatContainsEntity(entityType);
@@ -99,15 +99,28 @@ public class EfCoreDataService : IOrmDataService
         // && ((entityType)entity).propertyName2.StartsWith(constant2)
         var lambda = Expression.Lambda<Func<object, bool>>(primaryKeyExpression!, entity);
 
-        foreach (var navigationName in includedNavigationNames)
+        query = IncludeNavigations(query, entity, convertedEntity, includedNavigations);
+
+        return await query.FirstAsync(lambda, cancellationToken);
+    }
+
+    private static IQueryable<object> IncludeNavigations(
+        IQueryable<object> query,
+        ParameterExpression entity,
+        Expression convertedEntity,
+        IEnumerable<NavigationMetadataDto> navigations)
+    {
+        foreach (var navigation in navigations)
         {
-            var navigationExpression = ExpressionExtensions.GetPropertyExpression(convertedEntity, navigationName);
+            var navigationExpression = ExpressionExtensions.GetPropertyExpression(convertedEntity, navigation.PropertyPath);
             var navigationLambda = Expression.Lambda<Func<object, object>>(navigationExpression, entity);
 
             query = query.Include(navigationLambda);
+
+            query = IncludeNavigations(query, entity, convertedEntity, navigation.TargetEntityNavigations);
         }
 
-        return await query.FirstAsync(lambda, cancellationToken);
+        return query;
     }
 
     private DbContext GetDbContextThatContainsEntity(Type clrType)
@@ -301,7 +314,7 @@ public class EfCoreDataService : IOrmDataService
 
             if (!navigationEntry.Metadata.IsCollection)
             {
-                UpdateNavigationReference(dbContext, navigationEntry, originalNavigationEntry, objectComparer);
+                await UpdateNavigationReference(dbContext, navigationEntry, originalNavigationEntry, objectComparer);
 
                 continue;
             }
@@ -310,7 +323,7 @@ public class EfCoreDataService : IOrmDataService
         }
     }
 
-    private static void UpdateNavigationReference(
+    private async Task UpdateNavigationReference(
         DbContext dbContext,
         NavigationEntry navigationEntry,
         NavigationEntry originalNavigationEntry,
@@ -348,6 +361,8 @@ public class EfCoreDataService : IOrmDataService
                     // EF will track such entity as Updated.
                     var referenceEntry = (ReferenceEntry)originalNavigationEntry;
                     referenceEntry.TargetEntry!.CurrentValues.SetValues(updatedNavigationReference!);
+
+                    await UpdateNavigations(dbContext, updatedNavigationReference!, originalNavigationEntry.CurrentValue);
                 }
             }
             else

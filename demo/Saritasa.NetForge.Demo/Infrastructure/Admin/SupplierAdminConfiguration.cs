@@ -31,6 +31,14 @@ public class SupplierAdminConfiguration : IEntityAdminConfiguration<Supplier>
                     .SetIsImage(true)
                     .SetUploadFileStrategy(new UploadBase64FileStrategy());
             });
+
+            navigationOptionsBuilder.IncludeNavigation<Address>(director => director.Address, builder =>
+            {
+                builder.IncludeProperty(address => address.Street, streetBuilder =>
+                {
+                    streetBuilder.SetDisplayName("Director Street");
+                });
+            });
         });
     }
 }

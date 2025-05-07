@@ -47,29 +47,14 @@ public class Director
     public DateOnly Birthday { get; set; }
 
     /// <summary>
-    /// First work day.
-    /// </summary>
-    public DateOnly? FirstWorkDay { get; set; }
-
-    /// <summary>
     /// First work day as director.
     /// </summary>
     public DateTime DirectorSince { get; set; }
 
     /// <summary>
-    /// Last work day.
-    /// </summary>
-    public DateTime? LastWorkDay { get; set; }
-
-    /// <summary>
-    /// First work day as director with time zone info.
-    /// </summary>
-    public DateTimeOffset DirectorSinceOffset { get; set; }
-
-    /// <summary>
     /// Last work day with timezone info.
     /// </summary>
-    public DateTimeOffset? LastWorkDayOffset { get; set; }
+    public DateTimeOffset? LastWorkDay { get; set; }
 
     /// <summary>
     /// Start work time.
@@ -77,7 +62,7 @@ public class Director
     public TimeOnly StartWorkTime { get; set; }
 
     /// <summary>
-    /// End work time.
+    /// Address.
     /// </summary>
-    public TimeOnly? EndWorkTime { get; set; }
+    public Address? Address { get; set; }
 }

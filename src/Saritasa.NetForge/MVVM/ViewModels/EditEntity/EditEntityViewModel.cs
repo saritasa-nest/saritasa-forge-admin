@@ -86,12 +86,16 @@ public class EditEntityViewModel : ValidationEntityViewModel
                     .ToList()
             };
 
+            var includedNavigations = Model.Properties
+                .Where(property => property is NavigationMetadataDto)
+                .OfType<NavigationMetadataDto>();
+
             var includedNavigationNames = Model.Properties
                 .Where(property => property is NavigationMetadataDto)
                 .Select(property => property.Name).ToList();
 
             Model.EntityInstance = await dataService
-                .GetInstanceAsync(instancePrimaryKey, Model.ClrType!, includedNavigationNames, CancellationToken);
+                .GetInstanceAsync(instancePrimaryKey, Model.ClrType!, includedNavigations, CancellationToken);
 
             var instanceType = Model.EntityInstance.GetType();
 

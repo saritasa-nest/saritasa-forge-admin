@@ -41,6 +41,11 @@ else if (ViewModel.IsEntityExists)
                                 {
                                     RenderProperty(targetProperty);
                                 }
+
+                                foreach (var targetNavigation in navigation.TargetEntityNavigations)
+                                {
+                                    RenderProperty(targetNavigation);
+                                }
                             }
                             else
                             {

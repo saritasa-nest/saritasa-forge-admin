@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Saritasa.NetForge.Domain.Extensions;
 using Saritasa.NetForge.Domain.UseCases.Interfaces;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.Infrastructure.Helpers;
@@ -18,8 +19,8 @@ public partial class NavigationField : CustomField
     /// </summary>
     public object? PropertyValue
     {
-        get => EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance);
-        set => EntityInstance.GetType().GetProperty(Property.Name)?.SetValue(EntityInstance, value);
+        get => EntityInstance.GetNestedPropertyValue(Property.PropertyPath);
+        set => EntityInstance.SetNestedPropertyValue(Property.PropertyPath, value);
     }
 
     private IEnumerable<object> NavigationInstances { get; set; } = null!;
