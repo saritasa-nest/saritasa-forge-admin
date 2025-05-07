@@ -39,7 +39,7 @@ public class Director
     /// <summary>
     /// Photo.
     /// </summary>
-    public string Photo { get; set; }
+    public string? Photo { get; set; }
 
     /// <summary>
     /// Birthday.
