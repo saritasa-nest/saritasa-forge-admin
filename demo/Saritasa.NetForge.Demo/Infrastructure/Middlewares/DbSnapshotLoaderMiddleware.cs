@@ -29,12 +29,11 @@ internal sealed class DbSnapshotLoaderMiddleware
         ArgumentNullException.ThrowIfNull(snapshot.SnapshotLocation);
 
         var dbContext = serviceProvider.GetRequiredService<ShopDbContext>();
-        var manualCancellationTokenAccessor = serviceProvider.GetRequiredService<IManualCancellationTokenAccessor>();
 
         // We could not rely on HttpContext.RequestAborted,
         // probably related to this issue: https://github.com/dotnet/aspnetcore/issues/38917
         using var manualCancellationTokenSource = new CancellationTokenSource();
-        manualCancellationTokenAccessor.CancellationToken = manualCancellationTokenSource.Token;
+        httpContext.Items[SessionContext.HttpContextKey] = new SessionContext(manualCancellationTokenSource.Token);
 
         var ephemeralConnection = dbContext.Database
             .GetInstance()

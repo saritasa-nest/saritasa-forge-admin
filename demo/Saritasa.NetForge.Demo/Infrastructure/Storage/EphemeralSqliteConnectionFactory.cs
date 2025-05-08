@@ -12,7 +12,7 @@ namespace Saritasa.NetForge.Demo.Infrastructure.Storage;
 /// </remarks>
 internal class EphemeralSqliteConnectionFactory : CriticalFinalizerObject, IEphemeralSqliteConnectionFactory
 {
-    private static ConcurrentDictionary<CancellationToken, string> SqliteDbPathStores { get; } = new();
+    private static ConcurrentDictionary<Guid, string> SqliteDbPathStores { get; } = new();
     
     private readonly string sqliteDbPath;
     private bool disposed;
@@ -27,28 +27,26 @@ internal class EphemeralSqliteConnectionFactory : CriticalFinalizerObject, IEphe
     /// <summary>
     /// Constructor.
     /// </summary>
-    public EphemeralSqliteConnectionFactory(IManualCancellationTokenAccessor manualCancellationTokenAccessor)
+    public EphemeralSqliteConnectionFactory(IHttpContextAccessor httpContextAccessor)
     {
-        var manualCancellationToken = manualCancellationTokenAccessor.CancellationToken;
-
-        // This class can be used during program start up (meaning no token yet),
-        // so this check is necessary.
-        if (manualCancellationToken is not { CanBeCanceled: true } cancellationToken)
+        if (httpContextAccessor.HttpContext == null ||
+            !httpContextAccessor.HttpContext.Items.TryGetValue(SessionContext.HttpContextKey, out var item) ||
+            item is not SessionContext sessionContext)
         {
             sqliteDbPath = GetNewDbPath();
             return;
         }
 
-        sqliteDbPath = SqliteDbPathStores.GetOrAdd(cancellationToken, static cancellationToken =>
+        sqliteDbPath = SqliteDbPathStores.GetOrAdd(sessionContext.SessionId, static (sessionId, cancellationToken) =>
         {
             var newDbPath = GetNewDbPath();
             cancellationToken.Register(() =>
             {
                 File.Delete(newDbPath);
-                SqliteDbPathStores.Remove(cancellationToken, out _);
+                SqliteDbPathStores.Remove(sessionId, out _);
             });
             return newDbPath;
-        });
+        }, sessionContext.CancellationToken);
         disposed = true;
     }
 
