@@ -4,50 +4,45 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Saritasa.NetForge.Demo;
 
 #nullable disable
 
-namespace Saritasa.NetForge.Demo.Net7.Migrations
+namespace Saritasa.NetForge.Demo.Migrations
 {
     [DbContext(typeof(ShopDbContext))]
-    [Migration("20240111055616_AddGeneratedPropertyToContactInfo")]
-    partial class AddGeneratedPropertyToContactInfo
+    [Migration("20250411092343_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
-
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.3");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("id");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("concurrency_stamp");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(256)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("name");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(256)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("normalized_name");
 
                     b.HasKey("Id")
@@ -64,25 +59,23 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("claim_type");
 
                     b.Property<string>("ClaimValue")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("claim_value");
 
                     b.Property<string>("RoleId")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("role_id");
 
                     b.HasKey("Id")
@@ -98,25 +91,23 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("claim_type");
 
                     b.Property<string>("ClaimValue")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("claim_value");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id")
@@ -132,23 +123,23 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                 {
                     b.Property<string>("LoginProvider")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("login_provider");
 
                     b.Property<string>("ProviderKey")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("provider_key");
 
                     b.Property<string>("ProviderDisplayName")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("provider_display_name");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("user_id");
 
                     b.HasKey("LoginProvider", "ProviderKey")
@@ -164,12 +155,12 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                 {
                     b.Property<string>("UserId")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("user_id");
 
                     b.Property<string>("RoleId")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("role_id");
 
                     b.HasKey("UserId", "RoleId")
@@ -185,22 +176,22 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                 {
                     b.Property<string>("UserId")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("user_id");
 
                     b.Property<string>("LoginProvider")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("login_provider");
 
                     b.Property<string>("Name")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("name");
 
                     b.Property<string>("Value")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("value");
 
                     b.HasKey("UserId", "LoginProvider", "Name")
@@ -212,11 +203,11 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
             modelBuilder.Entity("ProductProductTag", b =>
                 {
                     b.Property<int>("ProductsId")
-                        .HasColumnType("integer")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("products_id");
 
                     b.Property<int>("TagsId")
-                        .HasColumnType("integer")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("tags_id");
 
                     b.HasKey("ProductsId", "TagsId")
@@ -232,48 +223,62 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("City")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("city");
 
                     b.Property<string>("ContactPhone")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("contact_phone");
 
                     b.Property<string>("Country")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("country");
 
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .IsUnicode(false)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("display_name")
+                        .HasComputedColumnSql("city || ', ' || street", true);
+
                     b.Property<double>("Latitude")
-                        .HasColumnType("double precision")
+                        .HasColumnType("REAL")
                         .HasColumnName("latitude");
 
                     b.Property<double>("Longitude")
-                        .HasColumnType("double precision")
+                        .HasColumnType("REAL")
                         .HasColumnName("longitude");
 
                     b.Property<string>("PostalCode")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("postal_code");
 
                     b.Property<string>("Street")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("street");
+
+                    b.Property<int?>("UpdatedByUserId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("updated_by_user_id");
 
                     b.HasKey("Id")
                         .HasName("pk_addresses");
@@ -288,32 +293,33 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<TimeSpan?>("AvailabilityDuration")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("availability_duration");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("TEXT")
                         .HasColumnName("created_at");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("email");
 
                     b.Property<string>("FullName")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("full_name");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("phone_number");
 
                     b.HasKey("Id")
@@ -326,111 +332,109 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
                     b.Property<int?>("AveragePurchaseCount")
-                        .HasColumnType("integer")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("average_purchase_count");
 
                     b.Property<long>("Barcode")
-                        .HasColumnType("bigint")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("barcode");
 
                     b.Property<int>("Category")
-                        .HasColumnType("integer")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("category");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("TEXT")
                         .HasColumnName("created_date");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("description");
 
-                    b.Property<DateTimeOffset?>("EndOfSalesDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<long?>("EndOfSalesDate")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("end_of_sales_date");
 
                     b.Property<float>("HeightInCentimeters")
-                        .HasColumnType("real")
+                        .HasColumnType("REAL")
                         .HasColumnName("height_in_centimeters");
 
                     b.Property<bool>("IsAvailable")
-                        .HasColumnType("boolean")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("is_available");
 
                     b.Property<bool?>("IsSalesEnded")
-                        .HasColumnType("boolean")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("is_sales_ended");
 
                     b.Property<float>("LengthInCentimeters")
-                        .HasColumnType("real")
+                        .HasColumnType("REAL")
                         .HasColumnName("length_in_centimeters");
 
                     b.Property<decimal?>("MaxPrice")
-                        .HasColumnType("numeric")
+                        .HasColumnType("TEXT")
                         .HasColumnName("max_price");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("name");
 
                     b.Property<DateOnly?>("NextSupplyDate")
-                        .HasColumnType("date")
+                        .HasColumnType("TEXT")
                         .HasColumnName("next_supply_date");
 
                     b.Property<DateOnly>("PreviousSupplyDate")
-                        .HasColumnType("date")
+                        .HasColumnType("TEXT")
                         .HasColumnName("previous_supply_date");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("numeric")
+                        .HasColumnType("TEXT")
                         .HasColumnName("price");
 
                     b.Property<DateTime?>("RemovedAt")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("TEXT")
                         .HasColumnName("removed_at");
 
                     b.Property<int?>("ShopId")
-                        .HasColumnType("integer")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("shop_id");
 
                     b.Property<int>("StockQuantity")
-                        .HasColumnType("integer")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("stock_quantity");
 
                     b.Property<string>("SupplierCity")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("supplier_city");
 
                     b.Property<string>("SupplierName")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("supplier_name");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("TEXT")
                         .HasColumnName("updated_date");
 
                     b.Property<double>("Volume")
-                        .HasColumnType("double precision")
+                        .HasColumnType("REAL")
                         .HasColumnName("volume");
 
                     b.Property<float?>("WeightInGrams")
-                        .HasColumnType("real")
+                        .HasColumnType("REAL")
                         .HasColumnName("weight_in_grams");
 
                     b.Property<float>("WidthInCentimeters")
-                        .HasColumnType("real")
+                        .HasColumnType("REAL")
                         .HasColumnName("width_in_centimeters");
 
                     b.HasKey("Id")
@@ -452,21 +456,19 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("description");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("name");
 
                     b.HasKey("Id")
@@ -479,35 +481,51 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
                     b.Property<int?>("AddressId")
-                        .HasColumnType("integer")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("address_id");
 
+                    b.Property<string>("BuildingPhoto")
+                        .IsUnicode(false)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("building_photo");
+
+                    b.Property<TimeOnly?>("CloseTime")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("close_time");
+
                     b.Property<bool>("IsOpen")
-                        .HasColumnType("boolean")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("is_open");
+
+                    b.Property<string>("Logo")
+                        .IsUnicode(false)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("logo");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("name");
 
+                    b.Property<TimeOnly?>("OpenTime")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("open_time");
+
                     b.Property<DateTime>("OpenedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("TEXT")
                         .HasColumnName("opened_date");
 
                     b.Property<int?>("OwnerContactId")
-                        .HasColumnType("integer")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("owner_contact_id");
 
                     b.Property<decimal>("TotalSales")
-                        .HasColumnType("numeric")
+                        .HasColumnType("TEXT")
                         .HasColumnName("total_sales");
 
                     b.HasKey("Id")
@@ -522,20 +540,36 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.ToTable("shops", (string)null);
                 });
 
+            modelBuilder.Entity("Saritasa.NetForge.Demo.Models.ShopProductsCount", b =>
+                {
+                    b.Property<int>("ProductsCount")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("products_count");
+
+                    b.Property<int>("ShopId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("shop_id");
+
+                    b.HasIndex("ShopId")
+                        .HasDatabaseName("ix_shop_products_counts_shop_id");
+
+                    b.ToTable("shop_products_counts", (string)null);
+                });
+
             modelBuilder.Entity("Saritasa.NetForge.Demo.Models.Supplier", b =>
                 {
                     b.Property<string>("Name")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("name");
 
                     b.Property<string>("City")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("city");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("boolean")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("is_active");
 
                     b.HasKey("Name", "City")
@@ -548,92 +582,92 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                 {
                     b.Property<string>("Id")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("id");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("integer")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("access_failed_count");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("concurrency_stamp");
 
                     b.Property<DateTime?>("DateOfBirth")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("TEXT")
                         .HasColumnName("date_of_birth");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(256)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("email");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("boolean")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("email_confirmed");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("first_name");
 
                     b.Property<string>("LastName")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("last_name");
 
                     b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("boolean")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("lockout_enabled");
 
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<long?>("LockoutEnd")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("lockout_end");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(256)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("normalized_email");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(256)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("normalized_user_name");
 
                     b.Property<string>("PasswordHash")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("password_hash");
 
                     b.Property<string>("PhoneNumber")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("phone_number");
 
                     b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("boolean")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("phone_number_confirmed");
 
                     b.Property<string>("SecurityStamp")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("security_stamp");
 
                     b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("boolean")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("two_factor_enabled");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .IsUnicode(false)
-                        .HasColumnType("character varying(256)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("user_name");
 
                     b.HasKey("Id")
@@ -652,17 +686,17 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
             modelBuilder.Entity("ShopSupplier", b =>
                 {
                     b.Property<int>("ShopsId")
-                        .HasColumnType("integer")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("shops_id");
 
                     b.Property<string>("SuppliersName")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("suppliers_name");
 
                     b.Property<string>("SuppliersCity")
                         .IsUnicode(false)
-                        .HasColumnType("text")
+                        .HasColumnType("TEXT")
                         .HasColumnName("suppliers_city");
 
                     b.HasKey("ShopsId", "SuppliersName", "SuppliersCity")
@@ -679,7 +713,7 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_asp_net_role_claims_asp_net_roles_role_id");
                 });
@@ -689,7 +723,7 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.HasOne("Saritasa.NetForge.Demo.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_asp_net_user_claims_asp_net_users_user_id");
                 });
@@ -699,7 +733,7 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.HasOne("Saritasa.NetForge.Demo.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_asp_net_user_logins_asp_net_users_user_id");
                 });
@@ -709,14 +743,14 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_asp_net_user_roles_asp_net_roles_role_id");
 
                     b.HasOne("Saritasa.NetForge.Demo.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_asp_net_user_roles_asp_net_users_user_id");
                 });
@@ -726,7 +760,7 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.HasOne("Saritasa.NetForge.Demo.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_asp_net_user_tokens_asp_net_users_user_id");
                 });
@@ -736,31 +770,31 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.HasOne("Saritasa.NetForge.Demo.Models.Product", null)
                         .WithMany()
                         .HasForeignKey("ProductsId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_product_product_tag_products_products_id");
 
                     b.HasOne("Saritasa.NetForge.Demo.Models.ProductTag", null)
                         .WithMany()
                         .HasForeignKey("TagsId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_product_product_tag_product_tags_tags_id");
                 });
 
             modelBuilder.Entity("Saritasa.NetForge.Demo.Models.Product", b =>
                 {
-                    b.HasOne("Saritasa.NetForge.Demo.Models.Shop", null)
+                    b.HasOne("Saritasa.NetForge.Demo.Models.Shop", "Shop")
                         .WithMany("Products")
                         .HasForeignKey("ShopId")
-                        .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_products_shops_shop_id");
 
                     b.HasOne("Saritasa.NetForge.Demo.Models.Supplier", "Supplier")
                         .WithMany()
                         .HasForeignKey("SupplierName", "SupplierCity")
-                        .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_products_suppliers_supplier_name_supplier_city");
+
+                    b.Navigation("Shop");
 
                     b.Navigation("Supplier");
                 });
@@ -770,13 +804,11 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.HasOne("Saritasa.NetForge.Demo.Models.Address", "Address")
                         .WithMany()
                         .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_shops_addresses_address_id");
 
                     b.HasOne("Saritasa.NetForge.Demo.Models.ContactInfo", "OwnerContact")
                         .WithMany()
                         .HasForeignKey("OwnerContactId")
-                        .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_shops_contact_infos_owner_contact_id");
 
                     b.Navigation("Address");
@@ -784,19 +816,31 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                     b.Navigation("OwnerContact");
                 });
 
+            modelBuilder.Entity("Saritasa.NetForge.Demo.Models.ShopProductsCount", b =>
+                {
+                    b.HasOne("Saritasa.NetForge.Demo.Models.Shop", "Shop")
+                        .WithMany()
+                        .HasForeignKey("ShopId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_shop_products_counts_shops_shop_id");
+
+                    b.Navigation("Shop");
+                });
+
             modelBuilder.Entity("ShopSupplier", b =>
                 {
                     b.HasOne("Saritasa.NetForge.Demo.Models.Shop", null)
                         .WithMany()
                         .HasForeignKey("ShopsId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_shop_supplier_shops_shops_id");
 
                     b.HasOne("Saritasa.NetForge.Demo.Models.Supplier", null)
                         .WithMany()
                         .HasForeignKey("SuppliersName", "SuppliersCity")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_shop_supplier_suppliers_suppliers_name_suppliers_city");
                 });
