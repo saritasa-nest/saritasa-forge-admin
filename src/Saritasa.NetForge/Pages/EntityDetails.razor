@@ -36,6 +36,36 @@
             </MudItem>
         }
 
+        @if (ViewModel.Model.GlobalCustomActions.Count > 0)
+        {
+            <MudItem xs="12">
+                <MudStack Row AlignItems="AlignItems.Center">
+                    <MudText Inline="true" Align="Align.Center">Global Action:</MudText>
+                    <div class="me-3">
+                        <MudSelect @bind-Value="ViewModel.SelectedGlobalCustomAction" Placeholder="Action">
+                            @foreach (var action in ViewModel.Model.GlobalCustomActions)
+                            {
+                                <MudTooltip Text="@action.Description">
+                                    <MudSelectItem Value="@action.Name">@action.Name</MudSelectItem>
+                                </MudTooltip>
+                            }
+                        </MudSelect>
+                    </div>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary"
+                               OnClick="ExecuteGlobalCustomActionAsync"
+                               Disabled="ViewModel.SelectedEntities.Count <= 0">
+                        Execute
+                    </MudButton>
+                    @if (ViewModel.SelectedEntities.Count > 0)
+                    {
+                        <MudText Inline="true" Align="Align.Center">
+                            @(ViewModel.SelectedEntities.Count) of @(ViewModel.TotalItems) selected.
+                        </MudText>
+                    }
+                </MudStack>
+            </MudItem>
+        }
+
         @if (ViewModel.Model.CustomActions.Count > 0)
         {
             <MudItem xs="12">

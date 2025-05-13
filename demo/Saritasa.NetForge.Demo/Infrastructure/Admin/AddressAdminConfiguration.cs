@@ -106,7 +106,7 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
                 var context = serviceProvider?.GetRequiredService<ShopDbContext>();
                 if (context is null)
                 {
-                    return;
+                    return Task.CompletedTask;
                 }
 
                 foreach (var address in query.ToList().Select(item => item))
@@ -117,6 +117,8 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
 
                 context.UpdateRange(query);
                 context.SaveChanges();
+
+                return Task.CompletedTask;
             }
         });
     }

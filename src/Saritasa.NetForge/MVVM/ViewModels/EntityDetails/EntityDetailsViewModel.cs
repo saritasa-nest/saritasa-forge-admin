@@ -94,6 +94,11 @@ public class EntityDetailsViewModel : BaseViewModel
     public string SelectedCustomAction { get; set; } = string.Empty;
 
     /// <summary>
+    /// Selected global custom action.
+    /// </summary>
+    public string SelectedGlobalCustomAction { get; set; } = string.Empty;
+
+    /// <summary>
     /// Total items in data grid.
     /// </summary>
     public int TotalItems { get; set; }
@@ -111,6 +116,11 @@ public class EntityDetailsViewModel : BaseViewModel
             CanAdd = Model is { CanAdd: true, IsKeyless: false } && HasProperties;
             CanEdit = Model is { CanEdit: true, IsKeyless: false } && HasProperties;
             CanDelete = Model is { CanDelete: true, IsKeyless: false } && HasProperties;
+
+            Model.GlobalCustomActions = adminOptions.GlobalCustomActions
+                .Where(e => !e.Value.Exists(t => t == entity.ClrType))
+                .Select(e => e.Key)
+                .ToList();
         }
         catch (NotFoundException)
         {
