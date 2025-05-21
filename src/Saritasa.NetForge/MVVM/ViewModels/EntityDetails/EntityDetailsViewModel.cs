@@ -170,7 +170,7 @@ public class EntityDetailsViewModel : BaseViewModel
             .Select(sort =>
             {
                 var column = DataGrid!.RenderedColumns.First(column => column.PropertyName.Equals(sort.SortBy));
-                var propertyPath = column.UserAttributes[propertyPathAttribute].ToString();
+                var propertyPath = column.UserAttributes[propertyPathAttribute]?.ToString();
 
                 return new OrderByDto
                 {
