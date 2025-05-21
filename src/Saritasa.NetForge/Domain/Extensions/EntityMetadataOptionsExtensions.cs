@@ -302,6 +302,8 @@ public static class EntityMetadataOptionsExtensions
             navigation.FormOrder = navigationOptions.FormOrder.Value;
         }
 
+        navigation.ListViewPropertyNames = navigationOptions.ListViewPropertyNames;
+
         foreach (var propertyOptions in navigationOptions.PropertyOptions)
         {
             var property = navigation.TargetEntityProperties

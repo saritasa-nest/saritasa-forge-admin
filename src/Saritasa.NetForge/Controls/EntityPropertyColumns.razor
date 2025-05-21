@@ -20,7 +20,11 @@
     {
         var navigation = property.NavigationMetadata;
         var propertyPath = property.PropertyPath;
-        <TemplateColumn T="object" Title="@property.Name" Sortable="property.IsSortable" PropertyPath="@propertyPath">
+        <TemplateColumn T="object"
+                        Title="@property.Name"
+                        Sortable="property.IsSortable"
+                        DragAndDropEnabled="true"
+                        propertyPath="@propertyPath">
             <HeaderTemplate>
                 @{
                     var displayName = GetPropertyDisplayName(property);
@@ -84,21 +88,16 @@
                         return;
                     }
 
+                    // When property is NavigationMetadataDto, then this property definitely is navigation collection.
+                    // See GetListViewProperties method in this class.
                     if (property is NavigationMetadataDto navigationMetadata)
                     {
-                        var navigationValue = GetNavigationValue(propertyValue, navigationMetadata);
+                        var navigationCollectionValue = GetNavigationCollectionValue(propertyValue, navigationMetadata);
 
-                        if (navigationMetadata.IsCollection)
-                        {
-                            <MudButton Variant="Variant.Text" Color="Color.Primary" Class="text-transform-none"
-                                       @onclick="() => OpenDialogAsync(propertyValue, navigationMetadata)">
-                                @navigationValue
-                            </MudButton>
-                        }
-                        else
-                        {
-                            @navigationValue
-                        }
+                        <MudButton Variant="Variant.Text" Color="Color.Primary" Class="text-transform-none"
+                                   @onclick="() => OpenDialogAsync(propertyValue, navigationMetadata)">
+                            @navigationCollectionValue
+                        </MudButton>
 
                         return;
                     }

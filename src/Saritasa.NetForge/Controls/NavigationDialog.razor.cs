@@ -17,7 +17,7 @@ public partial class NavigationDialog : ComponentBase
     public IEntityService EntityService { get; set; } = null!;
 
     [CascadingParameter]
-    private MudDialogInstance MudDialog { get; set; } = null!;
+    private IMudDialogInstance MudDialog { get; set; } = null!;
 
     /// <summary>
     /// Navigation instance. Collection instance in case of navigation collection.

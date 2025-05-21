@@ -7,8 +7,9 @@ namespace Saritasa.NetForge.Demo.Infrastructure.Seeders;
 /// <summary>
 /// Users seeder.
 /// </summary>
-internal class UsersSeeder
+internal class UsersSeeder : ISeeder
 {
+    private const string DefaultPassword = "11111111Aa";
     private readonly UserManager<User> userManager;
     private readonly ILogger<UsersSeeder> logger;
 
@@ -25,13 +26,8 @@ internal class UsersSeeder
         this.logger = logger;
     }
 
-    /// <summary>
-    /// Seed.
-    /// </summary>
-    /// <param name="numberOfItems">Total items to create.</param>
-    /// <param name="password">Default user password.</param>
-    /// <returns>Number of created items.</returns>
-    public async Task<int> Seed(int numberOfItems, string password = "11111111Aa")
+    /// <inheritdoc />
+    public async Task<int> Seed(int numberOfItems, CancellationToken cancellationToken)
     {
         var count = 0;
         foreach (var chunk in Tools.Common.Utils.CollectionUtils
@@ -39,7 +35,7 @@ internal class UsersSeeder
         {
             foreach (var _ in chunk)
             {
-                var result = await userManager.CreateAsync(GenerateUser(), password);
+                var result = await userManager.CreateAsync(GenerateUser(), DefaultPassword);
                 if (!result.Succeeded)
                 {
                     logger.LogWarning("Cannot create user: {Result}.", result);

@@ -42,7 +42,7 @@ public class ContactInfo
     /// Date when contact was created.
     /// </summary>
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     /// <inheritdoc />
     public override string ToString()

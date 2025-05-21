@@ -1,8 +1,8 @@
-# NetForge - Admin Panel for ASP.NET Core 8
+# NetForge - Admin Panel for ASP.NET Core 8 & 9
 
 The **NetForge** is a library that provides a user-friendly and intuitive user interface for performing CRUD operations on your database entities within your .NET applications.
 
-- [NetForge - Admin Panel for ASP.NET Core 8](#netforge---admin-panel-for-aspnet-core-8)
+- [NetForge - Admin Panel for ASP.NET Core 8 & 9](#netforge---admin-panel-for-aspnet-core-8--9)
 - [How to Use](#how-to-use)
 - [Global Configurations](#global-configurations)
   - [Customizing the Endpoint](#customizing-the-endpoint)
@@ -24,6 +24,7 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
       - [Delete](#delete)
       - [Bulk Delete](#bulk-delete)
   - [Exclude All Entities and Include Specific Only](#exclude-all-entities-and-include-specific-only)
+  - [Global Custom Action](#global-custom-action)
 - [Customizing Entities](#customizing-entities)
   - [Fluent API](#fluent-api)
   - [Creating an Entity Configuration Class](#creating-an-entity-configuration-class)
@@ -480,6 +481,39 @@ Or you can include specific entities using the data attribute:
 [NetForgeEntity]
 public class Shop
 ```
+
+## Global Custom Action
+
+You can configure custom action that apply to selected item grid.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.AddGlobalCustomAction(builder =>
+    {
+        builder.SetName("Show entity as JSON");
+        builder.SetDescription("Display the selected entities as JSON in a snackbar.");
+        builder.SetHandler((serviceProvider, query) =>
+        {
+            var items = query.ToList();
+            var snackbar = serviceProvider?.GetRequiredService<ISnackbar>();
+            if (snackbar is null)
+            {
+                return Task.CompletedTask;
+            }
+
+            var jsonString = JsonSerializer.Serialize(items, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            snackbar.Add(jsonString);
+            
+            return Task.CompletedTask;
+        });
+
+        builder.ExcludeTypes(typeof(Shop));
+    });
+});
+```
+
+**Note:** You can exclude types from the custom action using `ExcludeTypes` method.
 
 # Customizing Entities
 
