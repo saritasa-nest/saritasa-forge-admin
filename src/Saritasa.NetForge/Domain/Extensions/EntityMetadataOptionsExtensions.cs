@@ -292,9 +292,15 @@ public static class EntityMetadataOptionsExtensions
             targetNavigation?.ApplyNavigationOptions(navigationOption);
         }
 
+        // Properties of owned navigation behave just like ordinary properties, so they should not be hidden.
+        if (navigation.IsOwnership)
+        {
+            return;
+        }
+
         var notIncludedProperties = navigation.TargetEntityProperties
             .Where(p => !navigationOptions.PropertyOptions.Any(option => option.PropertyName == p.Name)
-                        && !navigationOptions.CalculatedPropertyOptions.Any(option => option.PropertyName == p.Name));
+                && !navigationOptions.CalculatedPropertyOptions.Any(option => option.PropertyName == p.Name));
         foreach (var notIncludedProperty in notIncludedProperties)
         {
             notIncludedProperty.IsHidden = true;
