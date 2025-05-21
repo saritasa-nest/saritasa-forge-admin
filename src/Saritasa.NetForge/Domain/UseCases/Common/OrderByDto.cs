@@ -13,5 +13,5 @@ public record OrderByDto
     /// <summary>
     /// Direction of order.
     /// </summary>
-    public bool IsDescending { get; init; }
+    public bool IsAscending { get; init; }
 }

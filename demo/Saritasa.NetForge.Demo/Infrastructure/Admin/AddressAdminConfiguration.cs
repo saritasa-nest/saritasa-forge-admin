@@ -37,10 +37,14 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
                 .SetFormOrder(4);
         }).ConfigureProperty(address => address.City, propertyBuilder =>
         {
-            propertyBuilder.SetDisplayName("Town");
+            propertyBuilder
+                .SetDisplayName("Town")
+                .SetDefaultSort(order: 1, isAscending: true);
         }).ConfigureProperty(address => address.Street, propertyBuilder =>
         {
-            propertyBuilder.SetIsMultiline(autoGrow: true, maxLines: 10);
+            propertyBuilder
+                .SetIsMultiline(autoGrow: true, maxLines: 10)
+                .SetDefaultSort(order: 2, isAscending: false);
         }).ConfigureCalculatedProperty(address => address.FullAddress, propertyBuilder =>
         {
             propertyBuilder

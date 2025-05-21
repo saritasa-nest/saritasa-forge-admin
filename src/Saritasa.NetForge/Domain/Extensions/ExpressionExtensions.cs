@@ -11,6 +11,7 @@ public static class ExpressionExtensions
     /// Separator between properties. For example: <c>Shop.Address.Street</c>.
     /// </summary>
     public const char PropertySeparator = '.';
+    private const string InvalidExpressionMessage = "Invalid expression.";
 
     /// <summary>
     /// Gets <paramref name="expression"/> member name.
@@ -42,7 +43,7 @@ public static class ExpressionExtensions
 
             null => throw new ArgumentNullException(nameof(expression), "Expression can't be null"),
 
-            _ => throw new ArgumentException("Invalid expression.", nameof(expression))
+            _ => throw new ArgumentException(InvalidExpressionMessage, nameof(expression))
         };
     }
 
@@ -124,5 +125,46 @@ public static class ExpressionExtensions
         }
 
         return expression;
+    }
+
+    /// <summary>
+    /// Gets full member name of the property expression.
+    /// </summary>
+    /// <param name="propertyExpression">Property expression.</param>
+    /// <returns>
+    /// Example: when expression is <c>product => product.Shop.Address.Street</c>,
+    /// then this method will return <c>Shop.Address.Street</c>.</returns>
+    /// <exception cref="ArgumentException">Thrown when invalid expression is used.</exception>
+    public static string GetFullMemberName(this Expression propertyExpression)
+    {
+        try
+        {
+            if (propertyExpression is LambdaExpression lambda)
+            {
+                if (lambda.Body is MemberExpression memberExpression)
+                {
+                    return memberExpression.GetFullPropertyPath();
+                }
+
+                // It is used for cases when MemberExpression is converted to some type
+                if (lambda.Body is UnaryExpression unaryExpression)
+                {
+                    return unaryExpression.Operand.GetFullPropertyPath();
+                }
+            }
+        }
+        catch
+        {
+            throw new ArgumentException(InvalidExpressionMessage, nameof(propertyExpression));
+        }
+
+        throw new ArgumentException(InvalidExpressionMessage, nameof(propertyExpression));
+    }
+
+    private static string GetFullPropertyPath(this Expression expression)
+    {
+        var stringExpression = expression.ToString();
+        var propertyPathStartIndex = stringExpression.IndexOf('.') + 1;
+        return propertyPathStartIndex > 0 ? stringExpression[propertyPathStartIndex..] : stringExpression;
     }
 }

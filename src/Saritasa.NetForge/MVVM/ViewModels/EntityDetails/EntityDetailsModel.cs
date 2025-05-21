@@ -1,5 +1,6 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Domain.UseCases.Common;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.MVVM.ViewModels.EntityDetails;
@@ -64,4 +65,7 @@ public record EntityDetailsModel
     /// Gets or sets the list of global custom actions applicable to all entities.
     /// </summary>
     public List<CustomAction<object>> GlobalCustomActions { get; set; } = new();
+
+    /// <inheritdoc cref="EntityMetadata.DefaultOrderings"/>
+    public List<OrderByDto> DefaultOrderings { get; set; } = [];
 }

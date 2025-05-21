@@ -1,5 +1,6 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Domain.UseCases.Common;
 
 namespace Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 
@@ -69,4 +70,7 @@ public record GetEntityDto
 
     /// <inheritdoc cref="EntityMetadata.CustomActions"/>
     public List<CustomAction<object>> CustomActions { get; set; } = [];
+
+    /// <inheritdoc cref="EntityMetadata.DefaultOrderings"/>
+    public List<OrderByDto> DefaultOrderings { get; set; } = [];
 }

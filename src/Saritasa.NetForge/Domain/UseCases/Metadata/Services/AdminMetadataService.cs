@@ -63,6 +63,11 @@ public class AdminMetadataService
                     ExcludeProperties(entityMetadata, entityOptions);
                 }
             }
+            else
+            {
+                // When entityOptions is null, the entity does not have any configurations
+                entityMetadata.SetPrimaryKeysDefaultSort();
+            }
 
             entityMetadata.ApplyEntityAttributes(adminOptions);
             entityMetadata.Id = Guid.NewGuid();

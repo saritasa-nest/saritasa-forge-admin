@@ -897,7 +897,7 @@ public class EfCoreDataService : IOrmDataService
     {
         var orderByTuples = orderBy
             .Select(order =>
-                (order.PropertyPath, order.IsDescending ? ListSortDirection.Descending : ListSortDirection.Ascending))
+                (order.PropertyPath, order.IsAscending ? ListSortDirection.Ascending : ListSortDirection.Descending))
             .ToArray();
 
         var keySelectors = GetKeySelectors(orderBy, entityType);

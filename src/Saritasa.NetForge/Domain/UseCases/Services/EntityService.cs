@@ -203,7 +203,8 @@ public class EntityService : IEntityService
             CreateAction = entity.CreateAction,
             UpdateAction = entity.UpdateAction,
             DeleteAction = entity.DeleteAction,
-            CustomActions = entity.CustomActions
+            CustomActions = entity.CustomActions,
+            DefaultOrderings = entity.DefaultOrderings
         };
     }
 
