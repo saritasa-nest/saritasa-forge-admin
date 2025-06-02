@@ -22,7 +22,7 @@ public record CreateEntityModel
     public Type? ClrType { get; init; }
 
     /// <inheritdoc cref="EntityMetadata.Properties"/>
-    public ICollection<PropertyMetadataDto> Properties { get; init; } = new List<PropertyMetadataDto>();
+    public ICollection<PropertyMetadataDto> Properties { get; init; } = [];
 
     /// <summary>
     /// Entity instance.

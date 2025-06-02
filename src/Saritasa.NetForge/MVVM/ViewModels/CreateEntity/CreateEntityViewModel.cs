@@ -75,9 +75,19 @@ public class CreateEntityViewModel : ValidationEntityViewModel
                         IsValueGeneratedOnUpdate: false,
                         IsHiddenFromCreate: false
                     })
-                    .OrderByDescending(property => property.FormOrder.HasValue)
-                    .ThenBy(property => property.FormOrder)
                     .ToList(),
+            };
+
+            var includedNavigations = Model.Properties
+                .Where(property => property is NavigationMetadataDto)
+                .OfType<NavigationMetadataDto>()
+                .ToList();
+
+            FormPropertiesUtils.HandleOwnedNavigations(Model.EntityInstance, Model.Properties, includedNavigations);
+
+            Model = Model with
+            {
+                Properties = FormPropertiesUtils.OrderProperties(Model.Properties)
             };
 
             FieldErrorModels = Model.Properties

@@ -1,9 +1,6 @@
 ﻿@using Saritasa.NetForge.Controls
 @using Saritasa.NetForge.Controls.CustomFields
-@using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById
 @using Saritasa.NetForge.Extensions
-@using Saritasa.NetForge.Infrastructure.Helpers
-@using Saritasa.NetForge.MVVM.ViewModels
 @using Saritasa.NetForge.MVVM.ViewModels.EditEntity
 
 @inherits MvvmComponentBase<EditEntityViewModel>
@@ -33,33 +30,11 @@ else if (ViewModel.IsEntityExists)
                     <div class="d-flex flex-column flex-grow-1 gap-4">
                         @foreach (var property in ViewModel.Model.Properties)
                         {
-                            if (property is NavigationMetadataDto { IsOwnership: true } navigation)
-                            {
-                                OwnedEntityHelper.EnsureNavigationInstance(ViewModel.Model.EntityInstance!, navigation);
-
-                                foreach (var targetProperty in navigation.TargetEntityProperties)
-                                {
-                                    RenderProperty(targetProperty);
-                                }
-
-                                foreach (var targetNavigation in navigation.TargetEntityNavigations)
-                                {
-                                    RenderProperty(targetNavigation);
-                                }
-                            }
-                            else
-                            {
-                                RenderProperty(property);
-                            }
-
-                            void RenderProperty(PropertyMetadataDto property)
-                            {
-                                <DynamicField EntityInstance="ViewModel.Model.EntityInstance"
-                                              Property="property"
-                                              FieldErrorModels="ViewModel.FieldErrorModels"
-                                              HandleFile="ViewModel.HandleSelectedFile"
-                                              IsReadOnly="property.IsPrimaryKey || property.IsReadOnly"/>
-                            }
+                            <DynamicField EntityInstance="ViewModel.Model.EntityInstance"
+                                          Property="property"
+                                          FieldErrorModels="ViewModel.FieldErrorModels"
+                                          HandleFile="ViewModel.HandleSelectedFile"
+                                          IsReadOnly="property.IsPrimaryKey || property.IsReadOnly"/>
                         }
 
                         <div class="d-flex flex-row gap-4 pt-4">

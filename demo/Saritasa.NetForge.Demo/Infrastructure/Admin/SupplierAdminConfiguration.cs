@@ -10,24 +10,47 @@ public class SupplierAdminConfiguration : IEntityAdminConfiguration<Supplier>
     /// <inheritdoc />
     public void Configure(EntityOptionsBuilder<Supplier> entityOptionsBuilder)
     {
+        entityOptionsBuilder.ConfigureProperty(supplier => supplier.Name, builder =>
+        {
+            builder
+                .SetOrder(1)
+                .SetFormOrder(1);
+        });
+
+        entityOptionsBuilder.ConfigureProperty(supplier => supplier.City, builder =>
+        {
+            builder
+                .SetOrder(2)
+                .SetFormOrder(2);
+        });
+
+        entityOptionsBuilder.ConfigureProperty(supplier => supplier.IsActive, builder =>
+        {
+            builder
+                .SetOrder(3)
+                .SetFormOrder(3);
+        });
+
         entityOptionsBuilder.IncludeNavigation<Director>(shop => shop.Director, navigationOptionsBuilder =>
         {
             navigationOptionsBuilder.IncludeProperty(director => director.Name, builder =>
             {
-                builder.SetDisplayName("Supplier Director");
+                builder
+                    .SetOrder(4)
+                    .SetFormOrder(4);
             });
 
             navigationOptionsBuilder.IncludeProperty(director => director.Description, builder =>
             {
                 builder
-                    .SetDisplayName("Director Description")
+                    .SetOrder(5)
+                    .SetFormOrder(5)
                     .SetIsRichTextField(true);
             });
 
             navigationOptionsBuilder.IncludeProperty(director => director.Photo, builder =>
             {
                 builder
-                    .SetDisplayName("Director Photo")
                     .SetIsImage(true)
                     .SetUploadFileStrategy(new UploadBase64FileStrategy());
             });
@@ -36,7 +59,6 @@ public class SupplierAdminConfiguration : IEntityAdminConfiguration<Supplier>
             {
                 builder.IncludeProperty(address => address.Street, streetBuilder =>
                 {
-                    streetBuilder.SetDisplayName("Director Street");
                 });
             });
         });

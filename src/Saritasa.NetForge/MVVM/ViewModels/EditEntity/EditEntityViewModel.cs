@@ -11,6 +11,8 @@ using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 using Saritasa.NetForge.Infrastructure.EfCore.Services;
+using Saritasa.NetForge.Infrastructure.Helpers;
+using Saritasa.Tools.Common.Extensions;
 
 namespace Saritasa.NetForge.MVVM.ViewModels.EditEntity;
 
@@ -81,14 +83,13 @@ public class EditEntityViewModel : ValidationEntityViewModel
                         IsHidden: false,
                         IsHiddenFromDetails: false
                     })
-                    .OrderByDescending(property => property.FormOrder.HasValue)
-                    .ThenBy(property => property.FormOrder)
                     .ToList()
             };
 
             var includedNavigations = Model.Properties
                 .Where(property => property is NavigationMetadataDto)
-                .OfType<NavigationMetadataDto>();
+                .OfType<NavigationMetadataDto>()
+                .ToList();
 
             var includedNavigationNames = Model.Properties
                 .Where(property => property is NavigationMetadataDto)
@@ -96,6 +97,13 @@ public class EditEntityViewModel : ValidationEntityViewModel
 
             Model.EntityInstance = await dataService
                 .GetInstanceAsync(instancePrimaryKey, Model.ClrType!, includedNavigations, CancellationToken);
+
+            FormPropertiesUtils.HandleOwnedNavigations(Model.EntityInstance, Model.Properties, includedNavigations);
+
+            Model = Model with
+            {
+                Properties = FormPropertiesUtils.OrderProperties(Model.Properties)
+            };
 
             var instanceType = Model.EntityInstance.GetType();
 
