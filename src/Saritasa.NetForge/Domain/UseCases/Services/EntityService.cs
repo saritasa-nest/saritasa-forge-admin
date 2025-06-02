@@ -103,6 +103,7 @@ public class EntityService : IEntityService
             PropertyPath = property.PropertyPath,
             DisplayName = property.DisplayName,
             Description = property.Description,
+            PropertyInformation = property.PropertyInformation,
             IsPrimaryKey = property.IsPrimaryKey,
             IsForeignKey = property.IsForeignKey,
             ClrType = property.ClrType,
@@ -215,22 +216,24 @@ public class EntityService : IEntityService
 
         Validator.TryValidateObject(instance, context, errors, validateAllProperties: true);
 
-        var isNotNullableProperties = properties
+        var notNullableProperties = properties
             .Where(property => property is { IsNullable: false, IsReadOnly: false })
-            .Select(e => e.Name)
+            .Select(property => property.PropertyPath)
             .ToList();
 
         // Validate property that not have RequiredAttribute but have RequiredMemberAttribute or is not nullable (in ORM).
-        var requiredProperties = instance.GetType().GetProperties()
-            .Where(prop => !prop.IsDefined(typeof(RequiredAttribute), false) &&
-                           (prop.CustomAttributes.Any(attr => attr.AttributeType.Name == "RequiredMemberAttribute") ||
-                            isNotNullableProperties.Contains(prop.Name)))
+        var requiredProperties = properties
+            .Where(property =>
+                property.PropertyInformation is not null &&
+                !property.PropertyInformation.IsDefined(typeof(RequiredAttribute), false) &&
+                (property.PropertyInformation.CustomAttributes.Any(attr => attr.AttributeType.Name == "RequiredMemberAttribute")
+                    || notNullableProperties.Contains(property.PropertyPath)))
             .ToList();
 
         var requiredErrors = new List<ValidationResult>();
         foreach (var property in requiredProperties)
         {
-            var value = instance.GetPropertyValue(property.Name);
+            var value = instance.GetNestedPropertyValue(property.PropertyPath);
             var isError = false;
 
             switch (value)

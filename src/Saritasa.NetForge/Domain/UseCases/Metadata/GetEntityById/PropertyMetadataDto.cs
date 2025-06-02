@@ -1,4 +1,5 @@
-﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+﻿using System.Reflection;
+using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Enums;
 
 namespace Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
@@ -19,6 +20,11 @@ public record PropertyMetadataDto
 
     /// <inheritdoc cref="PropertyMetadataBase.Description"/>
     public string Description { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The <see cref="PropertyInfo"/> representing the property in .NET reflection.
+    /// </summary>
+    public PropertyInfo? PropertyInformation { get; set; }
 
     /// <inheritdoc cref="PropertyMetadata.IsPrimaryKey"/>
     public bool IsPrimaryKey { get; set; }
