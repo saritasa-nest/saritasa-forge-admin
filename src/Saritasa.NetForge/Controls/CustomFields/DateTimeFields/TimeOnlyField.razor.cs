@@ -37,7 +37,14 @@ public partial class TimeOnlyField : CustomField
     {
         if (!value.HasValue)
         {
-            EntityInstance.SetNestedPropertyValue(Property.PropertyPath, null);
+            if (Property.IsNullable)
+            {
+                EntityInstance.SetNestedPropertyValue(Property.PropertyPath, null);
+            }
+            else
+            {
+                EntityInstance.SetNestedPropertyValue(Property.PropertyPath, default(TimeOnly));
+            }
             return;
         }
 

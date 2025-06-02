@@ -35,14 +35,23 @@ public partial class DateTimeField : CustomField
     /// <param name="value">Input value.</param>
     private void SetPropertyValue(DateTime? value)
     {
+        var actualPropertyType = Nullable.GetUnderlyingType(Property.ClrType!) ?? Property.ClrType;
+        var isOffset = actualPropertyType == typeof(DateTimeOffset);
         if (!value.HasValue)
         {
-            EntityInstance.SetNestedPropertyValue(Property.PropertyPath, null);
+            if (Property.IsNullable)
+            {
+                EntityInstance.SetNestedPropertyValue(Property.PropertyPath, null);
+            }
+            else
+            {
+                EntityInstance
+                    .SetNestedPropertyValue(Property.PropertyPath, isOffset ? default(DateTimeOffset) : default(DateTime));
+            }
             return;
         }
 
-        var actualPropertyType = Nullable.GetUnderlyingType(Property.ClrType!) ?? Property.ClrType;
-        if (actualPropertyType == typeof(DateTimeOffset))
+        if (isOffset)
         {
             EntityInstance.SetNestedPropertyValue(Property.PropertyPath, new DateTimeOffset(value.Value));
         }
