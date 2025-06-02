@@ -39,10 +39,10 @@ public static class ReflectionExtensions
         // (entityType)entity
         var convertedEntity = Expression.Convert(entity, entityType);
 
-        // ((entityType)entity).propertyName
+        // ((entityType)entity).propertyPath
         var propertyExpression = ExpressionExtensions.GetPropertyExpression(convertedEntity, propertyPath);
 
-        // entity => ((entityType)entity).propertyName
+        // entity => ((entityType)entity).propertyPath
         var lambda = Expression.Lambda(propertyExpression, entity);
         var compiledLambda = lambda.Compile();
         try
@@ -91,17 +91,17 @@ public static class ReflectionExtensions
         // (entityType)entity
         var convertedEntity = Expression.Convert(entity, entityType);
 
-        // ((entityType)entity).propertyName
+        // ((entityType)entity).propertyPath
         var propertyExpression = ExpressionExtensions.GetPropertyExpression(convertedEntity, propertyPath);
 
         // We have type specified in parameters in case of nullable type.
         // Otherwise, we will try to assign not nullable type of value to nullable type, it will cause error.
         var constantExpression = Expression.Constant(value, propertyExpression.Type);
 
-        // ((entityType)entity).propertyName = value
+        // ((entityType)entity).propertyPath = value
         var assignExpression = Expression.Assign(propertyExpression, constantExpression);
 
-        // entity => ((entityType)entity).propertyName = value
+        // entity => ((entityType)entity).propertyPath = value
         var lambda = Expression.Lambda(assignExpression, entity);
         lambda.Compile().DynamicInvoke(obj);
     }
