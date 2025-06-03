@@ -277,7 +277,8 @@ public class EntityService : IEntityService
 
             if (isError)
             {
-                requiredErrors.Add(new ValidationResult($"The {property.Name} field is required.", [property.Name]));
+                requiredErrors
+                    .Add(new ValidationResult($"The {property.PropertyPath} field is required.", [property.PropertyPath]));
             }
         }
 

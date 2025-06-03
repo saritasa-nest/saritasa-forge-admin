@@ -22,7 +22,7 @@ public static class ErrorMappingUtil
         {
             foreach (var member in result.MemberNames)
             {
-                var errorViewModel = models.FirstOrDefault(e => e.Property.Name == member);
+                var errorViewModel = models.FirstOrDefault(e => e.Property.PropertyPath == member);
                 if (errorViewModel is null)
                 {
                     continue;
