@@ -91,10 +91,6 @@ public class EditEntityViewModel : ValidationEntityViewModel
                 .OfType<NavigationMetadataDto>()
                 .ToList();
 
-            var includedNavigationNames = Model.Properties
-                .Where(property => property is NavigationMetadataDto)
-                .Select(property => property.Name).ToList();
-
             Model.EntityInstance = await dataService
                 .GetInstanceAsync(instancePrimaryKey, Model.ClrType!, includedNavigations, CancellationToken);
 
@@ -112,7 +108,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
             // Proxy types raise serialization issues when we try to serialize it to JSON.
             if (instanceType.IsLazyLoadingProxy())
             {
-                var pocoInstance = ProxyToPocoConverter.ConvertProxyToPoco(Model.EntityInstance, includedNavigationNames);
+                var pocoInstance = ProxyToPocoConverter.ConvertProxyToPoco(Model.EntityInstance, includedNavigations);
                 Model.EntityInstance = pocoInstance;
             }
 

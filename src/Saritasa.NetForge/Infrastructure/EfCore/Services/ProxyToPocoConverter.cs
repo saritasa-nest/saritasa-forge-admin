@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 
 namespace Saritasa.NetForge.Infrastructure.EfCore.Services;
@@ -12,9 +13,9 @@ public static class ProxyToPocoConverter
     /// Converts a proxy entity to a POCO entity.
     /// </summary>
     /// <param name="source">The source proxy entity.</param>
-    /// <param name="navigationPropertyNames">The list of navigation property names.</param>
+    /// <param name="navigations">The list of navigation property names.</param>
     /// <returns>The POCO entity.</returns>
-    public static object? ConvertProxyToPoco(object? source, IList<string>? navigationPropertyNames = null)
+    public static object? ConvertProxyToPoco(object? source, IList<NavigationMetadataDto>? navigations = null)
     {
         switch (source)
         {
@@ -48,7 +49,7 @@ public static class ProxyToPocoConverter
         foreach (var property in entityType.GetProperties())
         {
             // Exclude the navigation properties because they are the proxies as well.
-            if (navigationPropertyNames != null && navigationPropertyNames.Contains(property.Name))
+            if (navigations != null && navigations.Any(navigation => navigation.Name == property.Name))
             {
                 continue;
             }
@@ -87,15 +88,15 @@ public static class ProxyToPocoConverter
             }
         }
 
-        if (navigationPropertyNames == null)
+        if (navigations == null)
         {
             return pocoInstance;
         }
 
         // Do the same for the navigation properties recursively because they can be proxies as well.
-        foreach (var navigationName in navigationPropertyNames)
+        foreach (var navigation in navigations)
         {
-            var property = source.GetType().GetProperty(navigationName);
+            var property = source.GetType().GetProperty(navigation.Name);
             var propertyValue = property?.GetValue(source);
 
             if (property == null)
@@ -103,8 +104,8 @@ public static class ProxyToPocoConverter
                 continue;
             }
 
-            var navigationPoco = ConvertProxyToPoco(propertyValue);
-            entityType.GetProperty(navigationName)?.SetValue(pocoInstance, navigationPoco);
+            var navigationPoco = ConvertProxyToPoco(propertyValue, navigation.TargetEntityNavigations);
+            entityType.GetProperty(navigation.Name)?.SetValue(pocoInstance, navigationPoco);
         }
 
         return pocoInstance;
