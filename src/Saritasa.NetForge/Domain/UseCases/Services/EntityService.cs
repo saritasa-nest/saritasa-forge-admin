@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Exceptions;
 using Saritasa.NetForge.Domain.Extensions;
@@ -226,7 +227,7 @@ public class EntityService : IEntityService
             .Where(property =>
                 property.PropertyInformation is not null &&
                 !property.PropertyInformation.IsDefined(typeof(RequiredAttribute), false) &&
-                (property.PropertyInformation.CustomAttributes.Any(attr => attr.AttributeType.Name == "RequiredMemberAttribute")
+                (property.PropertyInformation.CustomAttributes.Any(a => a.AttributeType.Name == nameof(RequiredMemberAttribute))
                     || notNullableProperties.Contains(property.PropertyPath)))
             .ToList();
 
@@ -245,22 +246,22 @@ public class EntityService : IEntityService
                     }
 
                     break;
-                case DateTime dt:
-                    if (dt == DateTime.MinValue)
+                case DateTime dateTime:
+                    if (dateTime == DateTime.MinValue)
                     {
                         isError = true;
                     }
 
                     break;
-                case DateTimeOffset dt:
-                    if (dt == DateTimeOffset.MinValue)
+                case DateTimeOffset dateTimeOffset:
+                    if (dateTimeOffset == DateTimeOffset.MinValue)
                     {
                         isError = true;
                     }
 
                     break;
-                case DateOnly dt:
-                    if (dt == DateOnly.MinValue)
+                case DateOnly dateOnly:
+                    if (dateOnly == DateOnly.MinValue)
                     {
                         isError = true;
                     }
