@@ -6,7 +6,7 @@
 @typeparam T
 
 <MudSelect @bind-SelectedValues="PropertyValue"
-           Label="@Property.Name"
+           Label="@GetDisplayName()"
            Variant="Variant.Outlined"
            HelperText="@Property.Description"
            Disabled="IsReadOnly"

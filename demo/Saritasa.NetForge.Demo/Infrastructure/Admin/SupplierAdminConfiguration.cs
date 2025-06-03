@@ -37,7 +37,8 @@ public class SupplierAdminConfiguration : IEntityAdminConfiguration<Supplier>
             {
                 builder
                     .SetOrder(4)
-                    .SetFormOrder(4);
+                    .SetFormOrder(4)
+                    .SetDisplayName("Name of Director");
             });
 
             navigationOptionsBuilder.IncludeProperty(director => director.Description, builder =>

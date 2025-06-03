@@ -4,7 +4,7 @@
 <div>
     <MudGrid>
         <MudItem xs="4">
-            <MudText>@Property.Name.ToMeaningfulName()</MudText>
+            <MudText>@GetDisplayName()</MudText>
             <MudFileUpload T="IBrowserFile"
                            Accept=".apng, .avif, .svg, .png, .jpg, .jpeg, .webp"
                            FilesChanged="UploadImageAsync!">

@@ -3,7 +3,7 @@
 @inherits CustomField
 
 <MudSelect @bind-Value="PropertyValue"
-           Label="@Property.Name"
+           Label="@GetDisplayName()"
            Variant="Variant.Outlined"
            HelperText="@Property.Description"
            Disabled="IsReadOnly"

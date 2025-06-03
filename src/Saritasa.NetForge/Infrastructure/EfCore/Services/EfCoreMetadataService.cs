@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using ExpressionExtensions = Saritasa.NetForge.Domain.Extensions.ExpressionExtensions;
 
@@ -142,10 +143,12 @@ public class EfCoreMetadataService : IOrmMetadataService
         }
 
         propertyPath = AddPropertyNameToPath(propertyPath, navigation.Name);
+        var actualPropertyPath = propertyPath.ToString();
         var navigationMetadata = new NavigationMetadata
         {
             Name = navigation.Name,
-            PropertyPath = propertyPath.ToString(),
+            DisplayName = GetDisplayName(parentNavigationMetadata, actualPropertyPath),
+            PropertyPath = actualPropertyPath,
             IsCollection = navigation.IsCollection,
             PropertyInformation = navigation.PropertyInfo,
             ClrType = navigation.ClrType,
@@ -199,12 +202,14 @@ public class EfCoreMetadataService : IOrmMetadataService
     {
         var propertyName = property.Name;
         propertyPath = AddPropertyNameToPath(propertyPath, propertyName);
+        var actualPropertyPath = propertyPath.ToString();
         var propertyMetadata = new PropertyMetadata
         {
             Name = propertyName,
-            PropertyPath = propertyPath.ToString(),
+            PropertyPath = actualPropertyPath,
             Description = property.GetComment() ?? string.Empty,
             ClrType = property.ClrType,
+            DisplayName = GetDisplayName(navigationMetadata, actualPropertyPath),
             PropertyInformation = property.PropertyInfo,
             IsForeignKey = property.IsForeignKey(),
             IsPrimaryKey = property.IsPrimaryKey(),
@@ -249,5 +254,18 @@ public class EfCoreMetadataService : IOrmMetadataService
     private static void RemovePropertyNameFromPath(StringBuilder propertyPath, string propertyName)
     {
         propertyPath.Replace($"{ExpressionExtensions.PropertySeparator}{propertyName}", string.Empty);
+    }
+
+    /// <summary>
+    /// Makes display name of owned navigation's property to contain navigation name.
+    /// For example: Owned navigation is Director, property is Age, then the display name will be: Director Age.
+    /// </summary>
+    /// <param name="navigationMetadata">Parent navigation.</param>
+    /// <param name="propertyPath">This path will be used as display name with dots replaced with spaces.</param>
+    private static string GetDisplayName(NavigationMetadata? navigationMetadata, string propertyPath)
+    {
+        return navigationMetadata is not null && navigationMetadata.IsOwnership
+            ? propertyPath.Replace(ExpressionExtensions.PropertySeparator, ' ').ToMeaningfulName()
+            : string.Empty;
     }
 }
