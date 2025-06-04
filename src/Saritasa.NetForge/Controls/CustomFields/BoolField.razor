@@ -1,6 +1,8 @@
-﻿@inherits CustomField
+﻿@using Saritasa.NetForge.Extensions
 
-<MudCheckBox Label="@GetDisplayName()"
+@inherits CustomField
+
+<MudCheckBox Label="@Property.GetDisplayName()"
              Disabled="IsReadOnly"
              T="bool?"
              @bind-Value="PropertyValue"

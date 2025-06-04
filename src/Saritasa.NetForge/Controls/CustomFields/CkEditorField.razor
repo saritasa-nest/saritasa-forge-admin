@@ -1,4 +1,6 @@
-﻿@inherits CustomField;
+﻿@using Saritasa.NetForge.Extensions
+
+@inherits CustomField;
 
 @if (FieldErrorModel.IsError)
 {
@@ -8,7 +10,7 @@
 }
 
 <div class="@(IsReadOnly ? "editor--disabled" : "")">
-    <MudText Typo="Typo.subtitle2" Class="px-2" Style="@(FieldErrorModel.IsError ? "color: var(--mud-palette-error)" : string.Empty)">@GetDisplayName()</MudText>
+    <MudText Typo="Typo.subtitle2" Class="px-2" Style="@(FieldErrorModel.IsError ? "color: var(--mud-palette-error)" : string.Empty)">@Property.GetDisplayName()</MudText>
     <textarea @ref="editor">
         @PropertyValue
     </textarea>

@@ -1,9 +1,10 @@
-﻿@using Saritasa.NetForge.Infrastructure.Helpers
+﻿@using Saritasa.NetForge.Extensions
+@using Saritasa.NetForge.Infrastructure.Helpers
 
 @inherits CustomField
 
 <MudSelect @bind-Value="PropertyValue"
-           Label="@GetDisplayName()"
+           Label="@Property.GetDisplayName()"
            Variant="Variant.Outlined"
            HelperText="@Property.Description"
            Disabled="IsReadOnly"

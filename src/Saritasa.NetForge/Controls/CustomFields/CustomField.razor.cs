@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
-using Saritasa.NetForge.Extensions;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.MVVM.ViewModels;
 
@@ -48,13 +46,4 @@ public abstract class CustomField : OwningComponentBase<IOrmDataService>
     [Parameter]
     [EditorRequired]
     public FieldErrorModel FieldErrorModel { get; set; } = null!;
-
-    /// <summary>
-    /// Gets <see cref="PropertyMetadata.DisplayName"/> from <see cref="Property"/>.
-    /// If property does not have display name then <see cref="PropertyMetadata.Name"/> will be used.
-    /// </summary>
-    protected string GetDisplayName()
-    {
-        return Property.DisplayName != string.Empty ? Property.DisplayName : Property.Name.ToMeaningfulName();
-    }
 }

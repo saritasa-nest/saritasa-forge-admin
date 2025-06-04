@@ -1,8 +1,10 @@
-﻿@inherits CustomField
+﻿@using Saritasa.NetForge.Extensions
+
+@inherits CustomField
 
 @typeparam T
 
-<MudNumericField Label="@GetDisplayName()"
+<MudNumericField Label="@Property.GetDisplayName()"
                  Variant="Variant.Outlined"
                  HideSpinButtons="true"
                  HelperText="@Property.Description"

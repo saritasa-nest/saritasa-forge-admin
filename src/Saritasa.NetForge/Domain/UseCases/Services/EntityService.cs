@@ -7,6 +7,7 @@ using Saritasa.NetForge.Domain.UseCases.Interfaces;
 using Saritasa.NetForge.Domain.UseCases.Metadata.DTOs;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.Domain.UseCases.Metadata.Services;
+using Saritasa.NetForge.Extensions;
 
 namespace Saritasa.NetForge.Domain.UseCases.Services;
 
@@ -279,7 +280,7 @@ public class EntityService : IEntityService
             if (isError)
             {
                 requiredErrors
-                    .Add(new ValidationResult($"The {property.PropertyPath} field is required.", [property.PropertyPath]));
+                    .Add(new ValidationResult($"The {property.GetDisplayName()} field is required.", [property.PropertyPath]));
             }
         }
 

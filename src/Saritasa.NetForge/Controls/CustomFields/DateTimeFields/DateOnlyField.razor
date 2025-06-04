@@ -1,6 +1,7 @@
+@using Saritasa.NetForge.Extensions
 @inherits CustomField
 
-<MudDatePicker Label="@GetDisplayName()"
+<MudDatePicker Label="@Property.GetDisplayName()"
                Variant="Variant.Outlined"
                Editable="true"
                HelperText="@Property.Description"

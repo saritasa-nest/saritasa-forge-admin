@@ -1,6 +1,7 @@
+@using Saritasa.NetForge.Extensions
 @inherits CustomField
 
-<MudTimePicker Label="@GetDisplayName()"
+<MudTimePicker Label="@Property.GetDisplayName()"
                Editable="true"
                @bind-Time="@PropertyValue"
                Variant="Variant.Outlined"

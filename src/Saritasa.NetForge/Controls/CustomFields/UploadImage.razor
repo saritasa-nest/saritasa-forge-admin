@@ -1,10 +1,11 @@
 ﻿@using Saritasa.NetForge.Extensions
+
 @inherits CustomField
 
 <div>
     <MudGrid>
         <MudItem xs="4">
-            <MudText>@GetDisplayName()</MudText>
+            <MudText>@Property.GetDisplayName()</MudText>
             <MudFileUpload T="IBrowserFile"
                            Accept=".apng, .avif, .svg, .png, .jpg, .jpeg, .webp"
                            FilesChanged="UploadImageAsync!">

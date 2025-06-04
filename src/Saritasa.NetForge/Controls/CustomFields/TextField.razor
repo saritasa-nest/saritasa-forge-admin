@@ -1,7 +1,9 @@
-﻿@inherits CustomField
+﻿@using Saritasa.NetForge.Extensions
+
+@inherits CustomField
 
 <MudTextField T="string"
-              Label="@GetDisplayName()"
+              Label="@Property.GetDisplayName()"
               Variant="Variant.Outlined"
               InputType="InputType.Text"
               HelperText="@Property.Description"

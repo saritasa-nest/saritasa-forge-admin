@@ -1,6 +1,7 @@
+@using Saritasa.NetForge.Extensions
 @inherits CustomField
 
-<MudTextField Label="@GetDisplayName()"
+<MudTextField Label="@Property.GetDisplayName()"
               Variant="Variant.Outlined"
               InputType="InputType.DateTimeLocal"
               Format="s"
