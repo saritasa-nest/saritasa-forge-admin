@@ -1,5 +1,4 @@
 using McMaster.Extensions.CommandLineUtils;
-using Saritasa.NetForge.Demo.Commands;
 using Saritasa.NetForge.Demo.Infrastructure.Web;
 
 namespace Saritasa.NetForge.Demo;
@@ -8,8 +7,6 @@ namespace Saritasa.NetForge.Demo;
 /// Entry point class.
 /// </summary>
 [Command(Name = "netforge")]
-[Subcommand(typeof(Seed))]
-[Subcommand(typeof(CreateUser))]
 internal sealed class Program
 {
     private static WebApplication? app;

@@ -1,4 +1,5 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Domain.UseCases.Common;
 
 namespace Saritasa.NetForge.Domain.Entities.Metadata;
 
@@ -126,6 +127,11 @@ public class EntityMetadata
     /// A collection of custom actions associated with this entity.
     /// </summary>
     public List<CustomAction<object>> CustomActions { get; set; } = [];
+
+    /// <summary>
+    /// Contains properties to use for sort when no one sort is applied.
+    /// </summary>
+    public List<OrderByDto> DefaultOrderings { get; set; } = [];
 
     /// <summary>
     /// Indicates that this entity owned by another.

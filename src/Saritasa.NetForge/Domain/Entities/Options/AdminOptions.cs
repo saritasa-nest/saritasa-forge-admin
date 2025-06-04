@@ -122,4 +122,9 @@ public class AdminOptions
     /// If depth of a navigation is more than this value then such navigation's data will not be loaded.
     /// </summary>
     public byte MaxNavigationDepth { get; set; } = 2;
+
+    /// <summary>
+    /// Represents a dictionary of global custom actions and their associated entity types.
+    /// </summary>
+    public Dictionary<CustomAction<object>, List<Type>> GlobalCustomActions { get; set; } = [];
 }

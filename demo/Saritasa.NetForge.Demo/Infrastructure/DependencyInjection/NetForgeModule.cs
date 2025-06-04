@@ -1,4 +1,6 @@
-﻿using Saritasa.NetForge.Demo.Constants;
+﻿using System.Text.Json;
+using MudBlazor;
+using Saritasa.NetForge.Demo.Constants;
 using Saritasa.NetForge.Demo.Infrastructure.Admin;
 using Saritasa.NetForge.Demo.Infrastructure.Extensions;
 using Saritasa.NetForge.Demo.Models;
@@ -40,10 +42,7 @@ internal static class NetForgeModule
                     builder.CloseComponent();
                 })
                 .ConfigureEntity(new ShopAdminConfiguration(services))
-                .ConfigureEntity<ProductTag>(entityOptionsBuilder =>
-                {
-                    entityOptionsBuilder.SetIsHidden(true);
-                })
+                .ConfigureEntity<ProductTag>(entityOptionsBuilder => { entityOptionsBuilder.SetIsHidden(true); })
                 .AddIdentityGroup()
                 .ConfigureEntity(new UserAdminConfiguration())
                 .ConfigureEntity(new AddressAdminConfiguration())
@@ -55,11 +54,31 @@ internal static class NetForgeModule
                         navigationOptionsBuilder =>
                         {
                             navigationOptionsBuilder
-                                .IncludeProperty(shop => shop.Name, propertyOptionsBuilder =>
-                                    {
-                                        propertyOptionsBuilder.SetDisplayName("Shop name");
-                                    });
+                                .IncludeProperty(shop => shop.Name,
+                                    propertyOptionsBuilder => { propertyOptionsBuilder.SetDisplayName("Shop name"); });
                         });
+                })
+                .ConfigureEntity(new ContactInfoAdminConfiguration())
+                .AddGlobalCustomAction(builder =>
+                {
+                    builder.SetName("Show entity as JSON");
+                    builder.SetDescription("Display the selected entities as JSON in a snackbar.");
+                    builder.SetHandler((serviceProvider, query) =>
+                    {
+                        var items = query.ToList();
+                        var snackbar = serviceProvider?.GetRequiredService<ISnackbar>();
+                        if (snackbar is null)
+                        {
+                            return Task.CompletedTask;
+                        }
+
+                        var jsonString = JsonSerializer.Serialize(items, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                        snackbar.Add(jsonString);
+
+                        return Task.CompletedTask;
+                    });
+
+                    builder.ExcludeTypes(typeof(Shop));
                 })
                 .ConfigureEntity(new ContactInfoAdminConfiguration())
                 .ConfigureEntity(new SupplierAdminConfiguration());

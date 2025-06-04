@@ -24,6 +24,7 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
       - [Delete](#delete)
       - [Bulk Delete](#bulk-delete)
   - [Exclude All Entities and Include Specific Only](#exclude-all-entities-and-include-specific-only)
+  - [Global Custom Action](#global-custom-action)
 - [Customizing Entities](#customizing-entities)
   - [Fluent API](#fluent-api)
   - [Creating an Entity Configuration Class](#creating-an-entity-configuration-class)
@@ -36,6 +37,7 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
   - [Data Attributes](#data-attributes-1)
   - [Display Formatting](#display-formatting)
   - [Data Sorting](#data-sorting)
+    - [Default Sort](#default-sort)
   - [Calculated Properties](#calculated-properties)
   - [Display Properties as Title Case](#display-properties-as-title-case)
   - [Default Values](#default-values)
@@ -480,6 +482,39 @@ Or you can include specific entities using the data attribute:
 public class Shop
 ```
 
+## Global Custom Action
+
+You can configure custom action that apply to selected item grid.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.AddGlobalCustomAction(builder =>
+    {
+        builder.SetName("Show entity as JSON");
+        builder.SetDescription("Display the selected entities as JSON in a snackbar.");
+        builder.SetHandler((serviceProvider, query) =>
+        {
+            var items = query.ToList();
+            var snackbar = serviceProvider?.GetRequiredService<ISnackbar>();
+            if (snackbar is null)
+            {
+                return Task.CompletedTask;
+            }
+
+            var jsonString = JsonSerializer.Serialize(items, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            snackbar.Add(jsonString);
+            
+            return Task.CompletedTask;
+        });
+
+        builder.ExcludeTypes(typeof(Shop));
+    });
+});
+```
+
+**Note:** You can exclude types from the custom action using `ExcludeTypes` method.
+
 # Customizing Entities
 
 In the admin panel, you can customize the way entities are displayed using the Fluent API or special attributes. This enables you to set various properties for your entities, such as their name, description, plural name, etc.
@@ -866,6 +901,33 @@ entityOptionsBuilder.ConfigureProperty(shop => shop.OpenedDate, builder =>
 You can sort multiple properties at once. It can be achieved by pressing sort buttons with `CTRL`.
 
 Sorting can be cancelled by pressing on it with `ALT`.
+
+### Default Sort
+
+Default sort is applied when no other sort is applied, for example when you just entered list view page.
+
+#### Multiple Default Sort
+
+There are `order` parameter when you set default sort. 
+It is used when multiple sort is configured to identify in which order properties should be sorted.
+Example with Address: City has `Order = 1`, Street has `Order = 2`, so sort will be applied by city first, then by street.
+
+#### Fluent API
+
+`SetDefaultSort` makes property `Sortable`, so you do not need to call `SetIsSortable` with this method.
+
+```csharp
+public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+{
+    entityOptionsBuilder.ConfigureProperty(address => address.City, propertyBuilder =>
+    {
+        propertyBuilder.SetDefaultSort(order: 1, isAscending: true);
+    }).ConfigureProperty(address => address.Street, propertyBuilder =>
+    {
+        propertyBuilder.SetDefaultSort(order: 2, isAscending: false);
+    });
+}
+```
 
 ## Calculated Properties
 

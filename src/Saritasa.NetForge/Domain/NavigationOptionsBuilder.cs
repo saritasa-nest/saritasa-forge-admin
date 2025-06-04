@@ -84,4 +84,17 @@ public class NavigationOptionsBuilder<TEntity>
         options.NavigationsOptions.Add(navigationOptions);
         return this;
     }
+
+    /// <summary>
+    /// Sets properties that will be used on list view page to display navigation collection.
+    /// </summary>
+    /// <param name="propertyExpressions">Property expressions.</param>
+    public NavigationOptionsBuilder<TEntity> SetListViewProperties(
+        IEnumerable<Expression<Func<TEntity, object?>>> propertyExpressions)
+    {
+        options.ListViewPropertyNames = propertyExpressions
+            .Select(expression => expression.GetMemberName())
+            .ToList();
+        return this;
+    }
 }

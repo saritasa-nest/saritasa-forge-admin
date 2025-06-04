@@ -37,10 +37,14 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
                 .SetFormOrder(4);
         }).ConfigureProperty(address => address.City, propertyBuilder =>
         {
-            propertyBuilder.SetDisplayName("Town");
+            propertyBuilder
+                .SetDisplayName("Town")
+                .SetDefaultSort(order: 1, isAscending: true);
         }).ConfigureProperty(address => address.Street, propertyBuilder =>
         {
-            propertyBuilder.SetIsMultiline(autoGrow: true, maxLines: 10);
+            propertyBuilder
+                .SetIsMultiline(autoGrow: true, maxLines: 10)
+                .SetDefaultSort(order: 2, isAscending: false);
         }).ConfigureCalculatedProperty(address => address.FullAddress, propertyBuilder =>
         {
             propertyBuilder
@@ -106,7 +110,7 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
                 var context = serviceProvider?.GetRequiredService<ShopDbContext>();
                 if (context is null)
                 {
-                    return;
+                    return Task.CompletedTask;
                 }
 
                 foreach (var address in query.ToList().Select(item => item))
@@ -117,6 +121,8 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
 
                 context.UpdateRange(query);
                 context.SaveChanges();
+
+                return Task.CompletedTask;
             }
         });
     }

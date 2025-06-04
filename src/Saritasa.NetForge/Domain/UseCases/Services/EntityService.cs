@@ -173,6 +173,7 @@ public class EntityService : IEntityService
             Lines = navigation.Lines,
             MaxLines = navigation.MaxLines,
             IsAutoGrow = navigation.IsAutoGrow,
+            ListViewPropertyNames = navigation.ListViewPropertyNames,
             IsOwnership = navigation.IsOwnership,
             NavigationMetadata = parentNavigation
         };
@@ -207,7 +208,8 @@ public class EntityService : IEntityService
             CreateAction = entity.CreateAction,
             UpdateAction = entity.UpdateAction,
             DeleteAction = entity.DeleteAction,
-            CustomActions = entity.CustomActions
+            CustomActions = entity.CustomActions,
+            DefaultOrderings = entity.DefaultOrderings
         };
     }
 

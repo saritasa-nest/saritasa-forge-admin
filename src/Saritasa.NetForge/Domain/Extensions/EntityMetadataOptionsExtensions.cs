@@ -1,5 +1,8 @@
-﻿using Saritasa.NetForge.Domain.Entities.Metadata;
+﻿using MudBlazor;
+using Saritasa.NetForge.Domain.Dtos;
+using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Domain.UseCases.Common;
 
 namespace Saritasa.NetForge.Domain.Extensions;
 
@@ -8,6 +11,8 @@ namespace Saritasa.NetForge.Domain.Extensions;
 /// </summary>
 public static class EntityMetadataOptionsExtensions
 {
+    private static List<DefaultSortDto> defaultSorts = [];
+
     /// <summary>
     /// Applies entity-specific options to the given <see cref="EntityMetadata"/> using the provided options.
     /// </summary>
@@ -76,6 +81,8 @@ public static class EntityMetadataOptionsExtensions
 
         entityMetadata.ToStringFunc = entityOptions.ToStringFunc;
 
+        defaultSorts = [];
+
         foreach (var option in entityOptions.PropertyOptions)
         {
             var property = entityMetadata.Properties
@@ -118,6 +125,22 @@ public static class EntityMetadataOptionsExtensions
                 .First(navigation => navigation.Name.Equals(navigationOptions.PropertyName));
 
             navigation.ApplyNavigationOptions(navigationOptions);
+        }
+
+        if (defaultSorts.Count > 0)
+        {
+            entityMetadata.DefaultOrderings = defaultSorts
+                .OrderBy(sort => sort.Order)
+                .Select(sort => new OrderByDto
+                {
+                    PropertyPath = sort.PropertyPath,
+                    IsAscending = sort.SortDirection == SortDirection.Ascending,
+                })
+                .ToList();
+        }
+        else
+        {
+            entityMetadata.SetPrimaryKeysDefaultSort();
         }
 
         entityMetadata.AssignGroupToEntity(entityOptions.GroupName, adminOptions);
@@ -193,6 +216,20 @@ public static class EntityMetadataOptionsExtensions
             {
                 propertyMetadata.CanBeNavigatedToDetails = propertyOptions.CanBeNavigatedToDetails;
             }
+
+            if (propertyOptions.DefaultSort.HasValue)
+            {
+                var defaultSort = new DefaultSortDto
+                {
+                    PropertyPath = propertyMetadata.PropertyPath,
+                    SortDirection = propertyOptions.DefaultSort.Value.SortDirection,
+                    Order = propertyOptions.DefaultSort.Value.Order
+                };
+
+                defaultSorts.Add(defaultSort);
+
+                propertyMetadata.IsSortable = true;
+            }
         }
 
         if (propertyOptions.IsMultiline)
@@ -265,6 +302,8 @@ public static class EntityMetadataOptionsExtensions
             navigation.FormOrder = navigationOptions.FormOrder.Value;
         }
 
+        navigation.ListViewPropertyNames = navigationOptions.ListViewPropertyNames;
+
         foreach (var propertyOptions in navigationOptions.PropertyOptions)
         {
             var property = navigation.TargetEntityProperties
@@ -317,5 +356,25 @@ public static class EntityMetadataOptionsExtensions
         return navigations
             .Where(targetNavigation => navigationOptions.Any(option => option.PropertyName == targetNavigation.Name))
             .ToList();
+    }
+
+    /// <summary>
+    /// Set sort using entity's primary keys.
+    /// </summary>
+    /// <param name="entityMetadata">Entity metadata.</param>
+    public static void SetPrimaryKeysDefaultSort(this EntityMetadata entityMetadata)
+    {
+        var primaryKeys = entityMetadata.Properties.Where(property => property.IsPrimaryKey);
+        foreach (var primaryKey in primaryKeys)
+        {
+            var primaryKeyOrder = new OrderByDto
+            {
+                PropertyPath = primaryKey.Name,
+                IsAscending = true
+            };
+            entityMetadata.DefaultOrderings.Add(primaryKeyOrder);
+
+            primaryKey.IsSortable = true;
+        }
     }
 }

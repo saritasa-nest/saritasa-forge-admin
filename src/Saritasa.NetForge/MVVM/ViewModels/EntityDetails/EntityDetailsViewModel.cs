@@ -94,6 +94,11 @@ public class EntityDetailsViewModel : BaseViewModel
     public string SelectedCustomAction { get; set; } = string.Empty;
 
     /// <summary>
+    /// Selected global custom action.
+    /// </summary>
+    public string SelectedGlobalCustomAction { get; set; } = string.Empty;
+
+    /// <summary>
     /// Total items in data grid.
     /// </summary>
     public int TotalItems { get; set; }
@@ -111,6 +116,11 @@ public class EntityDetailsViewModel : BaseViewModel
             CanAdd = Model is { CanAdd: true, IsKeyless: false } && HasProperties;
             CanEdit = Model is { CanEdit: true, IsKeyless: false } && HasProperties;
             CanDelete = Model is { CanDelete: true, IsKeyless: false } && HasProperties;
+
+            Model.GlobalCustomActions = adminOptions.GlobalCustomActions
+                .Where(e => !e.Value.Exists(t => t == entity.ClrType))
+                .Select(e => e.Key)
+                .ToList();
         }
         catch (NotFoundException)
         {
@@ -136,7 +146,8 @@ public class EntityDetailsViewModel : BaseViewModel
             CanDelete = entity.CanDelete,
             EntityDeleteMessage = entity.MessageOptions.EntityDeleteMessage,
             EntityBulkDeleteMessage = entity.MessageOptions.EntityBulkDeleteMessage,
-            CustomActions = entity.CustomActions
+            CustomActions = entity.CustomActions,
+            DefaultOrderings = entity.DefaultOrderings
         };
     }
 
@@ -163,30 +174,39 @@ public class EntityDetailsViewModel : BaseViewModel
     /// <returns>Grid data collection populated with entity's data.</returns>
     public async Task<GridData<object>> LoadEntityGridDataAsync(GridState<object> gridState)
     {
+        const string propertyPathAttribute = "PropertyPath";
+
         var orderBy = gridState.SortDefinitions
             .Select(sort =>
             {
                 var column = DataGrid!.RenderedColumns.First(column => column.PropertyName.Equals(sort.SortBy));
-                var propertyPath = column.UserAttributes["PropertyPath"]?.ToString();
+                var propertyPath = column.UserAttributes[propertyPathAttribute]?.ToString();
 
                 return new OrderByDto
                 {
                     PropertyPath = propertyPath!,
-                    IsDescending = sort.Descending
+                    IsAscending = !sort.Descending,
                 };
             })
             .ToList();
 
-        if (!orderBy.Any())
+        if (orderBy.Count == 0)
         {
-            var primaryKeyName = Model.Properties.FirstOrDefault(property => property.IsPrimaryKey)?.Name;
-
-            if (primaryKeyName is not null)
+            foreach (var defaultOrdering in Model.DefaultOrderings)
             {
-                orderBy.Add(new OrderByDto
+                var column = DataGrid!.RenderedColumns.FirstOrDefault(column =>
+                    column.UserAttributes.ContainsKey(propertyPathAttribute)
+                    && column.UserAttributes[propertyPathAttribute]!.ToString() == defaultOrdering.PropertyPath);
+
+                // When column is null, then the sortable property is hidden.
+                // In this case we still perform order, but it cannot be seen on UI.
+                if (column is not null)
                 {
-                    PropertyPath = primaryKeyName
-                });
+                    var sortDirection = defaultOrdering.IsAscending ? SortDirection.Ascending : SortDirection.Descending;
+                    await DataGrid.ExtendSortAsync(column.PropertyName, sortDirection, sortFunc: null);
+                }
+
+                orderBy.Add(defaultOrdering);
             }
         }
 

@@ -11,6 +11,11 @@ public class NavigationMetadata : PropertyMetadataBase
     public bool IsCollection { get; set; }
 
     /// <summary>
+    /// Property names that will be used on list view page to display navigation collection.
+    /// </summary>
+    public List<string> ListViewPropertyNames { get; set; } = [];
+
+    /// <summary>
     /// If true, the navigation cannot exist without its parent entity.
     /// </summary>
     /// <remarks>

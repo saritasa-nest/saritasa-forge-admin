@@ -316,7 +316,15 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         {
             Name = action.Name,
             Description = action.Description,
-            Handler = (serviceProvider, query) => action.Handler?.Invoke(serviceProvider, query.Cast<TEntity>())
+            Handler = async (serviceProvider, query) =>
+            {
+                if (action.Handler is null)
+                {
+                    return;
+                }
+
+                await action.Handler.Invoke(serviceProvider, query.Cast<TEntity>());
+            }
         };
         options.CustomActions.Add(castedAction);
 
@@ -332,13 +340,21 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     {
         var actionOptionsBuilder = new CustomActionBuilder<TEntity>();
         action(actionOptionsBuilder);
-        var customAction = actionOptionsBuilder.Build();
+        var (customAction, disabledTypes) = actionOptionsBuilder.Build();
 
         var castedCustomAction = new CustomAction<object>
         {
             Name = customAction.Name,
             Description = customAction.Description,
-            Handler = (serviceProvider, query) => customAction.Handler?.Invoke(serviceProvider, query.Cast<TEntity>())
+            Handler = async (serviceProvider, query) =>
+            {
+                if (customAction.Handler is null)
+                {
+                    return;
+                }
+
+                await customAction.Handler.Invoke(serviceProvider, query.Cast<TEntity>());
+            }
         };
         options.CustomActions.Add(castedCustomAction);
         return this;
