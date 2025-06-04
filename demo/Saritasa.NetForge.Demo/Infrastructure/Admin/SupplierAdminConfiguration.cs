@@ -62,6 +62,16 @@ public class SupplierAdminConfiguration : IEntityAdminConfiguration<Supplier>
                 {
                 });
             });
+
+            navigationOptionsBuilder.IncludeNavigation<Company>(director => director.Company, builder =>
+            {
+                builder.IncludeProperty(address => address.Name, companyBuilder =>
+                {
+                    companyBuilder
+                        .SetOrder(6)
+                        .SetFormOrder(6);
+                });
+            });
         });
     }
 }

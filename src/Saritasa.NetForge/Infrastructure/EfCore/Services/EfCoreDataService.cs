@@ -170,18 +170,8 @@ public class EfCoreDataService : IOrmDataService
             // Attach resolves this problem by explicitly attaching navigation to EF change tracker.
             dbContext.Attach(entity);
 
-            foreach (var navigationEntry in dbContext.Entry(entity).Navigations)
-            {
-                if (navigationEntry.Metadata is not INavigation navigationMetadata)
-                {
-                    continue;
-                }
+            AddOwnedNavigations(dbContext, entity);
 
-                if (navigationMetadata.ForeignKey.IsOwnership)
-                {
-                    dbContext.Add(navigationEntry.CurrentValue!);
-                }
-            }
             dbContext.Add(entity);
             await dbContext.SaveChangesAsync(cancellationToken);
         }
@@ -203,6 +193,30 @@ public class EfCoreDataService : IOrmDataService
         // Therefore, after adding a new model, we need to clear the tracking for the record so that the
         // delete operation can work.
         dbContext.ChangeTracker.Clear();
+    }
+
+    private static void AddOwnedNavigations(DbContext dbContext, object entity)
+    {
+        var navigationEntries = dbContext.Entry(entity).Navigations;
+        var navigationsQueue = new Queue<NavigationEntry>(navigationEntries);
+
+        while (navigationsQueue.Count > 0)
+        {
+            var navigationEntry = navigationsQueue.Dequeue();
+            if (navigationEntry.Metadata is not INavigation { ForeignKey.IsOwnership: true }
+                || navigationEntry.CurrentValue is null
+                || navigationEntry is not ReferenceEntry { TargetEntry: not null } referenceEntry)
+            {
+                continue;
+            }
+
+            dbContext.Add(navigationEntry.CurrentValue);
+
+            foreach (var entry in referenceEntry.TargetEntry.Navigations)
+            {
+                navigationsQueue.Enqueue(entry);
+            }
+        }
     }
 
     /// <inheritdoc />

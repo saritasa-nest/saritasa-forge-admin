@@ -20,7 +20,7 @@ public static class OwnedEntityHelper
     /// </remarks>
     public static void EnsureNavigationInstance(object parentInstance, NavigationMetadataDto ownedNavigation)
     {
-        var navigationValue = parentInstance.GetPropertyValue(ownedNavigation.Name);
+        var navigationValue = parentInstance.GetNestedPropertyValue(ownedNavigation.PropertyPath);
         if (navigationValue is not null)
         {
             return;
@@ -28,7 +28,7 @@ public static class OwnedEntityHelper
 
         var entityType = parentInstance.GetType();
         var entityParameter = Expression.Parameter(entityType, $"{entityType.Name}Parameter");
-        var navigationExpression = Expression.Property(entityParameter, ownedNavigation.Name);
+        var navigationExpression = ExpressionExtensions.GetPropertyExpression(entityParameter, ownedNavigation.PropertyPath);
 
         var constructorInfo = ownedNavigation.ClrType!.GetConstructors()[0];
         var newExpression = Expression.New(constructorInfo);

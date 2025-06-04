@@ -65,4 +65,9 @@ public class Director
     /// Address.
     /// </summary>
     public Address? Address { get; set; }
+
+    /// <summary>
+    /// Company.
+    /// </summary>
+    public required Company Company { get; set; }
 }

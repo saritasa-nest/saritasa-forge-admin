@@ -924,7 +924,42 @@ namespace Saritasa.NetForge.Demo.Net7.Migrations
                                 .HasForeignKey("SupplierName", "SupplierCity")
                                 .HasConstraintName("fk_suppliers_suppliers_name_city");
 
+                            b1.OwnsOne("Saritasa.NetForge.Demo.Models.Company", "Company", b2 =>
+                                {
+                                    b2.Property<string>("DirectorSupplierName")
+                                        .IsUnicode(false)
+                                        .HasColumnType("text")
+                                        .HasColumnName("name");
+
+                                    b2.Property<string>("DirectorSupplierCity")
+                                        .IsUnicode(false)
+                                        .HasColumnType("text")
+                                        .HasColumnName("city");
+
+                                    b2.Property<int>("EmployeeCount")
+                                        .HasColumnType("integer")
+                                        .HasColumnName("director_company_employee_count");
+
+                                    b2.Property<string>("Name")
+                                        .IsRequired()
+                                        .HasMaxLength(100)
+                                        .IsUnicode(false)
+                                        .HasColumnType("character varying(100)")
+                                        .HasColumnName("director_company_name");
+
+                                    b2.HasKey("DirectorSupplierName", "DirectorSupplierCity");
+
+                                    b2.ToTable("suppliers");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("DirectorSupplierName", "DirectorSupplierCity")
+                                        .HasConstraintName("fk_suppliers_suppliers_name_city");
+                                });
+
                             b1.Navigation("Address");
+
+                            b1.Navigation("Company")
+                                .IsRequired();
                         });
 
                     b.Navigation("Director");

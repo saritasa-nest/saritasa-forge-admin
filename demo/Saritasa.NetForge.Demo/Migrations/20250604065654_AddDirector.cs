@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -27,6 +27,20 @@ namespace Saritasa.NetForge.Demo.Migrations
                 name: "director_birthday",
                 table: "suppliers",
                 type: "date",
+                nullable: true);
+
+            migrationBuilder.AddColumn<int>(
+                name: "director_company_employee_count",
+                table: "suppliers",
+                type: "integer",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "director_company_name",
+                table: "suppliers",
+                type: "character varying(100)",
+                unicode: false,
+                maxLength: 100,
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
@@ -115,6 +129,14 @@ namespace Saritasa.NetForge.Demo.Migrations
 
             migrationBuilder.DropColumn(
                 name: "director_birthday",
+                table: "suppliers");
+
+            migrationBuilder.DropColumn(
+                name: "director_company_employee_count",
+                table: "suppliers");
+
+            migrationBuilder.DropColumn(
+                name: "director_company_name",
                 table: "suppliers");
 
             migrationBuilder.DropColumn(

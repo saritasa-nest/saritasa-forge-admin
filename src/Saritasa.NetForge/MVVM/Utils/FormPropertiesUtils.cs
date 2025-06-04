@@ -21,14 +21,19 @@ public static class FormPropertiesUtils
     public static void HandleOwnedNavigations(
         object instance, ICollection<PropertyMetadataDto> properties, List<NavigationMetadataDto> navigations)
     {
-        var ownedNavigations = navigations.Where(navigation => navigation.IsOwnership);
-        foreach (var navigation in ownedNavigations)
+        while (properties.Any(property => property is NavigationMetadataDto { IsOwnership: true }))
         {
-            OwnedEntityHelper.EnsureNavigationInstance(instance, navigation);
+            var ownedNavigations = navigations.Where(navigation => navigation.IsOwnership);
+            foreach (var navigation in ownedNavigations)
+            {
+                OwnedEntityHelper.EnsureNavigationInstance(instance, navigation);
 
-            var ownedProperties = navigation.TargetEntityProperties.Union(navigation.TargetEntityNavigations);
-            properties.Add(ownedProperties);
-            properties.Remove(navigation);
+                var ownedProperties = navigation.TargetEntityProperties.Union(navigation.TargetEntityNavigations);
+                properties.Add(ownedProperties);
+                properties.Remove(navigation);
+
+                navigations = navigation.TargetEntityNavigations;
+            }
         }
     }
 
