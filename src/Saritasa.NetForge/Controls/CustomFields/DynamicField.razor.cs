@@ -46,7 +46,7 @@ public partial class DynamicField : ComponentBase
 
     private FieldErrorModel GetFieldError(PropertyMetadataDto property)
     {
-        var fieldError = FieldErrorModels.FirstOrDefault(e => e.Property.Name == property.Name);
+        var fieldError = FieldErrorModels.FirstOrDefault(e => e.Property.PropertyPath == property.PropertyPath);
         if (fieldError is not null)
         {
             return fieldError;
