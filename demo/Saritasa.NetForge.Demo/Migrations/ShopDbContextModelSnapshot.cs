@@ -298,6 +298,7 @@ namespace Saritasa.NetForge.Demo.Migrations
                         .HasColumnName("availability_duration");
 
                     b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("created_at");
 
@@ -823,6 +824,127 @@ namespace Saritasa.NetForge.Demo.Migrations
                         .HasConstraintName("fk_shop_products_counts_shops_shop_id");
 
                     b.Navigation("Shop");
+                });
+
+            modelBuilder.Entity("Saritasa.NetForge.Demo.Models.Supplier", b =>
+                {
+                    b.OwnsOne("Saritasa.NetForge.Demo.Models.Director", "Director", b1 =>
+                        {
+                            b1.Property<string>("SupplierName")
+                                .IsUnicode(false)
+                                .HasColumnType("TEXT")
+                                .HasColumnName("name");
+
+                            b1.Property<string>("SupplierCity")
+                                .IsUnicode(false)
+                                .HasColumnType("TEXT")
+                                .HasColumnName("city");
+
+                            b1.Property<int?>("AddressId")
+                                .HasColumnType("INTEGER")
+                                .HasColumnName("director_address_id");
+
+                            b1.Property<int>("Age")
+                                .HasColumnType("INTEGER")
+                                .HasColumnName("director_age");
+
+                            b1.Property<DateOnly>("Birthday")
+                                .HasColumnType("TEXT")
+                                .HasColumnName("director_birthday");
+
+                            b1.Property<int>("Department")
+                                .HasColumnType("INTEGER")
+                                .HasColumnName("director_department");
+
+                            b1.Property<string>("Description")
+                                .IsUnicode(false)
+                                .HasColumnType("TEXT")
+                                .HasColumnName("director_description");
+
+                            b1.Property<DateTime>("DirectorSince")
+                                .HasColumnType("TEXT")
+                                .HasColumnName("director_director_since");
+
+                            b1.Property<bool>("IsActive")
+                                .HasColumnType("INTEGER")
+                                .HasColumnName("director_is_active");
+
+                            b1.Property<long?>("LastWorkDay")
+                                .HasColumnType("INTEGER")
+                                .HasColumnName("director_last_work_day");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .IsUnicode(false)
+                                .HasColumnType("TEXT")
+                                .HasColumnName("director_name");
+
+                            b1.Property<string>("Photo")
+                                .IsUnicode(false)
+                                .HasColumnType("TEXT")
+                                .HasColumnName("director_photo");
+
+                            b1.Property<TimeOnly>("StartWorkTime")
+                                .HasColumnType("TEXT")
+                                .HasColumnName("director_start_work_time");
+
+                            b1.HasKey("SupplierName", "SupplierCity");
+
+                            b1.HasIndex("AddressId")
+                                .IsUnique()
+                                .HasDatabaseName("ix_suppliers_director_address_id");
+
+                            b1.ToTable("suppliers");
+
+                            b1.HasOne("Saritasa.NetForge.Demo.Models.Address", "Address")
+                                .WithOne()
+                                .HasForeignKey("Saritasa.NetForge.Demo.Models.Supplier.Director#Saritasa.NetForge.Demo.Models.Director", "AddressId")
+                                .HasConstraintName("fk_suppliers_addresses_director_address_id");
+
+                            b1.WithOwner()
+                                .HasForeignKey("SupplierName", "SupplierCity")
+                                .HasConstraintName("fk_suppliers_suppliers_name_city");
+
+                            b1.OwnsOne("Saritasa.NetForge.Demo.Models.Company", "Company", b2 =>
+                                {
+                                    b2.Property<string>("DirectorSupplierName")
+                                        .IsUnicode(false)
+                                        .HasColumnType("TEXT")
+                                        .HasColumnName("name");
+
+                                    b2.Property<string>("DirectorSupplierCity")
+                                        .IsUnicode(false)
+                                        .HasColumnType("TEXT")
+                                        .HasColumnName("city");
+
+                                    b2.Property<int>("EmployeeCount")
+                                        .HasColumnType("INTEGER")
+                                        .HasColumnName("director_company_employee_count");
+
+                                    b2.Property<string>("Name")
+                                        .IsRequired()
+                                        .HasMaxLength(100)
+                                        .IsUnicode(false)
+                                        .HasColumnType("TEXT")
+                                        .HasColumnName("director_company_name");
+
+                                    b2.HasKey("DirectorSupplierName", "DirectorSupplierCity");
+
+                                    b2.ToTable("suppliers");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("DirectorSupplierName", "DirectorSupplierCity")
+                                        .HasConstraintName("fk_suppliers_suppliers_name_city");
+                                });
+
+                            b1.Navigation("Address");
+
+                            b1.Navigation("Company")
+                                .IsRequired();
+                        });
+
+                    b.Navigation("Director");
                 });
 
             modelBuilder.Entity("ShopSupplier", b =>

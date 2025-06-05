@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Saritasa.NetForge.Demo.Models;
 
@@ -71,7 +74,19 @@ public class ShopDbContext : IdentityDbContext<User>
         modelBuilder.Entity<Address>()
             .Property(address => address.DisplayName)
             .HasComputedColumnSql("city || ', ' || street", stored: true);
-        
+
+        modelBuilder
+            .Entity<Supplier>()
+            .OwnsOne<Director>(supplier => supplier.Director,
+                builder =>
+                {
+                    AddDateTimeOffsetConversions(builder);
+                    builder.OwnsOne<Company>(director => director.Company);
+                    builder
+                        .HasOne<Address>(address => address.Address)
+                        .WithOne();
+                });
+
         if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
         {
             // SQLite does not have proper support for DateTimeOffset via Entity Framework Core, see the limitations
@@ -80,11 +95,11 @@ public class ShopDbContext : IdentityDbContext<User>
             // use the DateTimeOffsetToBinaryConverter
             // Based on: https://github.com/aspnet/EntityFrameworkCore/issues/10784#issuecomment-415769754
             // This only supports millisecond precision, but should be sufficient for most use cases.
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            // Owned entities must be configured individually, because model.Builder.Entity() can't be called for owned ones.
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes().Where(entityType => !entityType.IsOwned()))
             {
-                var properties = entityType.ClrType.GetProperties().Where(p => p.PropertyType == typeof(DateTimeOffset)
-                                                                               || p.PropertyType == typeof(DateTimeOffset?));
-                foreach (var property in properties)
+                var dateTimeOffsetProperties = GetDateTimeOffsetProperties(entityType);
+                foreach (var property in dateTimeOffsetProperties)
                 {
                     modelBuilder
                         .Entity(entityType.Name)
@@ -101,10 +116,31 @@ public class ShopDbContext : IdentityDbContext<User>
             .GetEntityTypes()
             .SelectMany(e => e.GetProperties())
             .Where(p => p.ClrType == typeof(string));
-        
+
         foreach (var mutableProperty in stringColumns)
         {
             mutableProperty.SetIsUnicode(false);
         }
+    }
+
+    private static void AddDateTimeOffsetConversions<TParent, TOwned>(OwnedNavigationBuilder<TParent, TOwned> builder)
+        where TParent : class
+        where TOwned : class
+    {
+        var dateTimeOffsetProperties = GetDateTimeOffsetProperties(builder.OwnedEntityType);
+        foreach (var property in dateTimeOffsetProperties)
+        {
+            builder
+                .Property(property.Name)
+                .HasConversion(new DateTimeOffsetToBinaryConverter());
+        }
+    }
+
+    private static IEnumerable<PropertyInfo> GetDateTimeOffsetProperties(IMutableEntityType entityType)
+    {
+        return entityType.ClrType
+            .GetProperties()
+            .Where(property
+                => property.PropertyType == typeof(DateTimeOffset) || property.PropertyType == typeof(DateTimeOffset?));
     }
 }

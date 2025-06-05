@@ -34,7 +34,7 @@ internal class AddressesSeeder : ISeeder
         {
             foreach (var _ in chunk)
             {
-                shopDbContext.Addresses.Add(GenerateAddress());
+                shopDbContext.Addresses.Add(faker.GenerateAddress());
             }
             count += await shopDbContext.SaveChangesAsync(cancellationToken);
         }
@@ -42,16 +42,4 @@ internal class AddressesSeeder : ISeeder
         logger.LogInformation("Created {Count} addresses.", count);
         return count;
     }
-
-    private Address GenerateAddress() => new()
-    {
-        Street = faker.Address.StreetName(),
-        City = faker.Address.City(),
-        PostalCode = faker.Address.ZipCode(),
-        Country = faker.Address.Country(),
-        Latitude = faker.Address.Latitude(),
-        Longitude = faker.Address.Longitude(),
-        ContactPhone = faker.Phone.PhoneNumber(),
-        CreatedByUserId = faker.IndexGlobal
-    };
 }

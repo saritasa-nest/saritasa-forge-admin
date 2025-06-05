@@ -72,7 +72,24 @@ internal class ProductsSeeder : ISeeder
         {
             Name = faker.Company.CompanyName(),
             City = faker.Address.City(),
-            IsActive = faker.Random.Bool()
+            IsActive = faker.Random.Bool(),
+            Director = new Director
+            {
+                Name = faker.Name.FullName(),
+                Age = faker.Random.Int(min: 0, max: 100),
+                IsActive = faker.Random.Bool(),
+                Department = faker.Random.Enum<Department>(),
+                Birthday = faker.Date.PastDateOnly(),
+                DirectorSince = faker.Date.Past(),
+                LastWorkDay = faker.Date.PastOffset().OrNull(faker),
+                StartWorkTime = faker.Date.BetweenTimeOnly(new TimeOnly(7, 0), new TimeOnly(22, 0)),
+                Address = faker.GenerateAddress().OrNull(faker),
+                Company = new Company
+                {
+                    Name = faker.Company.CompanyName(),
+                    EmployeeCount = faker.Random.Int(min: 1, max: 100000),
+                }
+            }
         }
     };
 
