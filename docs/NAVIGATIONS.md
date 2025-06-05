@@ -216,3 +216,24 @@ Example when `Product.Name` and `Product.Price` are chosen:
 ### Default Behavior
 
 When no property is chosen then all primary keys will be used to display navigation collection.
+
+## Owned Navigations
+
+[Owned navigations](https://learn.microsoft.com/en-us/ef/core/modeling/owned-entities) are supported 
+and can be configured the same way as usual navigation:
+
+```csharp
+public void Configure(EntityOptionsBuilder<Supplier> entityOptionsBuilder)
+{
+    entityOptionsBuilder.IncludeNavigation<Director>(shop => shop.Director, navigationOptionsBuilder =>
+    {
+        navigationOptionsBuilder.IncludeProperty(director => director.Name, builder =>
+        {
+            builder
+                .SetOrder(4)
+                .SetFormOrder(4)
+                .SetDisplayName("Name of Director");
+        });
+    });
+}
+```
