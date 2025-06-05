@@ -27,6 +27,21 @@ public static class EntityMetadataAttributesExtensions
         foreach (var navigation in entityMetadata.Navigations)
         {
             navigation.ApplyPropertyAttributes();
+
+            if (!navigation.IsOwnership)
+            {
+                continue;
+            }
+
+            foreach (var property in navigation.TargetEntityProperties)
+            {
+                property.ApplyPropertyAttributes();
+            }
+
+            foreach (var targetNavigation in navigation.TargetEntityNavigations)
+            {
+                targetNavigation.ApplyPropertyAttributes();
+            }
         }
 
         // Try to get the description from the System.ComponentModel.DisplayNameAttribute.

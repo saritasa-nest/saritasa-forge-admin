@@ -14,6 +14,7 @@ public class Director
     /// Name.
     /// </summary>
     [MaxLength(100)]
+    [NetForgeProperty(IsSortable = true)]
     public required string Name { get; set; }
 
     /// <summary>
