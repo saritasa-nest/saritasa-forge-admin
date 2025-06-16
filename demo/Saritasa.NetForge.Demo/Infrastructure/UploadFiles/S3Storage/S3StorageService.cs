@@ -45,7 +45,6 @@ public class S3StorageService : IBlobStorageService, ICloudBlobStorageService, I
 
             var uploadRequest = new TransferUtilityUploadRequest()
             {
-                CannedACL = S3CannedACL.PublicRead,
                 InputStream = stream,
                 BucketName = bucketName,
                 Key = key,
