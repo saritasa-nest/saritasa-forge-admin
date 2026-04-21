@@ -16,6 +16,8 @@ public class UpdateEntityTests : IDisposable
     private readonly TestDbContext testDbContext;
     private readonly IOrmDataService efCoreDataService;
 
+    private readonly CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+
     /// <summary>
     /// Constructor.
     /// </summary>
@@ -66,14 +68,14 @@ public class UpdateEntityTests : IDisposable
     public async Task UpdateEntity_WithoutNavigations_ShouldUpdate()
     {
         // Arrange
-        var updatedShop = await testDbContext.Shops.AsNoTracking().FirstAsync();
+        var updatedShop = await testDbContext.Shops.AsNoTracking().FirstAsync(cancellationToken);
         var originalShop = ObjectCloner.Clone(updatedShop)!;
 
         const string newName = "Test222";
         updatedShop.Name = newName;
 
         // Act
-        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, CancellationToken.None);
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, cancellationToken);
 
         // Assert
         Assert.Contains(testDbContext.Shops, shop => shop.Name.Equals(newName));
@@ -88,14 +90,14 @@ public class UpdateEntityTests : IDisposable
         // Arrange
         var shops = testDbContext.Shops.Include(shop => shop.Address).AsNoTracking();
 
-        var updatedShop = await shops.FirstAsync();
+        var updatedShop = await shops.FirstAsync(cancellationToken);
         var originalShop = ObjectCloner.Clone(updatedShop)!;
 
         var newAddress = Fakers.AddressFaker.Generate();
         updatedShop.Address = newAddress;
 
         // Act
-        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, CancellationToken.None);
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, cancellationToken);
 
         // Assert
         Assert.Contains(testDbContext.Addresses, address => address.Street.Equals(newAddress.Street));
@@ -111,16 +113,16 @@ public class UpdateEntityTests : IDisposable
         // Arrange
         var shops = testDbContext.Shops.Include(shop => shop.Address).AsNoTracking();
 
-        var updatedShop = await shops.FirstAsync();
+        var updatedShop = await shops.FirstAsync(cancellationToken);
         var originalShop = ObjectCloner.Clone(updatedShop)!;
 
         var addressToUpdate = await testDbContext.Addresses
             .AsNoTracking()
-            .FirstAsync(address => !updatedShop.Address!.Equals(address));
+            .FirstAsync(address => !updatedShop.Address!.Equals(address), cancellationToken);
         updatedShop.Address = addressToUpdate;
 
         // Act
-        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, CancellationToken.None);
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, cancellationToken);
 
         // Assert
         Assert.Contains(shops, shop => shop.Address!.Street.Equals(addressToUpdate.Street));
@@ -135,13 +137,13 @@ public class UpdateEntityTests : IDisposable
         // Arrange
         var shops = testDbContext.Shops.Include(shop => shop.Address).AsNoTracking();
 
-        var updatedShop = await shops.FirstAsync();
+        var updatedShop = await shops.FirstAsync(cancellationToken);
         var originalShop = ObjectCloner.Clone(updatedShop)!;
 
         updatedShop.Address = null;
 
         // Act
-        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, CancellationToken.None);
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, cancellationToken);
 
         // Assert
         Assert.Contains(shops, shop => shop.Address is null);
@@ -156,14 +158,14 @@ public class UpdateEntityTests : IDisposable
         // Arrange
         var shops = testDbContext.Shops.Include(shop => shop.Products).AsNoTracking();
 
-        var updatedShop = await shops.FirstAsync();
+        var updatedShop = await shops.FirstAsync(cancellationToken);
         var originalShop = ObjectCloner.Clone(updatedShop)!;
 
         var newProduct = Fakers.ProductFaker.Generate();
         updatedShop.Products.Add(newProduct);
 
         // Act
-        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, CancellationToken.None);
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, cancellationToken);
 
         // Assert
         Assert.Contains(testDbContext.Products, product => product.Id == newProduct.Id);
@@ -179,16 +181,16 @@ public class UpdateEntityTests : IDisposable
         // Arrange
         var shops = testDbContext.Shops.Include(shop => shop.Products).AsNoTracking();
 
-        var updatedShop = await shops.FirstAsync();
+        var updatedShop = await shops.FirstAsync(cancellationToken);
         var originalShop = ObjectCloner.Clone(updatedShop)!;
 
         var productToAdd = await testDbContext.Products
             .AsNoTracking()
-            .FirstAsync(product => !updatedShop.Products.Contains(product));
+            .FirstAsync(product => !updatedShop.Products.Contains(product), cancellationToken);
         updatedShop.Products.Add(productToAdd);
 
         // Act
-        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, CancellationToken.None);
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, cancellationToken);
 
         // Assert
         Assert.Contains(productToAdd, updatedShop.Products);
@@ -203,14 +205,14 @@ public class UpdateEntityTests : IDisposable
         // Arrange
         var shops = testDbContext.Shops.Include(shop => shop.Products).AsNoTracking();
 
-        var updatedShop = await shops.FirstAsync();
+        var updatedShop = await shops.FirstAsync(cancellationToken);
         var originalShop = ObjectCloner.Clone(updatedShop)!;
 
         var productToRemove = updatedShop.Products.First();
         updatedShop.Products.Remove(productToRemove);
 
         // Act
-        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, CancellationToken.None);
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, cancellationToken);
 
         // Assert
         Assert.DoesNotContain(productToRemove, updatedShop.Products);
@@ -223,7 +225,7 @@ public class UpdateEntityTests : IDisposable
     public async Task UpdateEntity_AfterUpdateAction_ShouldUpdate()
     {
         // Arrange
-        var updatedShop = await testDbContext.Shops.AsNoTracking().FirstAsync();
+        var updatedShop = await testDbContext.Shops.AsNoTracking().FirstAsync(cancellationToken);
         var originalShop = ObjectCloner.Clone(updatedShop)!;
 
         const string newName = "Test222";
@@ -234,7 +236,7 @@ public class UpdateEntityTests : IDisposable
         };
 
         // Act
-        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction, CancellationToken.None);
+        await efCoreDataService.UpdateAsync(updatedShop, originalShop, afterUpdateAction, cancellationToken);
 
         // Assert
         Assert.Contains(testDbContext.Shops, shop => shop.Name.Equals(newName));
@@ -247,7 +249,7 @@ public class UpdateEntityTests : IDisposable
     public async Task UpdateEntity_CustomDatabaseAction_ShouldUpdate()
     {
         // Arrange
-        var updatedShop = await testDbContext.Shops.AsNoTracking().FirstAsync();
+        var updatedShop = await testDbContext.Shops.AsNoTracking().FirstAsync(cancellationToken);
         var originalShop = ObjectCloner.Clone(updatedShop);
 
         const string newName = "Test222";
@@ -258,7 +260,7 @@ public class UpdateEntityTests : IDisposable
 
         // Act
         await efCoreDataService
-            .UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, CancellationToken.None, customDatabaseAction);
+            .UpdateAsync(updatedShop, originalShop, afterUpdateAction: null, cancellationToken, customDatabaseAction);
 
         // Assert
         Assert.Contains(testDbContext.Shops, shop => shop.Name.Equals(newName));

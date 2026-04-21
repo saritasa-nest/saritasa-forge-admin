@@ -16,6 +16,8 @@ public class DeleteEntityTests : IClassFixture<NetForgeFixture>
     private readonly TestDbContext testDbContext;
     private readonly IOrmDataService efCoreDataService;
 
+    private readonly CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+
     /// <summary>
     /// Constructor.
     /// </summary>
@@ -39,7 +41,7 @@ public class DeleteEntityTests : IClassFixture<NetForgeFixture>
         testDbContext.Add(contactInfo);
 
         // Act
-        await efCoreDataService.DeleteAsync(contactInfo, contactInfoType, CancellationToken.None);
+        await efCoreDataService.DeleteAsync(contactInfo, contactInfoType, cancellationToken);
 
         // Assert
         Assert.DoesNotContain(testDbContext.ContactInfos, item => item.Id == contactInfo.Id);
@@ -58,7 +60,7 @@ public class DeleteEntityTests : IClassFixture<NetForgeFixture>
         // Act
         // Assert that DbUpdateConcurrencyException is thrown
         await Assert.ThrowsAsync<DbUpdateConcurrencyException>(() =>
-            efCoreDataService.DeleteAsync(nonExistingContactInfo, contactInfoType, CancellationToken.None));
+            efCoreDataService.DeleteAsync(nonExistingContactInfo, contactInfoType, cancellationToken));
     }
 
     /// <summary>
@@ -72,6 +74,6 @@ public class DeleteEntityTests : IClassFixture<NetForgeFixture>
 
         // Act and Assert
         await Assert.ThrowsAsync<ArgumentException>(() =>
-            efCoreDataService.DeleteAsync(1, invalidType, CancellationToken.None));
+            efCoreDataService.DeleteAsync(1, invalidType, cancellationToken));
     }
 }

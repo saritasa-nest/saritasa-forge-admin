@@ -14,6 +14,8 @@ public class CreateEntityTests : IDisposable
     private readonly TestDbContext testDbContext;
     private readonly IOrmDataService efCoreDataService;
 
+    private readonly CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+
     /// <summary>
     /// Constructor.
     /// </summary>
@@ -62,7 +64,7 @@ public class CreateEntityTests : IDisposable
         var contactInfo = Fakers.ContactInfoFaker.Generate();
 
         // Act
-        await efCoreDataService.AddAsync(contactInfo, contactInfoType, CancellationToken.None);
+        await efCoreDataService.AddAsync(contactInfo, contactInfoType, cancellationToken);
 
         // Assert
         Assert.Contains(testDbContext.ContactInfos, item => item.Id == contactInfo.Id);
@@ -77,13 +79,13 @@ public class CreateEntityTests : IDisposable
         // Arrange
         var contactInfo = Fakers.ContactInfoFaker.Generate();
         testDbContext.ContactInfos.Add(contactInfo);
-        await testDbContext.SaveChangesAsync(CancellationToken.None);
+        await testDbContext.SaveChangesAsync(cancellationToken);
         var alreadyExistingContactInfo = Fakers.ContactInfoFaker.Generate();
         alreadyExistingContactInfo.Id = contactInfo.Id;
 
         // Act
         async Task Act() => await efCoreDataService.AddAsync(
-            alreadyExistingContactInfo, typeof(ContactInfo), CancellationToken.None);
+            alreadyExistingContactInfo, typeof(ContactInfo), cancellationToken);
 
         // Assert
         await Assert.ThrowsAnyAsync<Exception>(Act);
@@ -106,7 +108,7 @@ public class CreateEntityTests : IDisposable
         };
 
         // Act
-        await efCoreDataService.AddAsync(newContactInfo, contactInfoType, CancellationToken.None, customAction);
+        await efCoreDataService.AddAsync(newContactInfo, contactInfoType, cancellationToken, customAction);
 
         // Assert
         Assert.Contains(testDbContext.ContactInfos, contactInfo => contactInfo.Email == customActionEmail);

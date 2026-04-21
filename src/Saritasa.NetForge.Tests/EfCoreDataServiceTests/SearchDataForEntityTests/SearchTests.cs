@@ -17,6 +17,8 @@ public class SearchTests : IClassFixture<SearchTestsFixture>
     private readonly TestDbContext testDbContext;
     private readonly IOrmDataService dataService;
 
+    private readonly CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+
     /// <summary>
     /// Constructor.
     /// </summary>
@@ -115,7 +117,7 @@ public class SearchTests : IClassFixture<SearchTestsFixture>
         };
         var searchOptions = new SearchOptions { SearchString = "SearchString" };
 
-        var expectedCount = await testDbContext.Addresses.CountAsync(TestContext.Current.CancellationToken);
+        var expectedCount = await testDbContext.Addresses.CountAsync(cancellationToken);
 
         // Act
         var searchedData = await dataService.SearchDataForEntityAsync(entityType, properties, searchOptions);
