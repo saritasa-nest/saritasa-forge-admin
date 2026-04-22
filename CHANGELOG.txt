@@ -42,3 +42,6 @@
 [*] Fix navigations displaying.
 [*] Fix removing related entities.
 [*] Fix the case when ordinary search doesn't work with the custom one.
+
+1.1.0 [2026-04-21]
+[+] Add support for .NET 10.

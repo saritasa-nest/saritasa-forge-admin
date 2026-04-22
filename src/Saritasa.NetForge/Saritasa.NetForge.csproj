@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <OutputType>Library</OutputType>
@@ -37,6 +37,14 @@
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0|AnyCPU'">
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="..\..\icon.png">
       <Pack>True</Pack>
@@ -56,26 +64,34 @@
     <Folder Include="Domain\UseCases\" />
   </ItemGroup>
 
+  <!--  Note that we use only first major versions like 8.0.0 -->
+  <!--  We need it to not force the user with updating such packages in case they are use the same package. -->
+  <!--  For example, if we have Microsoft.EntityFrameworkCore 8.0.1 but user has 8.0.0 -->
+  <!--  they will have to update to 8.0.1, to avoid this we use only first version. -->
+  <!--  But we may use versions like 8.0.1 or other when we use some specific feature or such version has vulnerablility fix. -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.12" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-    <PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.0" />
   </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.0" />
+  </ItemGroup>
 
   <ItemGroup>
+    <!-- Please note that MudBlazor 9.3.0 has broken MudSelect, so NavigationCollectionField control does not work properly. -->
+    <!-- It means we have to use 9.4.0 or higher (check release with the fix) instead of 9.0.0 -->
+    <!-- Issue in MudBlazor: https://github.com/MudBlazor/MudBlazor/issues/13106 -->
     <PackageReference Include="MudBlazor" Version="8.0.0" />
     <PackageReference Include="DeepCopy.Expression" Version="1.5.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="PluralizeService.Core" Version="1.2.21147.2" />
     <PackageReference Include="Saritasa.Tools.Common" Version="5.0.0" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
   </ItemGroup>
 
 </Project>

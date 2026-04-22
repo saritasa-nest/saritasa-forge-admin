@@ -1,0 +1,23 @@
+<Solution>
+  <Folder Name="/Application/">
+    <Project Path="Saritasa.NetForge/Saritasa.NetForge.csproj" />
+  </Folder>
+  <Folder Name="/Demo/">
+    <Project Path="../demo/Saritasa.NetForge.Demo/Saritasa.NetForge.Demo.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="../CHANGELOG.txt" />
+    <File Path="../INSTALL.md" />
+    <File Path="../MIGRATION.md" />
+    <File Path="../VERSION.txt" />
+    <File Path="Directory.Build.props" />
+  </Folder>
+  <Folder Name="/Solution Items/Docs/">
+    <File Path="../docs/NAVIGATIONS.md" />
+    <File Path="../docs/SEARCH.md" />
+    <File Path="../README.md" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="Saritasa.NetForge.Tests/Saritasa.NetForge.Tests.csproj" />
+  </Folder>
+</Solution>
