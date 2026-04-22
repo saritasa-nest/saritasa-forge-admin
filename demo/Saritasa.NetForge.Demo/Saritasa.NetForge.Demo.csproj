@@ -33,9 +33,11 @@
     </ItemGroup>
     
     <ItemGroup>
-        <None Update="appsettings.json.template">
+        <Content Update="appsettings.json.template">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
     </ItemGroup>
     
     <ItemGroup>
