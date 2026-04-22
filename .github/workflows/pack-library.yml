@@ -45,10 +45,10 @@ jobs:
           version: ${{ steps.getversion.outputs.version }}
 
       - name: Restore Packages
-        run: dotnet restore src/Saritasa.NetForge.sln
+        run: dotnet restore src/Saritasa.NetForge.slnx
         
       - name: Build NetForge solution
-        run: dotnet build src/Saritasa.NetForge.sln
+        run: dotnet build src/Saritasa.NetForge.slnx
 
       - name: Pack NetForge
         run: dotnet pack --output ../artifacts
