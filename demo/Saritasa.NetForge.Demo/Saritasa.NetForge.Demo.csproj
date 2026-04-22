@@ -24,6 +24,10 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="MimeTypeMapOfficial" Version="1.0.17" />
+        
+        <!-- We need System.Text.Json because some library needs it. 
+             Without it we will get exception on dev demo. Locally it cannot be reproduced. -->
+        <PackageReference Include="System.Text.Json" Version="10.0.7" />
         <PackageReference Include="Saritasa.Tools.Common" Version="5.0.1" />
         <PackageReference Include="Saritasa.Tools.Domain" Version="2.0.0" />
     </ItemGroup>
