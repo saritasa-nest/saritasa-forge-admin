@@ -82,7 +82,7 @@
     <PackageReference Include="DeepCopy.Expression" Version="1.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="PluralizeService.Core" Version="1.2.21147.2" />
-    <PackageReference Include="Saritasa.Tools.Common" Version="5.0.1" />
+    <PackageReference Include="Saritasa.Tools.Common" Version="5.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
   </ItemGroup>
 
