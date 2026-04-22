@@ -39,6 +39,7 @@ public class DeleteEntityTests : IClassFixture<NetForgeFixture>
 
         // Add the contactInfo to the database before attempting to delete it
         testDbContext.Add(contactInfo);
+        await testDbContext.SaveChangesAsync(cancellationToken);
 
         // Act
         await efCoreDataService.DeleteAsync(contactInfo, contactInfoType, cancellationToken);
