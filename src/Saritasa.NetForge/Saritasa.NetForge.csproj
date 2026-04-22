@@ -64,6 +64,11 @@
     <Folder Include="Domain\UseCases\" />
   </ItemGroup>
 
+  <!--  Note that we use only first major versions like 8.0.0 -->
+  <!--  We need it to not force the user with updating such packages in case they are use the same package. -->
+  <!--  For example, if we have Microsoft.EntityFrameworkCore 8.0.1 but user has 8.0.0 -->
+  <!--  they will have to update to 8.0.1, to avoid this we use only first version. -->
+  <!--  But we may use versions like 8.0.1 or other when we use some specific feature or such version has vulnerablility fix. -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.0" />
@@ -78,6 +83,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Please note that MudBlazor 9.3.0 has broken MudSelect, so NavigationCollectionField control does not work properly. -->
+    <!-- It means we have to use 9.4.0 or higher (check release with the fix) instead of 9.0.0 -->
+    <!-- Issue in MudBlazor: https://github.com/MudBlazor/MudBlazor/issues/13106 -->
     <PackageReference Include="MudBlazor" Version="8.0.0" />
     <PackageReference Include="DeepCopy.Expression" Version="1.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
