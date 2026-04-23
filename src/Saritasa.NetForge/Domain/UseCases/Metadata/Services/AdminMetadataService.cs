@@ -21,7 +21,7 @@ public class AdminMetadataService
 
     /// <summary>
     /// Constructor.
-    /// </summary>>
+    /// </summary>
     public AdminMetadataService(IOrmMetadataService ormMetadataService, AdminOptions adminOptions,
         IMemoryCache memoryCache)
     {
@@ -62,6 +62,11 @@ public class AdminMetadataService
                     // Exclude properties if it was specified in the entity options.
                     ExcludeProperties(entityMetadata, entityOptions);
                 }
+            }
+            else
+            {
+                // When entityOptions is null, the entity does not have any configurations
+                entityMetadata.SetPrimaryKeysDefaultSort();
             }
 
             entityMetadata.ApplyEntityAttributes(adminOptions);

@@ -145,12 +145,7 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
         Expression<Func<TEntity, object?>> navigationExpression,
         Action<NavigationOptionsBuilder<TNavigation>> navigationOptionsBuilderAction)
     {
-        var navigationOptionsBuilder = new NavigationOptionsBuilder<TNavigation>();
-        navigationOptionsBuilderAction.Invoke(navigationOptionsBuilder);
-
-        var includedPropertyName = navigationExpression.GetMemberName();
-        var navigationOptions = navigationOptionsBuilder.Create(includedPropertyName);
-
+        var navigationOptions = NavigationOptionsHelper.CreateNavigationOptions(navigationExpression, navigationOptionsBuilderAction);
         options.NavigationOptions.Add(navigationOptions);
         return this;
     }
@@ -296,6 +291,97 @@ public class EntityOptionsBuilder<TEntity> where TEntity : class
     public EntityOptionsBuilder<TEntity> SetUpdateAction(Action<IServiceProvider?, TEntity> action)
     {
         options.UpdateAction = (serviceProvider, entity) => action(serviceProvider, (TEntity)entity);
+        return this;
+    }
+
+    /// <summary>
+    /// Sets action that executes after entity delete and before saving changes to a database.
+    /// </summary>
+    /// <param name="action">Action to execute.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public EntityOptionsBuilder<TEntity> SetDeleteAction(Action<IServiceProvider?, TEntity> action)
+    {
+        options.DeleteAction = (serviceProvider, entity) => action(serviceProvider, (TEntity)entity);
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a custom action to the entity options.
+    /// </summary>
+    /// <param name="action">The custom action to add.</param>
+    /// <returns>The current instance of <see cref="EntityOptionsBuilder{TEntity}"/>.</returns>
+    public EntityOptionsBuilder<TEntity> AddCustomAction(CustomAction<TEntity> action)
+    {
+        var castedAction = new CustomAction<object>
+        {
+            Name = action.Name,
+            Description = action.Description,
+            Handler = async (serviceProvider, query) =>
+            {
+                if (action.Handler is null)
+                {
+                    return;
+                }
+
+                await action.Handler.Invoke(serviceProvider, query.Cast<TEntity>());
+            }
+        };
+        options.CustomActions.Add(castedAction);
+
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a custom action to the entity options.
+    /// </summary>
+    /// <param name="action">An action that builds custom action options.</param>
+    /// <returns>The current instance of <see cref="EntityOptionsBuilder{TEntity}"/>.</returns>
+    public EntityOptionsBuilder<TEntity> AddCustomAction(Action<CustomActionBuilder<TEntity>> action)
+    {
+        var actionOptionsBuilder = new CustomActionBuilder<TEntity>();
+        action(actionOptionsBuilder);
+        var (customAction, disabledTypes) = actionOptionsBuilder.Build();
+
+        var castedCustomAction = new CustomAction<object>
+        {
+            Name = customAction.Name,
+            Description = customAction.Description,
+            Handler = async (serviceProvider, query) =>
+            {
+                if (customAction.Handler is null)
+                {
+                    return;
+                }
+
+                await customAction.Handler.Invoke(serviceProvider, query.Cast<TEntity>());
+            }
+        };
+        options.CustomActions.Add(castedCustomAction);
+        return this;
+    }
+
+    /// <summary>
+    /// Sets value that represents maximum navigation depth on the entity level.
+    /// Use <see cref="AdminOptionsBuilder.SetMaxNavigationDepth"/> for the global level.
+    /// If depth of a navigation is more than this value then such navigation's data will not be loaded.
+    /// Default value is 2.
+    /// </summary>
+    /// <param name="maxNavigationDepth">
+    /// Maximum navigation depth. Examples of navigation depth:
+    /// <list type="bullet">
+    /// <item><c>Product.Shop</c> has depth = 1</item>
+    /// <item><c>Product.Shop.OwnerContact</c> has depth = 2</item>
+    /// <item><c>Product.Shop.Suppliers.Shops</c> has depth = 3</item>
+    /// </list>
+    /// So, if <c>maxNavigationDepth = 2</c>, then <c>Product.Shop.Suppliers.Shops</c> will not be loaded.
+    /// </param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    /// <remarks>
+    /// Beware that high value will increase the amount of data loaded, so performance will be slower.
+    /// </remarks>
+    public EntityOptionsBuilder<TEntity> SetMaxNavigationDepth(byte maxNavigationDepth)
+    {
+        options.MaxNavigationDepth = maxNavigationDepth;
         return this;
     }
 }

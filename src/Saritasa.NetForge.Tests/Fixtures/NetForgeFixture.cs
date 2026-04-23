@@ -1,29 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Saritasa.NetForge.Extensions;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
 using Saritasa.NetForge.Tests.Domain;
-using Xunit.Microsoft.DependencyInjection;
-using Xunit.Microsoft.DependencyInjection.Abstracts;
 
 namespace Saritasa.NetForge.Tests.Fixtures;
 
 /// <summary>
 /// Sets up an in-memory database and adds the NetForge library to the service collection.
 /// </summary>
-public class NetForgeFixture : TestBedFixture
+public class NetForgeFixture : IDisposable
 {
-    /// <inheritdoc />
-    protected override ValueTask DisposeAsyncCore()
-    {
-        return ValueTask.CompletedTask;
-    }
+    private readonly ServiceProvider serviceProvider;
+    private bool disposedValue;
 
-    /// <inheritdoc />
-    protected override void AddServices(IServiceCollection services, IConfiguration? configuration)
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    public NetForgeFixture()
     {
-        services.AddDbContext<TestDbContext>(options => options.UseInMemoryDatabase("NetForgeTest"));
+        var services = new ServiceCollection();
+
+        services.AddDbContext<TestDbContext>(options => options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
 
         services.AddNetForge(optionsBuilder =>
         {
@@ -32,11 +30,37 @@ public class NetForgeFixture : TestBedFixture
                 efOptionsBuilder.UseDbContext<TestDbContext>();
             });
         });
+
+        serviceProvider = services.BuildServiceProvider();
     }
 
+    /// <summary>
+    /// Resolves a service from the fixture's service provider.
+    /// </summary>
+    public T GetService<T>() where T : notnull => serviceProvider.GetRequiredService<T>();
+
     /// <inheritdoc />
-    protected override IEnumerable<TestAppSettings> GetTestAppSettings()
+    public void Dispose()
     {
-        yield return new() { Filename = "appsettings.json", IsOptional = true };
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Releases managed resources.
+    /// </summary>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposedValue)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            serviceProvider.Dispose();
+        }
+
+        disposedValue = true;
     }
 }

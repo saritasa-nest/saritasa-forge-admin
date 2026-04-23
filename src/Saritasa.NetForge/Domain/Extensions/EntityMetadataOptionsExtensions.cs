@@ -1,5 +1,8 @@
+﻿using MudBlazor;
+using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Domain.UseCases.Common;
 
 namespace Saritasa.NetForge.Domain.Extensions;
 
@@ -8,6 +11,8 @@ namespace Saritasa.NetForge.Domain.Extensions;
 /// </summary>
 public static class EntityMetadataOptionsExtensions
 {
+    private static List<DefaultSortDto> defaultSorts = [];
+
     /// <summary>
     /// Applies entity-specific options to the given <see cref="EntityMetadata"/> using the provided options.
     /// </summary>
@@ -70,8 +75,13 @@ public static class EntityMetadataOptionsExtensions
         entityMetadata.MessageOptions = entityOptions.MessageOptions;
         entityMetadata.CreateAction = entityOptions.CreateAction;
         entityMetadata.UpdateAction = entityOptions.UpdateAction;
+        entityMetadata.DeleteAction = entityOptions.DeleteAction;
+
+        entityMetadata.CustomActions = entityOptions.CustomActions;
 
         entityMetadata.ToStringFunc = entityOptions.ToStringFunc;
+
+        defaultSorts = [];
 
         foreach (var option in entityOptions.PropertyOptions)
         {
@@ -107,12 +117,30 @@ public static class EntityMetadataOptionsExtensions
             navigation?.ApplyCalculatedPropertyOptions(option);
         }
 
+        entityMetadata.Navigations = GetIncludedNavigations(entityMetadata.Navigations, entityOptions.NavigationOptions);
+
         foreach (var navigationOptions in entityOptions.NavigationOptions)
         {
             var navigation = entityMetadata.Navigations
                 .First(navigation => navigation.Name.Equals(navigationOptions.PropertyName));
 
             navigation.ApplyNavigationOptions(navigationOptions);
+        }
+
+        if (defaultSorts.Count > 0)
+        {
+            entityMetadata.DefaultOrderings = defaultSorts
+                .OrderBy(sort => sort.Order)
+                .Select(sort => new OrderByDto
+                {
+                    PropertyPath = sort.PropertyPath,
+                    IsAscending = sort.SortDirection == SortDirection.Ascending,
+                })
+                .ToList();
+        }
+        else
+        {
+            entityMetadata.SetPrimaryKeysDefaultSort();
         }
 
         entityMetadata.AssignGroupToEntity(entityOptions.GroupName, adminOptions);
@@ -188,6 +216,20 @@ public static class EntityMetadataOptionsExtensions
             {
                 propertyMetadata.CanBeNavigatedToDetails = propertyOptions.CanBeNavigatedToDetails;
             }
+
+            if (propertyOptions.DefaultSort.HasValue)
+            {
+                var defaultSort = new DefaultSortDto
+                {
+                    PropertyPath = propertyMetadata.PropertyPath,
+                    SortDirection = propertyOptions.DefaultSort.Value.SortDirection,
+                    Order = propertyOptions.DefaultSort.Value.Order
+                };
+
+                defaultSorts.Add(defaultSort);
+
+                propertyMetadata.IsSortable = true;
+            }
         }
 
         if (propertyOptions.IsMultiline)
@@ -255,12 +297,12 @@ public static class EntityMetadataOptionsExtensions
     private static void ApplyNavigationOptions(
         this NavigationMetadata navigation, NavigationOptions navigationOptions)
     {
-        navigation.IsIncluded = true;
-
         if (navigationOptions.FormOrder.HasValue)
         {
             navigation.FormOrder = navigationOptions.FormOrder.Value;
         }
+
+        navigation.ListViewPropertyNames = navigationOptions.ListViewPropertyNames;
 
         foreach (var propertyOptions in navigationOptions.PropertyOptions)
         {
@@ -278,12 +320,55 @@ public static class EntityMetadataOptionsExtensions
             property?.ApplyCalculatedPropertyOptions(propertyOptions);
         }
 
+        navigation.TargetEntityNavigations
+            = GetIncludedNavigations(navigation.TargetEntityNavigations, navigationOptions.NavigationsOptions);
+
+        foreach (var navigationOption in navigationOptions.NavigationsOptions)
+        {
+            var targetNavigation = navigation.TargetEntityNavigations
+                .FirstOrDefault(property => property.Name == navigationOption.PropertyName);
+
+            targetNavigation?.ApplyNavigationOptions(navigationOption);
+        }
+
         var notIncludedProperties = navigation.TargetEntityProperties
             .Where(p => !navigationOptions.PropertyOptions.Any(option => option.PropertyName == p.Name)
                         && !navigationOptions.CalculatedPropertyOptions.Any(option => option.PropertyName == p.Name));
         foreach (var notIncludedProperty in notIncludedProperties)
         {
             notIncludedProperty.IsHidden = true;
+        }
+    }
+
+    /// <summary>
+    /// Gets only included navigations in configuration
+    /// so data of excluded navigations will not be loaded to improve performance.
+    /// </summary>
+    private static List<NavigationMetadata> GetIncludedNavigations(
+        List<NavigationMetadata> navigations, ICollection<NavigationOptions> navigationOptions)
+    {
+        return navigations
+            .Where(targetNavigation => navigationOptions.Any(option => option.PropertyName == targetNavigation.Name))
+            .ToList();
+    }
+
+    /// <summary>
+    /// Set sort using entity's primary keys.
+    /// </summary>
+    /// <param name="entityMetadata">Entity metadata.</param>
+    public static void SetPrimaryKeysDefaultSort(this EntityMetadata entityMetadata)
+    {
+        var primaryKeys = entityMetadata.Properties.Where(property => property.IsPrimaryKey);
+        foreach (var primaryKey in primaryKeys)
+        {
+            var primaryKeyOrder = new OrderByDto
+            {
+                PropertyPath = primaryKey.Name,
+                IsAscending = true
+            };
+            entityMetadata.DefaultOrderings.Add(primaryKeyOrder);
+
+            primaryKey.IsSortable = true;
         }
     }
 }

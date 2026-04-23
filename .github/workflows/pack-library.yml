@@ -20,9 +20,9 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: |
-            6.0.x
-            7.0.x
             8.0.x
+            9.0.x
+            10.0.x
 
       - name: Checkout Source
         uses: actions/checkout@v2
@@ -45,10 +45,10 @@ jobs:
           version: ${{ steps.getversion.outputs.version }}
 
       - name: Restore Packages
-        run: dotnet restore src/Saritasa.NetForge.sln
+        run: dotnet restore src/Saritasa.NetForge.slnx
         
       - name: Build NetForge solution
-        run: dotnet build src/Saritasa.NetForge.sln
+        run: dotnet build src/Saritasa.NetForge.slnx
 
       - name: Pack NetForge
         run: dotnet pack --output ../artifacts

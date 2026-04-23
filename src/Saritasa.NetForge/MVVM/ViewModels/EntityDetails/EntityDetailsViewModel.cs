@@ -1,4 +1,5 @@
 ﻿using MudBlazor;
+using Saritasa.NetForge.Domain.Dtos;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Domain.Exceptions;
@@ -85,7 +86,22 @@ public class EntityDetailsViewModel : BaseViewModel
     /// <summary>
     /// Selected entities.
     /// </summary>
-    public HashSet<object> SelectedEntities { get; set; } = new();
+    public HashSet<object> SelectedEntities { get; set; } = [];
+
+    /// <summary>
+    /// Selected custom action.
+    /// </summary>
+    public string SelectedCustomAction { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Selected global custom action.
+    /// </summary>
+    public string SelectedGlobalCustomAction { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Total items in data grid.
+    /// </summary>
+    public int TotalItems { get; set; }
 
     /// <inheritdoc/>
     public override async Task LoadAsync(CancellationToken cancellationToken)
@@ -95,21 +111,16 @@ public class EntityDetailsViewModel : BaseViewModel
             var entity = await entityService.GetEntityByIdAsync(Model.StringId, cancellationToken);
             Model = MapModel(entity);
 
-            IsDisplaySearchInput = Model.Properties.Any(property =>
-                                   {
-                                       if (property is NavigationMetadataDto navigation)
-                                       {
-                                           return navigation.TargetEntityProperties
-                                               .Any(targetProperty => targetProperty.SearchType != SearchType.None);
-                                       }
-
-                                       return property.SearchType != SearchType.None;
-                                   })
-                                   || Model.SearchFunction is not null;
+            IsDisplaySearchInput = Model.Properties.Any(SearchAvailable) || Model.SearchFunction is not null;
 
             CanAdd = Model is { CanAdd: true, IsKeyless: false } && HasProperties;
             CanEdit = Model is { CanEdit: true, IsKeyless: false } && HasProperties;
             CanDelete = Model is { CanDelete: true, IsKeyless: false } && HasProperties;
+
+            Model.GlobalCustomActions = adminOptions.GlobalCustomActions
+                .Where(e => !e.Value.Exists(t => t == entity.ClrType))
+                .Select(e => e.Key)
+                .ToList();
         }
         catch (NotFoundException)
         {
@@ -135,7 +146,25 @@ public class EntityDetailsViewModel : BaseViewModel
             CanDelete = entity.CanDelete,
             EntityDeleteMessage = entity.MessageOptions.EntityDeleteMessage,
             EntityBulkDeleteMessage = entity.MessageOptions.EntityBulkDeleteMessage,
+            CustomActions = entity.CustomActions,
+            DefaultOrderings = entity.DefaultOrderings
         };
+    }
+
+    private static bool SearchAvailable(PropertyMetadataDto property)
+    {
+        if (property.SearchType != SearchType.None)
+        {
+            return true;
+        }
+
+        if (property is NavigationMetadataDto navigation)
+        {
+            return navigation.TargetEntityProperties.Any(targetProperty => targetProperty.SearchType != SearchType.None)
+                   || navigation.TargetEntityNavigations.Any(SearchAvailable);
+        }
+
+        return false;
     }
 
     /// <summary>
@@ -145,31 +174,39 @@ public class EntityDetailsViewModel : BaseViewModel
     /// <returns>Grid data collection populated with entity's data.</returns>
     public async Task<GridData<object>> LoadEntityGridDataAsync(GridState<object> gridState)
     {
+        const string propertyPathAttribute = "PropertyPath";
+
         var orderBy = gridState.SortDefinitions
             .Select(sort =>
             {
                 var column = DataGrid!.RenderedColumns.First(column => column.PropertyName.Equals(sort.SortBy));
-                var navigationName = column.UserAttributes["NavigationName"]?.ToString();
+                var propertyPath = column.UserAttributes[propertyPathAttribute]?.ToString();
 
                 return new OrderByDto
                 {
-                    FieldName = column.Title,
-                    IsDescending = sort.Descending,
-                    NavigationName = navigationName
+                    PropertyPath = propertyPath!,
+                    IsAscending = !sort.Descending,
                 };
             })
             .ToList();
 
-        if (!orderBy.Any())
+        if (orderBy.Count == 0)
         {
-            var primaryKeyName = Model.Properties.FirstOrDefault(property => property.IsPrimaryKey)?.Name;
-
-            if (primaryKeyName is not null)
+            foreach (var defaultOrdering in Model.DefaultOrderings)
             {
-                orderBy.Add(new OrderByDto
+                var column = DataGrid!.RenderedColumns.FirstOrDefault(column =>
+                    column.UserAttributes.ContainsKey(propertyPathAttribute)
+                    && column.UserAttributes[propertyPathAttribute]!.ToString() == defaultOrdering.PropertyPath);
+
+                // When column is null, then the sortable property is hidden.
+                // In this case we still perform order, but it cannot be seen on UI.
+                if (column is not null)
                 {
-                    FieldName = primaryKeyName
-                });
+                    var sortDirection = defaultOrdering.IsAscending ? SortDirection.Ascending : SortDirection.Descending;
+                    await DataGrid.ExtendSortAsync(column.PropertyName, sortDirection, sortFunc: null);
+                }
+
+                orderBy.Add(defaultOrdering);
             }
         }
 
@@ -183,6 +220,8 @@ public class EntityDetailsViewModel : BaseViewModel
 
         var entityData = await dataService
             .SearchDataForEntityAsync(Model.ClrType, Model.Properties, searchOptions, Model.SearchFunction, Model.CustomQueryFunction);
+
+        TotalItems = entityData.Metadata.TotalCount;
 
         var data = new GridData<object>
         {
@@ -206,7 +245,9 @@ public class EntityDetailsViewModel : BaseViewModel
     /// </summary>
     public async Task DeleteSelectedEntitiesAsync(CancellationToken cancellationToken)
     {
-        await dataService.BulkDeleteAsync(SelectedEntities, SelectedEntities.First().GetType(), cancellationToken);
+        var entityMetadata = await entityService.GetEntityByTypeAsync(SelectedEntities.First().GetType(), cancellationToken);
+
+        await dataService.BulkDeleteAsync(SelectedEntities, SelectedEntities.First().GetType(), cancellationToken, entityMetadata.DeleteAction);
 
         DataGrid?.ReloadServerData();
 

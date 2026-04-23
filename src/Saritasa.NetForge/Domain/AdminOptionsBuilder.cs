@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Saritasa.NetForge.Domain.Attributes;
 using Saritasa.NetForge.Domain.Entities.Options;
 using Saritasa.NetForge.Domain.Interfaces;
@@ -355,6 +355,61 @@ public class AdminOptionsBuilder
     public AdminOptionsBuilder SetStaticBodyComponentType(Type staticBodyComponentType)
     {
         options.StaticBodyComponentType = staticBodyComponentType;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets value that represents maximum navigation depth on the global level.
+    /// Use <see cref="EntityOptionsBuilder{TEntity}.SetMaxNavigationDepth"/> for the entity level.
+    /// If depth of a navigation is more than this value then such navigation's data will not be loaded.
+    /// Default value is 2.
+    /// </summary>
+    /// <param name="maxNavigationDepth">
+    /// Maximum navigation depth. Examples of navigation depth:
+    /// <list type="bullet">
+    /// <item><c>Product.Shop</c> has depth = 1</item>
+    /// <item><c>Product.Shop.OwnerContact</c> has depth = 2</item>
+    /// <item><c>Product.Shop.Suppliers.Shops</c> has depth = 3</item>
+    /// </list>
+    /// So, if <c>maxNavigationDepth = 2</c>, then <c>Product.Shop.Suppliers.Shops</c> will not be loaded.
+    /// </param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    /// <remarks>
+    /// Beware that high value will increase the amount of data loaded, so performance will be slower.
+    /// </remarks>
+    public AdminOptionsBuilder SetMaxNavigationDepth(byte maxNavigationDepth)
+    {
+        options.MaxNavigationDepth = maxNavigationDepth;
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a global custom action to the admin panel.
+    /// </summary>
+    /// <param name="action">The custom action to add.</param>
+    /// <param name="disabledTypes">A list of entity types for which the action is disabled.</param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public AdminOptionsBuilder AddGlobalCustomAction(CustomAction<object> action, List<Type> disabledTypes)
+    {
+        options.GlobalCustomActions.Add(action, disabledTypes);
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a global custom action to the admin panel using a builder.
+    /// </summary>
+    /// <param name="action">
+    /// An action that configures the custom action using a <see cref="CustomActionBuilder{TEntity}"/>
+    /// and a list of disabled entity types.
+    /// </param>
+    /// <returns>The current instance of <see cref="AdminOptionsBuilder"/>.</returns>
+    public AdminOptionsBuilder AddGlobalCustomAction(Action<CustomActionBuilder<object>> action)
+    {
+        var actionOptionBuilder = new CustomActionBuilder<object>();
+        action(actionOptionBuilder);
+
+        var (customAction, disabledTypes) = actionOptionBuilder.Build();
+        options.GlobalCustomActions.Add(customAction, disabledTypes);
         return this;
     }
 }

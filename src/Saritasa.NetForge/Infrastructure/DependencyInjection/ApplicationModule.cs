@@ -21,8 +21,9 @@ internal static class ApplicationModule
     {
         services.AddScoped<ViewModelFactory>();
 
-        services.AddRazorPages();
-        services.AddServerSideBlazor();
+        services
+            .AddRazorComponents()
+            .AddInteractiveServerComponents();
         services.AddMudServices(config =>
         {
             config.SnackbarConfiguration.PreventDuplicates = false;

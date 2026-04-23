@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace Saritasa.NetForge.Domain.Entities.Options;
 
@@ -116,4 +116,15 @@ public class AdminOptions
     /// <script src="_framework/blazor.server.js"></script> in _NetForgeLayout.cshtml.
     /// </remarks>
     public Type? StaticBodyComponentType { get; set; }
+
+    /// <summary>
+    /// Represents maximum navigation depth.
+    /// If depth of a navigation is more than this value then such navigation's data will not be loaded.
+    /// </summary>
+    public byte MaxNavigationDepth { get; set; } = 2;
+
+    /// <summary>
+    /// Represents a dictionary of global custom actions and their associated entity types.
+    /// </summary>
+    public Dictionary<CustomAction<object>, List<Type>> GlobalCustomActions { get; set; } = [];
 }

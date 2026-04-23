@@ -8,17 +8,12 @@ namespace Saritasa.NetForge.Domain.Dtos;
 public record PropertySearchDto
 {
     /// <summary>
-    /// Property name.
+    /// Property path including navigations. For example: <c>Shop.Address.Street</c>.
     /// </summary>
-    public string PropertyName { get; set; } = string.Empty;
+    public string PropertyPath { get; init; } = string.Empty;
 
     /// <summary>
     /// Search type.
     /// </summary>
-    public SearchType SearchType { get; set; }
-
-    /// <summary>
-    /// Navigation name. <see langword="null"/> if the property is not related to navigation.
-    /// </summary>
-    public string? NavigationName { get; set; }
+    public SearchType SearchType { get; init; }
 }

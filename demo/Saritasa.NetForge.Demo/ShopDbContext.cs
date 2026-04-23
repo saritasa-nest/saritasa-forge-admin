@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Saritasa.NetForge.Demo.Models;
 
 namespace Saritasa.NetForge.Demo;
@@ -57,6 +58,28 @@ public class ShopDbContext : IdentityDbContext<User>
     /// </summary>
     public DbSet<ShopProductsCount> ShopProductsCounts { get; private set; }
     
+    /// <inheritdoc />
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+
+        // SQLite does not have proper support for DateTimeOffset via Entity Framework Core, see the limitations
+        // here: https://docs.microsoft.com/en-us/ef/core/providers/sqlite/limitations#query-limitations
+        // To work around this, when the Sqlite database provider is used, all model properties of type DateTimeOffset
+        // use the DateTimeOffsetToBinaryConverter
+        // Based on: https://github.com/aspnet/EntityFrameworkCore/issues/10784#issuecomment-415769754
+        // This only supports millisecond precision, but should be sufficient for most use cases.
+        if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
+        {
+            configurationBuilder
+                .Properties<DateTimeOffset>()
+                .HaveConversion<DateTimeOffsetToBinaryConverter>();
+            configurationBuilder
+                .Properties<DateTimeOffset?>()
+                .HaveConversion<DateTimeOffsetToBinaryConverter>();
+        }
+    }
+
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Saritasa.NetForge.Domain.UseCases.Interfaces;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.Infrastructure.EfCore.Extensions;
@@ -40,13 +40,6 @@ public partial class NavigationCollectionField<T> : CustomField
             .GetQuery(entityType)
             .Cast<T>()
             .OrderBy(instance => instance).ToList();
-
-        // In case of lazy loading - convert proxies to POCO instances.
-        if (NavigationInstances.Any() && NavigationInstances.First()!.GetType().IsLazyLoadingProxy())
-        {
-            NavigationInstances = NavigationInstances
-                .Select(instance => ProxyToPocoConverter.ConvertProxyToPoco(instance)).Cast<T>();
-        }
 
         EntityMetadata = await EntityService.GetEntityByTypeAsync(entityType, CancellationToken.None);
     }

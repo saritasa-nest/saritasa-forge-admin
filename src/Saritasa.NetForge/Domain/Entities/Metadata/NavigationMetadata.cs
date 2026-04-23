@@ -11,12 +11,17 @@ public class NavigationMetadata : PropertyMetadataBase
     public bool IsCollection { get; set; }
 
     /// <summary>
-    /// Target navigation entity's properties.
+    /// Property names that will be used on list view page to display navigation collection.
     /// </summary>
-    public List<PropertyMetadata> TargetEntityProperties { get; set; } = new();
+    public List<string> ListViewPropertyNames { get; set; } = [];
 
     /// <summary>
-    /// Whether this navigation included to an entity.
+    /// Target navigation entity's properties.
     /// </summary>
-    public bool IsIncluded { get; set; }
+    public List<PropertyMetadata> TargetEntityProperties { get; set; } = [];
+
+    /// <summary>
+    /// Target navigation entity's navigations.
+    /// </summary>
+    public List<NavigationMetadata> TargetEntityNavigations { get; set; } = [];
 }

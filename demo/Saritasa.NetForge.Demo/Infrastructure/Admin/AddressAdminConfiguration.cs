@@ -1,7 +1,9 @@
-﻿using Saritasa.NetForge.Domain;
+﻿using System.Diagnostics;
+using Saritasa.NetForge.Domain;
 using Saritasa.NetForge.Domain.Enums;
 using Saritasa.NetForge.Domain.Interfaces;
 using Saritasa.NetForge.Demo.Models;
+using Saritasa.NetForge.Domain.Entities.Options;
 
 namespace Saritasa.NetForge.Demo.Infrastructure.Admin;
 
@@ -35,10 +37,14 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
                 .SetFormOrder(4);
         }).ConfigureProperty(address => address.City, propertyBuilder =>
         {
-            propertyBuilder.SetDisplayName("Town");
+            propertyBuilder
+                .SetDisplayName("Town")
+                .SetDefaultSort(order: 1, isAscending: true);
         }).ConfigureProperty(address => address.Street, propertyBuilder =>
         {
-            propertyBuilder.SetIsMultiline(autoGrow: true, maxLines: 10);
+            propertyBuilder
+                .SetIsMultiline(autoGrow: true, maxLines: 10)
+                .SetDefaultSort(order: 2, isAscending: false);
         }).ConfigureCalculatedProperty(address => address.FullAddress, propertyBuilder =>
         {
             propertyBuilder
@@ -86,6 +92,38 @@ public class AddressAdminConfiguration : IEntityAdminConfiguration<Address>
 
         entityOptionsBuilder
             .SetCreateAction((_, address) => { address.CreatedByUserId = new Random().Next(1, 1000); })
-            .SetUpdateAction((_, address) => { address.UpdatedByUserId = new Random().Next(1, 1000); });
+            .SetUpdateAction((_, address) => { address.UpdatedByUserId = new Random().Next(1, 1000); })
+            .SetDeleteAction((_, address) => { Debug.WriteLine($"Address {address.Id} deleted."); });
+
+        entityOptionsBuilder.AddCustomAction(new CustomAction<Address>
+        {
+            Name = "Random longitude, latitude value",
+            Description = "Assigns random longitude and latitude values to the selected addresses.",
+            Handler = (serviceProvider, query) =>
+            {
+                double GetRandomNumber(double min, double max)
+                {
+                    var random = new Random();
+                    return random.NextDouble() * (max - min) + min;
+                }
+
+                var context = serviceProvider?.GetRequiredService<ShopDbContext>();
+                if (context is null)
+                {
+                    return Task.CompletedTask;
+                }
+
+                foreach (var address in query.ToList().Select(item => item))
+                {
+                    address.Longitude = GetRandomNumber(-180, 180);
+                    address.Latitude = GetRandomNumber(-180, 180);
+                }
+
+                context.UpdateRange(query);
+                context.SaveChanges();
+
+                return Task.CompletedTask;
+            }
+        });
     }
 }

@@ -7,20 +7,18 @@
             <MudText>@Property.Name.ToMeaningfulName()</MudText>
             <MudFileUpload T="IBrowserFile"
                            Accept=".apng, .avif, .svg, .png, .jpg, .jpeg, .webp"
-                           FilesChanged="UploadImageAsync">
-                <ButtonTemplate>
+                           FilesChanged="UploadImageAsync!">
+                <ActivatorContent>
                     <MudStack>
-                        <MudButton HtmlTag="label"
-                                   Variant="Variant.Filled"
+                        <MudButton Variant="Variant.Filled"
                                    Color="Color.Primary"
-                                   StartIcon="@Icons.Material.Filled.Image"
-                                   for="@context">
+                                   StartIcon="@Icons.Material.Filled.Image">
                             Upload @Property.Name.ToMeaningfulName()
                         </MudButton>
 
                         <MudText class="mud-input-helper-text">@Property.Description</MudText>
                     </MudStack>
-                </ButtonTemplate>
+                </ActivatorContent>
             </MudFileUpload>
         </MudItem>
 

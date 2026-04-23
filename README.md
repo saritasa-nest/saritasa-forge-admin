@@ -1,8 +1,8 @@
-# NetForge - Admin Panel for ASP.NET Core 6 & 7 & 8
+# NetForge - Admin Panel for ASP.NET Core 8 & 9 & 10
 
 The **NetForge** is a library that provides a user-friendly and intuitive user interface for performing CRUD operations on your database entities within your .NET applications.
 
-- [NetForge - Admin Panel for ASP.NET Core 6 \& 7 \& 8](#netforge---admin-panel-for-aspnet-core-6--7--8)
+- [NetForge - Admin Panel for ASP.NET Core 8 & 9 & 10](#netforge---admin-panel-for-aspnet-core-8--9--10)
 - [How to Use](#how-to-use)
 - [Global Configurations](#global-configurations)
   - [Customizing the Endpoint](#customizing-the-endpoint)
@@ -24,17 +24,20 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
       - [Delete](#delete)
       - [Bulk Delete](#bulk-delete)
   - [Exclude All Entities and Include Specific Only](#exclude-all-entities-and-include-specific-only)
+  - [Global Custom Action](#global-custom-action)
 - [Customizing Entities](#customizing-entities)
   - [Fluent API](#fluent-api)
   - [Creating an Entity Configuration Class](#creating-an-entity-configuration-class)
   - [Data Attributes](#data-attributes)
   - [Custom Query](#custom-query)
   - [After Update Action](#after-update-action)
+  - [Custom Action](#custom-action)
 - [Customizing Entity Properties](#customizing-entity-properties)
   - [Fluent API](#fluent-api-1)
   - [Data Attributes](#data-attributes-1)
   - [Display Formatting](#display-formatting)
   - [Data Sorting](#data-sorting)
+    - [Default Sort](#default-sort)
   - [Calculated Properties](#calculated-properties)
   - [Display Properties as Title Case](#display-properties-as-title-case)
   - [Default Values](#default-values)
@@ -75,6 +78,17 @@ Make your application to use the admin panel:
 
 ```csharp
 app.UseNetForge();
+```
+
+## .NET 10
+If a project that uses NetForge does not have any .razor file, then you need to add `<RequiresAspNetWebAssets>true</RequiresAspNetWebAssets>` to your .csproj file. 
+See details [here](https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-10.0?view=aspnetcore-9.0#blazor-script-as-static-web-asset).
+
+```csharp
+<PropertyGroup>
+  <TargetFramework>net10.0</TargetFramework>
+  <RequiresAspNetWebAssets>true</RequiresAspNetWebAssets>
+</PropertyGroup>
 ```
 
 # Global Configurations
@@ -264,7 +278,7 @@ Example:
 
 ### Custom Body Content
 
-You can add some content to the end of the body section of admin site. 
+You can add some content to the end of the body section of admin site.
 Static and interactive content can be added separately.
 
 #### Static Content
@@ -479,6 +493,39 @@ Or you can include specific entities using the data attribute:
 public class Shop
 ```
 
+## Global Custom Action
+
+You can configure custom action that apply to selected item grid.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.AddGlobalCustomAction(builder =>
+    {
+        builder.SetName("Show entity as JSON");
+        builder.SetDescription("Display the selected entities as JSON in a snackbar.");
+        builder.SetHandler((serviceProvider, query) =>
+        {
+            var items = query.ToList();
+            var snackbar = serviceProvider?.GetRequiredService<ISnackbar>();
+            if (snackbar is null)
+            {
+                return Task.CompletedTask;
+            }
+
+            var jsonString = JsonSerializer.Serialize(items, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            snackbar.Add(jsonString);
+            
+            return Task.CompletedTask;
+        });
+
+        builder.ExcludeTypes(typeof(Shop));
+    });
+});
+```
+
+**Note:** You can exclude types from the custom action using `ExcludeTypes` method.
+
 # Customizing Entities
 
 In the admin panel, you can customize the way entities are displayed using the Fluent API or special attributes. This enables you to set various properties for your entities, such as their name, description, plural name, etc.
@@ -580,12 +627,12 @@ Also, you can use `ServiceProvider` if you need to access your services.
 
 ```csharp
 public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+{
+    entityOptionsBuilder.SetCreateAction((serviceProvider, address) =>
     {
-        entityOptionsBuilder.SetCreateAction((serviceProvider, address) => 
-            {
-                address.CreatedByUserId = new Random().Next(1, 1000);
-            });
-    }
+        address.CreatedByUserId = new Random().Next(1, 1000);
+    });
+}
 ```
 
 ## Update Custom Action
@@ -594,12 +641,26 @@ This one behaves just like [Create Custom Action](#create-custom-action) but wil
 
 ```csharp
 public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+{
+    entityOptionsBuilder.SetUpdateAction((serviceProvider, address) =>
     {
-        entityOptionsBuilder.SetUpdateAction((serviceProvider, address) => 
-            {
-                address.UpdatedByUserId = new Random().Next(1, 1000);
-            });
-    }
+        address.UpdatedByUserId = new Random().Next(1, 1000);
+    });
+}
+```
+
+## Delete Custom Action
+
+This one behaves just like [Create Custom Action](#create-custom-action) but will be executed after delete instead of create.
+
+```csharp
+public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+{
+    entityOptionsBuilder.SetDeleteAction((serviceProvider, address) =>
+    {
+        Debug.WriteLine($"Address {address.Id} deleted.");
+    });
+}
 ```
 
 ## After Update Action
@@ -627,6 +688,63 @@ You can configure action that will be performed after entity update.
         dbContext.SaveChanges();
     });
 })
+```
+
+You can use `ServiceProvider` to access your services.
+
+## Custom Action
+
+You can configure custom action that apply to selected item grid.
+
+```csharp
+public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+{
+    entityOptionsBuilder.AddCustomAction(new CustomAction<Address>
+    {
+        Name = "Random longitude, latitude value",
+        Description = "Assigns random longitude and latitude values to the selected addresses.",
+        Handler = (serviceProvider, query) =>
+        {
+            double GetRandomNumber(double min, double max)
+            {
+                var random = new Random();
+                return random.NextDouble() * (max - min) + min;
+            }
+
+            var context = serviceProvider?.GetRequiredService<ShopDbContext>();
+            if (context is null)
+            {
+                return;
+            }
+
+            foreach (var address in query.ToList().Select(item => item))
+            {
+                address.Longitude = GetRandomNumber(-180, 180);
+                address.Latitude = GetRandomNumber(-180, 180);
+            }
+
+            context.UpdateRange(query);
+            context.SaveChanges();
+        }
+    });
+}
+```
+
+Or
+
+```csharp
+public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+{
+    entityOptionsBuilder.AddCustomAction(option =>
+    {
+        option.SetName("Random longitude, latitude value")
+            .SetDescription("Assigns random longitude and latitude values to the selected addresses.")
+            .SetHandler((serviceProvider, query) =>
+            {
+                ...
+            });
+    });
+}
 ```
 
 You can use `ServiceProvider` to access your services.
@@ -794,6 +912,33 @@ entityOptionsBuilder.ConfigureProperty(shop => shop.OpenedDate, builder =>
 You can sort multiple properties at once. It can be achieved by pressing sort buttons with `CTRL`.
 
 Sorting can be cancelled by pressing on it with `ALT`.
+
+### Default Sort
+
+Default sort is applied when no other sort is applied, for example when you just entered list view page.
+
+#### Multiple Default Sort
+
+There are `order` parameter when you set default sort. 
+It is used when multiple sort is configured to identify in which order properties should be sorted.
+Example with Address: City has `Order = 1`, Street has `Order = 2`, so sort will be applied by city first, then by street.
+
+#### Fluent API
+
+`SetDefaultSort` makes property `Sortable`, so you do not need to call `SetIsSortable` with this method.
+
+```csharp
+public void Configure(EntityOptionsBuilder<Address> entityOptionsBuilder)
+{
+    entityOptionsBuilder.ConfigureProperty(address => address.City, propertyBuilder =>
+    {
+        propertyBuilder.SetDefaultSort(order: 1, isAscending: true);
+    }).ConfigureProperty(address => address.Street, propertyBuilder =>
+    {
+        propertyBuilder.SetDefaultSort(order: 2, isAscending: false);
+    });
+}
+```
 
 ## Calculated Properties
 

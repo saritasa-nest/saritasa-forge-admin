@@ -70,4 +70,31 @@ public class NavigationOptionsBuilder<TEntity>
         options.CalculatedPropertyOptions.Add(calculatedPropertyOptions);
         return this;
     }
+
+    /// <summary>
+    /// Adds navigation property to the entity.
+    /// </summary>
+    /// <param name="navigationExpression">Lambda expression representing navigation to include.</param>
+    /// <param name="navigationOptionsBuilderAction">An action that builds navigation options.</param>
+    public NavigationOptionsBuilder<TEntity> IncludeNavigation<TNavigation>(
+        Expression<Func<TEntity, object?>> navigationExpression,
+        Action<NavigationOptionsBuilder<TNavigation>> navigationOptionsBuilderAction)
+    {
+        var navigationOptions = NavigationOptionsHelper.CreateNavigationOptions(navigationExpression, navigationOptionsBuilderAction);
+        options.NavigationsOptions.Add(navigationOptions);
+        return this;
+    }
+
+    /// <summary>
+    /// Sets properties that will be used on list view page to display navigation collection.
+    /// </summary>
+    /// <param name="propertyExpressions">Property expressions.</param>
+    public NavigationOptionsBuilder<TEntity> SetListViewProperties(
+        IEnumerable<Expression<Func<TEntity, object?>>> propertyExpressions)
+    {
+        options.ListViewPropertyNames = propertyExpressions
+            .Select(expression => expression.GetMemberName())
+            .ToList();
+        return this;
+    }
 }

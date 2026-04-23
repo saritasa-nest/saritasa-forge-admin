@@ -1,5 +1,6 @@
 ﻿using Saritasa.NetForge.Domain.Entities.Metadata;
 using Saritasa.NetForge.Domain.Entities.Options;
+using Saritasa.NetForge.Domain.UseCases.Common;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 
 namespace Saritasa.NetForge.MVVM.ViewModels.EntityDetails;
@@ -56,4 +57,15 @@ public record EntityDetailsModel
 
     /// <inheritdoc cref="MessageOptions.EntityBulkDeleteMessage"/>
     public string? EntityBulkDeleteMessage { get; set; }
+
+    /// <inheritdoc cref="EntityMetadata.CustomActions"/>
+    public List<CustomAction<object>> CustomActions { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the list of global custom actions applicable to all entities.
+    /// </summary>
+    public List<CustomAction<object>> GlobalCustomActions { get; set; } = new();
+
+    /// <inheritdoc cref="EntityMetadata.DefaultOrderings"/>
+    public List<OrderByDto> DefaultOrderings { get; set; } = [];
 }

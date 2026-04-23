@@ -75,7 +75,7 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             })
             .IncludeNavigation<Product>(shop => shop.Products, navigationOptionsBuilder =>
             {
-                navigationOptionsBuilder.IncludeProperty(product => product.Id);
+                navigationOptionsBuilder.SetListViewProperties([product => product.Id, product => product.Name]);
             })
             .IncludeNavigation<Supplier>(shop => shop.Suppliers, navigationOptionsBuilder =>
             {
@@ -131,11 +131,6 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
             }
 
             dbContext.SaveChanges();
-        });
-
-        entityOptionsBuilder.ConfigureProperty(shop => shop.Suppliers, builder =>
-        {
-            builder.SetIsHidden(true);
         });
 
         entityOptionsBuilder.ConfigureProperty(shop => shop.Id, builder => builder.SetIsHidden(true));

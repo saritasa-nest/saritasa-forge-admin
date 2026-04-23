@@ -1,17 +1,16 @@
 ﻿using System.Collections;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Saritasa.NetForge.Domain.Extensions;
 using Saritasa.NetForge.Infrastructure.Helpers;
 using Saritasa.NetForge.Domain.Entities.Options;
-using Saritasa.NetForge.Domain.UseCases.Constants;
+using Saritasa.NetForge.Domain.Extensions;
 using Saritasa.NetForge.Domain.UseCases.Interfaces;
 using Saritasa.NetForge.Domain.UseCases.Metadata.GetEntityById;
 using Saritasa.NetForge.Infrastructure.Abstractions.Interfaces;
 using Saritasa.NetForge.MVVM.Navigation;
 using Saritasa.NetForge.MVVM.Utils;
 using Saritasa.NetForge.MVVM.ViewModels.EditEntity;
-using Saritasa.NetForge.Pages;
+using ExpressionExtensions = Saritasa.NetForge.Domain.Extensions.ExpressionExtensions;
 
 namespace Saritasa.NetForge.Controls;
 
@@ -88,47 +87,7 @@ public partial class EntityPropertyColumns : ComponentBase
             : property.Name;
     }
 
-    /// <summary>
-    /// Gets property value via <c>Reflection</c>.
-    /// </summary>
-    /// <param name="source">Source object.</param>
-    /// <param name="property">Property metadata.</param>
-    /// <returns>Property value.</returns>
-    private object GetPropertyValue(object? source, PropertyMetadataDto property)
-    {
-        var propertyInfo = source?.GetType().GetProperty(property.Name);
-        var value = propertyInfo?.GetValue(source);
-
-        if (value is null || value.ToString() == string.Empty)
-        {
-            return !string.IsNullOrEmpty(property.EmptyValueDisplay)
-                ? property.EmptyValueDisplay
-                : DefaultValueConstants.DefaultEmptyPropertyValueDisplay;
-        }
-
-        if (property is NavigationMetadataDto navigation)
-        {
-            value = GetNavigationValue(value, navigation);
-        }
-
-        value = FormatValue(value, property.Name);
-
-        if (property.ClrType == typeof(string) && !property.IsImage)
-        {
-            var stringValue = value.ToString();
-
-            var maxCharacters = property.TruncationMaxCharacters ?? AdminOptions.TruncationMaxCharacters;
-
-            if (maxCharacters != default)
-            {
-                value = stringValue!.Truncate(maxCharacters);
-            }
-        }
-
-        return value;
-    }
-
-    private static object GetNavigationValue(object navigation, NavigationMetadataDto navigationMetadata)
+    private static object GetNavigationCollectionValue(object navigationInstance, NavigationMetadataDto navigationMetadata)
     {
         var primaryKeys = navigationMetadata.TargetEntityProperties
             .Where(targetProperty => targetProperty.IsPrimaryKey)
@@ -136,22 +95,34 @@ public partial class EntityPropertyColumns : ComponentBase
 
         if (!primaryKeys.Any())
         {
-            return navigation;
+            return navigationInstance;
         }
 
-        if (!navigationMetadata.IsCollection)
+        var navigationCollectionInstance = (navigationInstance as IEnumerable)!;
+
+        if (navigationMetadata.ListViewPropertyNames.Count > 0)
         {
-            if (primaryKeys.Count == 1)
+            List<object?> propertyValues = [];
+
+            foreach (var item in navigationCollectionInstance)
             {
-                return navigation.GetType().GetProperty(primaryKeys[0].Name)!.GetValue(navigation)!;
+                if (navigationMetadata.ListViewPropertyNames.Count == 1)
+                {
+                    var propertyValue = item.GetPropertyValue(navigationMetadata.ListViewPropertyNames[0]);
+                    propertyValues.Add(propertyValue);
+                }
+                else
+                {
+                    propertyValues.Add(JoinProperties(navigationMetadata.ListViewPropertyNames, item));
+                }
             }
 
-            return JoinPrimaryKeys(primaryKeys, navigation);
+            return JoinNavigationValues(propertyValues);
         }
 
         var primaryKeyValues = new List<object?>();
 
-        foreach (var item in (navigation as IEnumerable)!)
+        foreach (var item in navigationCollectionInstance)
         {
             if (primaryKeys.Count == 1)
             {
@@ -159,27 +130,29 @@ public partial class EntityPropertyColumns : ComponentBase
             }
             else
             {
-                primaryKeyValues.Add($"{{ {JoinPrimaryKeys(primaryKeys, item)} }}");
+                var primaryKeyNames = primaryKeys.Select(primaryKey => primaryKey.Name);
+                primaryKeyValues.Add(JoinProperties(primaryKeyNames, item));
             }
         }
 
-        return $"[ {string.Join(", ", primaryKeyValues)} ]";
+        return JoinNavigationValues(primaryKeyValues);
     }
 
-    private static string JoinPrimaryKeys(IEnumerable<PropertyMetadataDto> primaryKeys, object navigation)
+    private static string JoinProperties(IEnumerable<string> propertyNames, object navigation)
     {
-        var primaryKeyValues = primaryKeys
-            .Select(primaryKey => primaryKey.Name)
-            .Select(primaryKeyName => navigation.GetType().GetProperty(primaryKeyName)!.GetValue(navigation));
-
-        return string.Join("; ", primaryKeyValues);
+        var propertyValues = propertyNames.Select(navigation.GetPropertyValue);
+        return $"{{ {string.Join("; ", propertyValues)} }}";
     }
 
-    private string FormatValue(object value, string propertyName)
+    private static string JoinNavigationValues(List<object?> valuesToDisplay)
     {
-        var propertyMetadata = Properties.FirstOrDefault(property => property.Name == propertyName);
-        return DataFormatUtils.GetFormattedValue(value, propertyMetadata?.DisplayFormat,
-            propertyMetadata?.FormatProvider);
+        return $"[ {string.Join(", ", valuesToDisplay)} ]";
+    }
+
+    private string FormatValue(object value, PropertyMetadataDto propertyMetadata)
+    {
+        return DataFormatUtils
+            .GetFormattedValue(value, propertyMetadata.DisplayFormat, propertyMetadata?.FormatProvider);
     }
 
     private async Task OpenDialogAsync(object navigationInstance, NavigationMetadataDto navigationMetadata)
@@ -222,11 +195,13 @@ public partial class EntityPropertyColumns : ComponentBase
         };
 
         var result = await (await DialogService.ShowAsync<ConfirmationDialog>("Delete", parameters)).Result;
-        if (!result.Canceled)
+        if (result is not null && !result.Canceled)
         {
             try
             {
-                await DataService.DeleteAsync(source, source.GetType(), CancellationToken.None);
+                var entityMetadata = await EntityService.GetEntityByTypeAsync(source.GetType(), CancellationToken.None);
+
+                await DataService.DeleteAsync(source, source.GetType(), CancellationToken.None, entityMetadata.DeleteAction);
                 DataGrid?.ReloadServerData();
                 ShowEntityDeleteMessage();
             }
@@ -256,5 +231,69 @@ public partial class EntityPropertyColumns : ComponentBase
         }
 
         Snackbar.Add(entityDeleteMessage, Severity.Success);
+    }
+
+    private IEnumerable<PropertyMetadataDto> GetListViewProperties()
+    {
+        var propertiesToDisplay = GetPropertiesToDisplay(Properties);
+
+        // Display principal entity primary key at the start of columns if the order is not set.
+        return propertiesToDisplay
+            .OrderByDescending(property => property is { IsPrimaryKey: true, Order: null, NavigationMetadata: null })
+            .ThenByDescending(property => property.Order.HasValue)
+            .ThenBy(property => property.Order);
+    }
+
+    private List<PropertyMetadataDto> GetPropertiesToDisplay(IEnumerable<PropertyMetadataDto> properties)
+    {
+        List<PropertyMetadataDto> propertiesToDisplay = [];
+        var visibleProperties = properties
+            .Where(property => property is { IsHidden: false, IsHiddenFromListView: false });
+        foreach (var property in visibleProperties)
+        {
+            if (property is NavigationMetadataDto { IsCollection: false } navigation)
+            {
+                var allTargetProperties = navigation.TargetEntityProperties.Union(navigation.TargetEntityNavigations);
+                var targetPropertiesToDisplay = GetPropertiesToDisplay(allTargetProperties);
+                propertiesToDisplay.AddRange(targetPropertiesToDisplay);
+            }
+            else
+            {
+                propertiesToDisplay.Add(property);
+            }
+        }
+
+        return propertiesToDisplay;
+    }
+
+    /// <summary>
+    /// Gets parent navigation value.
+    /// </summary>
+    /// <param name="propertyPath">Path to access the property. For example: <c>Shop.Address.Street</c>.</param>
+    /// <param name="instance">Instance to get value from.</param>
+    /// <returns>
+    /// If <paramref name="propertyPath"/> is <c>Shop.Address.Street</c>,
+    /// then this method will return value of <c>Shop.Address</c>.
+    /// </returns>
+    private static object GetParentNavigationValue(string propertyPath, object instance)
+    {
+        var navigationPath = RemoveLastPropertyFromPath(propertyPath);
+        return instance.GetNestedPropertyValue(navigationPath)!;
+    }
+
+    /// <summary>
+    /// Removes the last property part from the given path.
+    /// </summary>
+    /// <param name="propertyPath">Path to access the property. For example: <c>Shop.Address.Street</c>.</param>
+    /// <returns>Path without the property part. For example: <c>Shop.Address.Street</c> -> <c>Shop.Address</c>.</returns>
+    private static string RemoveLastPropertyFromPath(string propertyPath)
+    {
+        if (string.IsNullOrEmpty(propertyPath))
+        {
+            return propertyPath;
+        }
+
+        var lastPropertySeparator = propertyPath.LastIndexOf(ExpressionExtensions.PropertySeparator);
+        return lastPropertySeparator >= 0 ? propertyPath[..lastPropertySeparator] : propertyPath;
     }
 }

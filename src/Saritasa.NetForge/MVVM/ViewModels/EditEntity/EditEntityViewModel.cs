@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DeepCopy;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 using Saritasa.NetForge.Domain.Entities.Options;
@@ -104,7 +105,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
             }
 
             // We have to keep the original entity to work with navigation properties.
-            Model.OriginalEntityInstance = Model.EntityInstance.CloneJson();
+            Model.OriginalEntityInstance = ObjectCloner.Clone(Model.EntityInstance);
 
             FieldErrorModels = Model.Properties
                 .Select(property => new FieldErrorModel
@@ -114,6 +115,11 @@ public class EditEntityViewModel : ValidationEntityViewModel
                 .ToList();
         }
         catch (NotFoundException)
+        {
+            IsEntityExists = false;
+        }
+        // This exception throw when GetInstanceAsync doesn't return a matching entity.
+        catch (InvalidOperationException)
         {
             IsEntityExists = false;
         }
@@ -187,7 +193,7 @@ public class EditEntityViewModel : ValidationEntityViewModel
 
             // We do clone because UpdateAsync method returns Model.OriginalEntityInstance
             // so we don't want Model.EntityInstance and Model.OriginalEntityInstance to have the same reference.
-            Model.EntityInstance = updatedEntity.CloneJson();
+            Model.EntityInstance = ObjectCloner.Clone(updatedEntity);
             ShowEntitySaveMessage();
         }
         catch (Exception ex)

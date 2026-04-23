@@ -6,7 +6,7 @@ namespace Saritasa.NetForge.Demo.Infrastructure.Seeders;
 /// <summary>
 /// Shops seeder.
 /// </summary>
-internal class ShopsSeeder
+internal class ShopsSeeder : ISeeder
 {
     private readonly ShopDbContext shopDbContext;
     private readonly ILogger<ShopsSeeder> logger;
@@ -25,12 +25,7 @@ internal class ShopsSeeder
         this.logger = logger;
     }
     
-    /// <summary>
-    /// Seed.
-    /// </summary>
-    /// <param name="numberOfItems">Total items to create.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>Number of created items.</returns>
+    /// <inheritdoc />
     public async Task<int> Seed(int numberOfItems, CancellationToken cancellationToken = default)
     {
         var count = 0;

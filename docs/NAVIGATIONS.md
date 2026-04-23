@@ -16,7 +16,8 @@ In case of the collection navigation we support displaying only primary keys. Fo
 
 ## Include Navigation
 
-You can include navigation and its properties via `Fluent API`.
+You can include navigation and its properties via `Fluent API`. 
+Navigation data are not loaded by default, so you need to use explicit include if you want to use such data.
 
 ### Using Fluent API
 
@@ -44,6 +45,65 @@ public void Configure(EntityOptionsBuilder<Shop> entityOptionsBuilder)
                         .SetSearchType(SearchType.ContainsCaseInsensitive);
                 });
         });
+}
+```
+
+### Nested Navigations
+
+Also, you can include nested navigations.
+
+```csharp
+public void Configure(EntityOptionsBuilder<Product> entityOptionsBuilder)
+{
+    entityOptionsBuilder.IncludeNavigation<Shop>(product => product.Shop, navigationOptionsBuilder =>
+    {
+        navigationOptionsBuilder.IncludeNavigation<Address>(shop => shop.Address, builder =>
+        {
+            builder.IncludeProperty(address => address.Country, propertyBuilder =>
+            {
+                propertyBuilder
+                    .SetOrder(2)
+                    .SetDisplayName("Shop Country");
+            });
+        });
+    });
+}
+```
+
+#### Navigation Depth
+
+To handle situation when navigations reference each other, e.g. self-reference navigation.
+We have `navigation depth` configuration to control which level of nested navigations will be loaded. 
+Default value is 2.
+Examples of navigation depth:
+- `Product.Shop` depth is 1
+- `Product.Shop.OwnerContact` depth is 2
+- `Product.Shop.Suppliers.Shops` depth is 3
+
+So, if `MaxNavigationDepth` is 2, then `Product.Shop.Suppliers.Shops` will not be loaded.
+
+Note: High value will increase the amount of data loaded, so performance will be slower.
+
+##### Global Level
+
+When you use global level `MaxNavigationDepth` then it will be applied to all entities.
+
+```csharp
+services.AddNetForge(optionsBuilder =>
+{
+    optionsBuilder.SetMaxNavigationDepth(3);
+});
+```
+
+##### Per-Model Level
+
+When you use per-model level `MaxNavigationDepth` then it will be applied only to the one entity.
+It takes precedence on the global level.
+
+```csharp
+public void Configure(EntityOptionsBuilder<Product> entityOptionsBuilder)
+{
+    entityOptionsBuilder.SetMaxNavigationDepth(3);
 }
 ```
 
@@ -125,3 +185,34 @@ It is not working for displaying navigation collection.
 
     public override int GetHashCode() => Street.GetHashCode() + City.GetHashCode();
 ```
+
+## List View Navigation Collection Display
+
+You can choose any property except navigations to represent navigation collection.
+
+We will use this data in examples:
+
+`Shop` entity has `Products` navigation collection:
+1. Id: 1, Name: Pasta, Price: 100
+2. Id: 2, Name: Sausage, Price: 500
+3. Id: 3, Name: Banana, Price 900
+
+### One Property
+
+Example when `Product.Name` is chosen:
+
+```text
+[ Pasta, Sausage, Banana ]
+```
+
+### Multiple Properties
+
+Example when `Product.Name` and `Product.Price` are chosen:
+
+```text
+[ { Pasta; 100 }, { Sausage; 500 }, { Banana; 900 } ]
+```
+
+### Default Behavior
+
+When no property is chosen then all primary keys will be used to display navigation collection.
