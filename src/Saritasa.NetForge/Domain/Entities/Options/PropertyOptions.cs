@@ -94,4 +94,7 @@ public class PropertyOptions
 
     /// <inheritdoc cref="PropertyMetadata.CanBeNavigatedToDetails"/>
     public bool CanBeNavigatedToDetails { get; set; }
+
+    /// <inheritdoc cref="PropertyMetadataBase.Converter"/>
+    public Func<string?, object?>? Converter { get; set; }
 }

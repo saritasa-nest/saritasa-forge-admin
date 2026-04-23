@@ -13,7 +13,11 @@ public partial class TextField : CustomField
     public string? PropertyValue
     {
         get => EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance)?.ToString();
-        set => EntityInstance.GetType().GetProperty(Property.Name)?.SetValue(EntityInstance, value);
+        set
+        {
+            var convertedValue = Property.Converter is not null ? Property.Converter(value) : value;
+            EntityInstance.GetType().GetProperty(Property.Name)?.SetValue(EntityInstance, convertedValue);
+        }
     }
 
     /// <inheritdoc cref="PropertyMetadataBase.Lines"/>

@@ -256,6 +256,11 @@ public static class EntityMetadataOptionsExtensions
         {
             property.IsHiddenFromCreate = propertyOptions.IsHiddenFromCreate;
         }
+
+        if (propertyOptions.Converter is not null)
+        {
+            property.Converter = propertyOptions.Converter;
+        }
     }
 
     private static void ApplyCalculatedPropertyOptions(

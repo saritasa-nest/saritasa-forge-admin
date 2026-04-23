@@ -147,4 +147,10 @@ public abstract class PropertyMetadataBase
     /// The property belongs to this navigation.
     /// </summary>
     public NavigationMetadata? NavigationMetadata { get; set; }
+
+    /// <summary>
+    /// Custom converter that converts a string input value to the property's actual CLR type.
+    /// Used when the property type cannot be set directly from a string (e.g. strongly-typed IDs).
+    /// </summary>
+    public Func<string?, object?>? Converter { get; set; }
 }

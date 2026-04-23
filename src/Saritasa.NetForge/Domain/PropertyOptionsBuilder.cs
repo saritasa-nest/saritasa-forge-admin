@@ -266,4 +266,17 @@ public class PropertyOptionsBuilder
         }
         return this;
     }
+
+    /// <summary>
+    /// Sets a custom converter that converts a string input value to the property's actual CLR type.
+    /// This is useful when custom conversion is required, for example when using strongly-typed IDs.
+    /// </summary>
+    /// <param name="converter">
+    /// A function that converts a <see langword="string"/> value to the target property type.
+    /// </param>
+    public PropertyOptionsBuilder SetConverter(Func<string?, object?> converter)
+    {
+        options.Converter = converter;
+        return this;
+    }
 }
