@@ -45,3 +45,4 @@
 
 1.1.0 [2026-04-21]
 [+] Add support for .NET 10.
+[BREAKING] .NET 10 Project that utilizes NetForge might need to use <RequiresAspNetWebAssets>true</RequiresAspNetWebAssets> in .csproj file. See "How to Use" section in README.md.
