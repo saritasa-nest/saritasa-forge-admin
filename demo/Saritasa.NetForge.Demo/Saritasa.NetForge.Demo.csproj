@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <Version>0.1.0</Version>
+        <DefineConstants>STRONGLY_TYPED_ID_USAGES</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
@@ -24,6 +25,7 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="MimeTypeMapOfficial" Version="1.0.17" />
+        <PackageReference Include="StronglyTypedId" Version="1.0.0-beta08" />
         
         <!-- We need System.Text.Json because some library needs it. 
              Without it we will get exception on dev demo. Locally it cannot be reproduced. -->
