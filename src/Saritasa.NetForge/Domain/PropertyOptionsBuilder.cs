@@ -274,9 +274,13 @@ public class PropertyOptionsBuilder
     /// <param name="converter">
     /// A function that converts a <see langword="string"/> value to the target property type.
     /// </param>
-    public PropertyOptionsBuilder SetConverter(Func<string?, object?> converter)
+    /// <remarks>
+    /// It is supposed to be used with custom types. In UI we determine input depending of its type, e.g. int => number input.
+    /// When we cannot determine type, we use string input as default one. That is why we convert from string.
+    /// </remarks>
+    public PropertyOptionsBuilder SetConverter<TValue>(Func<string?, TValue?> converter) where TValue : new()
     {
-        options.Converter = converter;
+        options.Converter = value => converter(value);
         return this;
     }
 }
