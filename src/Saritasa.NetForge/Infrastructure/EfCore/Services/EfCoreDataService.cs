@@ -81,12 +81,43 @@ public class EfCoreDataService : IOrmDataService
             // ((entityType)entity).propertyName
             var propertyExpression = Expression.Property(convertedEntity, name);
 
-            var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
-            var constant = Expression.Constant(value);
+            // If the primary key property has a registered value converter (e.g. a StronglyTypedId),
+            // apply the converter to obtain the provider-type expression and compare directly.
+            // This avoids calling ToString() which EF Core cannot translate for custom types.
+            var efProperty = type.FindProperty(name);
+            var valueConverter = efProperty?.GetValueConverter();
 
-            // ((entityType)entity).propertyName.StartsWith(constant)
-            var equalsCall = Expression.Call(
-                property, typeof(string).GetMethod(nameof(string.Equals), new[] { typeof(object) })!, constant);
+            Expression equalsCall;
+            if (valueConverter != null)
+            {
+                var propertyType = ((PropertyInfo)propertyExpression.Member).PropertyType;
+                var providerType = valueConverter.ProviderClrType;
+
+                var typeConverter = TypeDescriptor.GetConverter(providerType);
+                var parsedProviderValue = typeConverter.ConvertFromInvariantString(value)
+                    ?? throw new ArgumentException(
+                        $"Cannot convert primary key value '{value}' to type '{providerType}'.",
+                        nameof(primaryKey));
+
+                // Convert the provider value (e.g. Guid) back to the CLR type (e.g. ProductId)
+                // using the registered converter's inverse.
+                // EF Core understands entity.Id == new ProductId(...) and translates it via the
+                // value converter, so no manual .Value unwrapping is needed.
+                var clrValue = valueConverter.ConvertFromProvider(parsedProviderValue);
+
+                equalsCall = Expression.Equal(
+                    propertyExpression,
+                    Expression.Constant(clrValue, propertyType));
+            }
+            else
+            {
+                var property = GetConvertedExpressionWhenPropertyIsNotString(propertyExpression);
+                var constant = Expression.Constant(value);
+
+                // ((entityType)entity).propertyName.Equals(constant)
+                equalsCall = Expression.Call(
+                    property, typeof(string).GetMethod(nameof(string.Equals), new[] { typeof(object) })!, constant);
+            }
 
             primaryKeyExpression = primaryKeyExpression is null
                 ? equalsCall
