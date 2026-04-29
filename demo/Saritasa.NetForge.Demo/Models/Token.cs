@@ -18,5 +18,8 @@ public class Token
     public required string Name { get; set; }
 }
 
+/// <summary>
+/// Identifier for <see cref="Token"/>.
+/// </summary>
 [StronglyTypedId(Template.Int)]
 public readonly partial struct TokenId;
