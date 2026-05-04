@@ -155,7 +155,7 @@ appBuilder.Services.AddNetForge(optionsBuilder =>
 
 ## Search
 
-You can read about search [here](docs/SEARCH.md).
+You can read about search [here](docs/SEARCH.md)
 
 ## View Site URL
 
