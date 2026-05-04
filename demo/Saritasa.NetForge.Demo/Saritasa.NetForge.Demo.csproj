@@ -33,7 +33,7 @@
     </ItemGroup>
     
     <ItemGroup>
-        <None Update="appsettings.json.gomplate">
+        <None Update="appsettings.json.template">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
