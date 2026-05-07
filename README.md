@@ -56,6 +56,7 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
     - [Configuration](#configuration-3)
   - [Multiline Text Field Property](#multiline-text-field-property)
     - [Configuration](#configuration-4)
+  - [Custom Value Converter](#custom-value-converter)
   - [Migration](#migration)
   - [License](#license)
 
@@ -1266,6 +1267,23 @@ entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
 ```csharp
 [MultilineText(IsAutoGrow = true)]
 public required string Street { get; set; }
+```
+
+## Custom Value Converter
+
+You can set a custom converter that converts a string input value to the property's actual CLR type.
+This is useful when custom conversion is required, for example when using strongly-typed IDs or other custom types.
+
+When the admin panel cannot determine the appropriate input control for a property type, it defaults to a string input. 
+The converter is then used to parse that string value back to the target type.
+
+**Using Fluent API**
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(token => token.Id, builder =>
+{
+    builder.SetConverter(value => int.TryParse(value, out var id) ? new TokenId(id) : default);
+});
 ```
 
 ## Migration
