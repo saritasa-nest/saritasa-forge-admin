@@ -287,9 +287,12 @@ public class EfCoreDataService : IOrmDataService
     {
         dbContext.Attach(originalEntity);
 
+        // It is important to update navigations after properties.
+        // Because when navigation has 2 properties: navigation and navigation id
+        // we need to update navigation id first, otherwise navigation will not be updated.
+        dbContext.Entry(originalEntity).CurrentValues.SetValues(entity);
         await UpdateNavigations(dbContext, entity, originalEntity);
 
-        dbContext.Entry(originalEntity).CurrentValues.SetValues(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 
