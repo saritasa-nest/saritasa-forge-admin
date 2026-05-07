@@ -8,6 +8,7 @@
     <IsTestProject>true</IsTestProject>
     <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
     <Version>0.1.0</Version>
+    <DefineConstants>STRONGLY_TYPED_ID_USAGES</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
@@ -28,6 +29,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bogus" Version="35.6.5" />
+    <PackageReference Include="StronglyTypedId" Version="1.0.0-beta08" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.4.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="TypeExtender" Version="1.0.4" />

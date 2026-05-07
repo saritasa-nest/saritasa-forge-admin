@@ -98,4 +98,10 @@ internal static class Fakers
         .RuleFor(u => u.PhoneNumberConfirmed, f => f.Random.Bool())
         .RuleFor(u => u.PasswordHash, f => f.Internet.Password())
         .RuleFor(u => u.SecurityStamp, f => f.Internet.Password());
+
+    /// <summary>
+    /// Token faker.
+    /// </summary>
+    public static readonly Faker<Token> TokenFaker = new Faker<Token>()
+        .RuleFor(t => t.Name, f => f.Random.Word());
 }

@@ -50,6 +50,16 @@ internal class Shop
     /// </summary>
     public List<Supplier> Suppliers { get; set; } = new();
 
+    /// <summary>
+    /// Optional token associated with the shop.
+    /// </summary>
+    public Token? Token { get; set; }
+
+    /// <summary>
+    /// Foreign key to the associated token.
+    /// </summary>
+    public TokenId? TokenId { get; set; }
+
     /// <inheritdoc />
     public override string ToString()
     {

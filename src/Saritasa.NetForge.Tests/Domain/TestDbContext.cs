@@ -1,7 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System.Collections.Concurrent;
+using System.Linq.Expressions;
+using System.Reflection;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Saritasa.NetForge.Tests.Domain.Models;
 using Saritasa.NetForge.Tests.EfCoreMetadataServiceTests.NavigationMetadata.Models;
+using StronglyTypedIds;
 
 namespace Saritasa.NetForge.Tests.Domain;
 
@@ -49,6 +55,11 @@ internal class TestDbContext : IdentityDbContext<User>
     public DbSet<Supplier> Suppliers { get; private set; } = null!;
 
     /// <summary>
+    /// Gets or sets the database set for the tokens.
+    /// </summary>
+    public DbSet<Token> Tokens { get; private set; } = null!;
+
+    /// <summary>
     /// Gets or sets the database set for the employees.
     /// </summary>
     public DbSet<Employee> Employees { get; private set; } = null!;
@@ -75,5 +86,89 @@ internal class TestDbContext : IdentityDbContext<User>
 
         modelBuilder.Entity<Supplier>()
             .HasKey(c => new { c.Name, c.City });
+
+        modelBuilder.Entity<Token>()
+            .HasKey(t => t.Id);
+
+        modelBuilder.Entity<Shop>()
+            .HasOne(s => s.Token)
+            .WithOne()
+            .HasForeignKey<Shop>(s => s.TokenId)
+            .IsRequired(false);
+
+        ConfigureStronglyTypedIds(modelBuilder);
+    }
+
+    private static readonly ConcurrentDictionary<Type, ValueConverter> StronglyTypedIdConverters = new();
+
+    private static void ConfigureStronglyTypedIds(ModelBuilder modelBuilder)
+    {
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            foreach (var property in entityType.GetProperties())
+            {
+                var actualPropertyType = Nullable.GetUnderlyingType(property.ClrType) ?? property.ClrType;
+                var stronglyTypedIdAttribute = actualPropertyType.GetCustomAttribute<StronglyTypedIdAttribute>();
+                if (stronglyTypedIdAttribute is null)
+                {
+                    continue;
+                }
+
+                var converter = StronglyTypedIdConverters.GetOrAdd(
+                    property.ClrType,
+                    _ => CreateStronglyTypedIdConverter(actualPropertyType));
+
+                property.SetValueConverter(converter);
+
+                // By default, strongly typed ids do not use value generation.
+                // So we add generation for primary keys.
+                // If you want value generation for other property, you will need to configure it separately.
+                if (property.IsPrimaryKey())
+                {
+                    // We have a special case when primary key is a composite key,
+                    // in this situation it would also be a foreign key
+                    // In this case we should not be automatically generating a value for it.
+                    //
+                    // Also, sometimes we might have GUID PKs generated
+                    // on client (via Guid.CreateVersion7() or even sent by Frontend).
+                    // In that case, ValueGeneratedNever() must be set explicitly in EntityConfiguration.
+                    // But this code will run after entity configurations, so we need to check
+                    // that converter.ProviderClrType != typeof(Guid)
+                    // to avoid reverting EntityConfiguration changes.
+                    // String-backed IDs are also excluded: identity generation only works with signed integer columns.
+                    if (property.ValueGenerated == ValueGenerated.Never &&
+                        !property.IsForeignKey() &&
+                        converter.ProviderClrType != typeof(Guid) &&
+                        converter.ProviderClrType != typeof(string))
+                    {
+                        property.ValueGenerated = ValueGenerated.OnAdd;
+                    }
+                }
+            }
+        }
+    }
+
+    private static ValueConverter CreateStronglyTypedIdConverter(Type stronglyTypedIdType)
+    {
+        // id => id.Value
+        var stronglyTypedIdParam = Expression.Parameter(stronglyTypedIdType, "id");
+        var valueProperty = Expression.Property(stronglyTypedIdParam, "Value");
+        var toProviderExpression = Expression.Lambda(valueProperty, stronglyTypedIdParam);
+
+        var valuePropertyInfo = (PropertyInfo)valueProperty.Member;
+        var valueType = valuePropertyInfo.PropertyType;
+
+        // Example of expression:
+        // value => new UserId(value)
+        var valueParam = Expression.Parameter(valueType, "value");
+        var ctor = stronglyTypedIdType.GetConstructor([valueType]);
+        var fromProviderExpression = Expression.Lambda(Expression.New(ctor!, valueParam), valueParam);
+
+        var converterType = typeof(ValueConverter<,>).MakeGenericType(stronglyTypedIdType, valueType);
+
+        var converter = Activator.CreateInstance(converterType, toProviderExpression, fromProviderExpression, null);
+
+        return (ValueConverter)converter!;
     }
 }
+

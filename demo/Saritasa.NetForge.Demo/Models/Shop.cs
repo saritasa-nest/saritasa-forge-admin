@@ -93,6 +93,16 @@ public class Shop
     [NetForgeProperty(Order = 2, Description = "Photo of the shop from the outside.")]
     public string? BuildingPhoto { get; set; }
 
+    /// <summary>
+    /// Token.
+    /// </summary>
+    public Token? Token { get; set; }
+
+    /// <summary>
+    /// Token identifier.
+    /// </summary>
+    public TokenId TokenId { get; set; }
+
     /// <inheritdoc />
     public override string ToString()
     {

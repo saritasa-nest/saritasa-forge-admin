@@ -51,5 +51,9 @@ internal class ShopsSeeder : ISeeder
         OpenedDate = faker.Date.Past(yearsToGoBack: 1).ToUniversalTime(),
         TotalSales = decimal.Parse(faker.Commerce.Price(max: 100000)),
         IsOpen = faker.Random.Bool(),
+        Token = new Token
+        {
+            Name = faker.Random.Word()
+        }
     };
 }
