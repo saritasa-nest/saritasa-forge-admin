@@ -116,6 +116,6 @@ public record PropertyMetadataDto
     /// <inheritdoc cref="PropertyMetadataBase.NavigationMetadata"/>
     public NavigationMetadataDto? NavigationMetadata { get; set; }
 
-    /// <inheritdoc cref="PropertyMetadataBase.Converter"/>
-    public Func<string?, object?>? Converter { get; set; }
+    /// <inheritdoc cref="PropertyMetadataBase.ValueResolver"/>
+    public Func<string?, object?>? ValueResolver { get; set; }
 }

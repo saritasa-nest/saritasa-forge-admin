@@ -48,4 +48,4 @@
 [BREAKING] .NET 10 Project that utilizes NetForge might need to use <RequiresAspNetWebAssets>true</RequiresAspNetWebAssets> in .csproj file. See "How to Use" section in README.md.
 
 1.2.0 [2026-05-07]
-[+] Add SetConverter for property.
+[+] Add SetValueResolver for property.

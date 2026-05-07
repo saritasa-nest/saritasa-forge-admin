@@ -149,8 +149,8 @@ public abstract class PropertyMetadataBase
     public NavigationMetadata? NavigationMetadata { get; set; }
 
     /// <summary>
-    /// Custom converter that converts a string input value to the property's actual CLR type.
+    /// Custom values resolver that resolves a string input value to the property's actual CLR type.
     /// Used when the property type cannot be set directly from a string (e.g. strongly-typed IDs).
     /// </summary>
-    public Func<string?, object?>? Converter { get; set; }
+    public Func<string?, object?>? ValueResolver { get; set; }
 }

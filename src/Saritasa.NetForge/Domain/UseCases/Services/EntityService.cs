@@ -134,7 +134,7 @@ public class EntityService : IEntityService
             CanDisplayDetails = property.CanDisplayDetails,
             CanBeNavigatedToDetails = property.CanBeNavigatedToDetails,
             NavigationMetadata = navigation,
-            Converter = property.Converter
+            ValueResolver = property.ValueResolver
         };
     }
 

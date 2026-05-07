@@ -15,8 +15,8 @@ public partial class TextField : CustomField
         get => EntityInstance.GetType().GetProperty(Property.Name)?.GetValue(EntityInstance)?.ToString();
         set
         {
-            var convertedValue = Property.Converter is not null ? Property.Converter(value) : value;
-            EntityInstance.GetType().GetProperty(Property.Name)?.SetValue(EntityInstance, convertedValue);
+            var resolvedValue = Property.ValueResolver is not null ? Property.ValueResolver(value) : value;
+            EntityInstance.GetType().GetProperty(Property.Name)?.SetValue(EntityInstance, resolvedValue);
         }
     }
 

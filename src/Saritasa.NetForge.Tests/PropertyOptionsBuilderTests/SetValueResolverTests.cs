@@ -5,28 +5,27 @@ using Xunit;
 namespace Saritasa.NetForge.Tests.PropertyOptionsBuilderTests;
 
 /// <summary>
-/// <see cref="PropertyOptionsBuilder.SetConverter"/> tests.
+/// <see cref="PropertyOptionsBuilder.SetValueResolver"/> tests.
 /// </summary>
-public class SetConverterTests
+public class SetValueResolverTests
 {
     /// <summary>
     /// Verify that the converter works with a custom strongly-typed ID.
     /// </summary>
     [Fact]
-    public void SetConverter_CustomStronglyTypedId_ShouldConvert()
+    public void SetValueResolver_CustomStronglyTypedId_ShouldConvert()
     {
         // Arrange
         var builder = new PropertyOptionsBuilder();
         var options = builder.Create("TestProperty");
 
-        builder.SetConverter(value => int.TryParse(value, out var id) ? new TokenId(id) : default);
+        builder.SetValueResolver(value => int.TryParse(value, out var id) ? new TokenId(id) : default);
 
         // Act
-        var converted = options.Converter?.Invoke("99");
+        var resolvedValue = options.ValueResolver?.Invoke("99");
 
         // Assert
-        Assert.IsType<TokenId>(converted);
-        Assert.Equal(new TokenId(99), converted);
+        Assert.IsType<TokenId>(resolvedValue);
+        Assert.Equal(new TokenId(99), resolvedValue);
     }
 }
-

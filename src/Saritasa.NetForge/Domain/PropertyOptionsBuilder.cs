@@ -268,19 +268,20 @@ public class PropertyOptionsBuilder
     }
 
     /// <summary>
-    /// Sets a custom converter that converts a string input value to the property's actual CLR type.
-    /// This is useful when custom conversion is required, for example when using strongly-typed IDs.
+    /// Sets a custom value resolver that will be used to set value when custom type is rendered as input.
+    /// It may include conversion, custom resolution, normalization, fallback logic, object creation, etc.
+    /// For example, when StronglyTypedId is used this resolver can be used to convert string to actual type.
     /// </summary>
-    /// <param name="converter">
-    /// A function that converts a <see langword="string"/> value to the target property type.
+    /// <param name="valueResolver">
+    /// A function that gets <see cref="TValue"/> value based on given <see cref="string"/>.
     /// </param>
     /// <remarks>
-    /// It is supposed to be used with custom types. In UI we determine input depending of its type, e.g. int => number input.
-    /// When we cannot determine type, we use string input as default one. That is why we convert from string.
+    /// It is supposed to be used with custom types. In UI, we determine input depending on its type, e.g. int => number input.
+    /// When we cannot determine type, we use string input as default one.
     /// </remarks>
-    public PropertyOptionsBuilder SetConverter<TValue>(Func<string?, TValue?> converter) where TValue : new()
+    public PropertyOptionsBuilder SetValueResolver<TValue>(Func<string?, TValue?> valueResolver) where TValue : new()
     {
-        options.Converter = value => converter(value);
+        options.ValueResolver = value => valueResolver(value);
         return this;
     }
 }

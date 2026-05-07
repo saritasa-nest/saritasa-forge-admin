@@ -16,10 +16,10 @@ public class TokenAdminConfiguration : IEntityAdminConfiguration<Token>
         entityOptionsBuilder.SetGroup(GroupConstants.Shops);
 
         // TokenId is a strongly-typed ID backed by int.
-        // The TextField passes a string, so we need a custom converter to parse it into TokenId.
+        // The TextField passes a string, so we need a custom value resolver to parse it into TokenId.
         entityOptionsBuilder.ConfigureProperty(token => token.Id, builder =>
         {
-            builder.SetConverter(value => int.TryParse(value, out var id) ? new TokenId(id) : default);
+            builder.SetValueResolver(value => int.TryParse(value, out var id) ? new TokenId(id) : default);
         });
     }
 }

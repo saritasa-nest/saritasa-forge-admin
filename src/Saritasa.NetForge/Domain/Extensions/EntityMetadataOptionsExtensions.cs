@@ -257,9 +257,9 @@ public static class EntityMetadataOptionsExtensions
             property.IsHiddenFromCreate = propertyOptions.IsHiddenFromCreate;
         }
 
-        if (propertyOptions.Converter is not null)
+        if (propertyOptions.ValueResolver is not null)
         {
-            property.Converter = propertyOptions.Converter;
+            property.ValueResolver = propertyOptions.ValueResolver;
         }
     }
 
