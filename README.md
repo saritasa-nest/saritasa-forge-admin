@@ -56,6 +56,7 @@ The **NetForge** is a library that provides a user-friendly and intuitive user i
     - [Configuration](#configuration-3)
   - [Multiline Text Field Property](#multiline-text-field-property)
     - [Configuration](#configuration-4)
+  - [Custom Value Resolver](#custom-value-resolver)
   - [Migration](#migration)
   - [License](#license)
 
@@ -155,7 +156,7 @@ appBuilder.Services.AddNetForge(optionsBuilder =>
 
 ## Search
 
-You can read about search [here](docs/SEARCH.md).
+You can read about search [here](docs/SEARCH.md)
 
 ## View Site URL
 
@@ -1266,6 +1267,23 @@ entityOptionsBuilder.ConfigureProperty(address => address.Street, builder =>
 ```csharp
 [MultilineText(IsAutoGrow = true)]
 public required string Street { get; set; }
+```
+
+## Custom Value Resolver
+
+You can set a custom value resolver that gets actual CLR type from a string input value.
+This is useful when custom type is used, for example when using strongly-typed IDs.
+
+When the admin panel cannot determine the appropriate input control for a property type, it defaults to a string input.
+That is why custom value resolver has string as parameter.
+
+**Using Fluent API**
+
+```csharp
+entityOptionsBuilder.ConfigureProperty(token => token.Id, builder =>
+{
+    builder.SetValueResolver(value => int.TryParse(value, out var id) ? new TokenId(id) : default);
+});
 ```
 
 ## Migration

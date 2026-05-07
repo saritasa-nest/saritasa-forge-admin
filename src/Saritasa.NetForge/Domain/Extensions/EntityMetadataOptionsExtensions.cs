@@ -256,6 +256,11 @@ public static class EntityMetadataOptionsExtensions
         {
             property.IsHiddenFromCreate = propertyOptions.IsHiddenFromCreate;
         }
+
+        if (propertyOptions.ValueResolver is not null)
+        {
+            property.ValueResolver = propertyOptions.ValueResolver;
+        }
     }
 
     private static void ApplyCalculatedPropertyOptions(

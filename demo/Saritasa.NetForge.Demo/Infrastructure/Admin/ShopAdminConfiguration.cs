@@ -88,6 +88,14 @@ public class ShopAdminConfiguration : IEntityAdminConfiguration<Shop>
                     {
                         propertyOptionsBuilder.SetDisplayName("Supplier City");
                     });
+            })
+            .IncludeNavigation<Token>(shop => shop.Token, navigationOptionsBuilder =>
+            {
+                navigationOptionsBuilder
+                    .IncludeProperty(token => token.Name, propertyOptionsBuilder =>
+                    {
+                        propertyOptionsBuilder.SetDisplayName("Token Name");
+                    });
             });
 
         entityOptionsBuilder.ConfigureProperty(shop => shop.Logo, builder =>
