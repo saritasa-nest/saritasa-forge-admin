@@ -164,7 +164,7 @@ public class ShopDbContext : IdentityDbContext<User>
                         converter.ProviderClrType != typeof(Guid) &&
                         converter.ProviderClrType != typeof(string))
                     {
-                        // property.ValueGenerated = ValueGenerated.OnAdd;
+                        property.ValueGenerated = ValueGenerated.OnAdd;
                     }
                 }
             }
