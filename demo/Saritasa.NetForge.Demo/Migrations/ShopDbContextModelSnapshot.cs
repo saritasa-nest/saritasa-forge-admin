@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Saritasa.NetForge.Demo;
 
@@ -522,6 +523,10 @@ namespace Saritasa.NetForge.Demo.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("owner_contact_id");
 
+                    b.Property<int>("TokenId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("token_id");
+
                     b.Property<decimal>("TotalSales")
                         .HasColumnType("TEXT")
                         .HasColumnName("total_sales");
@@ -534,6 +539,10 @@ namespace Saritasa.NetForge.Demo.Migrations
 
                     b.HasIndex("OwnerContactId")
                         .HasDatabaseName("ix_shops_owner_contact_id");
+
+                    b.HasIndex("TokenId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_shops_token_id");
 
                     b.ToTable("shops", (string)null);
                 });
@@ -579,8 +588,11 @@ namespace Saritasa.NetForge.Demo.Migrations
             modelBuilder.Entity("Saritasa.NetForge.Demo.Models.Token", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasColumnName("id");
+
+                    SqlitePropertyBuilderExtensions.UseAutoincrement(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -827,9 +839,18 @@ namespace Saritasa.NetForge.Demo.Migrations
                         .HasForeignKey("OwnerContactId")
                         .HasConstraintName("fk_shops_contact_infos_owner_contact_id");
 
+                    b.HasOne("Saritasa.NetForge.Demo.Models.Token", "Token")
+                        .WithOne()
+                        .HasForeignKey("Saritasa.NetForge.Demo.Models.Shop", "TokenId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_shops_tokens_token_id");
+
                     b.Navigation("Address");
 
                     b.Navigation("OwnerContact");
+
+                    b.Navigation("Token");
                 });
 
             modelBuilder.Entity("Saritasa.NetForge.Demo.Models.ShopProductsCount", b =>

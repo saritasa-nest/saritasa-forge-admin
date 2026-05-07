@@ -106,6 +106,12 @@ public class ShopDbContext : IdentityDbContext<User>
 
         modelBuilder.Entity<Token>().HasKey(token => token.Id);
 
+        modelBuilder
+            .Entity<Shop>()
+            .HasOne(shop => shop.Token)
+            .WithOne()
+            .HasForeignKey<Shop>(shop => shop.TokenId);
+
         ConfigureStronglyTypedIds(modelBuilder);
     }
 
@@ -165,6 +171,7 @@ public class ShopDbContext : IdentityDbContext<User>
                         converter.ProviderClrType != typeof(string))
                     {
                         property.ValueGenerated = ValueGenerated.OnAdd;
+                        property.SetValueGenerationStrategy(SqliteValueGenerationStrategy.Autoincrement);
                     }
                 }
             }

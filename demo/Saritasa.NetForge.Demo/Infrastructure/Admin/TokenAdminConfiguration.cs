@@ -1,3 +1,4 @@
+using Saritasa.NetForge.Demo.Constants;
 using Saritasa.NetForge.Domain;
 using Saritasa.NetForge.Domain.Interfaces;
 using Saritasa.NetForge.Demo.Models;
@@ -12,6 +13,8 @@ public class TokenAdminConfiguration : IEntityAdminConfiguration<Token>
     /// <inheritdoc />
     public void Configure(EntityOptionsBuilder<Token> entityOptionsBuilder)
     {
+        entityOptionsBuilder.SetGroup(GroupConstants.Shops);
+
         // TokenId is a strongly-typed ID backed by int.
         // The TextField passes a string, so we need a custom converter to parse it into TokenId.
         entityOptionsBuilder.ConfigureProperty(token => token.Id, builder =>
