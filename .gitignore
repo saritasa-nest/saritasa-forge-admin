@@ -352,3 +352,5 @@ src/Saritasa.NetForge.Blazor/Properties/launchSettings.json
 
 # Ignore local media files to not download and remove images everytime
 /demo/Saritasa.NetForge.Demo/wwwroot/media
+
+.codegraph
