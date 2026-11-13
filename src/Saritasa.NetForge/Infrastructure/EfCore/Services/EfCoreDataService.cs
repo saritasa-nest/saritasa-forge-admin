@@ -426,12 +426,14 @@ public class EfCoreDataService : IOrmDataService
         }
 
         var query = GetQuery(entityType);
+
+        // Be careful with order. Search should be performed before Select.
+        // Otherwise, the query will not be translated by EF.
+        query = ApplyCustomQuery(query, customQueryFunction);
+        query = Search(query, searchOptions.SearchString, entityType, properties, searchFunction);
+
         var selectExpression = SelectProperties(entityType, properties);
         query = query.Select(selectExpression);
-
-        query = ApplyCustomQuery(query, customQueryFunction);
-
-        query = Search(query, searchOptions.SearchString, entityType, properties, searchFunction);
 
         if (searchOptions.OrderBy.Any())
         {
