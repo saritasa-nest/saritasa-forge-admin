@@ -64,6 +64,7 @@ public static class AdminExtensions
 #if NET9_0_OR_GREATER
                 endpointBuilder.MapStaticAssets();
 #endif
+                endpointBuilder.MapNetForgeApi();
                 endpointBuilder
                     .MapRazorComponents<App>()
                     .AddInteractiveServerRenderMode();
