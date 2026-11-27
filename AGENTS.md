@@ -35,6 +35,11 @@ Before considering work complete:
 - Analyzer baseline is defined in `src/Directory.Build.props` (StyleCop + Saritasa analyzers).
 - For behavior-level changes, update/add tests under `src/Saritasa.NetForge.Tests/`.
 
+## Coding conventions
+- When implementing an asynchronous method, avoid adding the `Async` suffix. In our applications most methods end up being
+  asynchronous, and it becomes tedious to always remember to add `Async` everywhere.
+  One exception: when a class has two identical methods, one synchronous and one asynchronous.
+
 ## Nested AGENTS.md
 No nested `AGENTS.md` files exist currently.  
 If demo-specific workflows diverge further, add `demo/AGENTS.md` for local-only demo guidance.
