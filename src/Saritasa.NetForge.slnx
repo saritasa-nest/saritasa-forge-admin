@@ -4,6 +4,7 @@
   </Folder>
   <Folder Name="/Demo/">
     <Project Path="../demo/Saritasa.NetForge.Demo/Saritasa.NetForge.Demo.csproj" />
+    <Project Path="../demo/Saritasa.NetForge.Demo.AppHost/Saritasa.NetForge.Demo.AppHost.csproj" Id="7e422b68-9bf2-4722-a1e8-df33325537dc" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path="../CHANGELOG.txt" />
